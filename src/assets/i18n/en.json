@@ -1,0 +1,130 @@
+{
+  "HOME": {
+    "WELCOME": {
+      "TITLE": "Welcome!",
+      "DESCRIPTION": "We are glad to see you in our application."
+    },
+    "ABOUT": {
+      "TITLE": "About Us",
+      "DESCRIPTION": "The application provides help in solving mathematical problems",
+      "SOURCELINK": "The app is free for personal use and open source at the link:"
+    },
+    "FEATURES": {
+      "TITLE": "Features",
+      "FIRST": "User-Friendly Interface",
+      "SECOND": "Quick problem solving",
+      "THIRD": "Support for many geometric shapes",
+      "FOURTH": "Solving many algebra problems"
+    },
+    "CONTACT": {
+      "TITLE": "Contacts",
+      "EMAIL": "Please contact us by email if you have any questions:"
+    },
+    "START": {
+      "TITLE": "Try our app",
+      "DESCRIPTION": "First attempt is free*"
+    },
+    "NAVBAR": {
+      "WELCOME": "Welcome",
+      "ABOUT": "About",
+      "FEATURES": "Features",
+      "CONTACT": "Contacts",
+      "START": "Start"
+    },
+    "LOREM": "Lorem Ipsum is simply dummy text of the printing and typesetting industry..."
+  },
+  "CANVAS": {
+    "SETTINGS": {
+      "SELECT": {
+        "TITLE": "Select a subject",
+        "MATH": "Math",
+        "GEOMETRY": "Geometry"
+      }
+    }
+  },
+  "REGISTER": {
+    "REGISTER": {
+      "TITLE": "Sign Up"
+    },
+    "LOGIN": {
+      "TITLE": "Login",
+      "INPUT": {
+        "PLACEHOLDER": {
+          "PASSWORD": "Enter your password"
+        }
+      }
+    },
+    "INPUT": {
+      "PLACEHOLDER": {
+        "USERNAME": "Enter your username",
+        "EMAIL": "Enter your email address",
+        "PASSWORD": "Create a password"
+      },
+      "PASSWORD": {
+        "HINT": {
+          "MINLENGTH": "Minimum 8 characters",
+          "UPPERCASE": "At least one uppercase letter",
+          "LOWERCASE": "At least one lowercase letter",
+          "DIGIT": "At least one digit",
+          "SPECCHAR": "At least one special character",
+          "NOTCONTAINSEMAIL": "The password must not contain an email address"
+        }
+      }
+    },
+    "BUTTON": {
+      "REGISTER": "Sign Up",
+      "LOGIN": "Log In"
+    },
+    "LINK": {
+      "FORGOT_PASSWORD": "Forgot your password?"
+    },
+    "FORGOT_PASSWORD": {
+      "TITLE": "Recover your Password",
+      "INPUT": {
+        "EMAIL": "Email address:",
+        "PLACEHOLDER": {
+          "EMAIL": "Enter your email address"
+        }
+      },
+      "BUTTON": {
+        "SUBMIT": "Submit",
+        "CLOSE": "Close"
+      }
+    },
+    "ERRORS": {
+      "USERNAME": {
+        "REQUIRED": "Username is required.",
+        "INVALID": "Username must be 4-24 characters long, start with a letter, and contain only letters and numbers."
+      },
+      "EMAIL": {
+        "REQUIRED": "Email is required.",
+        "INVALID": "Invalid email format.",
+        "NOT_ALLOWED": "Registration is only allowed with email addresses from approved providers."
+      },
+      "PASSWORD": {
+        "REQUIRED": "Password is required.",
+        "TOO_WEAK": "Password is too weak.",
+        "WEAK": "Password is weak."
+      },
+      "INCORRECT_DATA": "Entered data is incorrect.",
+      "REGISTRATION": {
+        "SUCCESS": "Registration successful!",
+        "FAIL": "Registration failed. Please try again."
+      },
+      "EMAILPASS": {
+        "REQUIRED": "Email and password are required for login."
+      },
+      "LOGIN": {
+        "SUCCESS": "Login successful!",
+        "FAIL": "Login failed. Please check your credentials."
+      },
+      "RECOVER": {
+        "EMAIL": {
+          "REQUIRED": "Please enter your email."
+        },
+        "SUCCESS": "Password recovery email has been sent.",
+        "FAIL": "Error sending recovery email. Please try again."
+      }
+    }
+  }
+}

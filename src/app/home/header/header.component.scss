@@ -1,0 +1,145 @@
+.app-header {
+  position: fixed;
+  display: flex;
+  top: 0;
+  left: 0;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  width: calc(100vw - 40px);
+  max-width: 100%;
+  height: 35px;
+  background-color: #222;
+  color: white;
+  z-index: 100;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.helper-text {
+  color: white;
+  text-decoration: none;
+}
+
+.gm-gradient {
+  background: linear-gradient(45deg, #ffffff, #c444ff, #ffffff);
+  background-size: 300%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradient-animation 10s infinite ease-in-out;
+}
+
+.auth-and-language {
+  display: flex;
+  align-items: center;
+
+  .language-dropdown {
+    position: relative;
+    margin-right: 10px;
+
+    .lang-btn {
+      background-color: transparent;
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      padding: 5px;
+      border-radius: 5px;
+
+      &:hover {
+        background-color: #333;
+      }
+
+      img {
+        padding: 0;
+        width: 30px;
+        height: 30px;
+        object-fit: cover;
+      }
+    }
+
+    .language-list {
+      position: absolute;
+      left: 0px;
+      top: 50px;
+      background-color: #222;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      width: 150px;
+      border: 1px solid #333;
+      z-index: 100;
+
+      li {
+        padding: 10px;
+        cursor: pointer;
+        color: white;
+
+        &:hover {
+          background-color: #333;
+        }
+      }
+    }
+  }
+
+  .user-info {
+    display: flex;
+    align-items: center;
+
+    .user-avatar {
+      width: 30px;
+      height: 30px;
+      object-fit: cover;
+      border-radius: 50%;
+      margin-right: 10px;
+    }
+
+    .user-nickname {
+      color: white;
+      font-size: 16px;
+      font-weight: 500;
+    }
+  }
+
+  .auth-buttons {
+    display: flex;
+    align-items: center;
+
+    .register-btn,
+    .login-btn {
+      background-color: #c444ff;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      cursor: pointer;
+      border-radius: 5px;
+      margin-left: 10px;
+      transition: background-color 0.3s;
+
+      &:hover {
+        background-color: #9c33cc;
+      }
+    }
+  }
+}
+
+@keyframes gradient-animation {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}

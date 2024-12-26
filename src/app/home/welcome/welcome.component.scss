@@ -1,0 +1,44 @@
+.welcome-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: black;
+  height: 100vh;
+  text-align: center;
+  color: #ffffff; /* Белый текст */
+  position: relative;
+  z-index: 50;
+}
+
+@keyframes colorAnimationWelcome {
+  0% {
+    color: #ffffff;
+  }
+  50% {
+    color: #000000;
+  }
+  100% {
+    color: #ffffff;
+  }
+}
+
+h1,
+p {
+  position: relative;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 2rem;
+  overflow: hidden;
+  white-space: nowrap;
+  color: inherit;
+}
+
+span {
+  margin-top: 10vh;
+  display: flex;
+  flex-direction: column;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 1rem;
+  width: 75vh;
+  color: inherit;
+}

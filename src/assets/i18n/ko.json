@@ -1,0 +1,130 @@
+{
+  "HOME": {
+    "WELCOME": {
+      "TITLE": "환영합니다!",
+      "DESCRIPTION": "우리 애플리케이션에 오신 것을 환영합니다."
+    },
+    "ABOUT": {
+      "TITLE": "우리에 대하여",
+      "DESCRIPTION": "이 애플리케이션은 수학 문제 해결에 도움을 줍니다",
+      "SOURCELINK": "이 앱은 개인 사용을 위해 무료이며, 오픈 소스입니다:"
+    },
+    "FEATURES": {
+      "TITLE": "특징",
+      "FIRST": "사용자 친화적인 인터페이스",
+      "SECOND": "빠른 문제 해결",
+      "THIRD": "많은 기하학적 형태 지원",
+      "FOURTH": "많은 대수 문제 해결"
+    },
+    "CONTACT": {
+      "TITLE": "연락처",
+      "EMAIL": "질문이 있으시면 이메일로 문의해 주세요:"
+    },
+    "START": {
+      "TITLE": "앱을 사용해 보세요",
+      "DESCRIPTION": "첫 시도는 무료입니다*"
+    },
+    "NAVBAR": {
+      "WELCOME": "환영합니다",
+      "ABOUT": "정보",
+      "FEATURES": "기능",
+      "CONTACT": "연락처",
+      "START": "시작하기"
+    },
+    "LOREM": "로렘 입숨은 인쇄 및 조판 산업의 더미 텍스트입니다..."
+  },
+  "CANVAS": {
+    "SETTINGS": {
+      "SELECT": {
+        "TITLE": "과목을 선택하세요",
+        "MATH": "수학",
+        "GEOMETRY": "기하학"
+      }
+    }
+  },
+  "REGISTER": {
+    "REGISTER": {
+      "TITLE": "가입하기"
+    },
+    "LOGIN": {
+      "TITLE": "로그인",
+      "INPUT": {
+        "PLACEHOLDER": {
+          "PASSWORD": "비밀번호를 입력하세요"
+        }
+      }
+    },
+    "INPUT": {
+      "PLACEHOLDER": {
+        "USERNAME": "사용자 이름을 입력하세요",
+        "EMAIL": "이메일 주소를 입력하세요",
+        "PASSWORD": "비밀번호를 생성하세요"
+      },
+      "PASSWORD": {
+        "HINT": {
+          "MINLENGTH": "최소 8자",
+          "UPPERCASE": "대문자 최소 1개",
+          "LOWERCASE": "소문자 최소 1개",
+          "DIGIT": "숫자 최소 1개",
+          "SPECCHAR": "특수 문자 최소 1개",
+          "NOTCONTAINSEMAIL": "비밀번호에는 이메일 주소가 포함될 수 없습니다"
+        }
+      }
+    },
+    "BUTTON": {
+      "REGISTER": "가입하기",
+      "LOGIN": "로그인"
+    },
+    "LINK": {
+      "FORGOT_PASSWORD": "비밀번호를 잊으셨나요?"
+    },
+    "FORGOT_PASSWORD": {
+      "TITLE": "비밀번호 복구",
+      "INPUT": {
+        "EMAIL": "이메일 주소 :",
+        "PLACEHOLDER": {
+          "EMAIL": "이메일 주소를 입력하세요"
+        }
+      },
+      "BUTTON": {
+        "SUBMIT": "제출",
+        "CLOSE": "닫기"
+      }
+    },
+    "ERRORS": {
+      "USERNAME": {
+        "REQUIRED": "사용자 이름이 필요합니다.",
+        "INVALID": "사용자 이름은 4~24자로 구성되어야 하며, 문자로 시작하고 문자와 숫자만 포함해야 합니다."
+      },
+      "EMAIL": {
+        "REQUIRED": "이메일이 필요합니다.",
+        "INVALID": "잘못된 이메일 형식입니다.",
+        "NOT_ALLOWED": "승인된 제공업체의 이메일 주소만 등록이 허용됩니다."
+      },
+      "PASSWORD": {
+        "REQUIRED": "비밀번호가 필요합니다.",
+        "TOO_WEAK": "비밀번호가 너무 약합니다.",
+        "WEAK": "비밀번호가 약합니다."
+      },
+      "INCORRECT_DATA": "입력된 데이터가 올바르지 않습니다.",
+      "REGISTRATION": {
+        "SUCCESS": "등록 성공!",
+        "FAIL": "등록 실패. 다시 시도해주세요."
+      },
+      "EMAILPASS": {
+        "REQUIRED": "로그인을 위해 이메일과 비밀번호가 필요합니다."
+      },
+      "LOGIN": {
+        "SUCCESS": "로그인 성공!",
+        "FAIL": "로그인 실패. 자격 증명을 확인하세요."
+      },
+      "RECOVER": {
+        "EMAIL": {
+          "REQUIRED": "이메일을 입력하세요."
+        },
+        "SUCCESS": "비밀번호 복구 이메일이 전송되었습니다.",
+        "FAIL": "비밀번호 복구 이메일 전송 오류. 다시 시도해주세요."
+      }
+    }
+  }
+}

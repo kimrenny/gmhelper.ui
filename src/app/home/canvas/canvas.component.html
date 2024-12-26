@@ -1,0 +1,76 @@
+<div class="canvas-container">
+  <canvas
+    #drawingCanvas
+    [class.blurred]="!selectedSubject"
+    class="canvas"
+  ></canvas>
+
+  <div *ngIf="!selectedSubject" class="subject-controls">
+    <button (click)="selectSubject('Math')">
+      {{ "CANVAS.SETTINGS.SELECT.MATH" | translate }}
+    </button>
+    <button (click)="selectSubject('Geo')">
+      {{ "CANVAS.SETTINGS.SELECT.GEOMETRY" | translate }}
+    </button>
+  </div>
+
+  <!-- Существующие контролы для изменения масштаба -->
+  <div class="scale-controls" [class.disabled]="!selectedSubject">
+    <button (click)="adjustScale(-10)" [disabled]="scale <= minScale">-</button>
+    <span class="scale-value">{{ scale }}%</span>
+    <button (click)="adjustScale(10)" [disabled]="scale >= maxScale">+</button>
+  </div>
+
+  <!-- Существующие селекты для смены предмета -->
+  <div class="subject-change" [class.disabled]="!selectedSubject">
+    <select
+      [(ngModel)]="selectedSubject"
+      (ngModelChange)="selectSubject($event)"
+    >
+      <option value="Math">
+        {{ "CANVAS.SETTINGS.SELECT.MATH" | translate }}
+      </option>
+      <option value="Geo">
+        {{ "CANVAS.SETTINGS.SELECT.GEOMETRY" | translate }}
+      </option>
+    </select>
+  </div>
+
+  <!-- Новые кнопки для карандаша и выбора цвета, скрыты под блюром -->
+  <div
+    class="tool-buttons"
+    [class.disabled]="!selectedSubject"
+    [class.show-palette]="isColorPaletteVisible"
+  >
+    <button (click)="selectTool('pencil')" class="pencil-btn"></button>
+    <button (click)="selectTool('line')" class="line-btn"></button>
+    <button (click)="toggleColorPalette()" class="color-btn" #colorBtn></button>
+
+    <button (click)="toggleShapeTools()" class="tool-btn"></button>
+    <button (click)="onClearCanvas()" class="clear-btn"></button>
+    <div
+      [style.display]="shapeToolsVisible ? 'flex' : 'none'"
+      class="shape-tools"
+    >
+      <button (click)="selectTool('ellipse')" class="ellipse-btn"></button>
+      <button (click)="selectTool('polygon')" class="polygon-btn"></button>
+      <button (click)="selectTool('triangle')" class="triangle-btn"></button>
+      <button (click)="selectTool('quad')" class="quad-btn"></button>
+      <button (click)="selectTool('trapezoid')" class="trapezoid-btn"></button>
+      <button (click)="selectTool('rhombus')" class="rhombus-btn"></button>
+    </div>
+
+    <div
+      class="color-palette"
+      [style.display]="isColorPaletteVisible ? 'grid' : 'none'"
+      #colorPalette
+    >
+      <div
+        class="color-option"
+        *ngFor="let color of colors"
+        [style.background-color]="color"
+        (click)="selectedColor = color"
+      ></div>
+    </div>
+  </div>
+</div>

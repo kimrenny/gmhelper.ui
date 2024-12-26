@@ -1,0 +1,46 @@
+<div class="sidebar">
+  <ul>
+    <li>
+      <a href="#welcome" [class.active]="activeSection === 'welcome'">
+        <img
+          src="../../../assets/icons/welcome.png"
+          alt="Welcome"
+          class="welcome"
+        />
+        <span class="nav-text">{{ "HOME.NAVBAR.WELCOME" | translate }}</span>
+      </a>
+    </li>
+    <li>
+      <a href="#about" [class.active]="activeSection === 'about'">
+        <img src="../../../assets/icons/about.png" alt="About" class="about" />
+        <span class="nav-text">{{ "HOME.NAVBAR.ABOUT" | translate }}</span>
+      </a>
+    </li>
+    <li>
+      <a href="#features" [class.active]="activeSection === 'features'">
+        <img
+          src="../../../assets/icons/features.png"
+          alt="Features"
+          class="features"
+        />
+        <span class="nav-text">{{ "HOME.NAVBAR.FEATURES" | translate }}</span>
+      </a>
+    </li>
+    <li>
+      <a href="#contact" [class.active]="activeSection === 'contact'">
+        <img
+          src="../../../assets/icons/contacts.png"
+          alt="Contact"
+          class="contacts"
+        />
+        <span class="nav-text">{{ "HOME.NAVBAR.CONTACT" | translate }}</span>
+      </a>
+    </li>
+    <li>
+      <a href="#start" [class.active]="activeSection === 'start'">
+        <img src="../../../assets/icons/start.png" alt="Start" class="start" />
+        <span class="nav-text">{{ "HOME.NAVBAR.START" | translate }}</span>
+      </a>
+    </li>
+  </ul>
+</div>

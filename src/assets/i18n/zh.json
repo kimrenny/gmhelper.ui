@@ -1,0 +1,130 @@
+{
+  "HOME": {
+    "WELCOME": {
+      "TITLE": "欢迎！",
+      "DESCRIPTION": "我们很高兴在我们的应用程序中看到您。"
+    },
+    "ABOUT": {
+      "TITLE": "关于我们",
+      "DESCRIPTION": "该应用程序提供帮助解决数学问题",
+      "SOURCELINK": "该应用程序可供个人免费使用，并在以下链接上开源："
+    },
+    "FEATURES": {
+      "TITLE": "特点",
+      "FIRST": "用户友好的界面",
+      "SECOND": "快速问题解决",
+      "THIRD": "支持多种几何形状",
+      "FOURTH": "解决许多代数问题"
+    },
+    "CONTACT": {
+      "TITLE": "联系方式",
+      "EMAIL": "如果您有任何问题，请通过电子邮件与我们联系："
+    },
+    "START": {
+      "TITLE": "试用我们的应用程序",
+      "DESCRIPTION": "首次尝试免费*"
+    },
+    "NAVBAR": {
+      "WELCOME": "欢迎",
+      "ABOUT": "关于",
+      "FEATURES": "特点",
+      "CONTACT": "联系",
+      "START": "开始"
+    },
+    "LOREM": "罗马假名是印刷和排版行业的虚拟文本..."
+  },
+  "CANVAS": {
+    "SETTINGS": {
+      "SELECT": {
+        "TITLE": "选择科目",
+        "MATH": "数学",
+        "GEOMETRY": "几何"
+      }
+    }
+  },
+  "REGISTER": {
+    "REGISTER": {
+      "TITLE": "注册"
+    },
+    "LOGIN": {
+      "TITLE": "登录",
+      "INPUT": {
+        "PLACEHOLDER": {
+          "PASSWORD": "请输入您的密码"
+        }
+      }
+    },
+    "INPUT": {
+      "PLACEHOLDER": {
+        "USERNAME": "输入您的用户名",
+        "EMAIL": "输入您的电子邮件地址",
+        "PASSWORD": "创建一个密码"
+      },
+      "PASSWORD": {
+        "HINT": {
+          "MINLENGTH": "至少8个字符",
+          "UPPERCASE": "至少一个大写字母",
+          "LOWERCASE": "至少一个小写字母",
+          "DIGIT": "至少一个数字",
+          "SPECCHAR": "至少一个特殊字符",
+          "NOTCONTAINSEMAIL": "密码不得包含电子邮件地址"
+        }
+      }
+    },
+    "BUTTON": {
+      "REGISTER": "注册",
+      "LOGIN": "登录"
+    },
+    "LINK": {
+      "FORGOT_PASSWORD": "忘记密码？"
+    },
+    "FORGOT_PASSWORD": {
+      "TITLE": "找回密码",
+      "INPUT": {
+        "EMAIL": "电子邮件地址：",
+        "PLACEHOLDER": {
+          "EMAIL": "请输入您的电子邮件地址"
+        }
+      },
+      "BUTTON": {
+        "SUBMIT": "提交",
+        "CLOSE": "关闭"
+      }
+    },
+    "ERRORS": {
+      "USERNAME": {
+        "REQUIRED": "用户名是必填项。",
+        "INVALID": "用户名必须为4到24个字符，以字母开头，并且只能包含字母和数字。"
+      },
+      "EMAIL": {
+        "REQUIRED": "电子邮件是必填项。",
+        "INVALID": "电子邮件格式无效。",
+        "NOT_ALLOWED": "仅允许使用批准供应商的电子邮件地址注册。"
+      },
+      "PASSWORD": {
+        "REQUIRED": "密码是必填项。",
+        "TOO_WEAK": "密码太弱。",
+        "WEAK": "密码较弱。"
+      },
+      "INCORRECT_DATA": "输入的数据不正确。",
+      "REGISTRATION": {
+        "SUCCESS": "注册成功！",
+        "FAIL": "注册失败。请重试。"
+      },
+      "EMAILPASS": {
+        "REQUIRED": "登录需要电子邮件和密码。"
+      },
+      "LOGIN": {
+        "SUCCESS": "登录成功！",
+        "FAIL": "登录失败。请检查您的凭据。"
+      },
+      "RECOVER": {
+        "EMAIL": {
+          "REQUIRED": "请输入您的电子邮件。"
+        },
+        "SUCCESS": "密码恢复电子邮件已发送。",
+        "FAIL": "发送密码恢复电子邮件失败。请重试。"
+      }
+    }
+  }
+}

@@ -1,0 +1,130 @@
+{
+  "HOME": {
+    "WELCOME": {
+      "TITLE": "ようこそ！",
+      "DESCRIPTION": "私たちのアプリケーションにお越しいただきありがとうございます。"
+    },
+    "ABOUT": {
+      "TITLE": "私たちについて",
+      "DESCRIPTION": "このアプリは数学の問題を解決するのに役立ちます",
+      "SOURCELINK": "アプリは個人使用のために無料で、オープンソースで提供されています："
+    },
+    "FEATURES": {
+      "TITLE": "特徴",
+      "FIRST": "使いやすいインターフェース",
+      "SECOND": "迅速な問題解決",
+      "THIRD": "多くの幾何学的形状に対応",
+      "FOURTH": "多くの代数問題を解決"
+    },
+    "CONTACT": {
+      "TITLE": "連絡先",
+      "EMAIL": "質問がある場合はメールでご連絡ください："
+    },
+    "START": {
+      "TITLE": "アプリを試してみてください",
+      "DESCRIPTION": "最初の試みは無料です*"
+    },
+    "NAVBAR": {
+      "WELCOME": "ようこそ",
+      "ABOUT": "私たちについて",
+      "FEATURES": "特徴",
+      "CONTACT": "連絡先",
+      "START": "始める"
+    },
+    "LOREM": "ロレム・イプサムは印刷および組版業界のダミーテキストです..."
+  },
+  "CANVAS": {
+    "SETTINGS": {
+      "SELECT": {
+        "TITLE": "科目を選択してください",
+        "MATH": "数学",
+        "GEOMETRY": "幾何学"
+      }
+    }
+  },
+  "REGISTER": {
+    "REGISTER": {
+      "TITLE": "サインアップ"
+    },
+    "LOGIN": {
+      "TITLE": "ログイン",
+      "INPUT": {
+        "PLACEHOLDER": {
+          "PASSWORD": "パスワードを入力"
+        }
+      }
+    },
+    "INPUT": {
+      "PLACEHOLDER": {
+        "USERNAME": "ユーザー名を入力してください",
+        "EMAIL": "メールアドレスを入力してください",
+        "PASSWORD": "パスワードを作成してください"
+      },
+      "PASSWORD": {
+        "HINT": {
+          "MINLENGTH": "最低8文字",
+          "UPPERCASE": "少なくとも1つの大文字",
+          "LOWERCASE": "少なくとも1つの小文字",
+          "DIGIT": "少なくとも1つの数字",
+          "SPECCHAR": "少なくとも1つの特殊文字",
+          "NOTCONTAINSEMAIL": "パスワードにメールアドレスを含めることはできません"
+        }
+      }
+    },
+    "BUTTON": {
+      "REGISTER": "サインアップ",
+      "LOGIN": "ログイン"
+    },
+    "LINK": {
+      "FORGOT_PASSWORD": "パスワードをお忘れですか？"
+    },
+    "FORGOT_PASSWORD": {
+      "TITLE": "パスワードを回復",
+      "INPUT": {
+        "EMAIL": "メールアドレス：",
+        "PLACEHOLDER": {
+          "EMAIL": "メールアドレスを入力"
+        }
+      },
+      "BUTTON": {
+        "SUBMIT": "提出",
+        "CLOSE": "閉じる"
+      }
+    },
+    "ERRORS": {
+      "USERNAME": {
+        "REQUIRED": "ユーザー名が必要です。",
+        "INVALID": "ユーザー名は4〜24文字で、文字で始まり、文字と数字のみを含む必要があります。"
+      },
+      "EMAIL": {
+        "REQUIRED": "メールアドレスが必要です。",
+        "INVALID": "メールアドレスの形式が無効です。",
+        "NOT_ALLOWED": "登録は承認されたプロバイダーのメールアドレスのみで許可されています。"
+      },
+      "PASSWORD": {
+        "REQUIRED": "パスワードが必要です。",
+        "TOO_WEAK": "パスワードが非常に弱いです。",
+        "WEAK": "パスワードが弱いです。"
+      },
+      "INCORRECT_DATA": "入力されたデータが正しくありません。",
+      "REGISTRATION": {
+        "SUCCESS": "登録が成功しました！",
+        "FAIL": "登録に失敗しました。もう一度お試しください。"
+      },
+      "EMAILPASS": {
+        "REQUIRED": "ログインにはメールアドレスとパスワードが必要です。"
+      },
+      "LOGIN": {
+        "SUCCESS": "ログイン成功！",
+        "FAIL": "ログインに失敗しました。資格情報を確認してください。"
+      },
+      "RECOVER": {
+        "EMAIL": {
+          "REQUIRED": "メールアドレスを入力してください。"
+        },
+        "SUCCESS": "パスワードリカバリのメールが送信されました。",
+        "FAIL": "パスワードリカバリのメール送信エラー。もう一度お試しください。"
+      }
+    }
+  }
+}

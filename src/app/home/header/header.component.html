@@ -1,0 +1,42 @@
+<header class="app-header">
+  <div class="logo-container">
+    <h1 class="logo select-none">
+      <a href="*" class="gm-gradient">GM</a
+      ><a href="*" class="helper-text">Helper</a>
+    </h1>
+  </div>
+
+  <div class="auth-and-language">
+    <div class="language-dropdown">
+      <button class="lang-btn" (click)="toggleLanguageMenu()">
+        <img src="assets/icons/languages.png" alt="Language" />
+      </button>
+
+      <ul *ngIf="showLanguageMenu" class="language-list">
+        <li (click)="selectLanguage('en')">English</li>
+        <li (click)="selectLanguage('fr')">Français</li>
+        <li (click)="selectLanguage('ko')">한국어</li>
+        <li (click)="selectLanguage('ua')">Українська</li>
+        <li (click)="selectLanguage('ru')">Русский</li>
+        <li (click)="selectLanguage('zh')">简中</li>
+        <li (click)="selectLanguage('ja')">日本</li>
+      </ul>
+    </div>
+
+    <div *ngIf="userIsAuthenticated; else authButtons" class="user-info">
+      <img [src]="userAvatarUrl" alt="Avatar" class="user-avatar" />
+      <span class="user-nickname">{{ userNickname }}</span>
+    </div>
+
+    <ng-template #authButtons>
+      <div class="auth-buttons">
+        <button class="login-btn" (click)="navigateToRegistration('login')">
+          Log In
+        </button>
+        <button class="register-btn" (click)="navigateToRegistration('signup')">
+          Sign Up
+        </button>
+      </div>
+    </ng-template>
+  </div>
+</header>

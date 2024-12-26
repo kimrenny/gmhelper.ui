@@ -1,0 +1,130 @@
+{
+  "HOME": {
+    "WELCOME": {
+      "TITLE": "Bienvenue !",
+      "DESCRIPTION": "Nous sommes ravis de vous voir dans notre application."
+    },
+    "ABOUT": {
+      "TITLE": "À propos de nous",
+      "DESCRIPTION": "L'application aide à résoudre des problèmes mathématiques.",
+      "SOURCELINK": "L'application est gratuite pour un usage personnel et open source au lien :"
+    },
+    "FEATURES": {
+      "TITLE": "Caractéristiques",
+      "FIRST": "Interface conviviale",
+      "SECOND": "Résolution rapide de problèmes",
+      "THIRD": "Support de nombreuses formes géométriques",
+      "FOURTH": "Résolution de nombreux problèmes algébriques"
+    },
+    "CONTACT": {
+      "TITLE": "Contacts",
+      "EMAIL": "Veuillez nous contacter par e-mail si vous avez des questions :"
+    },
+    "START": {
+      "TITLE": "Essayez notre application",
+      "DESCRIPTION": "La première tentative est gratuite*"
+    },
+    "NAVBAR": {
+      "WELCOME": "Bienvenue",
+      "ABOUT": "À propos",
+      "FEATURES": "Caractéristiques",
+      "CONTACT": "Contacts",
+      "START": "Commencer"
+    },
+    "LOREM": "Lorem Ipsum est simplement un faux texte de l'industrie de l'imprimerie et de la composition."
+  },
+  "CANVAS": {
+    "SETTINGS": {
+      "SELECT": {
+        "TITLE": "Sélectionnez un sujet",
+        "MATH": "Mathématiques",
+        "GEOMETRY": "Géométrie"
+      }
+    }
+  },
+  "REGISTER": {
+    "REGISTER": {
+      "TITLE": "S'inscrire"
+    },
+    "LOGIN": {
+      "TITLE": "Se connecter",
+      "INPUT": {
+        "PLACEHOLDER": {
+          "PASSWORD": "Entrez votre mot de passe"
+        }
+      }
+    },
+    "INPUT": {
+      "PLACEHOLDER": {
+        "USERNAME": "Entrez votre nom d'utilisateur",
+        "EMAIL": "Entrez votre adresse e-mail",
+        "PASSWORD": "Créez un mot de passe"
+      },
+      "PASSWORD": {
+        "HINT": {
+          "MINLENGTH": "Minimum 8 caractères",
+          "UPPERCASE": "Au moins une lettre majuscule",
+          "LOWERCASE": "Au moins une lettre minuscule",
+          "DIGIT": "Au moins un chiffre",
+          "SPECCHAR": "Au moins un caractère spécial",
+          "NOTCONTAINSEMAIL": "Le mot de passe ne doit pas contenir une adresse e-mail"
+        }
+      }
+    },
+    "BUTTON": {
+      "REGISTER": "S'inscrire",
+      "LOGIN": "Se connecter"
+    },
+    "LINK": {
+      "FORGOT_PASSWORD": "Mot de passe oublié ?"
+    },
+    "FORGOT_PASSWORD": {
+      "TITLE": "Récupérer votre mot de passe",
+      "INPUT": {
+        "EMAIL": "Adresse e-mail :",
+        "PLACEHOLDER": {
+          "EMAIL": "Entrez votre adresse e-mail"
+        }
+      },
+      "BUTTON": {
+        "SUBMIT": "Soumettre",
+        "CLOSE": "Fermer"
+      }
+    },
+    "ERRORS": {
+      "USERNAME": {
+        "REQUIRED": "Le nom d'utilisateur est requis.",
+        "INVALID": "Le nom d'utilisateur doit comporter entre 4 et 24 caractères, commencer par une lettre et contenir uniquement des lettres et des chiffres."
+      },
+      "EMAIL": {
+        "REQUIRED": "L'adresse e-mail est requise.",
+        "INVALID": "Format d'adresse e-mail invalide.",
+        "NOT_ALLOWED": "L'inscription n'est autorisée qu'avec des adresses e-mail provenant de fournisseurs approuvés."
+      },
+      "PASSWORD": {
+        "REQUIRED": "Le mot de passe est requis.",
+        "TOO_WEAK": "Le mot de passe est trop faible.",
+        "WEAK": "Le mot de passe est faible."
+      },
+      "INCORRECT_DATA": "Les données saisies sont incorrectes.",
+      "REGISTRATION": {
+        "SUCCESS": "Inscription réussie!",
+        "FAIL": "Échec de l'inscription. Veuillez réessayer."
+      },
+      "EMAILPASS": {
+        "REQUIRED": "L'adresse e-mail et le mot de passe sont requis pour se connecter."
+      },
+      "LOGIN": {
+        "SUCCESS": "Connexion réussie!",
+        "FAIL": "Échec de la connexion. Veuillez vérifier vos identifiants."
+      },
+      "RECOVER": {
+        "EMAIL": {
+          "REQUIRED": "Veuillez entrer votre adresse e-mail."
+        },
+        "SUCCESS": "E-mail de récupération du mot de passe envoyé.",
+        "FAIL": "Erreur d'envoi de l'e-mail de récupération. Veuillez réessayer."
+      }
+    }
+  }
+}

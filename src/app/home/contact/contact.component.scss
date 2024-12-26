@@ -1,0 +1,49 @@
+@keyframes gradientAnimationContact {
+  0% {
+    background-color: #000000; /* Начальный цвет фона */
+  }
+  50% {
+    background-color: #979797; /* Промежуточный цвет фона */
+  }
+  100% {
+    background-color: #000000; /* Конечный цвет фона */
+  }
+}
+
+@keyframes colorAnimationContact {
+  0% {
+    color: #ffffff; /* Начальный цвет текста */
+  }
+  50% {
+    color: #000000; /* Промежуточный цвет текста */
+  }
+  100% {
+    color: #ffffff; /* Конечный цвет текста */
+  }
+}
+
+.contact-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: #000000; /* Изначально темный фон */
+  animation: gradientAnimationContact 12s ease infinite;
+  height: 100vh;
+  text-align: center;
+  color: #ffffff; /* Изначально светлый текст */
+  overflow: hidden;
+  transition: background-color 1s ease;
+
+  h2,
+  p,
+  a {
+    position: relative;
+    font-family: "Courier New", Courier, monospace;
+    font-size: 2rem;
+    overflow: hidden;
+    white-space: nowrap;
+    color: inherit;
+    animation: colorAnimationContact 12s ease infinite;
+  }
+}

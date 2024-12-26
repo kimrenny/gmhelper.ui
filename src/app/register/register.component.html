@@ -1,0 +1,236 @@
+<div class="register-container">
+  <h1 *ngIf="isRegisterMode">{{ "REGISTER.REGISTER.TITLE" | translate }}</h1>
+  <h1 *ngIf="!isRegisterMode">{{ "REGISTER.LOGIN.TITLE" | translate }}</h1>
+  <form *ngIf="isRegisterMode" (ngSubmit)="register()">
+    <label for="username">Username:</label>
+    <input
+      type="text"
+      id="username"
+      [(ngModel)]="username"
+      (ngModelChange)="validateUsername()"
+      placeholder="{{ 'REGISTER.INPUT.PLACEHOLDER.USERNAME' | translate }}"
+      [ngClass]="{ 'error-input': usernameError }"
+      name="username"
+      autocomplete="username"
+    />
+    <div *ngIf="usernameError" class="error-text">
+      {{ usernameError | translate }}
+    </div>
+
+    <label for="email">Email:</label>
+    <input
+      type="email"
+      id="email"
+      [(ngModel)]="email"
+      (ngModelChange)="validateEmail()"
+      placeholder="{{ 'REGISTER.INPUT.PLACEHOLDER.EMAIL' | translate }}"
+      [ngClass]="{ 'error-input': emailError }"
+      name="email"
+      autocomplete="email"
+    />
+    <div *ngIf="emailError" class="error-text">
+      {{ emailError | translate }}
+    </div>
+
+    <label for="password">Password:</label>
+    <div class="password-container">
+      <input
+        type="password"
+        id="password"
+        [(ngModel)]="password"
+        (focus)="showPasswordHint = true"
+        (blur)="showPasswordHint = false"
+        (ngModelChange)="validatePassword()"
+        placeholder="{{ 'REGISTER.INPUT.PLACEHOLDER.PASSWORD' | translate }}"
+        [ngClass]="{ 'error-input': passwordError }"
+        name="password"
+        autocomplete="new-password"
+      />
+      <div *ngIf="passwordError" class="error-text">
+        {{ passwordError | translate }}
+      </div>
+
+      <div *ngIf="showPasswordHint" class="password-hint">
+        <ul>
+          <li [ngClass]="{ valid: passwordValidations.hasMinLength }">
+            {{ "REGISTER.INPUT.PASSWORD.HINT.MINLENGTH" | translate }}
+          </li>
+          <li [ngClass]="{ valid: passwordValidations.hasUpperCase }">
+            {{ "REGISTER.INPUT.PASSWORD.HINT.UPPERCASE" | translate }}
+          </li>
+          <li [ngClass]="{ valid: passwordValidations.hasLowerCase }">
+            {{ "REGISTER.INPUT.PASSWORD.HINT.LOWERCASE" | translate }}
+          </li>
+          <li [ngClass]="{ valid: passwordValidations.hasDigit }">
+            {{ "REGISTER.INPUT.PASSWORD.HINT.DIGIT" | translate }}
+          </li>
+          <li [ngClass]="{ valid: passwordValidations.hasSpecialChar }">
+            {{ "REGISTER.INPUT.PASSWORD.HINT.SPECCHAR" | translate }}
+          </li>
+          <li
+            [ngClass]="{
+              valid: passwordValidations.notContainsEmail,
+              unvalid: !passwordValidations.notContainsEmail
+            }"
+          >
+            {{ "REGISTER.INPUT.PASSWORD.HINT.NOTCONTAINSEMAIL" | translate }}
+          </li>
+        </ul>
+        <div class="arrow"></div>
+      </div>
+
+      <div class="password-strength">
+        <div
+          *ngFor="let bar of passwordStrengthBars; let i = index"
+          [ngClass]="{
+            'strength-bar': true,
+            'red-bar': passwordStrength === 1 && i === 0,
+            'orange-bar':
+              passwordStrength > 1 && passwordStrength < 5 && i <= 1,
+            'green-bar': passwordStrength === 5 && i <= 2
+          }"
+        ></div>
+      </div>
+    </div>
+
+    <div class="recaptcha-container" *ngIf="isRegisterMode && isCaptchaLoaded">
+      <ngx-recaptcha2
+        [siteKey]="'6LdH7qIqAAAAAGivcgrDnNnpaIj_GNRwy_CTu95X'"
+        [id]="'recaptcha-register'"
+        (success)="onCaptchaRegisterChange($event)"
+        [size]="'normal'"
+      ></ngx-recaptcha2>
+    </div>
+    <div *ngIf="registerCaptchaError" class="error-text">
+      {{ registerCaptchaError | translate }}
+    </div>
+
+    <div *ngIf="registerFeedbackMessage" class="feedback">
+      {{ registerFeedbackMessage | translate }}
+    </div>
+
+    <button type="submit" class="submit-btn">
+      {{ "REGISTER.BUTTON.REGISTER" | translate }}
+    </button>
+  </form>
+
+  <form *ngIf="!isRegisterMode" (ngSubmit)="login()">
+    <label for="email">Email:</label>
+    <input
+      type="email"
+      id="email"
+      [(ngModel)]="email"
+      (ngModelChange)="validateLoginEmail()"
+      placeholder="{{ 'REGISTER.INPUT.PLACEHOLDER.EMAIL' | translate }}"
+      [ngClass]="{ 'error-input': loginEmailError }"
+      name="email"
+      autocomplete="email"
+    />
+    <div *ngIf="loginEmailError" class="error-text">
+      {{ loginEmailError | translate }}
+    </div>
+
+    <label for="password">Password:</label>
+    <input
+      type="password"
+      id="password"
+      [(ngModel)]="password"
+      (ngModelChange)="validateLoginPassword()"
+      placeholder="{{
+        'REGISTER.LOGIN.INPUT.PLACEHOLDER.PASSWORD' | translate
+      }}"
+      [ngClass]="{ 'error-input': loginPasswordError }"
+      name="password"
+      autocomplete="current-password"
+    />
+
+    <div *ngIf="loginPasswordError" class="error-text">
+      {{ loginPasswordError | translate }}
+    </div>
+
+    <div class="recaptcha-container" *ngIf="!isRegisterMode && isCaptchaLoaded">
+      <ngx-recaptcha2
+        [siteKey]="'6LdH7qIqAAAAAGivcgrDnNnpaIj_GNRwy_CTu95X'"
+        [id]="'recaptcha-login'"
+        (success)="onCaptchaLoginChange($event)"
+        [size]="'normal'"
+      ></ngx-recaptcha2>
+    </div>
+    <div *ngIf="loginCaptchaError" class="error-text">
+      {{ loginCaptchaError | translate }}
+    </div>
+
+    <div *ngIf="loginFeedbackMessage" class="feedback">
+      {{ loginFeedbackMessage | translate }}
+    </div>
+
+    <button type="submit" class="submit-btn">
+      {{ "REGISTER.BUTTON.LOGIN" | translate }}
+    </button>
+  </form>
+
+  <div class="extra-options">
+    <button (click)="toggleFormMode()" class="login-btn">
+      {{
+        isRegisterMode
+          ? ("REGISTER.BUTTON.LOGIN" | translate)
+          : ("REGISTER.BUTTON.REGISTER" | translate)
+      }}
+    </button>
+    <button type="button" (click)="openForgotPassword()">
+      {{ "REGISTER.LINK.FORGOT_PASSWORD" | translate }}
+    </button>
+  </div>
+</div>
+
+<div class="reg-modal" *ngIf="showForgotPassword">
+  <div class="reg-modal-content">
+    <h2>{{ "REGISTER.FORGOT_PASSWORD.TITLE" | translate }}</h2>
+
+    <label for="recovery-email">{{
+      "REGISTER.FORGOT_PASSWORD.INPUT.EMAIL" | translate
+    }}</label>
+    <input
+      type="email"
+      id="recovery-email"
+      [(ngModel)]="recoveryEmail"
+      (ngModelChange)="validateRecoveryEmail()"
+      placeholder="{{
+        'REGISTER.FORGOT_PASSWORD.INPUT.PLACEHOLDER.EMAIL' | translate
+      }}"
+      [ngClass]="{ 'error-input': recoveryEmailError }"
+      name="email"
+      autocomplete="email"
+    />
+
+    <div *ngIf="recoveryEmailError" class="error-text">
+      {{ recoveryEmailError | translate }}
+    </div>
+
+    <div
+      class="recaptcha-container"
+      *ngIf="showForgotPassword && isCaptchaLoaded"
+    >
+      <ngx-recaptcha2
+        [siteKey]="'6LdH7qIqAAAAAGivcgrDnNnpaIj_GNRwy_CTu95X'"
+        [id]="'recaptcha-recovery'"
+        (success)="onCaptchaRecoveryChange($event)"
+        [size]="'normal'"
+      ></ngx-recaptcha2>
+    </div>
+    <div *ngIf="recoveryCaptchaError" class="error-text">
+      {{ recoveryCaptchaError | translate }}
+    </div>
+
+    <div *ngIf="recoveryFeedbackMessage" class="feedback">
+      {{ recoveryFeedbackMessage | translate }}
+    </div>
+
+    <button (click)="submitPasswordRecovery()" class="submit-btn">
+      {{ "REGISTER.FORGOT_PASSWORD.BUTTON.SUBMIT" | translate }}
+    </button>
+    <button (click)="closeForgotPassword()" class="close-btn">
+      {{ "REGISTER.FORGOT_PASSWORD.BUTTON.CLOSE" | translate }}
+    </button>
+  </div>
+</div>

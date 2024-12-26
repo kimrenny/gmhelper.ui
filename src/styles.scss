@@ -1,0 +1,16 @@
+html {
+  scroll-behavior: smooth;
+}
+
+html,
+body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  overflow: hidden;
+  overflow-y: hidden;
+}
+
+.select-none {
+  user-select: none;
+}
