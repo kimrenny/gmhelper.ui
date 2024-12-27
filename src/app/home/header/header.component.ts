@@ -21,6 +21,7 @@ export class HeaderComponent implements OnInit {
   userIsAuthenticated = false;
   userAvatarUrl = 'assets/icons/default-avatar.png';
   userNickname = 'Guest';
+  showUserMenu = false;
 
   constructor(
     private translate: TranslateService,
@@ -55,9 +56,14 @@ export class HeaderComponent implements OnInit {
   onDocumentClick(event: MouseEvent) {
     const targetElement = event.target as HTMLElement;
     const languageMenu = document.querySelector('.language-dropdown');
+    const userMenu = document.querySelector('.user-menu');
 
     if (languageMenu && !languageMenu.contains(targetElement)) {
       this.showLanguageMenu = false;
+    }
+
+    if (userMenu && !userMenu.contains(targetElement)) {
+      this.showUserMenu = false;
     }
   }
 
@@ -104,5 +110,14 @@ export class HeaderComponent implements OnInit {
           this.userAvatarUrl = 'assets/icons/default-avatar.png';
         },
       });
+  }
+
+  toggleUserMenu() {
+    this.showUserMenu = !this.showUserMenu;
+  }
+
+  openUserSettings() {
+    this.showUserMenu = false;
+    this.router.navigate(['/settings']);
   }
 }

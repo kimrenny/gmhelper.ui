@@ -24,8 +24,21 @@
     </div>
 
     <div *ngIf="userIsAuthenticated; else authButtons" class="user-info">
-      <img [src]="userAvatarUrl" alt="Avatar" class="user-avatar" />
-      <span class="user-nickname">{{ userNickname }}</span>
+      <div class="user-menu">
+        <div
+          class="user-header"
+          (click)="toggleUserMenu()"
+          [class.active]="showUserMenu"
+        >
+          <img [src]="userAvatarUrl" alt="Avatar" class="user-avatar" />
+          <span class="user-nickname">{{ userNickname }}</span>
+        </div>
+
+        <ul *ngIf="showUserMenu" class="user-menu-list">
+          <li (click)="openUserSettings()">Settings</li>
+          <li (click)="logout()">Logout</li>
+        </ul>
+      </div>
     </div>
 
     <ng-template #authButtons>

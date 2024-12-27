@@ -94,19 +94,73 @@
   .user-info {
     display: flex;
     align-items: center;
+    min-width: 50px;
+    max-width: 250px;
 
-    .user-avatar {
-      width: 30px;
-      height: 30px;
-      object-fit: cover;
-      border-radius: 50%;
-      margin-right: 10px;
-    }
+    .user-menu {
+      position: relative;
 
-    .user-nickname {
-      color: white;
-      font-size: 16px;
-      font-weight: 500;
+      .user-header {
+        display: flex;
+        align-items: center;
+        padding: 5px;
+        cursor: pointer;
+
+        .user-avatar {
+          width: 30px;
+          height: 30px;
+          object-fit: cover;
+          border-radius: 50%;
+          margin-right: 10px;
+          user-select: none;
+        }
+
+        .user-nickname {
+          color: white;
+          font-size: 18px;
+          font-weight: 500;
+          border-radius: 3px;
+          line-height: 1;
+          user-select: none;
+        }
+
+        &.active,
+        &:hover {
+          background-color: #333;
+          border-radius: 5px;
+        }
+      }
+
+      .user-menu-list {
+        position: absolute;
+        right: 0;
+        top: 50px;
+        background-color: #222;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        border: 1px solid #333;
+        z-index: 100;
+
+        li {
+          width: 125px;
+          height: 40px;
+          line-height: 40px;
+          font-size: 16px;
+          text-align: left;
+          padding-left: 15px;
+          padding-right: 15px;
+          cursor: pointer;
+          color: white;
+          transition: background-color 0.3s ease;
+          user-select: none;
+          white-space: nowrap;
+
+          &:hover {
+            background-color: #333;
+          }
+        }
+      }
     }
   }
 
