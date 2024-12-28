@@ -6,7 +6,7 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
-import { Router } from '@angular/router';
+import { Router, NavigationStart } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Component({
@@ -40,6 +40,13 @@ export class HeaderComponent implements OnInit {
     }
 
     this.checkAuthentication();
+
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationStart && event.url === '/') {
+        this.checkAuthentication();
+        this.showUserMenu = false;
+      }
+    });
   }
 
   toggleLanguageMenu() {
@@ -73,6 +80,7 @@ export class HeaderComponent implements OnInit {
 
   logout() {
     localStorage.removeItem('user');
+    localStorage.removeItem('authToken');
     this.userIsAuthenticated = false;
     this.userAvatarUrl = 'assets/icons/default-avatar.png';
     this.router.navigate(['/login']);
@@ -107,7 +115,9 @@ export class HeaderComponent implements OnInit {
         },
         error: (err) => {
           console.error('Error fetching user details:', err);
+          this.userIsAuthenticated = false;
           this.userAvatarUrl = 'assets/icons/default-avatar.png';
+          localStorage.removeItem('authToken');
         },
       });
   }

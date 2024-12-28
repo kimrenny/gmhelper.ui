@@ -420,7 +420,6 @@ export class RegisterComponent {
       .subscribe({
         next: (response: any) => {
           this.captchaLoginToken = '';
-          console.log('Login successful:', response);
           localStorage.setItem('authToken', response.token);
           this.loginFeedbackMessage = 'REGISTER.ERRORS.LOGIN.SUCCESS';
           this.clearMessageAfterDelay('login');
