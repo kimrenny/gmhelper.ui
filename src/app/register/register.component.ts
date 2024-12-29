@@ -53,6 +53,7 @@ export class RegisterComponent {
   recoveryCaptchaError: string = '';
 
   isCaptchaLoaded: boolean = false;
+  userIpAddress: string = '';
 
   constructor(
     private http: HttpClient,
@@ -66,6 +67,8 @@ export class RegisterComponent {
       this.formType = params['type'] || 'signup';
       this.isRegisterMode = this.formType === 'signup';
     });
+
+    this.getUserIpAddress();
   }
 
   ngAfterViewInit(): void {
@@ -73,6 +76,20 @@ export class RegisterComponent {
       this.isCaptchaLoaded = true;
       this.cdr.detectChanges();
     }, 500);
+  }
+
+  getUserIpAddress() {
+    this.http
+      .get<{ ip: string }>('https://api.ipify.org?format=json')
+      .subscribe({
+        next: (response) => {
+          this.userIpAddress = response.ip;
+        },
+        error: (error) => {
+          console.error('Error fetching IP address:', error);
+          this.userIpAddress = '';
+        },
+      });
   }
 
   toggleFormMode() {
@@ -353,6 +370,11 @@ export class RegisterComponent {
       username: this.username,
       email: this.email,
       password: this.password,
+      deviceInfo: {
+        userAgent: navigator.userAgent,
+        platform: navigator.platform,
+      },
+      ipAddress: this.userIpAddress,
       captchaToken: this.captchaRegisterToken,
     };
 
@@ -406,6 +428,7 @@ export class RegisterComponent {
         userAgent: navigator.userAgent,
         platform: navigator.platform,
       },
+      ipAddress: this.userIpAddress,
       captchaToken: this.captchaLoginToken,
     };
 
@@ -451,6 +474,11 @@ export class RegisterComponent {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     const body = {
       email: this.recoveryEmail,
+      deviceInfo: {
+        userAgent: navigator.userAgent,
+        platform: navigator.platform,
+      },
+      ipAddress: this.userIpAddress,
       captchaToken: this.captchaRecoveryToken,
     };
 
