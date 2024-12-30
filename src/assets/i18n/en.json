@@ -109,14 +109,24 @@
       "INCORRECT_DATA": "Entered data is incorrect.",
       "REGISTRATION": {
         "SUCCESS": "Registration successful!",
-        "FAIL": "Registration failed. Please try again."
+        "FAIL": {
+          "DATA": "Incorrect data. Check information and try again.",
+          "CAPTCHA": "The \"I'm not a robot\" check failed.",
+          "BANNED": "This account has been blocked.",
+          "UNKNOWN": "An unknown error occurred. Try again later."
+        }
       },
       "EMAILPASS": {
         "REQUIRED": "Email and password are required for login."
       },
       "LOGIN": {
         "SUCCESS": "Login successful!",
-        "FAIL": "Login failed. Please check your credentials."
+        "FAIL": {
+          "DATA": "Incorrect data. Check information and try again.",
+          "CAPTCHA": "The \"I'm not a robot\" check failed.",
+          "BANNED": "This account has been blocked.",
+          "UNKNOWN": "An unknown error occurred. Try again later."
+        }
       },
       "RECOVER": {
         "EMAIL": {

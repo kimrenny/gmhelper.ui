@@ -108,15 +108,25 @@
       },
       "INCORRECT_DATA": "Les données saisies sont incorrectes.",
       "REGISTRATION": {
-        "SUCCESS": "Inscription réussie!",
-        "FAIL": "Échec de l'inscription. Veuillez réessayer."
+        "SUCCESS": "Inscription réussie !",
+        "FAIL": {
+          "DATA": "Données incorrectes. Vérifiez les informations et réessayez.",
+          "CAPTCHA": "La vérification \"Je ne suis pas un robot\" a échoué.",
+          "BANNED": "Ce compte a été bloqué.",
+          "UNKNOWN": "Une erreur inconnue s'est produite. Réessayez plus tard."
+        }
       },
       "EMAILPASS": {
-        "REQUIRED": "L'adresse e-mail et le mot de passe sont requis pour se connecter."
+        "REQUIRED": "Un email et un mot de passe sont requis pour se connecter."
       },
       "LOGIN": {
-        "SUCCESS": "Connexion réussie!",
-        "FAIL": "Échec de la connexion. Veuillez vérifier vos identifiants."
+        "SUCCESS": "Connexion réussie !",
+        "FAIL": {
+          "DATA": "Données incorrectes. Vérifiez les informations et réessayez.",
+          "CAPTCHA": "La vérification \"Je ne suis pas un robot\" a échoué.",
+          "BANNED": "Ce compte a été bloqué.",
+          "UNKNOWN": "Une erreur inconnue s'est produite. Réessayez plus tard."
+        }
       },
       "RECOVER": {
         "EMAIL": {

@@ -109,14 +109,24 @@
       "INCORRECT_DATA": "输入的数据不正确。",
       "REGISTRATION": {
         "SUCCESS": "注册成功！",
-        "FAIL": "注册失败。请重试。"
+        "FAIL": {
+          "DATA": "数据不正确。检查信息后重试。",
+          "CAPTCHA": "\"我不是机器人\"验证失败。",
+          "BANNED": "此帐户已被封锁。",
+          "UNKNOWN": "发生未知错误。稍后再试。"
+        }
       },
       "EMAILPASS": {
         "REQUIRED": "登录需要电子邮件和密码。"
       },
       "LOGIN": {
         "SUCCESS": "登录成功！",
-        "FAIL": "登录失败。请检查您的凭据。"
+        "FAIL": {
+          "DATA": "数据不正确。检查信息后重试。",
+          "CAPTCHA": "\"我不是机器人\"验证失败。",
+          "BANNED": "此帐户已被封锁。",
+          "UNKNOWN": "发生未知错误。稍后再试。"
+        }
       },
       "RECOVER": {
         "EMAIL": {

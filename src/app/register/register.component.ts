@@ -398,7 +398,24 @@ export class RegisterComponent {
         },
         error: (error) => {
           console.error('Registration error:', error);
-          this.registerFeedbackMessage = 'REGISTER.ERRORS.REGISTRATION.FAIL';
+          switch (error) {
+            case 'Invalid data.':
+              this.registerFeedbackMessage =
+                'REGISTER.ERRORS.REGISTRATION.FAIL.DATA';
+              break;
+            case 'Invalid CAPTCHA token.':
+              this.registerFeedbackMessage =
+                'REGISTER.ERRORS.REGISTRATION.FAIL.CAPTCHA';
+              break;
+            case 'Violation of service rules. All user accounts have been blocked.':
+              this.registerFeedbackMessage =
+                'REGISTER.ERRORS.REGISTRATION.FAIL.BANNED';
+              break;
+            default:
+              this.registerFeedbackMessage =
+                'REGISTER.ERRORS.REGISTRATION.FAIL.UNKNOWN';
+              break;
+          }
           this.clearMessageAfterDelay('register');
         },
       });
@@ -452,7 +469,23 @@ export class RegisterComponent {
         },
         error: (error) => {
           console.error('Login error:', error);
-          this.loginFeedbackMessage = 'REGISTER.ERRORS.LOGIN.FAIL';
+          switch (error.error) {
+            case 'Invalid credentials.':
+              this.loginFeedbackMessage = 'REGISTER.ERRORS.LOGIN.FAIL.DATA';
+              break;
+            case 'Invalid CAPTCHA token.':
+              this.loginFeedbackMessage = 'REGISTER.ERRORS.LOGIN.FAIL.CAPTCHA';
+              break;
+            case 'User is banned.':
+              this.loginFeedbackMessage = 'REGISTER.ERRORS.LOGIN.FAIL.BANNED';
+              break;
+            case 'Suspicious activity detected. Accounts blocked.':
+              this.loginFeedbackMessage = 'REGISTER.ERRORS.LOGIN.FAIL.BANNED';
+              break;
+            default:
+              this.loginFeedbackMessage = 'REGISTER.ERRORS.LOGIN.FAIL.UNKNOWN';
+              break;
+          }
           this.clearMessageAfterDelay('login');
         },
       });
