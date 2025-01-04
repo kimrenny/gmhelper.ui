@@ -138,6 +138,7 @@
     }
   },
   "SETTINGS": {
+    "UNAUTHORIZED_MESSAGE": "У вас нет прав на просмотр этого содержимого.",
     "TITLE": "Настройки",
     "BUTTON": {
       "SETTINGS": "Настройки",

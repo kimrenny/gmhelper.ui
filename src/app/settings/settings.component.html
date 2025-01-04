@@ -1,5 +1,8 @@
 <div class="settings-container">
-  <div class="settings-content">
+  <div class="unauthorized-message" *ngIf="!isAuthorized">
+    {{ "SETTINGS.UNAUTHORIZED_MESSAGE" | translate }}
+  </div>
+  <div class="settings-content" [class.unauthorized]="!isAuthorized">
     <div class="settings-sidebar" [class.open]="menuOpen">
       <div class="settings-tabs">
         <button [class.active]="isSettingsActive" (click)="showSettings()">

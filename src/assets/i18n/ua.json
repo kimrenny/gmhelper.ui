@@ -138,6 +138,7 @@
     }
   },
   "SETTINGS": {
+    "UNAUTHORIZED_MESSAGE": "Ви не маєте прав на перегляд цього вмісту.",
     "TITLE": "Налаштування",
     "BUTTON": {
       "SETTINGS": "Налаштування",

@@ -121,12 +121,17 @@ export class HeaderComponent implements OnInit {
               this.userAvatarUrl = 'assets/icons/default-avatar.png';
               localStorage.removeItem('authToken');
               break;
-            case 'User not found':
+            case 'User not found.':
               this.userIsAuthenticated = false;
               this.userAvatarUrl = 'assets/icons/default-avatar.png';
               localStorage.removeItem('authToken');
               break;
-            case 'Invalid data':
+            case 'Invalid data.':
+              this.userIsAuthenticated = false;
+              this.userAvatarUrl = 'assets/icons/default-avatar.png';
+              localStorage.removeItem('authToken');
+              break;
+            case 'Invalid token.':
               this.userIsAuthenticated = false;
               this.userAvatarUrl = 'assets/icons/default-avatar.png';
               localStorage.removeItem('authToken');

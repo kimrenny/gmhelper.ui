@@ -138,6 +138,7 @@
     }
   },
   "SETTINGS": {
+    "UNAUTHORIZED_MESSAGE": "このコンテンツを表示する権限がありません。",
     "TITLE": "設定",
     "BUTTON": {
       "SETTINGS": "設定",

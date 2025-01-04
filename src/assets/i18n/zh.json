@@ -138,6 +138,7 @@
     }
   },
   "SETTINGS": {
+    "UNAUTHORIZED_MESSAGE": "您无权查看此内容。",
     "TITLE": "设置",
     "BUTTON": {
       "SETTINGS": "设置",

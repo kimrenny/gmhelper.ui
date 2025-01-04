@@ -21,11 +21,11 @@ export class SettingsComponent implements OnInit {
   settingsForm!: FormGroup;
   devices: any[] = [];
   showPassword: boolean = false;
-  isSettingsActive: boolean = true; // Управление активной вкладкой
+  isSettingsActive: boolean = true;
   selectedAvatar: File | null = null;
   menuOpen = false;
+  isAuthorized!: boolean;
 
-  // Переменные для хранения данных пользователя
   userNickname: string = '';
   userAvatarUrl: string = '';
 
@@ -45,13 +45,11 @@ export class SettingsComponent implements OnInit {
       avatar: [null],
     });
 
-    // Получаем информацию о пользователе
     this.getUserDetails();
     this.getLoggedDevices();
   }
 
-  // Функция для получения данных пользователя
-  getUserDetails() {
+  getUserDetails(attempt = 0) {
     const token = localStorage.getItem('authToken');
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`,
@@ -62,13 +60,52 @@ export class SettingsComponent implements OnInit {
         'https://localhost:7057/api/user/details',
         { headers }
       )
-      .subscribe((response) => {
-        this.userNickname = response.nickname; // Записываем никнейм пользователя
-        this.userAvatarUrl = response.avatarUrl; // Записываем URL аватара
-        this.settingsForm.patchValue({
-          nickname: response.nickname,
-          email: response.email,
-        });
+      .subscribe({
+        next: (response) => {
+          this.userNickname = response.nickname;
+          this.userAvatarUrl = response.avatarUrl;
+          this.isAuthorized = true;
+          this.settingsForm.patchValue({
+            nickname: response.nickname,
+            email: response.email,
+          });
+        },
+        error: (err) => {
+          console.error('Error fetching user details:', err);
+          switch (err.error) {
+            case 'User is blocked.':
+              this.isAuthorized = false;
+              this.userAvatarUrl = 'assets/icons/default-avatar.png';
+              localStorage.removeItem('authToken');
+              break;
+            case 'User not found.':
+              this.isAuthorized = false;
+              this.userAvatarUrl = 'assets/icons/default-avatar.png';
+              localStorage.removeItem('authToken');
+              break;
+            case 'Invalid data.':
+              this.isAuthorized = false;
+              this.userAvatarUrl = 'assets/icons/default-avatar.png';
+              localStorage.removeItem('authToken');
+              break;
+            case 'Invalid token.':
+              this.isAuthorized = false;
+              this.userAvatarUrl = 'assets/icons/default-avatar.png';
+              localStorage.removeItem('authToken');
+              break;
+            default:
+              this.isAuthorized = false;
+              this.userAvatarUrl = 'assets/icons/default-avatar.png';
+              console.error(
+                `Unknown error: ${err.error}. Attempt ${++attempt}`
+              );
+              if (attempt >= 3) {
+                break;
+              }
+              setTimeout(() => this.getUserDetails(attempt), 2500);
+              break;
+          }
+        },
       });
   }
 

@@ -138,6 +138,7 @@
     }
   },
   "SETTINGS": {
+    "UNAUTHORIZED_MESSAGE": "Vous n'êtes pas autorisé à voir ce contenu.",
     "TITLE": "Paramètres",
     "BUTTON": {
       "SETTINGS": "Paramètres",

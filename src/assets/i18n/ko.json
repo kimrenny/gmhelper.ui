@@ -138,6 +138,7 @@
     }
   },
   "SETTINGS": {
+    "UNAUTHORIZED_MESSAGE": "이 콘텐츠를 볼 권한이 없습니다.",
     "TITLE": "설정",
     "BUTTON": {
       "SETTINGS": "설정",

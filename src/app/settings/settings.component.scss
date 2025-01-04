@@ -8,6 +8,20 @@
   width: 100%;
   z-index: 10;
 
+  .unauthorized-message {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 24px;
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 20px;
+    border-radius: 10px;
+    z-index: 30;
+  }
+
   .settings-content {
     background-color: #333;
     width: 33%;
@@ -17,6 +31,11 @@
     color: white;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     position: relative;
+
+    &.unauthorized {
+      filter: blur(50px);
+      pointer-events: none;
+    }
 
     .settings-sidebar {
       position: absolute;

@@ -138,6 +138,7 @@
     }
   },
   "SETTINGS": {
+    "UNAUTHORIZED_MESSAGE": "You are not authorized to view this content.",
     "TITLE": "Settings",
     "BUTTON": {
       "SETTINGS": "Settings",
