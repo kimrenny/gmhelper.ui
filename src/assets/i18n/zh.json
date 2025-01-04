@@ -136,5 +136,25 @@
         "FAIL": "发送密码恢复电子邮件失败。请重试。"
       }
     }
+  },
+  "SETTINGS": {
+    "TITLE": "设置",
+    "BUTTON": {
+      "SETTINGS": "设置",
+      "DEVICEINFO": "登录设备"
+    },
+    "FORM": {
+      "NICKNAME": "用户名",
+      "EMAIL": "电子邮件",
+      "CURRENTPASSWORD": "输入当前密码",
+      "NEWPASSWORD": "输入新密码",
+      "CONFIRMNEWPASSWORD": "确认新密码"
+    },
+    "DEVICES": {
+      "TITLE": "已登录设备",
+      "ERROR": {
+        "NOTFOUND": "未找到设备。"
+      }
+    }
   }
 }

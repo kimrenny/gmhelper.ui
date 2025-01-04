@@ -1,1 +1,118 @@
-<p>settings works!</p>
+<div class="settings-container">
+  <div class="settings-content">
+    <div class="settings-sidebar" [class.open]="menuOpen">
+      <div class="settings-tabs">
+        <button [class.active]="isSettingsActive" (click)="showSettings()">
+          {{ "SETTINGS.BUTTON.SETTINGS" | translate }}
+        </button>
+        <button [class.active]="!isSettingsActive" (click)="showDevices()">
+          {{ "SETTINGS.BUTTON.DEVICEINFO" | translate }}
+        </button>
+      </div>
+    </div>
+
+    <button class="menu-toggle" (click)="toggleMenu()">☰</button>
+    <h2 class="settings-title">{{ "SETTINGS.TITLE" | translate }}</h2>
+
+    <div *ngIf="isSettingsActive">
+      <div class="user-info">
+        <img
+          [src]="userAvatarUrl || '../../assets/icons/default-avatar.png'"
+          alt="User Avatar"
+          class="user-avatar"
+        />
+        <h3>{{ userNickname }}</h3>
+      </div>
+
+      <form
+        (ngSubmit)="onSubmit()"
+        [formGroup]="settingsForm"
+        class="settings-form"
+      >
+        <div class="form-group">
+          <label for="nickname">{{
+            "SETTINGS.FORM.NICKNAME" | translate
+          }}</label>
+          <input
+            id="nickname"
+            formControlName="nickname"
+            type="text"
+            class="form-control"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="email">{{ "SETTINGS.FORM.EMAIL" | translate }}</label>
+          <input
+            id="email"
+            formControlName="email"
+            type="email"
+            class="form-control"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="currentPassword">{{
+            "SETTINGS.FORM.CURRENTPASSWORD" | translate
+          }}</label>
+          <input
+            id="currentPassword"
+            formControlName="currentPassword"
+            type="password"
+            class="form-control"
+            [type]="showPassword ? 'text' : 'password'"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="newPassword">{{
+            "SETTINGS.FORM.NEWPASSWORD" | translate
+          }}</label>
+          <input
+            id="newPassword"
+            formControlName="newPassword"
+            type="password"
+            class="form-control"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="confirmNewPassword">{{
+            "SETTINGS.FORM.CONFIRMNEWPASSWORD" | translate
+          }}</label>
+          <input
+            id="confirmNewPassword"
+            formControlName="confirmNewPassword"
+            type="password"
+            class="form-control"
+          />
+        </div>
+
+        <button
+          type="submit"
+          [disabled]="!settingsForm.valid"
+          class="btn-submit"
+        >
+          Save Changes
+        </button>
+      </form>
+    </div>
+
+    <div *ngIf="!isSettingsActive">
+      <div class="devices-section">
+        <h3>{{ "SETTINGS.DEVICES.TITLE" | translate }}</h3>
+        <ul *ngIf="devices?.length">
+          <li *ngFor="let device of devices">
+            <span
+              >{{ device.deviceName }} -
+              {{ device.lastUsed | date : "short" }}</span
+            >
+          </li>
+        </ul>
+        <p *ngIf="!devices?.length">
+          {{ "SETTINGS.DEVICES.ERROR.NOTFOUND" | translate }}
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

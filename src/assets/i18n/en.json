@@ -136,5 +136,25 @@
         "FAIL": "Error sending recovery email. Please try again."
       }
     }
+  },
+  "SETTINGS": {
+    "TITLE": "Settings",
+    "BUTTON": {
+      "SETTINGS": "Settings",
+      "DEVICEINFO": "Logged In Devices"
+    },
+    "FORM": {
+      "NICKNAME": "Username",
+      "EMAIL": "Email",
+      "CURRENTPASSWORD": "Enter Current Password",
+      "NEWPASSWORD": "Enter New Password",
+      "CONFIRMNEWPASSWORD": "Confirm New Password"
+    },
+    "DEVICES": {
+      "TITLE": "Logged In Devices",
+      "ERROR": {
+        "NOTFOUND": "Devices not found."
+      }
+    }
   }
 }

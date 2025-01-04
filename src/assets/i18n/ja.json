@@ -136,5 +136,25 @@
         "FAIL": "パスワードリカバリのメール送信エラー。もう一度お試しください。"
       }
     }
+  },
+  "SETTINGS": {
+    "TITLE": "設定",
+    "BUTTON": {
+      "SETTINGS": "設定",
+      "DEVICEINFO": "ログイン中のデバイス"
+    },
+    "FORM": {
+      "NICKNAME": "ユーザー名",
+      "EMAIL": "メール",
+      "CURRENTPASSWORD": "現在のパスワードを入力",
+      "NEWPASSWORD": "新しいパスワードを入力",
+      "CONFIRMNEWPASSWORD": "新しいパスワードを確認"
+    },
+    "DEVICES": {
+      "TITLE": "ログイン中のデバイス",
+      "ERROR": {
+        "NOTFOUND": "デバイスが見つかりません。"
+      }
+    }
   }
 }

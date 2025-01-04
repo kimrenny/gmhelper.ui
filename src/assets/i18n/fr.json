@@ -136,5 +136,25 @@
         "FAIL": "Erreur d'envoi de l'e-mail de récupération. Veuillez réessayer."
       }
     }
+  },
+  "SETTINGS": {
+    "TITLE": "Paramètres",
+    "BUTTON": {
+      "SETTINGS": "Paramètres",
+      "DEVICEINFO": "Appareils Connectés"
+    },
+    "FORM": {
+      "NICKNAME": "Nom d'utilisateur",
+      "EMAIL": "E-mail",
+      "CURRENTPASSWORD": "Entrez le mot de passe actuel",
+      "NEWPASSWORD": "Entrez un nouveau mot de passe",
+      "CONFIRMNEWPASSWORD": "Confirmez le nouveau mot de passe"
+    },
+    "DEVICES": {
+      "TITLE": "Appareils connectés",
+      "ERROR": {
+        "NOTFOUND": "Aucun appareil trouvé."
+      }
+    }
   }
 }
