@@ -94,7 +94,7 @@ export class HeaderComponent implements OnInit {
     }
   }
 
-  loadUserDetails(token: string) {
+  loadUserDetails(token: string, attempt: number = 0) {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`,
     });
@@ -115,9 +115,32 @@ export class HeaderComponent implements OnInit {
         },
         error: (err) => {
           console.error('Error fetching user details:', err);
-          this.userIsAuthenticated = false;
-          this.userAvatarUrl = 'assets/icons/default-avatar.png';
-          localStorage.removeItem('authToken');
+          switch (err.error) {
+            case 'User is blocked.':
+              this.userIsAuthenticated = false;
+              this.userAvatarUrl = 'assets/icons/default-avatar.png';
+              localStorage.removeItem('authToken');
+              break;
+            case 'User not found':
+              this.userIsAuthenticated = false;
+              this.userAvatarUrl = 'assets/icons/default-avatar.png';
+              localStorage.removeItem('authToken');
+              break;
+            case 'Invalid data':
+              this.userIsAuthenticated = false;
+              this.userAvatarUrl = 'assets/icons/default-avatar.png';
+              localStorage.removeItem('authToken');
+              break;
+            default:
+              console.error(
+                `Unknown error: ${err.error}. Attempt ${++attempt}`
+              );
+              if (attempt >= 3) {
+                break;
+              }
+              setTimeout(() => this.loadUserDetails(token, attempt), 2500);
+              break;
+          }
         },
       });
   }
