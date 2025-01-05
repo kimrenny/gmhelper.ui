@@ -109,7 +109,6 @@ export class SettingsComponent implements OnInit {
       });
   }
 
-  // Получаем информацию о устройствах
   getLoggedDevices() {
     const token = localStorage.getItem('authToken');
     const headers = new HttpHeaders({
@@ -118,8 +117,18 @@ export class SettingsComponent implements OnInit {
 
     this.http
       .get<any[]>('https://localhost:7057/api/user/devices', { headers })
-      .subscribe((devices) => {
-        this.devices = devices;
+      .subscribe({
+        next: (devices) => {
+          if (Array.isArray(devices) && devices.length > 0) {
+            console.log(devices);
+            this.devices = devices;
+          } else {
+            console.log('No devices found or invalid data structure.');
+          }
+        },
+        error: (err) => {
+          console.error('Error fetching devices:', err);
+        },
       });
   }
 

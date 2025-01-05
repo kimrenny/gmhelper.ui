@@ -337,7 +337,6 @@ export class RegisterComponent {
   }
 
   openForgotPassword() {
-    console.log('Open Forgot Password form');
     this.showForgotPassword = true;
     this.cdr.detectChanges();
   }
@@ -378,18 +377,11 @@ export class RegisterComponent {
       captchaToken: this.captchaRegisterToken,
     };
 
-    console.log('Register Request:', {
-      url: 'https://localhost:7057/api/user/register',
-      headers,
-      body,
-    });
-
     this.http
       .post('https://localhost:7057/api/user/register', body, { headers })
       .subscribe({
         next: (response) => {
           this.captchaRegisterToken = '';
-          console.log('Registration successful:', response);
           this.username = '';
           this.email = '';
           this.password = '';
@@ -448,12 +440,6 @@ export class RegisterComponent {
       ipAddress: this.userIpAddress,
       captchaToken: this.captchaLoginToken,
     };
-
-    console.log('Login Request:', {
-      url: 'https://localhost:7057/api/user/login',
-      headers,
-      body,
-    });
 
     this.http
       .post('https://localhost:7057/api/user/login', body, { headers })

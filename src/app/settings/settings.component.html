@@ -111,8 +111,8 @@
         <ul *ngIf="devices?.length">
           <li *ngFor="let device of devices">
             <span
-              >{{ device.deviceName }} -
-              {{ device.lastUsed | date : "short" }}</span
+              >{{ device.ipAddress }} - {{ device.platform }} -
+              {{ device.userAgent }}</span
             >
           </li>
         </ul>
