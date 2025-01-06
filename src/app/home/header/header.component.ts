@@ -8,6 +8,7 @@ import { CommonModule } from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
 import { Router, NavigationStart } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-header',
@@ -81,6 +82,7 @@ export class HeaderComponent implements OnInit {
   logout() {
     localStorage.removeItem('user');
     localStorage.removeItem('authToken');
+    localStorage.removeItem('refreshToken');
     this.userIsAuthenticated = false;
     this.userAvatarUrl = 'assets/icons/default-avatar.png';
     this.router.navigate(['/login']);
@@ -88,9 +90,49 @@ export class HeaderComponent implements OnInit {
 
   checkAuthentication() {
     const authToken = localStorage.getItem('authToken');
+    const refreshToken = localStorage.getItem('refreshToken');
     if (authToken) {
+      const isTokenExpired = this.isTokenExpired(authToken);
+      if (isTokenExpired && refreshToken) {
+        this.refreshToken(refreshToken).then(() => {
+          this.loadUserDetails(localStorage.getItem('authToken')!);
+        });
+      } else {
+        this.userIsAuthenticated = true;
+        this.loadUserDetails(authToken);
+      }
+    }
+  }
+
+  isTokenExpired(token: string) {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    const exp = payload.exp * 1000;
+    return Date.now() >= exp;
+  }
+
+  async refreshToken(refreshToken: string, attempt: number = 0) {
+    try {
+      console.log('Refreshing token with refresh token:', refreshToken);
+      const response: any = await firstValueFrom(
+        this.http.post<{ accessToken: string }>(
+          'https://localhost:7057/api/user/refresh-token',
+          refreshToken,
+          {
+            headers: { 'Content-Type': 'application/json' },
+          }
+        )
+      );
+      console.log('Token refreshed:', response.accessToken);
+      localStorage.setItem('authToken', response.accessToken);
       this.userIsAuthenticated = true;
-      this.loadUserDetails(authToken);
+    } catch (error) {
+      console.error('Failed to refresh token:', error);
+      console.error(`Unknown error: ${error}. Attempt ${++attempt}`);
+      if (attempt >= 3) {
+        this.logout();
+        return;
+      }
+      setTimeout(() => this.refreshToken(refreshToken, attempt), 2500);
     }
   }
 
@@ -117,24 +159,10 @@ export class HeaderComponent implements OnInit {
           console.error('Error fetching user details:', err);
           switch (err.error) {
             case 'User is blocked.':
-              this.userIsAuthenticated = false;
-              this.userAvatarUrl = 'assets/icons/default-avatar.png';
-              localStorage.removeItem('authToken');
-              break;
             case 'User not found.':
-              this.userIsAuthenticated = false;
-              this.userAvatarUrl = 'assets/icons/default-avatar.png';
-              localStorage.removeItem('authToken');
-              break;
             case 'Invalid data.':
-              this.userIsAuthenticated = false;
-              this.userAvatarUrl = 'assets/icons/default-avatar.png';
-              localStorage.removeItem('authToken');
-              break;
             case 'Invalid token.':
-              this.userIsAuthenticated = false;
-              this.userAvatarUrl = 'assets/icons/default-avatar.png';
-              localStorage.removeItem('authToken');
+              this.logout();
               break;
             default:
               console.error(

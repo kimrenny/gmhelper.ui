@@ -41,6 +41,7 @@
             formControlName="nickname"
             type="text"
             class="form-control"
+            autocomplete="off"
           />
         </div>
 
@@ -51,7 +52,7 @@
             formControlName="email"
             type="email"
             class="form-control"
-            autocomplete="email"
+            autocomplete="off"
           />
         </div>
 
@@ -109,11 +110,21 @@
       <div class="devices-section">
         <h3>{{ "SETTINGS.DEVICES.TITLE" | translate }}</h3>
         <ul *ngIf="devices?.length">
-          <li *ngFor="let device of devices">
-            <span
-              >{{ device.ipAddress }} - {{ device.platform }} -
-              {{ device.userAgent }}</span
-            >
+          <li *ngFor="let device of devices" class="device-item">
+            <div class="device-info">
+              <span class="authorization-date">{{
+                device.authorizationDate | date : "d MMM yyyy, h:mm a"
+              }}</span>
+              <span class="device-details"
+                ><strong>IP:</strong> {{ device.ipAddress }} -
+                <strong>Platform:</strong> {{ device.platform }} -
+                <strong>User-Agent:</strong> {{ device.userAgent }}</span
+              >
+            </div>
+            <button class="delete-button" (click)="deactivateDevice(device)">
+              <i class="fa fa-ban"></i>
+              {{ "SETTINGS.DEVICES.REMOVE" | translate }}
+            </button>
           </li>
         </ul>
         <p *ngIf="!devices?.length">

@@ -178,4 +178,36 @@ export class SettingsComponent implements OnInit {
         );
     }
   }
+
+  deactivateDevice(device: any) {
+    const token = localStorage.getItem('authToken');
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+    });
+
+    const uniqueDeviceId = `${device.ipAddress}-${device.authorizationDate}`;
+
+    this.http
+      .patch(
+        `https://localhost:7057/api/user/devices/deactivate`,
+        { uniqueDeviceId },
+        { headers }
+      )
+      .subscribe({
+        next: () => {
+          console.log('Device deactivated successfully.');
+          const targetDevice = this.devices.find(
+            (d) =>
+              d.ipAddress === device.ipAddress &&
+              d.authorizationDate === device.authorizationDate
+          );
+          if (targetDevice) {
+            targetDevice.isActive = false;
+          }
+        },
+        error: (err) => {
+          console.error('Error deactivating device:', err);
+        },
+      });
+  }
 }
