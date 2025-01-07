@@ -7,7 +7,11 @@ import {
 import { CommonModule } from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
 import { Router, NavigationStart } from '@angular/router';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpErrorResponse,
+  HttpHeaders,
+} from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 
 @Component({
@@ -92,31 +96,34 @@ export class HeaderComponent implements OnInit {
     const authToken = localStorage.getItem('authToken');
     const refreshToken = localStorage.getItem('refreshToken');
     if (authToken) {
-      const isTokenExpired = this.isTokenExpired(authToken);
-      if (isTokenExpired && refreshToken) {
+      const isTokenAboutToExpire = this.isTokenExpired(authToken);
+      if (isTokenAboutToExpire && refreshToken) {
         this.refreshToken(refreshToken).then(() => {
           this.loadUserDetails(localStorage.getItem('authToken')!);
         });
-      } else {
+      } else if (!isTokenAboutToExpire) {
         this.userIsAuthenticated = true;
         this.loadUserDetails(authToken);
+      } else {
+        this.logout();
       }
     }
   }
 
-  isTokenExpired(token: string) {
+  isTokenExpired(token: string, bufferTime: number = 5 * 60 * 1000): boolean {
     const payload = JSON.parse(atob(token.split('.')[1]));
     const exp = payload.exp * 1000;
-    return Date.now() >= exp;
+    console.log('Token expiration time:', exp, 'Current time:', Date.now());
+    return Date.now() >= exp - bufferTime;
   }
 
   async refreshToken(refreshToken: string, attempt: number = 0) {
     try {
       console.log('Refreshing token with refresh token:', refreshToken);
-      const response: any = await firstValueFrom(
-        this.http.post<{ accessToken: string }>(
+      const response = await firstValueFrom(
+        this.http.post<{ accessToken: string; refreshToken: string }>(
           'https://localhost:7057/api/user/refresh-token',
-          refreshToken,
+          JSON.stringify({ refreshToken }),
           {
             headers: { 'Content-Type': 'application/json' },
           }
@@ -124,10 +131,16 @@ export class HeaderComponent implements OnInit {
       );
       console.log('Token refreshed:', response.accessToken);
       localStorage.setItem('authToken', response.accessToken);
+      localStorage.setItem('refreshToken', response.refreshToken);
       this.userIsAuthenticated = true;
     } catch (error) {
-      console.error('Failed to refresh token:', error);
-      console.error(`Unknown error: ${error}. Attempt ${++attempt}`);
+      if (error instanceof HttpErrorResponse) {
+        console.error('HTTP error:', error.message);
+      } else {
+        console.error('Unexpected error:', error);
+      }
+      console.error(`Attempt ${++attempt}`);
+
       if (attempt >= 3) {
         this.logout();
         return;

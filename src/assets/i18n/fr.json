@@ -125,7 +125,8 @@
           "DATA": "Données incorrectes. Vérifiez les informations et réessayez.",
           "CAPTCHA": "La vérification \"Je ne suis pas un robot\" a échoué.",
           "BANNED": "Ce compte a été bloqué.",
-          "UNKNOWN": "Une erreur inconnue s'est produite. Réessayez plus tard."
+          "UNKNOWN": "Une erreur inconnue s'est produite. Réessayez plus tard.",
+          "USERNOTFOUND": "Utilisateur non trouvé. Vérifiez les informations et réessayez."
         }
       },
       "RECOVER": {

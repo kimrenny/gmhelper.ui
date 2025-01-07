@@ -446,7 +446,9 @@ export class RegisterComponent {
       .subscribe({
         next: (response: any) => {
           this.captchaLoginToken = '';
-          localStorage.setItem('authToken', response.token);
+          console.log('login response:', response);
+          localStorage.setItem('authToken', response.accessToken);
+          localStorage.setItem('refreshToken', response.refreshToken);
           this.loginFeedbackMessage = 'REGISTER.ERRORS.LOGIN.SUCCESS';
           this.clearMessageAfterDelay('login');
           setTimeout(() => {
@@ -467,6 +469,10 @@ export class RegisterComponent {
               break;
             case 'Suspicious activity detected. Accounts blocked.':
               this.loginFeedbackMessage = 'REGISTER.ERRORS.LOGIN.FAIL.BANNED';
+              break;
+            case 'User not found.':
+              this.loginFeedbackMessage =
+                'REGISTER.ERRORS.LOGIN.FAIL.USERNOTFOUND';
               break;
             default:
               this.loginFeedbackMessage = 'REGISTER.ERRORS.LOGIN.FAIL.UNKNOWN';
