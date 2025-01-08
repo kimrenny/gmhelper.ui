@@ -162,9 +162,10 @@ export class HeaderComponent implements OnInit {
       .subscribe({
         next: (response) => {
           this.userNickname = response.nickname;
-
-          const avatarUrl = URL.createObjectURL(response.avatar);
-          this.userAvatarUrl = avatarUrl;
+          if (response.avatar != null) {
+            const avatarUrl = `data:image/jpeg;base64,${response.avatar}`;
+            this.userAvatarUrl = avatarUrl;
+          }
 
           this.cdr.detectChanges();
         },

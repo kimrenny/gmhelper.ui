@@ -28,6 +28,7 @@ export class SettingsComponent implements OnInit {
 
   userNickname: string = '';
   userAvatarUrl: string = '';
+  userAvatarUpload: string = '';
 
   constructor(
     private fb: FormBuilder,
@@ -56,14 +57,20 @@ export class SettingsComponent implements OnInit {
     });
 
     this.http
-      .get<{ nickname: string; email: string; avatarUrl: string }>(
+      .get<{ nickname: string; email: string; avatar: string }>(
         'https://localhost:7057/api/user/details',
         { headers }
       )
       .subscribe({
         next: (response) => {
+          console.log(response);
           this.userNickname = response.nickname;
-          this.userAvatarUrl = response.avatarUrl;
+          if (response.avatar) {
+            this.userAvatarUrl = `data:image/jpeg;base64,${response.avatar}`;
+          } else {
+            this.userAvatarUrl = 'assets/icons/default-avatar.png';
+          }
+
           this.isAuthorized = true;
           this.settingsForm.patchValue({
             nickname: response.nickname,
@@ -177,6 +184,63 @@ export class SettingsComponent implements OnInit {
           }
         );
     }
+  }
+
+  onAvatarSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+      const file = input.files[0];
+
+      if (file.size > 1024 * 1024) {
+        console.error('Avatar size exceeds 1MB.');
+        alert('Avatar size must be less than 1MB.');
+        return;
+      }
+
+      this.selectedAvatar = file;
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.userAvatarUpload = reader.result as string;
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  uploadAvatar(): void {
+    if (!this.selectedAvatar) {
+      alert('Please select an avatar to upload.');
+      return;
+    }
+
+    const token = localStorage.getItem('authToken');
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+    });
+
+    const formData = new FormData();
+    formData.append('avatar', this.selectedAvatar);
+
+    this.http
+      .post('https://localhost:7057/api/user/upload-avatar', formData, {
+        headers,
+      })
+      .subscribe({
+        next: () => {
+          console.log('Avatar uploaded successfully.');
+          alert('Avatar uploaded successfully.');
+          this.selectedAvatar = null;
+          this.getUserDetails();
+        },
+        error: (err) => {
+          console.error('Error uploading avatar:', err);
+          alert('Failed to upload avatar.');
+        },
+      });
+  }
+
+  clearAvatar(): void {
+    this.selectedAvatar = null;
+    this.userAvatarUpload = 'assets/icons/default-avatar.png';
   }
 
   deactivateDevice(device: any) {

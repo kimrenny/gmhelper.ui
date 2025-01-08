@@ -7,6 +7,7 @@
   background-color: rgba(0, 0, 0, 0.8);
   width: 100%;
   z-index: 10;
+  margin-top: 25px;
 
   .unauthorized-message {
     position: absolute;
@@ -145,6 +146,80 @@
           width: 100%;
         }
 
+        .avatar-upload-section {
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+
+          .avatar-upload-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
+            .avatar-preview {
+              width: 50px;
+              height: 50px;
+              border-radius: 50%;
+              object-fit: cover;
+            }
+
+            .file-input {
+              display: none;
+            }
+
+            .file-upload,
+            .btn-clear {
+              padding: 5px 10px;
+              font-size: 14px;
+              cursor: pointer;
+              background-color: #007bff;
+              color: white;
+              border: none;
+              border-radius: 5px;
+              text-align: center;
+              transition: background-color 0.3s ease;
+              display: inline-flex;
+              align-items: center;
+              justify-content: center;
+
+              &:hover {
+                background-color: #006bdd;
+              }
+            }
+
+            .file-upload {
+              margin-top: 5px;
+            }
+
+            .btn-clear {
+              width: 120px;
+              margin-top: 0;
+            }
+          }
+
+          .btn-avatar-container {
+            display: flex;
+            align-items: center;
+
+            .btn-upload {
+              padding: 5px 10px;
+              font-size: 14px;
+              cursor: pointer;
+              background-color: #007bff;
+              color: white;
+              border: none;
+              border-radius: 5px;
+              flex: 1;
+              transition: background-color 0.3s ease;
+              margin-top: 10px;
+
+              &:hover {
+                background-color: #006bdd;
+              }
+            }
+          }
+        }
+
         .form-control {
           width: 100%;
           max-width: 580px;
@@ -177,9 +252,10 @@
     }
 
     .devices-section {
+      margin-top: 5px;
       min-height: 400px;
-      height: 640px;
-      max-height: 640px;
+      height: 770px;
+      max-height: 770px;
       display: flex;
       flex-direction: column;
       gap: 0;
