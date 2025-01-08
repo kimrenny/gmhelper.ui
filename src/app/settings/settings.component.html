@@ -61,7 +61,7 @@
             </div>
             <div class="btn-avatar-container">
               <button type="button" (click)="uploadAvatar()" class="btn-upload">
-                {{ "SETTINGS.BUTTON.UPLOAD_AVATAR " | translate }}
+                {{ "SETTINGS.BUTTON.UPLOAD_AVATAR" | translate }}
               </button>
             </div>
           </div>
@@ -135,7 +135,7 @@
           [disabled]="!settingsForm.valid"
           class="btn-submit"
         >
-          Save Changes
+          {{ "SETTINGS.BUTTON.CONFIRM" | translate }}
         </button>
       </form>
     </div>

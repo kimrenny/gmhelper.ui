@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -30,9 +30,23 @@ export class SettingsComponent implements OnInit {
   userAvatarUrl: string = '';
   userAvatarUpload: string = '';
 
+  passwordStrength: number = 0;
+  passwordValidations = {
+    hasMinLength: false,
+    hasUpperCase: false,
+    hasLowerCase: false,
+    hasDigit: false,
+    hasSpecialChar: false,
+    notContainsEmail: true,
+  };
+
+  changePasswordError: string = '';
+  changeEmailError: string = '';
+
   constructor(
     private fb: FormBuilder,
     private http: HttpClient,
+    private cdr: ChangeDetectorRef,
     private router: Router
   ) {}
 
@@ -63,7 +77,6 @@ export class SettingsComponent implements OnInit {
       )
       .subscribe({
         next: (response) => {
-          console.log(response);
           this.userNickname = response.nickname;
           if (response.avatar) {
             this.userAvatarUrl = `data:image/jpeg;base64,${response.avatar}`;
@@ -109,7 +122,7 @@ export class SettingsComponent implements OnInit {
               if (attempt >= 3) {
                 break;
               }
-              setTimeout(() => this.getUserDetails(attempt), 2500);
+              setTimeout(() => this.getUserDetails(attempt), 5000);
               break;
           }
         },
@@ -127,7 +140,6 @@ export class SettingsComponent implements OnInit {
       .subscribe({
         next: (devices) => {
           if (Array.isArray(devices) && devices.length > 0) {
-            console.log(devices);
             this.devices = devices;
           } else {
             console.log('No devices found or invalid data structure.');
@@ -153,36 +165,78 @@ export class SettingsComponent implements OnInit {
 
   onSubmit() {
     if (this.settingsForm.valid) {
-      const { nickname, email, currentPassword, newPassword } =
-        this.settingsForm.value;
+      const {
+        nickname,
+        email,
+        currentPassword,
+        newPassword,
+        confirmNewPassword,
+      } = this.settingsForm.value;
+
       const token = localStorage.getItem('authToken');
       const headers = new HttpHeaders({
         Authorization: `Bearer ${token}`,
       });
 
+      if (!nickname && !email && !newPassword) {
+        alert('Enter at least one field for update.');
+        return;
+      }
+
+      if (!this.validateEmail(email)) {
+        console.error('Error during validate email.');
+        return;
+      }
+
+      if (newPassword) {
+        if (!currentPassword) {
+          alert('For changing password enter current password');
+          return;
+        }
+
+        if (newPassword !== confirmNewPassword) {
+          alert("New password and confirm doesn't match");
+          return;
+        }
+      }
+
+      if (!this.validatePassword(newPassword, email, nickname)) {
+        console.error('Error during validate password.');
+        return;
+      }
+
       const formData = new FormData();
-      formData.append('nickname', nickname);
-      formData.append('email', email);
+
+      if (nickname) {
+        formData.append('nickname', nickname);
+      }
+
+      if (email) {
+        formData.append('email', email);
+      }
+
       if (currentPassword) {
         formData.append('currentPassword', currentPassword);
       }
+
       if (newPassword) {
         formData.append('newPassword', newPassword);
-      }
-      if (this.selectedAvatar) {
-        formData.append('avatar', this.selectedAvatar);
       }
 
       this.http
         .put('https://localhost:7057/api/user/update', formData, { headers })
-        .subscribe(
-          (response) => {
-            console.log('User settings updated successfully.');
+        .subscribe({
+          next: () => {
+            this.getUserDetails();
+            this.cdr.detectChanges();
+            console.log('Data updated successfully.');
           },
-          (error) => {
-            console.error('Error updating settings: ', error);
-          }
-        );
+          error: (err) => {
+            console.error('Error updating data:', err);
+          },
+        });
+    } else {
+      alert('Form has filled incorrectly.');
     }
   }
 
@@ -240,7 +294,7 @@ export class SettingsComponent implements OnInit {
     this.userAvatarUpload = 'assets/icons/default-avatar.png';
   }
 
-  deactivateDevice(device: any) {
+  async deactivateDevice(device: any) {
     const token = localStorage.getItem('authToken');
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`,
@@ -270,5 +324,123 @@ export class SettingsComponent implements OnInit {
           console.error('Error deactivating device:', err);
         },
       });
+  }
+
+  validateEmail(email: string): boolean {
+    const emailPattern = /^[a-zA-z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+    const allowedDomains = [
+      'gmail.com',
+      'yahoo.com',
+      'outlook.com',
+      'hotmail.com',
+      'icloud.com',
+      'orange.fr',
+      'sfr.fr',
+      'laposte.net',
+      'free.fr',
+      'yahoo.co.jp',
+      'docomo.ne.jp',
+      'au.com',
+      'ezweb.ne.jp',
+      'softbank.ne.jp',
+      'naver.com',
+      'daum.net',
+      'hanmail.net',
+      'ukr.net',
+      'meta.ua',
+      'i.ua',
+      'email.ua',
+      'qq.com',
+      '126.com',
+      '163.com',
+      'sina.com',
+      'sohu.com',
+      'btinternet.com',
+      'virginmedia.com',
+      'rogers.com',
+      'shaw.ca',
+    ];
+    if (!email) {
+      this.changeEmailError = 'REGISTER.ERRORS.EMAIL.REQUIRED';
+      return false;
+    } else if (!emailPattern.test(email)) {
+      this.changeEmailError = 'REGISTER.ERRORS.EMAIL.INVALID';
+      return false;
+    } else {
+      const domain = email.split('@')[1];
+      if (!allowedDomains.includes(domain)) {
+        this.changeEmailError = 'REGISTER.ERRORS.EMAIL.NOT_ALLOWED';
+        return false;
+      } else {
+        this.changeEmailError = '';
+        return true;
+      }
+    }
+  }
+
+  validatePassword(password: string, email: string, username: string): boolean {
+    if (!password) {
+      this.changePasswordError = '';
+      return true;
+    }
+    this.passwordStrength = this.calculatePasswordStrength(
+      password,
+      email,
+      username
+    );
+    if (!password) {
+      this.changePasswordError = 'REGISTER.ERRORS.PASSWORD.REQUIRED';
+      this.cdr.detectChanges();
+      return false;
+    } else if (this.passwordStrength < 3) {
+      this.changePasswordError = 'REGISTER.ERRORS.PASSWORD.TOO_WEAK';
+      this.cdr.detectChanges();
+      return false;
+    } else if (this.passwordStrength < 5) {
+      this.changePasswordError = 'REGISTER.ERRORS.PASSWORD.WEAK';
+      this.cdr.detectChanges();
+      return false;
+    } else {
+      this.changePasswordError = '';
+      this.cdr.detectChanges();
+      return true;
+    }
+  }
+
+  calculatePasswordStrength(
+    password: string,
+    email: string,
+    nickname: string
+  ): number {
+    let strength = 0;
+
+    this.passwordValidations.hasMinLength = password.length >= 8;
+    this.passwordValidations.hasUpperCase = /[A-Z]/.test(password);
+    this.passwordValidations.hasLowerCase = /[a-z]/.test(password);
+    this.passwordValidations.hasDigit = /[0-9]/.test(password);
+    this.passwordValidations.hasSpecialChar = /[^a-zA-Z0-9]/.test(password);
+
+    const emailPart = email.split('@')[0].toLowerCase();
+    const fullEmail = email.toLowerCase();
+    const username = nickname.toLowerCase();
+
+    if (
+      (password.toLowerCase().includes(emailPart) && emailPart.length > 0) ||
+      (password.toLowerCase().includes(fullEmail) && fullEmail.length > 0) ||
+      (password.toLowerCase().includes(username) && username.length > 0)
+    ) {
+      this.passwordValidations.notContainsEmail = false;
+      return 1;
+    } else {
+      this.passwordValidations.notContainsEmail = true;
+    }
+
+    if (this.passwordValidations.hasMinLength) strength++;
+    if (this.passwordValidations.hasUpperCase) strength++;
+    if (this.passwordValidations.hasLowerCase) strength++;
+    if (this.passwordValidations.hasDigit) strength++;
+    if (this.passwordValidations.hasSpecialChar) strength++;
+
+    return Math.min(strength, 5);
   }
 }

@@ -139,23 +139,29 @@
     }
   },
   "SETTINGS": {
-    "UNAUTHORIZED_MESSAGE": "You are not authorized to view this content.",
+    "UNAUTHORIZED_MESSAGE": "You don’t have permission to access this content.",
     "TITLE": "Settings",
     "BUTTON": {
       "SETTINGS": "Settings",
-      "DEVICEINFO": "Logged In Devices"
+      "DEVICEINFO": "Logged In Devices",
+      "CONFIRM": "Save changes",
+      "CLEAR_AVATAR": "Remove",
+      "UPLOAD_AVATAR": "Save avatar"
     },
     "FORM": {
+      "AVATAR": "Avatar",
       "NICKNAME": "Username",
       "EMAIL": "Email",
       "CURRENTPASSWORD": "Enter Current Password",
       "NEWPASSWORD": "Enter New Password",
-      "CONFIRMNEWPASSWORD": "Confirm New Password"
+      "CONFIRMNEWPASSWORD": "Confirm New Password",
+      "AVATAR_UPLOAD": "Click to select an avatar"
     },
     "DEVICES": {
+      "REMOVE": "Disable",
       "TITLE": "Logged In Devices",
       "ERROR": {
-        "NOTFOUND": "Devices not found."
+        "NOTFOUND": "No devices found."
       }
     }
   }

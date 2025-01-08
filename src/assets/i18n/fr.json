@@ -139,20 +139,26 @@
     }
   },
   "SETTINGS": {
-    "UNAUTHORIZED_MESSAGE": "Vous n'êtes pas autorisé à voir ce contenu.",
+    "UNAUTHORIZED_MESSAGE": "Vous n’avez pas la permission d’accéder à ce contenu.",
     "TITLE": "Paramètres",
     "BUTTON": {
       "SETTINGS": "Paramètres",
-      "DEVICEINFO": "Appareils Connectés"
+      "DEVICEINFO": "Appareils connectés",
+      "CONFIRM": "Enregistrer les modifications",
+      "CLEAR_AVATAR": "Supprimer",
+      "UPLOAD_AVATAR": "Enregistrer l’avatar"
     },
     "FORM": {
+      "AVATAR": "Avatar",
       "NICKNAME": "Nom d'utilisateur",
       "EMAIL": "E-mail",
       "CURRENTPASSWORD": "Entrez le mot de passe actuel",
       "NEWPASSWORD": "Entrez un nouveau mot de passe",
-      "CONFIRMNEWPASSWORD": "Confirmez le nouveau mot de passe"
+      "CONFIRMNEWPASSWORD": "Confirmez le nouveau mot de passe",
+      "AVATAR_UPLOAD": "Cliquez pour sélectionner un avatar"
     },
     "DEVICES": {
+      "REMOVE": "Désactiver",
       "TITLE": "Appareils connectés",
       "ERROR": {
         "NOTFOUND": "Aucun appareil trouvé."

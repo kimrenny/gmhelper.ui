@@ -139,21 +139,27 @@
     }
   },
   "SETTINGS": {
-    "UNAUTHORIZED_MESSAGE": "このコンテンツを表示する権限がありません。",
+    "UNAUTHORIZED_MESSAGE": "このコンテンツにアクセスする権限がありません。",
     "TITLE": "設定",
     "BUTTON": {
       "SETTINGS": "設定",
-      "DEVICEINFO": "ログイン中のデバイス"
+      "DEVICEINFO": "ログイン済みデバイス",
+      "CONFIRM": "変更を保存",
+      "CLEAR_AVATAR": "削除",
+      "UPLOAD_AVATAR": "アバターを保存"
     },
     "FORM": {
+      "AVATAR": "アバター",
       "NICKNAME": "ユーザー名",
-      "EMAIL": "メール",
+      "EMAIL": "メールアドレス",
       "CURRENTPASSWORD": "現在のパスワードを入力",
       "NEWPASSWORD": "新しいパスワードを入力",
-      "CONFIRMNEWPASSWORD": "新しいパスワードを確認"
+      "CONFIRMNEWPASSWORD": "新しいパスワードを確認",
+      "AVATAR_UPLOAD": "アバターを選択するにはクリックしてください"
     },
     "DEVICES": {
-      "TITLE": "ログイン中のデバイス",
+      "REMOVE": "無効化する",
+      "TITLE": "ログイン済みデバイス",
       "ERROR": {
         "NOTFOUND": "デバイスが見つかりません。"
       }

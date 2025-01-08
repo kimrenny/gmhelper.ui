@@ -113,7 +113,6 @@ export class HeaderComponent implements OnInit {
   isTokenExpired(token: string, bufferTime: number = 5 * 60 * 1000): boolean {
     const payload = JSON.parse(atob(token.split('.')[1]));
     const exp = payload.exp * 1000;
-    console.log('Token expiration time:', exp, 'Current time:', Date.now());
     return Date.now() >= exp - bufferTime;
   }
 
@@ -146,7 +145,7 @@ export class HeaderComponent implements OnInit {
         this.logout();
         return;
       }
-      setTimeout(() => this.refreshToken(refreshToken, attempt), 2500);
+      setTimeout(() => this.refreshToken(refreshToken, attempt), 5000);
     }
   }
 

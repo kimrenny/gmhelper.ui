@@ -139,21 +139,27 @@
     }
   },
   "SETTINGS": {
-    "UNAUTHORIZED_MESSAGE": "您无权查看此内容。",
+    "UNAUTHORIZED_MESSAGE": "您没有权限访问此内容。",
     "TITLE": "设置",
     "BUTTON": {
       "SETTINGS": "设置",
-      "DEVICEINFO": "登录设备"
+      "DEVICEINFO": "登录设备",
+      "CONFIRM": "保存更改",
+      "CLEAR_AVATAR": "移除",
+      "UPLOAD_AVATAR": "保存头像"
     },
     "FORM": {
+      "AVATAR": "头像",
       "NICKNAME": "用户名",
       "EMAIL": "电子邮件",
       "CURRENTPASSWORD": "输入当前密码",
       "NEWPASSWORD": "输入新密码",
-      "CONFIRMNEWPASSWORD": "确认新密码"
+      "CONFIRMNEWPASSWORD": "确认新密码",
+      "AVATAR_UPLOAD": "点击选择头像"
     },
     "DEVICES": {
-      "TITLE": "已登录设备",
+      "REMOVE": "禁用",
+      "TITLE": "登录设备",
       "ERROR": {
         "NOTFOUND": "未找到设备。"
       }

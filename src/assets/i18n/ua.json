@@ -139,21 +139,27 @@
     }
   },
   "SETTINGS": {
-    "UNAUTHORIZED_MESSAGE": "Ви не маєте прав на перегляд цього вмісту.",
+    "UNAUTHORIZED_MESSAGE": "У вас немає доступу до цього контенту.",
     "TITLE": "Налаштування",
     "BUTTON": {
       "SETTINGS": "Налаштування",
-      "DEVICEINFO": "Пристрої з доступом"
+      "DEVICEINFO": "Авторизовані пристрої",
+      "CONFIRM": "Зберегти зміни",
+      "CLEAR_AVATAR": "Видалити",
+      "UPLOAD_AVATAR": "Зберегти аватар"
     },
     "FORM": {
+      "AVATAR": "Аватар",
       "NICKNAME": "Ім'я користувача",
       "EMAIL": "Електронна пошта",
       "CURRENTPASSWORD": "Введіть поточний пароль",
       "NEWPASSWORD": "Введіть новий пароль",
-      "CONFIRMNEWPASSWORD": "Підтвердіть новий пароль"
+      "CONFIRMNEWPASSWORD": "Підтвердьте новий пароль",
+      "AVATAR_UPLOAD": "Натисніть, щоб вибрати аватар"
     },
     "DEVICES": {
-      "TITLE": "Пристрої у системі",
+      "REMOVE": "Відключити",
+      "TITLE": "Авторизовані пристрої",
       "ERROR": {
         "NOTFOUND": "Пристрої не знайдено."
       }

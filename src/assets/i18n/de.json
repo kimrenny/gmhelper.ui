@@ -1,0 +1,168 @@
+{
+  "HOME": {
+    "WELCOME": {
+      "TITLE": "Willkommen!",
+      "DESCRIPTION": "Wir freuen uns, Sie in unserer Anwendung zu sehen."
+    },
+    "ABOUT": {
+      "TITLE": "Über uns",
+      "DESCRIPTION": "Die Anwendung hilft bei der Lösung mathematischer Probleme.",
+      "SOURCELINK": "Die App ist kostenlos für den persönlichen Gebrauch und Open Source unter dem Link:"
+    },
+    "FEATURES": {
+      "TITLE": "Funktionen",
+      "FIRST": "Benutzerfreundliche Oberfläche",
+      "SECOND": "Schnelle Problemlösung",
+      "THIRD": "Unterstützung für viele geometrische Formen",
+      "FOURTH": "Lösung vieler Algebra-Probleme"
+    },
+    "CONTACT": {
+      "TITLE": "Kontakte",
+      "EMAIL": "Bitte kontaktieren Sie uns per E-Mail, wenn Sie Fragen haben:"
+    },
+    "START": {
+      "TITLE": "Probieren Sie unsere App aus",
+      "DESCRIPTION": "Erster Versuch ist kostenlos*"
+    },
+    "NAVBAR": {
+      "WELCOME": "Willkommen",
+      "ABOUT": "Über uns",
+      "FEATURES": "Funktionen",
+      "CONTACT": "Kontakte",
+      "START": "Start"
+    },
+    "LOREM": "Lorem Ipsum ist einfach Blindtext der Druck- und Satzindustrie..."
+  },
+  "CANVAS": {
+    "SETTINGS": {
+      "SELECT": {
+        "TITLE": "Wählen Sie ein Fach aus",
+        "MATH": "Mathematik",
+        "GEOMETRY": "Geometrie"
+      }
+    }
+  },
+  "REGISTER": {
+    "REGISTER": {
+      "TITLE": "Registrieren"
+    },
+    "LOGIN": {
+      "TITLE": "Anmelden",
+      "INPUT": {
+        "PLACEHOLDER": {
+          "PASSWORD": "Geben Sie Ihr Passwort ein"
+        }
+      }
+    },
+    "INPUT": {
+      "PLACEHOLDER": {
+        "USERNAME": "Geben Sie Ihren Benutzernamen ein",
+        "EMAIL": "Geben Sie Ihre E-Mail-Adresse ein",
+        "PASSWORD": "Erstellen Sie ein Passwort"
+      },
+      "PASSWORD": {
+        "HINT": {
+          "MINLENGTH": "Mindestens 8 Zeichen",
+          "UPPERCASE": "Mindestens ein Großbuchstabe",
+          "LOWERCASE": "Mindestens ein Kleinbuchstabe",
+          "DIGIT": "Mindestens eine Ziffer",
+          "SPECCHAR": "Mindestens ein Sonderzeichen",
+          "NOTCONTAINSEMAIL": "Das Passwort darf keine E-Mail-Adresse enthalten"
+        }
+      }
+    },
+    "BUTTON": {
+      "REGISTER": "Registrieren",
+      "LOGIN": "Anmelden"
+    },
+    "LINK": {
+      "FORGOT_PASSWORD": "Passwort vergessen?"
+    },
+    "FORGOT_PASSWORD": {
+      "TITLE": "Passwort wiederherstellen",
+      "INPUT": {
+        "EMAIL": "E-Mail-Adresse:",
+        "PLACEHOLDER": {
+          "EMAIL": "Geben Sie Ihre E-Mail-Adresse ein"
+        }
+      },
+      "BUTTON": {
+        "SUBMIT": "Absenden",
+        "CLOSE": "Schließen"
+      }
+    },
+    "ERRORS": {
+      "USERNAME": {
+        "REQUIRED": "Benutzername ist erforderlich.",
+        "INVALID": "Der Benutzername muss 4–24 Zeichen lang sein, mit einem Buchstaben beginnen und nur Buchstaben und Zahlen enthalten."
+      },
+      "EMAIL": {
+        "REQUIRED": "E-Mail ist erforderlich.",
+        "INVALID": "Ungültiges E-Mail-Format.",
+        "NOT_ALLOWED": "Die Registrierung ist nur mit E-Mail-Adressen von zugelassenen Anbietern möglich."
+      },
+      "PASSWORD": {
+        "REQUIRED": "Passwort ist erforderlich.",
+        "TOO_WEAK": "Das Passwort ist zu schwach.",
+        "WEAK": "Das Passwort ist schwach."
+      },
+      "INCORRECT_DATA": "Die eingegebenen Daten sind falsch.",
+      "REGISTRATION": {
+        "SUCCESS": "Registrierung erfolgreich!",
+        "FAIL": {
+          "DATA": "Falsche Daten. Überprüfen Sie die Informationen und versuchen Sie es erneut.",
+          "CAPTCHA": "Die Überprüfung „Ich bin kein Roboter“ ist fehlgeschlagen.",
+          "BANNED": "Dieses Konto wurde gesperrt.",
+          "UNKNOWN": "Ein unbekannter Fehler ist aufgetreten. Versuchen Sie es später erneut."
+        }
+      },
+      "EMAILPASS": {
+        "REQUIRED": "E-Mail und Passwort sind für die Anmeldung erforderlich."
+      },
+      "LOGIN": {
+        "SUCCESS": "Anmeldung erfolgreich!",
+        "FAIL": {
+          "DATA": "Falsche Daten. Überprüfen Sie die Informationen und versuchen Sie es erneut.",
+          "CAPTCHA": "Die Überprüfung „Ich bin kein Roboter“ ist fehlgeschlagen.",
+          "BANNED": "Dieses Konto wurde gesperrt.",
+          "UNKNOWN": "Ein unbekannter Fehler ist aufgetreten. Versuchen Sie es später erneut.",
+          "USERNOTFOUND": "Benutzer nicht gefunden. Überprüfen Sie die Informationen und versuchen Sie es erneut."
+        }
+      },
+      "RECOVER": {
+        "EMAIL": {
+          "REQUIRED": "Bitte geben Sie Ihre E-Mail-Adresse ein."
+        },
+        "SUCCESS": "Eine E-Mail zur Wiederherstellung des Passworts wurde gesendet.",
+        "FAIL": "Fehler beim Senden der Wiederherstellungs-E-Mail. Bitte versuchen Sie es erneut."
+      }
+    }
+  },
+  "SETTINGS": {
+    "UNAUTHORIZED_MESSAGE": "Sie haben keine Berechtigung, auf diesen Inhalt zuzugreifen.",
+    "TITLE": "Einstellungen",
+    "BUTTON": {
+      "SETTINGS": "Einstellungen",
+      "DEVICEINFO": "Angemeldete Geräte",
+      "CONFIRM": "Änderungen speichern",
+      "CLEAR_AVATAR": "Entfernen",
+      "UPLOAD_AVATAR": "Avatar speichern"
+    },
+    "FORM": {
+      "AVATAR": "Avatar",
+      "NICKNAME": "Benutzername",
+      "EMAIL": "E-Mail",
+      "CURRENTPASSWORD": "Aktuelles Passwort eingeben",
+      "NEWPASSWORD": "Neues Passwort eingeben",
+      "CONFIRMNEWPASSWORD": "Neues Passwort bestätigen",
+      "AVATAR_UPLOAD": "Klicken Sie hier, um einen Avatar auszuwählen"
+    },
+    "DEVICES": {
+      "REMOVE": "Deaktivieren",
+      "TITLE": "Angemeldete Geräte",
+      "ERROR": {
+        "NOTFOUND": "Keine Geräte gefunden."
+      }
+    }
+  }
+}
