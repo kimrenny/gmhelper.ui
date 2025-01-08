@@ -226,14 +226,11 @@ export class SettingsComponent implements OnInit {
       })
       .subscribe({
         next: () => {
-          console.log('Avatar uploaded successfully.');
-          alert('Avatar uploaded successfully.');
           this.selectedAvatar = null;
           this.getUserDetails();
         },
         error: (err) => {
           console.error('Error uploading avatar:', err);
-          alert('Failed to upload avatar.');
         },
       });
   }

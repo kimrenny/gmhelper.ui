@@ -130,6 +130,7 @@ export class HeaderComponent implements OnInit {
         )
       );
       console.log('Token refreshed:', response.accessToken);
+      console.log('RefreshToken: ', response.refreshToken);
       localStorage.setItem('authToken', response.accessToken);
       localStorage.setItem('refreshToken', response.refreshToken);
       this.userIsAuthenticated = true;
