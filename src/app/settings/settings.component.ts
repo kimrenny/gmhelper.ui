@@ -9,6 +9,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
+import { UserService } from '../services/user.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-settings',
@@ -24,11 +26,10 @@ export class SettingsComponent implements OnInit {
   isSettingsActive: boolean = true;
   selectedAvatar: File | null = null;
   menuOpen = false;
-  isAuthorized!: boolean;
-
   userNickname: string = '';
   userAvatarUrl: string = '';
   userAvatarUpload: string = '';
+  isAuthorized!: Observable<boolean>;
 
   passwordStrength: number = 0;
   passwordValidations = {
@@ -44,11 +45,28 @@ export class SettingsComponent implements OnInit {
   changeEmailError: string = '';
 
   constructor(
+    private userService: UserService,
     private fb: FormBuilder,
     private http: HttpClient,
     private cdr: ChangeDetectorRef,
     private router: Router
-  ) {}
+  ) {
+    this.isAuthorized = this.userService.isAuthorized$;
+
+    this.isAuthorized.subscribe((isAuthorized) => {
+      if (isAuthorized) {
+        this.userService.user$.subscribe((userDetails) => {
+          this.userNickname = userDetails.nickname;
+          this.userAvatarUrl =
+            userDetails.avatar || 'assets/icons/default-avatar.png';
+        });
+      } else {
+        console.log('User is not authorized');
+      }
+    });
+
+    this.getLoggedDevices();
+  }
 
   ngOnInit(): void {
     this.settingsForm = this.fb.group({
@@ -60,73 +78,36 @@ export class SettingsComponent implements OnInit {
       avatar: [null],
     });
 
-    this.getUserDetails();
+    this.userService.checkAuthentication();
+
+    this.userService.user$.subscribe((userDetails) => {
+      this.userNickname = userDetails.nickname;
+      this.userAvatarUrl =
+        userDetails.avatar || 'assets/icons/default-avatar.png';
+
+      this.settingsForm.patchValue({
+        nickname: this.userNickname,
+      });
+    });
+
     this.getLoggedDevices();
   }
 
   getUserDetails(attempt = 0) {
     const token = localStorage.getItem('authToken');
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${token}`,
-    });
-
-    this.http
-      .get<{ nickname: string; email: string; avatar: string }>(
-        'https://localhost:7057/api/user/details',
-        { headers }
-      )
-      .subscribe({
-        next: (response) => {
-          this.userNickname = response.nickname;
-          if (response.avatar) {
-            this.userAvatarUrl = `data:image/jpeg;base64,${response.avatar}`;
-          } else {
-            this.userAvatarUrl = 'assets/icons/default-avatar.png';
-          }
-
-          this.isAuthorized = true;
-          this.settingsForm.patchValue({
-            nickname: response.nickname,
-            email: response.email,
-          });
+    if (token) {
+      this.userService.loadUserDetails(token).subscribe({
+        next: (userDetails) => {
+          this.userNickname = userDetails.nickname;
+          this.userAvatarUrl =
+            userDetails.avatar || 'assets/icons/default-avatar.png';
+          this.cdr.detectChanges();
         },
         error: (err) => {
-          console.error('Error fetching user details:', err);
-          switch (err.error) {
-            case 'User is blocked.':
-              this.isAuthorized = false;
-              this.userAvatarUrl = 'assets/icons/default-avatar.png';
-              localStorage.removeItem('authToken');
-              break;
-            case 'User not found.':
-              this.isAuthorized = false;
-              this.userAvatarUrl = 'assets/icons/default-avatar.png';
-              localStorage.removeItem('authToken');
-              break;
-            case 'Invalid data.':
-              this.isAuthorized = false;
-              this.userAvatarUrl = 'assets/icons/default-avatar.png';
-              localStorage.removeItem('authToken');
-              break;
-            case 'Invalid token.':
-              this.isAuthorized = false;
-              this.userAvatarUrl = 'assets/icons/default-avatar.png';
-              localStorage.removeItem('authToken');
-              break;
-            default:
-              this.isAuthorized = false;
-              this.userAvatarUrl = 'assets/icons/default-avatar.png';
-              console.error(
-                `Unknown error: ${err.error}. Attempt ${++attempt}`
-              );
-              if (attempt >= 3) {
-                break;
-              }
-              setTimeout(() => this.getUserDetails(attempt), 5000);
-              break;
-          }
+          console.error('Error loading user details:', err);
         },
       });
+    }
   }
 
   getLoggedDevices() {

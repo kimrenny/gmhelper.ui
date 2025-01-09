@@ -13,6 +13,7 @@ import {
   HttpHeaders,
 } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-header',
@@ -29,6 +30,7 @@ export class HeaderComponent implements OnInit {
   showUserMenu = false;
 
   constructor(
+    private userService: UserService,
     private translate: TranslateService,
     private router: Router,
     private http: HttpClient,
@@ -44,11 +46,23 @@ export class HeaderComponent implements OnInit {
       this.translate.use('en');
     }
 
-    this.checkAuthentication();
+    this.userService.checkAuthentication();
+
+    this.userService.isAuthorized$.subscribe((isAuthenticated) => {
+      this.userIsAuthenticated = isAuthenticated;
+      if (isAuthenticated) {
+        const userDetails = this.userService.getUserDetails();
+        this.userNickname = userDetails.nickname;
+        this.userAvatarUrl =
+          userDetails.avatar || 'assets/icons/default-avatar.png';
+      } else {
+        this.userNickname = 'Guest';
+        this.userAvatarUrl = 'assets/icons/default-avatar.png';
+      }
+    });
 
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationStart && event.url === '/') {
-        this.checkAuthentication();
         this.showUserMenu = false;
       }
     });
@@ -84,112 +98,9 @@ export class HeaderComponent implements OnInit {
   }
 
   logout() {
-    localStorage.removeItem('user');
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('refreshToken');
-    this.userIsAuthenticated = false;
-    this.userAvatarUrl = 'assets/icons/default-avatar.png';
+    this.userService.clearUser();
+    this.showUserMenu = false;
     this.router.navigate(['/login']);
-  }
-
-  checkAuthentication() {
-    const authToken = localStorage.getItem('authToken');
-    const refreshToken = localStorage.getItem('refreshToken');
-    if (authToken) {
-      const isTokenAboutToExpire = this.isTokenExpired(authToken);
-      if (isTokenAboutToExpire && refreshToken) {
-        this.refreshToken(refreshToken).then(() => {
-          this.loadUserDetails(localStorage.getItem('authToken')!);
-        });
-      } else if (!isTokenAboutToExpire) {
-        this.userIsAuthenticated = true;
-        this.loadUserDetails(authToken);
-      } else {
-        this.logout();
-      }
-    }
-  }
-
-  isTokenExpired(token: string, bufferTime: number = 5 * 60 * 1000): boolean {
-    const payload = JSON.parse(atob(token.split('.')[1]));
-    const exp = payload.exp * 1000;
-    return Date.now() >= exp - bufferTime;
-  }
-
-  async refreshToken(refreshToken: string, attempt: number = 0) {
-    try {
-      console.log('Refreshing token with refresh token:', refreshToken);
-      const response = await firstValueFrom(
-        this.http.post<{ accessToken: string; refreshToken: string }>(
-          'https://localhost:7057/api/user/refresh-token',
-          JSON.stringify({ refreshToken }),
-          {
-            headers: { 'Content-Type': 'application/json' },
-          }
-        )
-      );
-      console.log('Token refreshed:', response.accessToken);
-      console.log('RefreshToken: ', response.refreshToken);
-      localStorage.setItem('authToken', response.accessToken);
-      localStorage.setItem('refreshToken', response.refreshToken);
-      this.userIsAuthenticated = true;
-    } catch (error) {
-      if (error instanceof HttpErrorResponse) {
-        console.error('HTTP error:', error.message);
-      } else {
-        console.error('Unexpected error:', error);
-      }
-      console.error(`Attempt ${++attempt}`);
-
-      if (attempt >= 3) {
-        this.logout();
-        return;
-      }
-      setTimeout(() => this.refreshToken(refreshToken, attempt), 5000);
-    }
-  }
-
-  loadUserDetails(token: string, attempt: number = 0) {
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${token}`,
-    });
-
-    this.http
-      .get<{ avatar: Blob; nickname: string }>(
-        'https://localhost:7057/api/user/details',
-        { headers, responseType: 'json' }
-      )
-      .subscribe({
-        next: (response) => {
-          this.userNickname = response.nickname;
-          if (response.avatar != null) {
-            const avatarUrl = `data:image/jpeg;base64,${response.avatar}`;
-            this.userAvatarUrl = avatarUrl;
-          }
-
-          this.cdr.detectChanges();
-        },
-        error: (err) => {
-          console.error('Error fetching user details:', err);
-          switch (err.error) {
-            case 'User is blocked.':
-            case 'User not found.':
-            case 'Invalid data.':
-            case 'Invalid token.':
-              this.logout();
-              break;
-            default:
-              console.error(
-                `Unknown error: ${err.error}. Attempt ${++attempt}`
-              );
-              if (attempt >= 3) {
-                break;
-              }
-              setTimeout(() => this.loadUserDetails(token, attempt), 2500);
-              break;
-          }
-        },
-      });
   }
 
   toggleUserMenu() {

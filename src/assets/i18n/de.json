@@ -69,6 +69,12 @@
           "SPECCHAR": "Mindestens ein Sonderzeichen",
           "NOTCONTAINSEMAIL": "Das Passwort darf keine E-Mail-Adresse enthalten"
         }
+      },
+      "ERRORS": {
+        "PASSWORD": {
+          "REQUIRED": "Passwort ist erforderlich",
+          "MIN_LENGTH": "Mindestens 8 Zeichen"
+        }
       }
     },
     "BUTTON": {

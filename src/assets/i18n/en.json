@@ -69,6 +69,12 @@
           "SPECCHAR": "At least one special character",
           "NOTCONTAINSEMAIL": "The password must not contain an email address"
         }
+      },
+      "ERRORS": {
+        "PASSWORD": {
+          "REQUIRED": "Password is required",
+          "MIN_LENGTH": "Minimum 8 characters"
+        }
       }
     },
     "BUTTON": {

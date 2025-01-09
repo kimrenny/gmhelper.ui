@@ -69,6 +69,12 @@
           "SPECCHAR": "Au moins un caractère spécial",
           "NOTCONTAINSEMAIL": "Le mot de passe ne doit pas contenir une adresse e-mail"
         }
+      },
+      "ERRORS": {
+        "PASSWORD": {
+          "REQUIRED": "Le mot de passe est requis",
+          "MIN_LENGTH": "Minimum 8 caractères"
+        }
       }
     },
     "BUTTON": {

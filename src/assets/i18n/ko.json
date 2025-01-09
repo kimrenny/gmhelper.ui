@@ -69,6 +69,12 @@
           "SPECCHAR": "특수 문자 최소 1개",
           "NOTCONTAINSEMAIL": "비밀번호에는 이메일 주소가 포함될 수 없습니다"
         }
+      },
+      "ERRORS": {
+        "PASSWORD": {
+          "REQUIRED": "비밀번호는 필수입니다",
+          "MIN_LENGTH": "최소 8자"
+        }
       }
     },
     "BUTTON": {

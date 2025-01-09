@@ -69,6 +69,12 @@
           "SPECCHAR": "至少一个特殊字符",
           "NOTCONTAINSEMAIL": "密码不得包含电子邮件地址"
         }
+      },
+      "ERRORS": {
+        "PASSWORD": {
+          "REQUIRED": "密码是必填项",
+          "MIN_LENGTH": "最少8个字符"
+        }
       }
     },
     "BUTTON": {
