@@ -20,6 +20,8 @@ export class UserService {
   user$ = this.userSubject.asObservable();
   private isAuthorizedSubject = new BehaviorSubject<boolean>(false);
   isAuthorized$ = this.isAuthorizedSubject.asObservable();
+  private isServerAvailableSubject = new BehaviorSubject<boolean>(false);
+  isServerAvailable$ = this.isServerAvailableSubject.asObservable();
 
   constructor(private http: HttpClient) {}
 
@@ -41,32 +43,60 @@ export class UserService {
           }
           this.userSubject.next(userDetails);
           this.isAuthorizedSubject.next(true);
+          this.isServerAvailableSubject.next(true);
         }),
-        catchError((error) => {
-          console.error('Error loading user details', error);
-          switch (error.error) {
-            case 'User is blocked.':
-            case 'User not found.':
-            case 'Invalid data.':
-            case 'Invalid token.':
-              this.isAuthorizedSubject.next(false);
-              localStorage.removeItem('authToken');
-              break;
-            default:
-              this.isAuthorizedSubject.next(false);
-              console.error(
-                `Unknown error: ${error.error}. Attempt ${++attempts}`
-              );
-              if (attempts >= 3) {
-                attempts = 0;
-                break;
-              }
-              setTimeout(() => this.loadUserDetails(token, attempts), 5000);
-              break;
-          }
-          return throwError(() => new Error('Failed to load user details'));
-        })
+        catchError((error) => this.handleLoadUserError(error, token, attempts))
       );
+  }
+
+  private handleLoadUserError(
+    error: any,
+    token: string,
+    attempts: number
+  ): Observable<UserDetails | never> {
+    console.error('Error loading user details', error);
+
+    if (error.status === 0) {
+      this.isServerAvailableSubject.next(false);
+      if (attempts < 2) {
+        console.warn('Retrying request due to server unavailabbility...');
+        return this.retryLoadUserDetails(token, attempts + 1);
+      } else {
+        console.warn('Server is unavailable. Keeping the user authorized.');
+        return throwError(() => new Error('Server is unavailable'));
+      }
+    }
+
+    if (
+      [
+        'User is blocked.',
+        'User not found.',
+        'Invalid data.',
+        'Invalid token.',
+      ].includes(error.error)
+    ) {
+      this.isAuthorizedSubject.next(false);
+      localStorage.removeItem('authToken');
+    }
+    this.isServerAvailableSubject.next(true);
+
+    console.error(`Unknown error: ${error.error}`);
+    return throwError(() => new Error('Failed to load user details'));
+  }
+
+  private retryLoadUserDetails(
+    token: string,
+    attempts: number
+  ): Observable<UserDetails> {
+    return new Observable<UserDetails>((observer) => {
+      setTimeout(() => {
+        this.loadUserDetails(token, attempts).subscribe({
+          next: (data) => observer.next(data),
+          error: (err) => observer.error(err),
+          complete: () => observer.complete(),
+        });
+      }, 5000);
+    });
   }
 
   updateUser(userDetails: UserDetails) {

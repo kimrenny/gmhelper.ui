@@ -30,6 +30,7 @@ export class SettingsComponent implements OnInit {
   userAvatarUrl: string = '';
   userAvatarUpload: string = '';
   isAuthorized!: Observable<boolean>;
+  isServerAvailable!: Observable<boolean>;
 
   passwordStrength: number = 0;
   passwordValidations = {
@@ -52,6 +53,7 @@ export class SettingsComponent implements OnInit {
     private router: Router
   ) {
     this.isAuthorized = this.userService.isAuthorized$;
+    this.isServerAvailable = this.userService.isServerAvailable$;
 
     this.isAuthorized.subscribe((isAuthorized) => {
       if (isAuthorized) {
@@ -61,9 +63,11 @@ export class SettingsComponent implements OnInit {
             userDetails.avatar || 'assets/icons/default-avatar.png';
         });
       } else {
-        console.log('User is not authorized');
+        console.warn('User is not authorized');
       }
     });
+
+    this.isServerAvailable.subscribe();
 
     this.getLoggedDevices();
   }
