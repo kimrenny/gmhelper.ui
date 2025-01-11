@@ -349,7 +349,7 @@ export class ExampleCanvasComponent {
     }
   }
 
-  private addGivenText(container: HTMLElement, text: string) {
+  private async addGivenText(container: HTMLElement, text: string) {
     const svg = container.querySelector('svg');
     if (!svg) return;
 
@@ -359,51 +359,54 @@ export class ExampleCanvasComponent {
     const startY = 40;
     const lineHeight = 20;
     let paddingY = 0;
+    const lineWidth = lines.length === 4 ? 70 : 80;
 
-    let delay = 0;
+    let delay = 1200;
 
-    lines.forEach((line, index) => {
-      setTimeout(() => {
-        if (index === line.length - 1) {
-        }
-        const textElement = this.createSVGElement('text', {
-          x: startX.toString(),
-          y: (startY + index * lineHeight + paddingY).toString(),
-          fill: 'black',
-          'font-size': '14',
-          'text-anchor': 'start',
-          class: 'typewriter',
-        });
+    for (let index = 0; index < lines.length; index++) {
+      const line = lines[index];
 
-        textElement.textContent = '';
-        svg.appendChild(textElement);
+      if (index === lines.length - 1) {
+        await this.delay(delay);
+        this.addHorizontalLine(
+          container,
+          startX,
+          startY + (index - 1) * lineHeight + 10,
+          lineWidth
+        );
+        paddingY += 10;
 
-        let charIndex = 0;
-        const typingInterval = setInterval(() => {
-          if (charIndex < line.length) {
-            textElement.textContent += line[charIndex];
-            charIndex++;
-          } else {
-            clearInterval(typingInterval);
+        await this.delay(delay);
+        this.addText(svg, line, startX, startY + index * lineHeight + paddingY);
+      } else {
+        await this.delay(delay);
+        this.addText(svg, line, startX, startY + index * lineHeight);
+      }
+    }
+  }
 
-            if (index === lines.length - 2) {
-              setTimeout(() => {
-                this.addHorizontalLine(
-                  container,
-                  startX,
-                  startY + index * lineHeight + 10,
-                  60
-                );
-              }, 1000);
-              delay += 4000;
-              paddingY += 10;
-            }
-          }
-        }, 100);
-      }, delay);
-
-      delay += 1000;
+  private addText(svg: SVGElement, line: string, x: number, y: number) {
+    const textElement = this.createSVGElement('text', {
+      x: x.toString(),
+      y: y.toString(),
+      fill: 'black',
+      'font-size': '14',
+      'text-anchor': 'start',
+      class: 'typewriter',
     });
+
+    textElement.textContent = '';
+    svg.appendChild(textElement);
+
+    let charIndex = 0;
+    const typingInterval = setInterval(() => {
+      if (charIndex < line.length) {
+        textElement.textContent += line[charIndex];
+        charIndex++;
+      } else {
+        clearInterval(typingInterval);
+      }
+    }, 100);
   }
 
   private addHorizontalLine(
@@ -428,5 +431,9 @@ export class ExampleCanvasComponent {
       this.renderer.setAttribute(lineElement, 'class', 'draw-line');
       this.renderer.appendChild(svg, lineElement);
     }
+  }
+
+  private delay(ms: number) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 }
