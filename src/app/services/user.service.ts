@@ -150,6 +150,7 @@ export class UserService {
       )
       .pipe(
         tap((response) => {
+          console.log(response);
           localStorage.setItem('authToken', response.accessToken);
           localStorage.setItem('refreshToken', response.refreshToken);
           this.isAuthorizedSubject.next(true);

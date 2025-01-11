@@ -23,3 +23,29 @@ rect {
     stroke-dashoffset: 0;
   }
 }
+
+.typewriter {
+  white-space: nowrap;
+  overflow: hidden;
+  display: inline-block;
+  width: 0;
+  animation: typing 2s steps(30) forwards;
+}
+
+@keyframes typing {
+  to {
+    width: auto;
+  }
+}
+
+.draw-line {
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+  animation: line-drawing 3s ease forwards;
+}
+
+@keyframes line-drawing {
+  to {
+    stroke-dashoffset: 0;
+  }
+}

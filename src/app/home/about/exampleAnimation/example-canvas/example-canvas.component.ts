@@ -12,7 +12,11 @@ export class ExampleCanvasComponent {
   @ViewChild('canvas', { static: true }) canvasRef!: ElementRef<HTMLDivElement>;
 
   private shapes = ['triangle', 'rectangle'];
+  private triangleTasks = ['S△ - ?', 'P△ - ?'];
+  private rectangleTasks = ['S - ?', 'P - ?'];
   private drawnShape: string | null = null;
+
+  public givenCondition: string = '';
 
   constructor(private renderer: Renderer2) {}
 
@@ -48,11 +52,9 @@ export class ExampleCanvasComponent {
     const rightX = base + paddingX;
     const rightY = height + paddingY;
 
-    const leftSide = Math.sqrt(
-      Math.pow(topX - leftX, 2) + Math.pow(topY - leftY, 2)
-    );
+    const leftSide = height;
     const rightSide = Math.sqrt(
-      Math.pow(rightX - topX, 2) + Math.pow(rightY - topY, 2)
+      Math.pow(topX - rightX, 2) + Math.pow(topY - rightY, 2)
     );
     const bottomSide = base;
 
@@ -149,12 +151,12 @@ export class ExampleCanvasComponent {
 
       if (dim4 == undefined || dim4 == 0) {
         setTimeout(
-          () => this.addVertexLabel(container, -padding, -padding, 'A'),
+          () => this.addVertexLabel(container, -padding, side1 + padding, 'A'),
           delay
         );
         delay += 500;
         setTimeout(
-          () => this.addVertexLabel(container, -padding, side1 + padding, 'B'),
+          () => this.addVertexLabel(container, -padding, -padding, 'B'),
           delay
         );
         delay += 500;
@@ -171,20 +173,40 @@ export class ExampleCanvasComponent {
         delay += 1000;
 
         setTimeout(
-          () => this.addSideLengthLabel(container, side1 / 2, 0, dim1),
+          () => this.addSideLengthLabel(container, -padding, side1 / 2, dim1),
           delay
         );
         delay += 500;
         setTimeout(
-          () => this.addSideLengthLabel(container, 10, side2 / 2, dim2),
+          () =>
+            this.addSideLengthLabel(
+              container,
+              side3 / 2,
+              side1 + padding,
+              dim3
+            ),
           delay
         );
         delay += 500;
         setTimeout(
-          () => this.addSideLengthLabel(container, side3 - 20, side3, dim3),
+          () =>
+            this.addSideLengthLabel(
+              container,
+              side3 / 2 + padding,
+              side1 / 2 - padding,
+              dim2
+            ),
           delay
         );
         delay += 500;
+        setTimeout(() => {
+          this.addGivenText(
+            container,
+            `AB = ${Math.round(dim1)}, AC = ${Math.round(
+              dim3
+            )}, BC = ${Math.round(dim2)}, ${this.generateTask('triangle')}`
+          );
+        }, delay);
       } else {
         setTimeout(
           () => this.addVertexLabel(container, -padding, -padding, 'A'),
@@ -215,26 +237,60 @@ export class ExampleCanvasComponent {
         delay += 500;
 
         setTimeout(
-          () => this.addSideLengthLabel(container, side1 / 2, 5, dim1),
+          () => this.addSideLengthLabel(container, side1 / 2, -padding, dim1),
           delay
         );
         delay += 500;
         setTimeout(
-          () => this.addSideLengthLabel(container, side2 / 2, side2, dim2),
+          () =>
+            this.addSideLengthLabel(
+              container,
+              side1 + padding,
+              side2 / 2,
+              dim2
+            ),
           delay
         );
         delay += 500;
         setTimeout(
-          () => this.addSideLengthLabel(container, side1 - 10, side2 / 2, dim3),
+          () =>
+            this.addSideLengthLabel(
+              container,
+              side3 / 2,
+              side2 + padding,
+              dim3
+            ),
           delay
         );
         delay += 500;
         setTimeout(
-          () => this.addSideLengthLabel(container, 10, side2 / 2, dim4 || 0),
+          () =>
+            this.addSideLengthLabel(container, -padding, side2 / 2, dim4 || 0),
           delay
         );
+        delay += 500;
+        setTimeout(() => {
+          this.addGivenText(
+            container,
+            `AB = CD = ${Math.round(dim1)}, BC = AD = ${Math.round(
+              dim2
+            )}, ${this.generateTask('rectangle')}`
+          );
+        }, delay);
       }
     }
+  }
+
+  private generateTask(shape: string) {
+    if (shape == 'triangle')
+      return this.triangleTasks[
+        Math.floor(Math.random() * this.triangleTasks.length)
+      ];
+    if (shape == 'rectangle')
+      return this.rectangleTasks[
+        Math.floor(Math.random() * this.rectangleTasks.length)
+      ];
+    return;
   }
 
   private addVertexLabel(
@@ -290,6 +346,87 @@ export class ExampleCanvasComponent {
         }
       }, 100);
       this.renderer.appendChild(svgContainer, labelElement);
+    }
+  }
+
+  private addGivenText(container: HTMLElement, text: string) {
+    const svg = container.querySelector('svg');
+    if (!svg) return;
+
+    const canvasWidth = parseInt(svg.getAttribute('width') || '300', 10);
+    const lines = text.split(',');
+    const startX = canvasWidth - 100;
+    const startY = 40;
+    const lineHeight = 20;
+    let paddingY = 0;
+
+    let delay = 0;
+
+    lines.forEach((line, index) => {
+      setTimeout(() => {
+        if (index === line.length - 1) {
+        }
+        const textElement = this.createSVGElement('text', {
+          x: startX.toString(),
+          y: (startY + index * lineHeight + paddingY).toString(),
+          fill: 'black',
+          'font-size': '14',
+          'text-anchor': 'start',
+          class: 'typewriter',
+        });
+
+        textElement.textContent = '';
+        svg.appendChild(textElement);
+
+        let charIndex = 0;
+        const typingInterval = setInterval(() => {
+          if (charIndex < line.length) {
+            textElement.textContent += line[charIndex];
+            charIndex++;
+          } else {
+            clearInterval(typingInterval);
+
+            if (index === lines.length - 2) {
+              setTimeout(() => {
+                this.addHorizontalLine(
+                  container,
+                  startX,
+                  startY + index * lineHeight + 10,
+                  60
+                );
+              }, 1000);
+              delay += 4000;
+              paddingY += 10;
+            }
+          }
+        }, 100);
+      }, delay);
+
+      delay += 1000;
+    });
+  }
+
+  private addHorizontalLine(
+    container: HTMLElement,
+    x1: number,
+    y1: number,
+    lineWidth: number
+  ) {
+    const svg = container.querySelector('svg');
+    if (svg) {
+      const lineElement = this.renderer.createElement('line', 'svg');
+      this.renderer.setAttribute(lineElement, 'x1', x1.toString());
+      this.renderer.setAttribute(lineElement, 'y1', y1.toString());
+      this.renderer.setAttribute(
+        lineElement,
+        'x2',
+        (x1 + lineWidth).toString()
+      );
+      this.renderer.setAttribute(lineElement, 'y2', y1.toString());
+      this.renderer.setAttribute(lineElement, 'stroke', 'black');
+      this.renderer.setAttribute(lineElement, 'stroke-width', '3');
+      this.renderer.setAttribute(lineElement, 'class', 'draw-line');
+      this.renderer.appendChild(svg, lineElement);
     }
   }
 }
