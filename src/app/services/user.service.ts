@@ -1,7 +1,18 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { BehaviorSubject, catchError, Observable, throwError } from 'rxjs';
-import { tap } from 'rxjs';
+import {
+  BehaviorSubject,
+  catchError,
+  Observable,
+  throwError,
+  of,
+  mergeMap,
+  retry,
+  tap,
+  delayWhen,
+  timer,
+  finalize,
+} from 'rxjs';
 
 interface UserDetails {
   avatar: string | null;
@@ -22,6 +33,9 @@ export class UserService {
   isAuthorized$ = this.isAuthorizedSubject.asObservable();
   private isServerAvailableSubject = new BehaviorSubject<boolean>(false);
   isServerAvailable$ = this.isServerAvailableSubject.asObservable();
+
+  private refreshingToken = false;
+  private refreshTokenSubject = new BehaviorSubject<string | null>(null);
 
   constructor(private http: HttpClient) {}
 
@@ -138,6 +152,22 @@ export class UserService {
   refreshToken(
     refreshToken: string
   ): Observable<{ accessToken: string; refreshToken: string }> {
+    if (this.refreshingToken) {
+      return this.refreshTokenSubject.pipe(
+        mergeMap((newAccessToken) => {
+          if (!newAccessToken) {
+            throw new Error('Refresh token failed');
+          }
+          return of({
+            accessToken: newAccessToken,
+            refreshToken,
+          });
+        })
+      );
+    }
+
+    this.refreshingToken = true;
+
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
     });
@@ -149,15 +179,31 @@ export class UserService {
         { headers }
       )
       .pipe(
+        retry({
+          count: 2,
+          delay: (error, retryAttempt) => {
+            console.warn(
+              `Retrying refresh token request (attempt ${retryAttempt + 1})...`
+            );
+            return timer(5000);
+          },
+        }),
         tap((response) => {
           console.log(response);
           localStorage.setItem('authToken', response.accessToken);
           localStorage.setItem('refreshToken', response.refreshToken);
+          this.refreshTokenSubject.next(response.accessToken);
+          this.refreshingToken = false;
           this.isAuthorizedSubject.next(true);
         }),
         catchError((error) => {
           console.error('Error refreshing token', error);
+          this.refreshingToken = false;
+          this.refreshTokenSubject.next(null);
           return throwError(() => new Error('Failed to refresh token'));
+        }),
+        finalize(() => {
+          this.refreshingToken = false;
         })
       );
   }
