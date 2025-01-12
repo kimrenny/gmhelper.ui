@@ -39,9 +39,9 @@ rect {
 }
 
 .draw-line {
-  stroke-dasharray: 1000;
-  stroke-dashoffset: 1000;
-  animation: line-drawing 3s ease forwards;
+  stroke-dasharray: 300;
+  stroke-dashoffset: 300;
+  animation: line-drawing 4s ease forwards;
 }
 
 @keyframes line-drawing {

@@ -5,13 +5,13 @@ import {
   catchError,
   Observable,
   throwError,
-  of,
-  mergeMap,
   retry,
   tap,
-  delayWhen,
   timer,
   finalize,
+  filter,
+  take,
+  map,
 } from 'rxjs';
 
 interface UserDetails {
@@ -154,15 +154,14 @@ export class UserService {
   ): Observable<{ accessToken: string; refreshToken: string }> {
     if (this.refreshingToken) {
       return this.refreshTokenSubject.pipe(
-        mergeMap((newAccessToken) => {
-          if (!newAccessToken) {
-            throw new Error('Refresh token failed');
-          }
-          return of({
-            accessToken: newAccessToken,
-            refreshToken,
-          });
-        })
+        filter(
+          (newAccessToken): newAccessToken is string => newAccessToken !== null
+        ),
+        take(1),
+        map((newAccessToken: string) => ({
+          accessToken: newAccessToken,
+          refreshToken,
+        }))
       );
     }
 
@@ -182,6 +181,10 @@ export class UserService {
         retry({
           count: 2,
           delay: (error, retryAttempt) => {
+            if (error.status === 409) {
+              console.warn('Token refresh already in progress, no retry.');
+              throw error;
+            }
             console.warn(
               `Retrying refresh token request (attempt ${retryAttempt + 1})...`
             );
@@ -198,6 +201,33 @@ export class UserService {
         }),
         catchError((error) => {
           console.error('Error refreshing token', error);
+
+          if (error.status === 409) {
+            console.warn(
+              'Another refresh token request is already in progress.'
+            );
+            return this.refreshTokenSubject.pipe(
+              filter(
+                (newAccessToken): newAccessToken is string =>
+                  newAccessToken !== null
+              ),
+              take(1),
+              map((newAccessToken: string) => ({
+                accessToken: newAccessToken,
+                refreshToken,
+              }))
+            );
+          }
+
+          if (error.status === 0) {
+            console.warn(
+              'Server unavailable, token preserved for future retry.'
+            );
+            return throwError(
+              () => new Error('Temporary server unavailability.')
+            );
+          }
+
           this.refreshingToken = false;
           this.refreshTokenSubject.next(null);
           return throwError(() => new Error('Failed to refresh token'));
