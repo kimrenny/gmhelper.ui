@@ -121,16 +121,24 @@ export class UserService {
     const authToken = localStorage.getItem('authToken');
     const refreshToken = localStorage.getItem('refreshToken');
 
+    if (!authToken && !refreshToken) {
+      this.clearUser();
+      return;
+    }
+
     if (authToken && !this.isTokenExpired(authToken)) {
-      this.loadUserDetails(authToken).subscribe();
+      this.loadUserDetails(authToken).subscribe({
+        error: (err) => {
+          console.warn('Failed to load user details:', err);
+        },
+      });
     } else if (refreshToken) {
       this.refreshToken(refreshToken).subscribe({
         next: (tokens) => {
           this.loadUserDetails(tokens.accessToken).subscribe();
         },
         error: (err) => {
-          console.error('Error refreshing token', err);
-          this.clearUser();
+          console.warn('Unable to refresh token:', err);
         },
       });
     } else {
@@ -150,13 +158,12 @@ export class UserService {
   }
 
   refreshToken(
-    refreshToken: string
+    refreshToken: string,
+    attempts: number = 0
   ): Observable<{ accessToken: string; refreshToken: string }> {
     if (this.refreshingToken) {
       return this.refreshTokenSubject.pipe(
-        filter(
-          (newAccessToken): newAccessToken is string => newAccessToken !== null
-        ),
+        filter((token): token is string => token !== null),
         take(1),
         map((newAccessToken: string) => ({
           accessToken: newAccessToken,
@@ -200,7 +207,19 @@ export class UserService {
           this.isAuthorizedSubject.next(true);
         }),
         catchError((error) => {
-          console.error('Error refreshing token', error);
+          if (error.status === 0) {
+            console.warn('Server unavailable, retrying...');
+            this.isServerAvailableSubject.next(false);
+
+            if (attempts < 2) {
+              return this.refreshToken(refreshToken, attempts + 1);
+            }
+
+            console.error('Failed to refresh token after multiple attempts.');
+            return throwError(
+              () => new Error('Temporary server unavailability.')
+            );
+          }
 
           if (error.status === 409) {
             console.warn(
@@ -219,16 +238,11 @@ export class UserService {
             );
           }
 
-          if (error.status === 0) {
-            console.warn(
-              'Server unavailable, token preserved for future retry.'
-            );
-            return throwError(
-              () => new Error('Temporary server unavailability.')
-            );
+          if (error.status === 400 || error.status === 401) {
+            console.error('Invalid token, clearing user data.');
+            this.clearUser();
           }
 
-          this.refreshingToken = false;
           this.refreshTokenSubject.next(null);
           return throwError(() => new Error('Failed to refresh token'));
         }),
