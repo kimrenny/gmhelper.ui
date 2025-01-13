@@ -12,6 +12,7 @@ import {
   filter,
   take,
   map,
+  switchMap,
 } from 'rxjs';
 
 interface UserDetails {
@@ -146,7 +147,7 @@ export class UserService {
     }
   }
 
-  isTokenExpired(token: string, bufferTime: number = 5 * 60 * 1000): boolean {
+  isTokenExpired(token: string, bufferTime: number = 55 * 60 * 1000): boolean {
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
       const exp = payload.exp * 1000;
@@ -162,6 +163,7 @@ export class UserService {
     attempts: number = 0
   ): Observable<{ accessToken: string; refreshToken: string }> {
     if (this.refreshingToken) {
+      console.log('Token refresh already in progress, waiting...');
       return this.refreshTokenSubject.pipe(
         filter((token): token is string => token !== null),
         take(1),
@@ -185,34 +187,27 @@ export class UserService {
         { headers }
       )
       .pipe(
-        retry({
-          count: 2,
-          delay: (error, retryAttempt) => {
-            if (error.status === 409) {
-              console.warn('Token refresh already in progress, no retry.');
-              throw error;
-            }
-            console.warn(
-              `Retrying refresh token request (attempt ${retryAttempt + 1})...`
-            );
-            return timer(5000);
-          },
-        }),
         tap((response) => {
           console.log(response);
           localStorage.setItem('authToken', response.accessToken);
           localStorage.setItem('refreshToken', response.refreshToken);
           this.refreshTokenSubject.next(response.accessToken);
-          this.refreshingToken = false;
           this.isAuthorizedSubject.next(true);
         }),
         catchError((error) => {
+          console.error('Failed to refresh token:', error);
           if (error.status === 0) {
-            console.warn('Server unavailable, retrying...');
+            console.warn('Server unavailable...');
             this.isServerAvailableSubject.next(false);
 
-            if (attempts < 2) {
-              return this.refreshToken(refreshToken, attempts + 1);
+            if (attempts < 3) {
+              console.warn(
+                `Server unavailable, retrying (attempt ${attempts + 1})`
+              );
+              this.refreshingToken = false;
+              return timer(5000).pipe(
+                switchMap(() => this.refreshToken(refreshToken, attempts + 1))
+              );
             }
 
             console.error('Failed to refresh token after multiple attempts.');
