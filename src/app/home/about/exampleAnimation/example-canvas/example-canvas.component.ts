@@ -355,11 +355,11 @@ export class ExampleCanvasComponent {
 
     const canvasWidth = parseInt(svg.getAttribute('width') || '300', 10);
     const lines = text.split(',');
-    const startX = canvasWidth - 100;
-    const startY = 40;
+    const startX = canvasWidth - 119;
+    const startY = 40 - 1;
     const lineHeight = 20;
     let paddingY = 0;
-    const lineWidth = lines.length === 4 ? 70 : 80;
+    const lineWidth = lines.length === 4 ? 65 : 100;
 
     let delay = 1200;
 
@@ -390,7 +390,7 @@ export class ExampleCanvasComponent {
       x: x.toString(),
       y: y.toString(),
       fill: 'black',
-      'font-size': '14',
+      'font-size': '16',
       'text-anchor': 'start',
       class: 'typewriter',
     });
