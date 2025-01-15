@@ -49,9 +49,11 @@ export class HeaderComponent implements OnInit {
     this.userService.checkAuthentication();
 
     this.userService.isAuthorized$.subscribe((isAuthenticated) => {
+      console.log('isAuthorized subscription:', isAuthenticated);
       this.userIsAuthenticated = isAuthenticated;
       if (isAuthenticated) {
         const userDetails = this.userService.getUserDetails();
+        console.log('isAuthorized subscription, user:', userDetails.nickname);
         this.userNickname = userDetails.nickname;
         this.userAvatarUrl =
           userDetails.avatar || 'assets/icons/default-avatar.png';

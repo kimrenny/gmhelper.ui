@@ -124,6 +124,7 @@ export class SettingsComponent implements OnInit {
       .get<any[]>('https://localhost:7057/api/user/devices', { headers })
       .subscribe({
         next: (devices) => {
+          console.log(devices);
           if (Array.isArray(devices) && devices.length > 0) {
             this.devices = devices;
           } else {
@@ -285,30 +286,38 @@ export class SettingsComponent implements OnInit {
       Authorization: `Bearer ${token}`,
     });
 
-    const uniqueDeviceId = `${device.ipAddress}-${device.authorizationDate}`;
-
     this.http
       .patch(
         `https://localhost:7057/api/user/devices/deactivate`,
-        { uniqueDeviceId },
+        { userAgent: device.userAgent, platform: device.platform },
         { headers }
       )
       .subscribe({
         next: () => {
           console.log('Device deactivated successfully.');
-          const targetDevice = this.devices.find(
-            (d) =>
-              d.ipAddress === device.ipAddress &&
-              d.authorizationDate === device.authorizationDate
-          );
-          if (targetDevice) {
-            targetDevice.isActive = false;
-          }
+
+          this.updateDeviceState(device);
+
+          this.userService.checkAuthentication(() => {
+            this.getLoggedDevices();
+          });
         },
         error: (err) => {
           console.error('Error deactivating device:', err);
         },
       });
+  }
+
+  private updateDeviceState(device: any): void {
+    const targetDevice = this.devices.find(
+      (d) =>
+        d.ipAddress === device.ipAddress &&
+        d.platform === device.platform &&
+        d.userAgent === device.userAgent
+    );
+    if (targetDevice) {
+      targetDevice.isActive = false;
+    }
   }
 
   validateEmail(email: string): boolean {

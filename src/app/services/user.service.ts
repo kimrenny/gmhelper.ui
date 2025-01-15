@@ -88,10 +88,12 @@ export class UserService {
         'User not found.',
         'Invalid data.',
         'Invalid token.',
-      ].includes(error.error)
+        'Unauthorized',
+      ].includes(error.error) ||
+      error.status === 401 ||
+      error.status === 404
     ) {
-      this.isAuthorizedSubject.next(false);
-      localStorage.removeItem('authToken');
+      this.clearUser();
     }
     this.isServerAvailableSubject.next(true);
 
@@ -118,7 +120,7 @@ export class UserService {
     this.userSubject.next(userDetails);
   }
 
-  checkAuthentication(): void {
+  checkAuthentication(callback?: () => void): void {
     const authToken = localStorage.getItem('authToken');
     const refreshToken = localStorage.getItem('refreshToken');
 
@@ -129,6 +131,9 @@ export class UserService {
 
     if (authToken && !this.isTokenExpired(authToken)) {
       this.loadUserDetails(authToken).subscribe({
+        next: () => {
+          if (callback) callback();
+        },
         error: (err) => {
           console.warn('Failed to load user details:', err);
         },
@@ -136,7 +141,11 @@ export class UserService {
     } else if (refreshToken) {
       this.refreshToken(refreshToken).subscribe({
         next: (tokens) => {
-          this.loadUserDetails(tokens.accessToken).subscribe();
+          this.loadUserDetails(tokens.accessToken).subscribe({
+            next: () => {
+              if (callback) callback();
+            },
+          });
         },
         error: (err) => {
           console.warn('Unable to refresh token:', err);
@@ -147,7 +156,7 @@ export class UserService {
     }
   }
 
-  isTokenExpired(token: string, bufferTime: number = 55 * 60 * 1000): boolean {
+  isTokenExpired(token: string, bufferTime: number = 5 * 60 * 1000): boolean {
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
       const exp = payload.exp * 1000;
