@@ -289,7 +289,11 @@ export class SettingsComponent implements OnInit {
     this.http
       .patch(
         `https://localhost:7057/api/user/devices/deactivate`,
-        { userAgent: device.userAgent, platform: device.platform },
+        {
+          userAgent: device.userAgent,
+          platform: device.platform,
+          ipAddress: device.ipAddress,
+        },
         { headers }
       )
       .subscribe({
