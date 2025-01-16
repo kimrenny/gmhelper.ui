@@ -1,5 +1,4 @@
 import { Component, ChangeDetectorRef } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
@@ -59,7 +58,6 @@ export class RegisterComponent {
 
   constructor(
     private registerService: RegisterService,
-    private http: HttpClient,
     private cdr: ChangeDetectorRef,
     private route: ActivatedRoute,
     private router: Router,

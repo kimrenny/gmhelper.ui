@@ -8,7 +8,6 @@ export class Quad implements DrawingTool {
     this.points.push(point);
 
     if (this.points.length === 2) {
-      // Если добавлено две точки, завершаем создание прямоугольника
       this.reset();
     }
   }
@@ -23,7 +22,6 @@ export class Quad implements DrawingTool {
     color: string
   ): void {
     if (this.points.length === 1 && this.previewPoint) {
-      // Отрисовываем прямоугольник на основе начальной точки и preview
       const startX = this.points[0].x;
       const startY = this.points[0].y;
       const endX = this.previewPoint.x;
@@ -44,7 +42,6 @@ export class Quad implements DrawingTool {
     }
 
     if (path.length === 2) {
-      // Отрисовка завершенного прямоугольника
       const startX = path[0].x;
       const startY = path[0].y;
       const endX = path[1].x;

@@ -7,7 +7,7 @@ export class Polygon implements DrawingTool {
   private vertexCount: number = 0;
 
   isSetupComplete(): boolean {
-    return this.vertexCount > 0; // Проверяет, установлено ли количество углов
+    return this.vertexCount > 0;
   }
 
   setVertexCount(): void {
@@ -18,10 +18,10 @@ export class Polygon implements DrawingTool {
 
     if (isNaN(count) || count < 3 || count > 8) {
       alert('Некорректное значение. Введите число от 3 до 8.');
-      this.setVertexCount(); // Повторный запрос при ошибке
+      this.setVertexCount();
     } else {
       this.vertexCount = count;
-      this.reset(); // Сбрасываем текущие точки
+      this.reset();
     }
   }
 
@@ -45,7 +45,6 @@ export class Polygon implements DrawingTool {
     path: { x: number; y: number }[],
     color: string
   ): void {
-    // Рисуем завершенные многоугольники
     this.polygons.forEach((polygon) => {
       ctx.save();
       ctx.strokeStyle = color;
@@ -58,13 +57,12 @@ export class Polygon implements DrawingTool {
         ctx.lineTo(point.x, point.y);
       });
 
-      ctx.lineTo(polygon[0].x, polygon[0].y); // Замыкание
+      ctx.lineTo(polygon[0].x, polygon[0].y);
       ctx.stroke();
       ctx.closePath();
       ctx.restore();
     });
 
-    // Рисуем текущий многоугольник
     if (this.vertices.length > 0) {
       ctx.save();
       ctx.strokeStyle = color;

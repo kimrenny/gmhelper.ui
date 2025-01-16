@@ -6,21 +6,16 @@ export class Rhombus implements DrawingTool {
     path: { x: number; y: number }[],
     color: string
   ): void {
-    if (path.length < 4) return; // Для ромба нужно 4 точки
+    if (path.length < 4) return;
 
     ctx.strokeStyle = color;
     ctx.lineWidth = 2;
     ctx.beginPath();
 
-    // Первая точка
     ctx.moveTo(path[0].x, path[0].y);
-    // Вторая точка
     ctx.lineTo(path[1].x, path[1].y);
-    // Третья точка
     ctx.lineTo(path[2].x, path[2].y);
-    // Четвертая точка
     ctx.lineTo(path[3].x, path[3].y);
-    // Замыкаем ромб
     ctx.lineTo(path[0].x, path[0].y);
 
     ctx.stroke();

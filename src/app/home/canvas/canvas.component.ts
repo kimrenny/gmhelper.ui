@@ -136,10 +136,9 @@ export class CanvasComponent implements AfterViewInit {
       });
       this.redraw();
     } else if (this.currentTool instanceof Triangle) {
-      // Только для треугольника обновляем previewPoint
       const triangleTool = this.currentTool as Triangle;
       triangleTool.setPreviewPoint(mousePos);
-      this.redraw(); // Обновляем полотно для отображения временных линий
+      this.redraw();
     }
   }
 

@@ -5,7 +5,6 @@ import { WelcomeComponent } from '../home/welcome/welcome.component';
 import { AboutComponent } from '../home/about/about.component';
 import { FeaturesComponent } from '../home/features/features.component';
 import { ContactComponent } from '../home/contact/contact.component';
-import { NavbarComponent } from './navbar/navbar.component';
 import { StartComponent } from './start/start.component';
 
 @Component({
@@ -17,7 +16,6 @@ import { StartComponent } from './start/start.component';
     AboutComponent,
     FeaturesComponent,
     ContactComponent,
-    NavbarComponent,
     StartComponent,
   ],
   templateUrl: './home.component.html',

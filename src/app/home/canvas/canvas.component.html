@@ -14,14 +14,12 @@
     </button>
   </div>
 
-  <!-- Существующие контролы для изменения масштаба -->
   <div class="scale-controls" [class.disabled]="!selectedSubject">
     <button (click)="adjustScale(-10)" [disabled]="scale <= minScale">-</button>
     <span class="scale-value">{{ scale }}%</span>
     <button (click)="adjustScale(10)" [disabled]="scale >= maxScale">+</button>
   </div>
 
-  <!-- Существующие селекты для смены предмета -->
   <div class="subject-change" [class.disabled]="!selectedSubject">
     <select
       [(ngModel)]="selectedSubject"
@@ -36,7 +34,6 @@
     </select>
   </div>
 
-  <!-- Новые кнопки для карандаша и выбора цвета, скрыты под блюром -->
   <div
     class="tool-buttons"
     [class.disabled]="!selectedSubject"
