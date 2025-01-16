@@ -11,6 +11,11 @@ import { CommonModule } from '@angular/common';
 export class WelcomeStarsComponent implements AfterViewInit {
   private starCount = 300;
   private stars: HTMLElement[] = [];
+  private starPositions: { x: number; y: number }[] = [];
+  private canvas: HTMLCanvasElement | null = null;
+  private context: CanvasRenderingContext2D | null = null;
+  private lastMouseMove = 0;
+  private debounceDelay = 0;
 
   constructor(private renderer: Renderer2, private el: ElementRef) {}
 
@@ -28,9 +33,9 @@ export class WelcomeStarsComponent implements AfterViewInit {
 
     for (let i = 0; i < this.starCount; i++) {
       const star = this.renderer.createElement('div');
-      const size = Math.random() * 3 + 1; // Размер от 1 до 4 пикселей
-      const hue = Math.random(); // Случайный оттенок для звезды
-      const delay = Math.random() * 5; // Случайная задержка до 5 секунд
+      const size = Math.random() * 3 + 1;
+      const hue = Math.random();
+      const delay = Math.random() * 5;
 
       this.renderer.addClass(star, 'star');
       this.renderer.setStyle(star, 'width', `${size}px`);
@@ -38,84 +43,85 @@ export class WelcomeStarsComponent implements AfterViewInit {
       this.renderer.setStyle(star, 'left', `${Math.random() * 100}vw`);
       this.renderer.setStyle(star, 'top', `${Math.random() * 100}vh`);
       this.renderer.setStyle(star, 'hue', hue.toString());
-      this.renderer.setStyle(star, 'animation-delay', `${delay}s`); // Задержка анимации
+      this.renderer.setStyle(star, 'animation-delay', `${delay}s`);
 
       this.renderer.appendChild(starsContainer, star);
-      this.stars.push(star); // Сохраняем ссылки на звезды
+      this.stars.push(star);
+
+      const rect = star.getBoundingClientRect();
+      this.starPositions.push({
+        x: rect.left + rect.width / 2,
+        y: rect.top + rect.height / 2,
+      });
+    }
+
+    this.canvas = this.renderer.createElement('canvas');
+    this.context = this.canvas!.getContext('2d');
+    if (this.canvas && this.context) {
+      this.renderer.appendChild(starsContainer, this.canvas);
+      this.updateCanvasSize();
     }
   }
 
   private setupCursorConnection() {
-    const starsContainer = this.el.nativeElement.querySelector('#stars');
-
     this.renderer.listen('document', 'mousemove', (event: MouseEvent) => {
-      this.drawConstellations(event.clientX, event.clientY, starsContainer);
+      const currentTime = Date.now();
+      if (currentTime - this.lastMouseMove < this.debounceDelay) {
+        return;
+      }
+      this.lastMouseMove = currentTime;
+
+      this.drawConstellations(event.clientX, event.clientY);
     });
 
     this.renderer.listen('document', 'mouseleave', () => {
-      this.clearConstellations(starsContainer);
+      this.clearConstellations();
     });
   }
 
-  private drawConstellations(
-    mouseX: number,
-    mouseY: number,
-    container: HTMLElement
-  ) {
-    // Очищаем старые линии
-    this.clearConstellations(container);
+  private updateCanvasSize() {
+    if (this.canvas && this.context) {
+      const starsContainer = this.el.nativeElement.querySelector('#stars');
+      this.canvas.width = starsContainer.offsetWidth;
+      this.canvas.height = starsContainer.offsetHeight;
+    }
+  }
 
-    // Создаем канвас для рисования линий
-    const canvas = this.renderer.createElement('canvas');
-    const context = canvas.getContext('2d');
-    if (!context) return;
+  private drawConstellations(mouseX: number, mouseY: number) {
+    if (!this.context) return;
 
-    // Устанавливаем размер канваса
-    canvas.width = container.clientWidth;
-    canvas.height = container.clientHeight;
-    this.renderer.appendChild(container, canvas);
+    this.context.clearRect(0, 0, this.canvas!.width, this.canvas!.height);
 
     const distances: { star: HTMLElement; distance: number }[] = [];
-
-    // Обходим звезды и проверяем расстояние до курсора
-    this.stars.forEach((star) => {
-      const rect = star.getBoundingClientRect();
-      const starX = rect.left + rect.width / 2;
-      const starY = rect.top + rect.height / 2;
-
+    this.starPositions.forEach((pos, index) => {
       const distance = Math.sqrt(
-        Math.pow(mouseX - starX, 2) + Math.pow(mouseY - starY, 2)
+        Math.pow(mouseX - pos.x, 2) + Math.pow(mouseY - pos.y, 2)
       );
-
       if (distance < 100) {
-        // Если курсор близко к звезде
-        distances.push({ star, distance });
+        distances.push({ star: this.stars[index], distance });
       }
     });
 
-    // Сортируем звезды по расстоянию и берем только 4 ближайшие
     distances.sort((a, b) => a.distance - b.distance);
     const closestStars = distances.slice(0, 4);
 
-    // Рисуем линии к ближайшим звездам
     closestStars.forEach(({ star }) => {
       const rect = star.getBoundingClientRect();
       const starX = rect.left + rect.width / 2;
       const starY = rect.top + rect.height / 2;
 
-      context.beginPath();
-      context.moveTo(mouseX, mouseY);
-      context.lineTo(starX, starY);
-      context.strokeStyle = 'rgba(255, 255, 255, 0.5)'; // Цвет линии
-      context.lineWidth = 1;
-      context.stroke();
+      this.context!.beginPath();
+      this.context!.moveTo(mouseX, mouseY);
+      this.context!.lineTo(starX, starY);
+      this.context!.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+      this.context!.lineWidth = 1;
+      this.context!.stroke();
     });
   }
 
-  private clearConstellations(container: HTMLElement) {
-    const canvas = container.querySelector('canvas');
-    if (canvas) {
-      this.renderer.removeChild(container, canvas);
+  private clearConstellations() {
+    if (this.context) {
+      this.context.clearRect(0, 0, this.canvas!.width, this.canvas!.height);
     }
   }
 }
