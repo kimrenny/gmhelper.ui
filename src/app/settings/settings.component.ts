@@ -5,12 +5,12 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+
 import { Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 import { UserService } from '../services/user.service';
-import { Observable } from 'rxjs';
+import { Observable, take } from 'rxjs';
 
 @Component({
   selector: 'app-settings',
@@ -22,6 +22,7 @@ import { Observable } from 'rxjs';
 export class SettingsComponent implements OnInit {
   settingsForm!: FormGroup;
   devices: any[] = [];
+  devicesLoaded: boolean = false;
   showPassword: boolean = false;
   isSettingsActive: boolean = true;
   selectedAvatar: File | null = null;
@@ -48,28 +49,12 @@ export class SettingsComponent implements OnInit {
   constructor(
     private userService: UserService,
     private fb: FormBuilder,
-    private http: HttpClient,
     private cdr: ChangeDetectorRef,
     private router: Router
   ) {
+    console.log(`SettingsComponent instance created: ${Math.random()}`);
     this.isAuthorized = this.userService.isAuthorized$;
     this.isServerAvailable = this.userService.isServerAvailable$;
-
-    this.isAuthorized.subscribe((isAuthorized) => {
-      if (isAuthorized) {
-        this.userService.user$.subscribe((userDetails) => {
-          this.userNickname = userDetails.nickname;
-          this.userAvatarUrl =
-            userDetails.avatar || 'assets/icons/default-avatar.png';
-        });
-      } else {
-        console.warn('User is not authorized');
-      }
-    });
-
-    this.isServerAvailable.subscribe();
-
-    this.getLoggedDevices();
   }
 
   ngOnInit(): void {
@@ -81,6 +66,8 @@ export class SettingsComponent implements OnInit {
       confirmNewPassword: [''],
       avatar: [null],
     });
+
+    console.log('SettingsComponent ngOnInit is called.');
 
     this.userService.checkAuthentication();
 
@@ -94,7 +81,15 @@ export class SettingsComponent implements OnInit {
       });
     });
 
-    this.getLoggedDevices();
+    this.userService.isAuthorized$.subscribe((authorized) => {
+      if (authorized && !this.devicesLoaded) {
+        console.log('Calling getLoggedDevices');
+        this.getLoggedDevices();
+        this.devicesLoaded = true;
+      } else {
+        console.log('No authorized.');
+      }
+    });
   }
 
   getUserDetails(attempt = 0) {
@@ -115,26 +110,20 @@ export class SettingsComponent implements OnInit {
   }
 
   getLoggedDevices() {
-    const token = localStorage.getItem('authToken');
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${token}`,
+    console.log('called getLoggedDevices');
+    this.userService.getLoggedDevices().subscribe({
+      next: (devices) => {
+        console.log(devices);
+        if (Array.isArray(devices) && devices.length > 0) {
+          this.devices = devices;
+        } else {
+          console.log('No devices found or invalid data structure.');
+        }
+      },
+      error: (err) => {
+        console.error('Error fetching devices:', err);
+      },
     });
-
-    this.http
-      .get<any[]>('https://localhost:7057/api/user/devices', { headers })
-      .subscribe({
-        next: (devices) => {
-          console.log(devices);
-          if (Array.isArray(devices) && devices.length > 0) {
-            this.devices = devices;
-          } else {
-            console.log('No devices found or invalid data structure.');
-          }
-        },
-        error: (err) => {
-          console.error('Error fetching devices:', err);
-        },
-      });
   }
 
   toggleMenu() {
@@ -158,11 +147,6 @@ export class SettingsComponent implements OnInit {
         newPassword,
         confirmNewPassword,
       } = this.settingsForm.value;
-
-      const token = localStorage.getItem('authToken');
-      const headers = new HttpHeaders({
-        Authorization: `Bearer ${token}`,
-      });
 
       if (!nickname && !email && !newPassword) {
         alert('Enter at least one field for update.');
@@ -209,18 +193,16 @@ export class SettingsComponent implements OnInit {
         formData.append('newPassword', newPassword);
       }
 
-      this.http
-        .put('https://localhost:7057/api/user/update', formData, { headers })
-        .subscribe({
-          next: () => {
-            this.getUserDetails();
-            this.cdr.detectChanges();
-            console.log('Data updated successfully.');
-          },
-          error: (err) => {
-            console.error('Error updating data:', err);
-          },
-        });
+      this.userService.updateUserData(formData).subscribe({
+        next: () => {
+          this.getUserDetails();
+          this.cdr.detectChanges();
+          console.log('Data updated successfully.');
+        },
+        error: (err) => {
+          console.error('Error updating data:', err);
+        },
+      });
     } else {
       alert('Form has filled incorrectly.');
     }
@@ -252,27 +234,15 @@ export class SettingsComponent implements OnInit {
       return;
     }
 
-    const token = localStorage.getItem('authToken');
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${token}`,
+    this.userService.uploadAvatar(this.selectedAvatar).subscribe({
+      next: () => {
+        this.selectedAvatar = null;
+        this.getUserDetails();
+      },
+      error: (err) => {
+        console.error('Error uploading avatar:', err);
+      },
     });
-
-    const formData = new FormData();
-    formData.append('avatar', this.selectedAvatar);
-
-    this.http
-      .post('https://localhost:7057/api/user/upload-avatar', formData, {
-        headers,
-      })
-      .subscribe({
-        next: () => {
-          this.selectedAvatar = null;
-          this.getUserDetails();
-        },
-        error: (err) => {
-          console.error('Error uploading avatar:', err);
-        },
-      });
   }
 
   clearAvatar(): void {
@@ -281,47 +251,18 @@ export class SettingsComponent implements OnInit {
   }
 
   async deactivateDevice(device: any) {
-    const token = localStorage.getItem('authToken');
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${token}`,
+    this.userService.deactivateDevice(device).subscribe({
+      next: () => {
+        console.log('Device deactivated successfully.');
+
+        this.userService.checkAuthentication(() => {
+          this.getLoggedDevices();
+        });
+      },
+      error: (err) => {
+        console.error('Error deactivating device:', err);
+      },
     });
-
-    this.http
-      .patch(
-        `https://localhost:7057/api/user/devices/deactivate`,
-        {
-          userAgent: device.userAgent,
-          platform: device.platform,
-          ipAddress: device.ipAddress,
-        },
-        { headers }
-      )
-      .subscribe({
-        next: () => {
-          console.log('Device deactivated successfully.');
-
-          this.updateDeviceState(device);
-
-          this.userService.checkAuthentication(() => {
-            this.getLoggedDevices();
-          });
-        },
-        error: (err) => {
-          console.error('Error deactivating device:', err);
-        },
-      });
-  }
-
-  private updateDeviceState(device: any): void {
-    const targetDevice = this.devices.find(
-      (d) =>
-        d.ipAddress === device.ipAddress &&
-        d.platform === device.platform &&
-        d.userAgent === device.userAgent
-    );
-    if (targetDevice) {
-      targetDevice.isActive = false;
-    }
   }
 
   validateEmail(email: string): boolean {
