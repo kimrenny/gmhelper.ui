@@ -7,12 +7,6 @@ import {
 import { CommonModule } from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
 import { Router, NavigationStart } from '@angular/router';
-import {
-  HttpClient,
-  HttpErrorResponse,
-  HttpHeaders,
-} from '@angular/common/http';
-import { firstValueFrom } from 'rxjs';
 import { UserService } from 'src/app/services/user.service';
 
 @Component({
@@ -33,7 +27,6 @@ export class HeaderComponent implements OnInit {
     private userService: UserService,
     private translate: TranslateService,
     private router: Router,
-    private http: HttpClient,
     private cdr: ChangeDetectorRef
   ) {}
 
@@ -45,8 +38,6 @@ export class HeaderComponent implements OnInit {
       this.translate.setDefaultLang('en');
       this.translate.use('en');
     }
-
-    this.userService.checkAuthentication();
 
     this.userService.isAuthorized$.subscribe((isAuthenticated) => {
       console.log('isAuthorized subscription:', isAuthenticated);
