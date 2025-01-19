@@ -46,8 +46,8 @@ export class UserService {
 
   private initializeAuthentication(): void {
     console.log('Initializing authentication process...');
-    const authToken = localStorage.getItem('authToken');
-    const refreshToken = localStorage.getItem('refreshToken');
+    const authToken = this.getTokenFromStorage('authToken');
+    const refreshToken = this.getTokenFromStorage('refreshToken');
 
     if (!authToken && !refreshToken) {
       console.warn('No tokens found in localStorage.');
@@ -78,6 +78,10 @@ export class UserService {
       });
   }
 
+  private getTokenFromStorage(key: string): string | null {
+    return localStorage.getItem(key);
+  }
+
   private ensureTokenValidity(
     authToken: string | null,
     refreshToken: string | null
@@ -106,23 +110,20 @@ export class UserService {
   }
 
   loadUserDetails(token: string, attempts = 0): Observable<UserDetails> {
-    console.log('Loading user details...', { token, attempts });
+    // console.log('Loading user details...', { token, attempts });
 
     return this.ensureTokenValidity(
       token,
-      localStorage.getItem('refreshToken')
+      this.getTokenFromStorage('refreshToken')
     ).pipe(
       switchMap((validToken) => {
-        const headers = new HttpHeaders({
-          Authorization: `Bearer ${validToken}`,
-        });
         return this.http.get<UserDetails>(
           'https://localhost:7057/api/user/details',
-          { headers }
+          { headers: this.createAuthHeaders(token) }
         );
       }),
       tap((userDetails) => {
-        console.log('User details successfully loaded:', userDetails);
+        // console.log('User details successfully loaded:', userDetails);
         if (userDetails.avatar) {
           userDetails.avatar = `data:image/jpeg;base64,${userDetails.avatar}`;
         }
@@ -197,8 +198,8 @@ export class UserService {
   }
 
   checkAuthentication(callback?: () => void): void {
-    const authToken = localStorage.getItem('authToken');
-    const refreshToken = localStorage.getItem('refreshToken');
+    const authToken = this.getTokenFromStorage('authToken');
+    const refreshToken = this.getTokenFromStorage('refreshToken');
 
     this.ensureTokenValidity(authToken, refreshToken).subscribe({
       next: (accessToken) => {
@@ -234,11 +235,12 @@ export class UserService {
     refreshToken: string,
     attempts: number = 0
   ): Observable<{ accessToken: string; refreshToken: string }> {
-    console.log('refreshToken:');
-    console.log('this', this);
-    console.log('this.refreshingToken', this.refreshingToken);
+    // console.log('refreshToken:');
+    // console.trace();
+    // console.log('this', this);
+    // console.log('this.refreshingToken', this.refreshingToken);
     if (this.refreshingToken) {
-      //console.log('Token refresh already in progress, waiting...');
+      // console.log('Token refresh already in progress, waiting...');
       return this.refreshTokenSubject.pipe(
         filter((token): token is string => token !== null),
         take(1),
@@ -249,7 +251,7 @@ export class UserService {
       );
     }
 
-    //console.log('Starting token refresh process...');
+    console.log('Starting token refresh process...');
     this.refreshingToken = true;
 
     const headers = new HttpHeaders({
@@ -275,7 +277,7 @@ export class UserService {
         ),
         finalize(() => {
           this.refreshingToken = false;
-          //console.log('Token refresh process completed.');
+          console.log('Token refresh process completed.');
         })
       );
   }
@@ -316,32 +318,34 @@ export class UserService {
   }
 
   getLoggedDevices(): Observable<any> {
-    const token = localStorage.getItem('authToken');
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${token}`,
-    });
+    const token = this.getTokenFromStorage('authToken');
+    if (!token) {
+      return throwError(() => new Error('Token does not exist'));
+    }
 
     return this.http.get<any[]>('https://localhost:7057/api/user/devices', {
-      headers,
+      headers: this.createAuthHeaders(token),
     });
   }
 
   updateUserData(formData: FormData): Observable<any> {
-    const token = localStorage.getItem('authToken');
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${token}`,
-    });
+    const token = this.getTokenFromStorage('authToken');
+
+    if (!token) {
+      return throwError(() => new Error('Token does not exist'));
+    }
 
     return this.http.put('https://localhost:7057/api/user/update', formData, {
-      headers,
+      headers: this.createAuthHeaders(token),
     });
   }
 
   uploadAvatar(avatar: File): Observable<any> {
-    const token = localStorage.getItem('authToken');
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${token}`,
-    });
+    const token = this.getTokenFromStorage('authToken');
+
+    if (!token) {
+      return throwError(() => new Error('Token does not exist'));
+    }
 
     const formData = new FormData();
     formData.append('avatar', avatar);
@@ -349,12 +353,12 @@ export class UserService {
     return this.http.post(
       'https://localhost:7057/api/user/upload-avatar',
       formData,
-      { headers }
+      { headers: this.createAuthHeaders(token) }
     );
   }
 
   deactivateDevice(device: any): Observable<any> {
-    const token = localStorage.getItem('authToken');
+    const token = this.getTokenFromStorage('authToken');
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`,
     });
@@ -368,6 +372,10 @@ export class UserService {
       },
       { headers }
     );
+  }
+
+  private createAuthHeaders(token: string) {
+    return new HttpHeaders({ Authorization: `Bearer ${token}` });
   }
 
   clearUser(): void {
