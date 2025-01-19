@@ -5,11 +5,13 @@ import {
   ChangeDetectorRef,
   ChangeDetectionStrategy,
   Inject,
+  OnDestroy,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
-import { Router, NavigationStart } from '@angular/router';
+import { Router, NavigationStart, RouterModule } from '@angular/router';
 import { UserService } from 'src/app/services/user.service';
+import { Subscription } from 'rxjs';
 
 // TODO: Deal with the issue of double calling SettingsComponent
 
@@ -18,14 +20,16 @@ import { UserService } from 'src/app/services/user.service';
   standalone: true,
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent implements OnInit, OnDestroy {
   showLanguageMenu = false;
   userIsAuthenticated = false;
   userAvatarUrl = 'assets/icons/default-avatar.png';
   userNickname = 'Guest';
   showUserMenu = false;
+
+  private subscriptions = new Subscription();
 
   constructor(
     @Inject(UserService) private userService: UserService,
@@ -48,12 +52,14 @@ export class HeaderComponent implements OnInit {
       this.translate.use('en');
     }
 
-    this.userService.isAuthorized$.subscribe((isAuthenticated) => {
-      console.log('isAuthorized subscription:', isAuthenticated);
-      this.userIsAuthenticated = isAuthenticated;
-    });
+    const authSub = this.userService.isAuthorized$.subscribe(
+      (isAuthenticated) => {
+        console.log('isAuthorized subscription:', isAuthenticated);
+        this.userIsAuthenticated = isAuthenticated;
+      }
+    );
 
-    this.userService.user$.subscribe((userDetails) => {
+    const userSub = this.userService.user$.subscribe((userDetails) => {
       console.log('User details updated:', userDetails);
       this.userNickname = userDetails.nickname;
       this.userAvatarUrl =
@@ -61,11 +67,20 @@ export class HeaderComponent implements OnInit {
       this.cdr.detectChanges();
     });
 
-    this.router.events.subscribe((event) => {
+    const routerSub = this.router.events.subscribe((event) => {
       if (event instanceof NavigationStart && event.url === '/') {
         this.showUserMenu = false;
       }
     });
+
+    this.subscriptions.add(authSub);
+    this.subscriptions.add(userSub);
+    this.subscriptions.add(routerSub);
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.unsubscribe();
+    console.log('HeaderComponent destroyed.');
   }
 
   toggleLanguageMenu() {
