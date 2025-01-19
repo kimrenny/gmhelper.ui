@@ -1,14 +1,8 @@
 import { ApplicationConfig, importProvidersFrom } from '@angular/core';
 import { provideHttpClient } from '@angular/common/http';
 import { provideRouter } from '@angular/router';
-import { bootstrapApplication } from '@angular/platform-browser';
-import {
-  TranslateModule,
-  TranslateLoader,
-  TranslateService,
-} from '@ngx-translate/core';
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { CustomTranslateLoader } from './app-translate-loader';
-import { AppComponent } from './app.component';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { routes } from './app.routes';
 import { LocationStrategy, PathLocationStrategy } from '@angular/common';
@@ -35,11 +29,3 @@ export const appConfig: ApplicationConfig = {
     UserService,
   ],
 };
-
-bootstrapApplication(AppComponent, appConfig)
-  .then((appRef) => {
-    const translate = appRef.injector.get(TranslateService);
-    translate.setDefaultLang('en');
-    translate.use('en');
-  })
-  .catch((err) => console.error(err));
