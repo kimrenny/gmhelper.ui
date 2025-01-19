@@ -3,11 +3,15 @@ import {
   HostListener,
   OnInit,
   ChangeDetectorRef,
+  ChangeDetectionStrategy,
+  Inject,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
 import { Router, NavigationStart } from '@angular/router';
 import { UserService } from 'src/app/services/user.service';
+
+// TODO: Deal with the issue of double calling SettingsComponent
 
 @Component({
   selector: 'app-header',
@@ -24,11 +28,16 @@ export class HeaderComponent implements OnInit {
   showUserMenu = false;
 
   constructor(
-    private userService: UserService,
+    @Inject(UserService) private userService: UserService,
     private translate: TranslateService,
     private router: Router,
     private cdr: ChangeDetectorRef
-  ) {}
+  ) {
+    console.log(
+      'HeaderComponent instantiated. UserService instance:',
+      userService
+    );
+  }
 
   ngOnInit() {
     const savedLanguage = localStorage.getItem('language');
@@ -42,16 +51,14 @@ export class HeaderComponent implements OnInit {
     this.userService.isAuthorized$.subscribe((isAuthenticated) => {
       console.log('isAuthorized subscription:', isAuthenticated);
       this.userIsAuthenticated = isAuthenticated;
-      if (isAuthenticated) {
-        const userDetails = this.userService.getUserDetails();
-        console.log('isAuthorized subscription, user:', userDetails.nickname);
-        this.userNickname = userDetails.nickname;
-        this.userAvatarUrl =
-          userDetails.avatar || 'assets/icons/default-avatar.png';
-      } else {
-        this.userNickname = 'Guest';
-        this.userAvatarUrl = 'assets/icons/default-avatar.png';
-      }
+    });
+
+    this.userService.user$.subscribe((userDetails) => {
+      console.log('User details updated:', userDetails);
+      this.userNickname = userDetails.nickname;
+      this.userAvatarUrl =
+        userDetails.avatar || 'assets/icons/default-avatar.png';
+      this.cdr.detectChanges();
     });
 
     this.router.events.subscribe((event) => {

@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -47,11 +47,15 @@ export class SettingsComponent implements OnInit {
   changeEmailError: string = '';
 
   constructor(
-    private userService: UserService,
+    @Inject(UserService) private userService: UserService,
     private fb: FormBuilder,
     private cdr: ChangeDetectorRef,
     private router: Router
   ) {
+    console.log(
+      'SettingsComponent instantiated. UserService instance:',
+      userService
+    );
     console.log(`SettingsComponent instance created: ${Math.random()}`);
     this.isAuthorized = this.userService.isAuthorized$;
     this.isServerAvailable = this.userService.isServerAvailable$;
@@ -83,11 +87,11 @@ export class SettingsComponent implements OnInit {
 
     this.userService.isAuthorized$.subscribe((authorized) => {
       if (authorized && !this.devicesLoaded) {
-        console.log('Calling getLoggedDevices');
+        //console.log('Calling getLoggedDevices');
         this.getLoggedDevices();
         this.devicesLoaded = true;
       } else {
-        console.log('No authorized.');
+        //console.log('No authorized.');
       }
     });
   }
@@ -110,14 +114,14 @@ export class SettingsComponent implements OnInit {
   }
 
   getLoggedDevices() {
-    console.log('called getLoggedDevices');
+    //console.log('called getLoggedDevices');
     this.userService.getLoggedDevices().subscribe({
       next: (devices) => {
         console.log(devices);
         if (Array.isArray(devices) && devices.length > 0) {
           this.devices = devices;
         } else {
-          console.log('No devices found or invalid data structure.');
+          //console.log('No devices found or invalid data structure.');
         }
       },
       error: (err) => {
@@ -196,8 +200,8 @@ export class SettingsComponent implements OnInit {
       this.userService.updateUserData(formData).subscribe({
         next: () => {
           this.getUserDetails();
-          this.cdr.detectChanges();
-          console.log('Data updated successfully.');
+          //this.cdr.detectChanges();
+          //console.log('Data updated successfully.');
         },
         error: (err) => {
           console.error('Error updating data:', err);
@@ -253,7 +257,7 @@ export class SettingsComponent implements OnInit {
   async deactivateDevice(device: any) {
     this.userService.deactivateDevice(device).subscribe({
       next: () => {
-        console.log('Device deactivated successfully.');
+        //console.log('Device deactivated successfully.');
 
         this.userService.checkAuthentication(() => {
           this.getLoggedDevices();

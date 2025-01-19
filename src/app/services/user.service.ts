@@ -28,10 +28,11 @@ export class UserService {
     avatar: null,
     nickname: 'Guest',
   });
-
   user$ = this.userSubject.asObservable();
+
   private isAuthorizedSubject = new BehaviorSubject<boolean>(false);
   isAuthorized$ = this.isAuthorizedSubject.asObservable();
+
   private isServerAvailableSubject = new BehaviorSubject<boolean>(false);
   isServerAvailable$ = this.isServerAvailableSubject.asObservable();
 
@@ -39,27 +40,40 @@ export class UserService {
   private refreshTokenSubject = new BehaviorSubject<string | null>(null);
 
   constructor(private http: HttpClient) {
+    console.log('UserService instantiated from:', new Error().stack);
     this.initializeAuthentication();
   }
 
   private initializeAuthentication(): void {
-    console.log('initializeAuthentication is called.');
+    console.log('Initializing authentication process...');
     const authToken = localStorage.getItem('authToken');
     const refreshToken = localStorage.getItem('refreshToken');
 
     if (!authToken && !refreshToken) {
-      this.clearUser();
+      console.warn('No tokens found in localStorage.');
       return;
     }
 
     this.ensureTokenValidity(authToken, refreshToken)
-      .pipe(shareReplay(1))
+      .pipe(
+        switchMap((accessToken) =>
+          this.loadUserDetails(accessToken).pipe(
+            catchError((err) => {
+              console.warn(
+                `Failed to load user details during initialization.`,
+                err
+              );
+              return throwError(() => err);
+            })
+          )
+        )
+      )
       .subscribe({
-        next: (accessToken) => {
-          this.loadUserDetails(accessToken).subscribe();
+        next: () => {
+          console.log('Initialization completed successfully.');
         },
-        error: () => {
-          console.warn('Authentication failed during initialization.');
+        error: (err) => {
+          console.warn('Authentication failed during initialization:', err);
         },
       });
   }
@@ -68,16 +82,21 @@ export class UserService {
     authToken: string | null,
     refreshToken: string | null
   ): Observable<string> {
+    console.log('Ensuring token validity...', { authToken, refreshToken });
+
     if (authToken && !this.isTokenExpired(authToken, 5 * 60 * 1000)) {
+      console.log('Auth token is valid.');
       return new BehaviorSubject(authToken).asObservable();
     }
 
     if (refreshToken) {
+      console.log('Auth token expired. Attempting to refresh token...');
       return this.refreshToken(refreshToken).pipe(
         map((tokens) => tokens.accessToken)
       );
     }
 
+    console.warn('No valid tokens available. Clearing user data.');
     this.clearUser();
     return throwError(() => new Error('No valid token available'));
   }
@@ -87,23 +106,32 @@ export class UserService {
   }
 
   loadUserDetails(token: string, attempts = 0): Observable<UserDetails> {
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${token}`,
-    });
+    console.log('Loading user details...', { token, attempts });
 
-    return this.http
-      .get<UserDetails>('https://localhost:7057/api/user/details', { headers })
-      .pipe(
-        tap((userDetails) => {
-          if (userDetails.avatar) {
-            userDetails.avatar = `data:image/jpeg;base64,${userDetails.avatar}`;
-          }
-          this.userSubject.next(userDetails);
-          this.isAuthorizedSubject.next(true);
-          this.isServerAvailableSubject.next(true);
-        }),
-        catchError((error) => this.handleLoadUserError(error, token, attempts))
-      );
+    return this.ensureTokenValidity(
+      token,
+      localStorage.getItem('refreshToken')
+    ).pipe(
+      switchMap((validToken) => {
+        const headers = new HttpHeaders({
+          Authorization: `Bearer ${validToken}`,
+        });
+        return this.http.get<UserDetails>(
+          'https://localhost:7057/api/user/details',
+          { headers }
+        );
+      }),
+      tap((userDetails) => {
+        console.log('User details successfully loaded:', userDetails);
+        if (userDetails.avatar) {
+          userDetails.avatar = `data:image/jpeg;base64,${userDetails.avatar}`;
+        }
+        this.userSubject.next(userDetails);
+        this.isAuthorizedSubject.next(true);
+        this.isServerAvailableSubject.next(true);
+      }),
+      catchError((error) => this.handleLoadUserError(error, token, attempts))
+    );
   }
 
   private handleLoadUserError(
@@ -125,8 +153,8 @@ export class UserService {
     }
 
     if (error.message === 'User token is not active.') {
+      console.warn('User token inactive, clearing user...');
       this.clearUser();
-      console.warn('User token is not active, user is logged out.');
       return throwError(() => new Error('User token is not active'));
     }
 
@@ -137,16 +165,15 @@ export class UserService {
         'Invalid data.',
         'Invalid token.',
         'Unauthorized',
-      ].includes(error.message) ||
-      error.status === 401 ||
-      error.status === 404
+      ].includes(error.message)
     ) {
+      console.warn('Clearing user due to critical error:', error.message);
       this.clearUser();
-      console.log('user is removed.');
     }
+
     this.isServerAvailableSubject.next(true);
 
-    console.error(`Unknown error: ${JSON.stringify(error.message)}`);
+    console.warn(`Unexpected error: ${error.message}`);
     return throwError(() => new Error('Failed to load user details'));
   }
 
@@ -207,8 +234,11 @@ export class UserService {
     refreshToken: string,
     attempts: number = 0
   ): Observable<{ accessToken: string; refreshToken: string }> {
+    console.log('refreshToken:');
+    console.log('this', this);
+    console.log('this.refreshingToken', this.refreshingToken);
     if (this.refreshingToken) {
-      console.log('Token refresh already in progress, waiting...');
+      //console.log('Token refresh already in progress, waiting...');
       return this.refreshTokenSubject.pipe(
         filter((token): token is string => token !== null),
         take(1),
@@ -219,6 +249,7 @@ export class UserService {
       );
     }
 
+    //console.log('Starting token refresh process...');
     this.refreshingToken = true;
 
     const headers = new HttpHeaders({
@@ -233,7 +264,7 @@ export class UserService {
       )
       .pipe(
         tap((response) => {
-          console.log(response);
+          //console.log('Token refresh successful:', response);
           localStorage.setItem('authToken', response.accessToken);
           localStorage.setItem('refreshToken', response.refreshToken);
           this.refreshTokenSubject.next(response.accessToken);
@@ -244,6 +275,7 @@ export class UserService {
         ),
         finalize(() => {
           this.refreshingToken = false;
+          //console.log('Token refresh process completed.');
         })
       );
   }
@@ -259,7 +291,7 @@ export class UserService {
       this.isServerAvailableSubject.next(false);
 
       if (attempts < 3) {
-        console.warn(`Server unavailable, retrying (attempt ${attempts + 1})`);
+        console.warn(`Retrying token refresh (attempt ${attempts + 1})`);
         this.refreshingToken = false;
         return timer(5000).pipe(
           switchMap(() => this.refreshToken(refreshToken, attempts + 1))
@@ -271,7 +303,7 @@ export class UserService {
     }
 
     if (error.status === 400 || error.status === 401) {
-      console.error('Invalid token, clearing user data.');
+      console.error('Invalid token. Clearing user data.');
       this.clearUser();
     }
 

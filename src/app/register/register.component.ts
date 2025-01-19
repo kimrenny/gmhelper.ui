@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef } from '@angular/core';
+import { Component, ChangeDetectorRef, Inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
@@ -61,8 +61,10 @@ export class RegisterComponent {
     private cdr: ChangeDetectorRef,
     private route: ActivatedRoute,
     private router: Router,
-    private userService: UserService
-  ) {}
+    @Inject(UserService) private userService: UserService
+  ) {
+    console.log('UserService instance:', userService);
+  }
 
   ngOnInit(): void {
     this.route.queryParams.subscribe((params) => {

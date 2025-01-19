@@ -14,6 +14,7 @@ import { routes } from './app.routes';
 import { LocationStrategy, PathLocationStrategy } from '@angular/common';
 import { GlobalErrorHandler } from './global-error-handler';
 import { ErrorHandler } from '@angular/core';
+import { UserService } from './services/user.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -31,6 +32,7 @@ export const appConfig: ApplicationConfig = {
     ),
     { provide: LocationStrategy, useClass: PathLocationStrategy },
     { provide: ErrorHandler, useClass: GlobalErrorHandler },
+    UserService,
   ],
 };
 
