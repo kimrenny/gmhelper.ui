@@ -12,12 +12,11 @@ export class BinaryAnimationComponent implements OnInit {
   columns: { bits: string[]; direction: 'up' | 'down' }[] = [];
   readonly columnCount: number = 10;
   readonly columnHeight: number = 15;
-  readonly totalBits: number = 30;
-  readonly animationDuration: number = 5;
+  readonly animationDuration: number = 2;
 
   ngOnInit(): void {
     this.initializeColumns();
-    setInterval(() => this.updateColumns(), this.animationDuration * 1000);
+    this.updateColumns();
   }
 
   initializeColumns(): void {
@@ -30,15 +29,26 @@ export class BinaryAnimationComponent implements OnInit {
   }
 
   updateColumns(): void {
-    this.columns.forEach((column) => {
-      if (column.direction === 'down') {
-        column.bits.pop();
-        column.bits.unshift(Math.random() > 0.5 ? '1' : '0');
-      } else {
-        column.bits.shift();
-        column.bits.push(Math.random() > 0.5 ? '1' : '0');
-      }
+    const bitUpdateInterval =
+      (this.animationDuration * 1000) / this.columnHeight;
+
+    this.columns.forEach((column, columnIndex) => {
+      setInterval(() => {
+        if (column.direction === 'down') {
+          const newBit = Math.random() > 0.5 ? '1' : '0';
+          column.bits.pop();
+          column.bits.unshift(newBit);
+        } else {
+          const newBit = Math.random() > 0.5 ? '1' : '0';
+          column.bits.shift();
+          column.bits.push(newBit);
+        }
+      }, bitUpdateInterval + columnIndex * 50);
     });
+  }
+
+  trackByIndex(index: number): number {
+    return index;
   }
 
   getBitAnimationDelay(index: number): string {

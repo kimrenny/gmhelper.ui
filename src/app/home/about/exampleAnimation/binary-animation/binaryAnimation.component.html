@@ -1,7 +1,10 @@
 <div class="binary-animation-container">
-  <div *ngFor="let column of columns" class="binary-column">
+  <div
+    *ngFor="let column of columns; trackBy: trackByIndex"
+    class="binary-column"
+  >
     <div
-      *ngFor="let bit of column.bits; let i = index"
+      *ngFor="let bit of column.bits; let i = index; trackBy: trackByIndex"
       class="binary-bit"
       [ngClass]="{
         'scroll-down': column.direction === 'down',
