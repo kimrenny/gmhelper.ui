@@ -1,5 +1,6 @@
 import { Component, ElementRef, Renderer2, ViewChild } from '@angular/core';
-import { CommonModule, NumberSymbol } from '@angular/common';
+import { CommonModule } from '@angular/common';
+import { AboutService } from 'src/app/services/about.service';
 
 @Component({
   selector: 'app-example-canvas',
@@ -15,10 +16,17 @@ export class ExampleCanvasComponent {
   private triangleTasks = ['S△ - ?', 'P△ - ?'];
   private rectangleTasks = ['S - ?', 'P - ?'];
   private drawnShape: string | null = null;
+  private dimensions: number[] = [];
+  private dimensionsPx: number[] = [];
+  private generatedTask: string | null = null;
 
-  public givenCondition: string = '';
+  private lastDrawTime: number = Date.now();
+  private resetTimeout: any;
 
-  constructor(private renderer: Renderer2) {}
+  constructor(
+    private renderer: Renderer2,
+    private aboutService: AboutService
+  ) {}
 
   ngOnInit(): void {
     this.drawRandomShape();
@@ -26,6 +34,9 @@ export class ExampleCanvasComponent {
 
   drawRandomShape() {
     const canvas = this.canvasRef.nativeElement;
+    this.lastDrawTime = Date.now();
+    this.clearCanvas(canvas);
+    this.clearShape();
     this.drawnShape =
       this.shapes[Math.floor(Math.random() * this.shapes.length)];
 
@@ -34,11 +45,34 @@ export class ExampleCanvasComponent {
     } else if (this.drawnShape === 'rectangle') {
       this.drawRectangle(canvas);
     }
+
+    if (this.resetTimeout) {
+      clearTimeout(this.resetTimeout);
+    }
+
+    this.resetTimeout = setTimeout(() => {
+      this.clearCanvas(canvas);
+      this.drawRandomShape();
+    }, 60000);
   }
 
-  private drawTriangle(container: HTMLElement) {
+  private clearCanvas(container: HTMLElement) {
+    container.innerHTML = '';
+  }
+
+  private clearShape() {
+    this.drawnShape = null;
+    this.dimensions = [];
+    this.generatedTask = null;
+
+    this.aboutService.clearShape();
+  }
+
+  private async drawTriangle(container: HTMLElement) {
     const base = Math.floor(Math.random() * 60) + 60;
     const height = Math.floor(Math.random() * 60) + 60;
+
+    this.dimensionsPx = [base, height];
 
     const paddingX = 40;
     const paddingY = 40;
@@ -76,9 +110,11 @@ export class ExampleCanvasComponent {
     }, 2500);
   }
 
-  private drawRectangle(container: HTMLElement) {
+  private async drawRectangle(container: HTMLElement) {
     const width = Math.floor(Math.random() * 60) + 60;
     const height = Math.floor(Math.random() * 60) + 60;
+
+    this.dimensionsPx = [width, height];
 
     const perimeter = 2 * (width + height);
 
@@ -134,7 +170,7 @@ export class ExampleCanvasComponent {
     side4?: number
   ) {
     const scaleFactor = 1 / 16;
-    const dimensions = [side1, side2, side3, side4]
+    this.dimensions = [side1, side2, side3, side4]
       .filter((side) => side !== undefined && side > 0)
       .map((side) => {
         if (side !== undefined) {
@@ -143,7 +179,7 @@ export class ExampleCanvasComponent {
         return 0;
       });
 
-    const [dim1, dim2, dim3, dim4] = dimensions;
+    const [dim1, dim2, dim3, dim4] = this.dimensions;
 
     if (container) {
       let delay = 0;
@@ -199,13 +235,27 @@ export class ExampleCanvasComponent {
           delay
         );
         delay += 500;
+        this.generatedTask = this.generateTask('triangle');
+
+        this.aboutService.setShape(
+          this.drawnShape,
+          this.dimensions,
+          this.generatedTask,
+          this.dimensionsPx
+        );
+
         setTimeout(() => {
           this.addGivenText(
             container,
             `AB = ${Math.round(dim1)}, AC = ${Math.round(
               dim3
-            )}, BC = ${Math.round(dim2)}, ${this.generateTask('triangle')}`
+            )}, BC = ${Math.round(dim2)}, ${this.generatedTask}`
           );
+        }, delay);
+
+        delay += 10000;
+        setTimeout(() => {
+          this.aboutService.setDrawingResponseAllowed(true);
         }, delay);
       } else {
         setTimeout(
@@ -269,13 +319,27 @@ export class ExampleCanvasComponent {
           delay
         );
         delay += 500;
+        this.generatedTask = this.generateTask('rectangle');
+
+        this.aboutService.setShape(
+          this.drawnShape,
+          this.dimensions,
+          this.generatedTask,
+          this.dimensionsPx
+        );
+
         setTimeout(() => {
           this.addGivenText(
             container,
-            `AB = CD = ${Math.round(dim1)}, BC = AD = ${Math.round(
-              dim2
-            )}, ${this.generateTask('rectangle')}`
+            `AB = CD = ${Math.round(dim1)}, BC = AD = ${Math.round(dim2)}, ${
+              this.generatedTask
+            }`
           );
+        }, delay);
+
+        delay += 10000;
+        setTimeout(() => {
+          this.aboutService.setDrawingResponseAllowed(true);
         }, delay);
       }
     }
@@ -286,11 +350,10 @@ export class ExampleCanvasComponent {
       return this.triangleTasks[
         Math.floor(Math.random() * this.triangleTasks.length)
       ];
-    if (shape == 'rectangle')
+    else
       return this.rectangleTasks[
         Math.floor(Math.random() * this.rectangleTasks.length)
       ];
-    return;
   }
 
   private addVertexLabel(
