@@ -13,8 +13,6 @@ import { Router, NavigationStart, RouterModule } from '@angular/router';
 import { UserService } from 'src/app/services/user.service';
 import { Subscription } from 'rxjs';
 
-// TODO: Deal with the issue of double calling SettingsComponent
-
 @Component({
   selector: 'app-header',
   standalone: true,
@@ -36,12 +34,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private translate: TranslateService,
     private router: Router,
     private cdr: ChangeDetectorRef
-  ) {
-    console.log(
-      'HeaderComponent instantiated. UserService instance:',
-      userService
-    );
-  }
+  ) {}
 
   ngOnInit() {
     const savedLanguage = localStorage.getItem('language');
@@ -54,13 +47,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
     const authSub = this.userService.isAuthorized$.subscribe(
       (isAuthenticated) => {
-        console.log('isAuthorized subscription:', isAuthenticated);
         this.userIsAuthenticated = isAuthenticated;
       }
     );
 
     const userSub = this.userService.user$.subscribe((userDetails) => {
-      console.log('User details updated:', userDetails);
       this.userNickname = userDetails.nickname;
       this.userAvatarUrl =
         userDetails.avatar || 'assets/icons/default-avatar.png';
@@ -80,7 +71,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.subscriptions.unsubscribe();
-    console.log('HeaderComponent destroyed.');
   }
 
   toggleLanguageMenu() {
