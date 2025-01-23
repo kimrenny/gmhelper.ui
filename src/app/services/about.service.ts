@@ -5,6 +5,9 @@ import { BehaviorSubject } from 'rxjs';
   providedIn: 'root',
 })
 export class AboutService {
+  private componentVisibilitySubject = new BehaviorSubject<boolean>(false);
+  public componentVisibility$ = this.componentVisibilitySubject.asObservable();
+
   private currentShape: string | null = null;
   private currentDimensions: number[] = [];
   private currentTask: string | null = null;
@@ -13,6 +16,15 @@ export class AboutService {
   private drawingResponseAllowedSubject = new BehaviorSubject<boolean>(false);
   public drawingResponseAllowed$ =
     this.drawingResponseAllowedSubject.asObservable();
+
+  setComponentVisibility(isVisible: boolean) {
+    console.log('Component visibility: ', isVisible);
+    this.componentVisibilitySubject.next(isVisible);
+  }
+
+  getComponentVisibility(): boolean {
+    return this.componentVisibilitySubject.value;
+  }
 
   setShape(
     shape: string | null,
