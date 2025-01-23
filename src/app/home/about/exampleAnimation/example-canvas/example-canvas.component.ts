@@ -1,6 +1,13 @@
-import { Component, ElementRef, Renderer2, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  Input,
+  Renderer2,
+  ViewChild,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AboutService } from 'src/app/services/about.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-example-canvas',
@@ -20,8 +27,11 @@ export class ExampleCanvasComponent {
   private dimensionsPx: number[] = [];
   private generatedTask: string | null = null;
 
-  private lastDrawTime: number = Date.now();
   private resetTimeout: any;
+  private isAnimationPaused: boolean = false;
+  private currentShapeTimeout: any;
+
+  private subscription: Subscription = new Subscription();
 
   constructor(
     private renderer: Renderer2,
@@ -29,12 +39,36 @@ export class ExampleCanvasComponent {
   ) {}
 
   ngOnInit(): void {
-    this.drawRandomShape();
+    this.subscription = this.aboutService.componentVisibility$.subscribe(
+      (isActive) => {
+        if (isActive) {
+          if (this.isAnimationPaused) {
+            this.resumeAnimation();
+          } else {
+            this.drawRandomShape();
+          }
+        } else {
+          this.clearCanvas(this.canvasRef.nativeElement);
+          this.clearShape();
+        }
+      }
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+    if (this.resetTimeout) {
+      clearTimeout(this.resetTimeout);
+    }
+    if (this.currentShapeTimeout) {
+      clearTimeout(this.currentShapeTimeout);
+    }
   }
 
   drawRandomShape() {
+    if (this.isAnimationPaused) return;
+
     const canvas = this.canvasRef.nativeElement;
-    this.lastDrawTime = Date.now();
     this.clearCanvas(canvas);
     this.clearShape();
     this.drawnShape =
@@ -54,6 +88,21 @@ export class ExampleCanvasComponent {
       this.clearCanvas(canvas);
       this.drawRandomShape();
     }, 60000);
+  }
+
+  pauseAnimation() {
+    this.isAnimationPaused = true;
+    if (this.resetTimeout) {
+      clearTimeout(this.resetTimeout);
+    }
+    if (this.currentShapeTimeout) {
+      clearTimeout(this.currentShapeTimeout);
+    }
+  }
+
+  resumeAnimation() {
+    this.isAnimationPaused = false;
+    this.drawRandomShape();
   }
 
   private clearCanvas(container: HTMLElement) {
