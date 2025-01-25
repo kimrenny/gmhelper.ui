@@ -71,6 +71,8 @@ export class ExampleCanvasComponent {
     const canvas = this.canvasRef.nativeElement;
     this.clearCanvas(canvas);
     this.clearShape();
+    this.aboutService.setDrawingResponseAllowed(false);
+
     this.drawnShape =
       this.shapes[Math.floor(Math.random() * this.shapes.length)];
 
@@ -85,9 +87,8 @@ export class ExampleCanvasComponent {
     }
 
     this.resetTimeout = setTimeout(() => {
-      this.clearCanvas(canvas);
       this.drawRandomShape();
-    }, 60000);
+    }, 82500);
   }
 
   pauseAnimation() {
@@ -117,7 +118,7 @@ export class ExampleCanvasComponent {
     this.aboutService.clearShape();
   }
 
-  private async drawTriangle(container: HTMLElement) {
+  private drawTriangle(container: HTMLElement) {
     const base = Math.floor(Math.random() * 60) + 60;
     const height = Math.floor(Math.random() * 60) + 60;
 
@@ -159,7 +160,7 @@ export class ExampleCanvasComponent {
     }, 2500);
   }
 
-  private async drawRectangle(container: HTMLElement) {
+  private drawRectangle(container: HTMLElement) {
     const width = Math.floor(Math.random() * 60) + 60;
     const height = Math.floor(Math.random() * 60) + 60;
 
@@ -302,10 +303,10 @@ export class ExampleCanvasComponent {
           );
         }, delay);
 
-        delay += 10000;
+        delay += 2500;
         setTimeout(() => {
           this.aboutService.setDrawingResponseAllowed(true);
-        }, delay);
+        }, delay + 35000);
       } else {
         setTimeout(
           () => this.addVertexLabel(container, -padding, -padding, 'A'),
@@ -386,10 +387,14 @@ export class ExampleCanvasComponent {
           );
         }, delay);
 
-        delay += 10000;
+        setTimeout(() => {
+          this.clearCanvas(this.canvasRef.nativeElement);
+        }, 20000);
+
+        delay += 2500;
         setTimeout(() => {
           this.aboutService.setDrawingResponseAllowed(true);
-        }, delay);
+        }, delay + 35000);
       }
     }
   }

@@ -28,6 +28,7 @@ export class ExampleAnimationComponent implements OnInit, OnDestroy {
   private animationExampleCanvasTimeout: any;
   private animationBinaryTimeout: any;
   private animationExampleResponseTimeout: any;
+  private restartTimeout: any;
 
   constructor(
     private elementRef: ElementRef,
@@ -51,35 +52,59 @@ export class ExampleAnimationComponent implements OnInit, OnDestroy {
   }
 
   private startAnimation() {
-    const delay = 1000;
+    const delay = 15000;
+    const firstAnimationDelay = 2500 + delay;
+    const secondAnimationDelay = firstAnimationDelay + 17500;
+
     this.animationExampleCanvasTimeout = setTimeout(() => {
       this.startAnimationExampleCanvas();
     }, delay);
 
     this.animationBinaryTimeout = setTimeout(() => {
       this.startAnimationBinary();
-    }, delay + 2500);
+    }, firstAnimationDelay);
 
     this.animationExampleResponseTimeout = setTimeout(() => {
       this.startAnimationResponseCanvas();
-    }, delay + 25000);
+    }, secondAnimationDelay);
+
+    const totalDuration = secondAnimationDelay + 7500 + 40000;
+    this.restartTimeout = setTimeout(() => {
+      this.resetAnimations();
+      this.startAnimation();
+    }, totalDuration);
+  }
+
+  private resetAnimations() {
+    const elements = this.elementRef.nativeElement.querySelectorAll(
+      '.example-canvas-animation, .binary-animation, .example-response'
+    );
+
+    elements.forEach((element: HTMLElement) => {
+      this.renderer.removeClass(element, 'animate');
+    });
   }
 
   private startAnimationExampleCanvas() {
     const canvasElement = this.elementRef.nativeElement.querySelector(
       '.example-canvas-animation'
     );
-    console.log(canvasElement);
-    if (canvasElement) {
+    const neonLine =
+      this.elementRef.nativeElement.querySelector('.neon-canvas');
+    if (canvasElement && neonLine) {
       this.renderer.addClass(canvasElement, 'animate');
+      this.renderer.setStyle(neonLine, 'animation-play-state', 'running');
     }
   }
 
   private startAnimationBinary() {
     const binaryElement =
       this.elementRef.nativeElement.querySelector('.binary-animation');
-    if (binaryElement) {
+    const neonLine =
+      this.elementRef.nativeElement.querySelector('.neon-response');
+    if (binaryElement && neonLine) {
       this.renderer.addClass(binaryElement, 'animate');
+      this.renderer.setStyle(neonLine, 'animation-play-state', 'running');
     }
   }
 
@@ -109,6 +134,9 @@ export class ExampleAnimationComponent implements OnInit, OnDestroy {
     }
     if (this.animationExampleResponseTimeout) {
       clearTimeout(this.animationExampleResponseTimeout);
+    }
+    if (this.restartTimeout) {
+      clearTimeout(this.restartTimeout);
     }
   }
 }
