@@ -18,7 +18,6 @@ export class AboutService {
     this.drawingResponseAllowedSubject.asObservable();
 
   setComponentVisibility(isVisible: boolean) {
-    console.log('Component visibility: ', isVisible);
     this.componentVisibilitySubject.next(isVisible);
   }
 
@@ -36,9 +35,6 @@ export class AboutService {
     this.currentDimensions = dimensions;
     this.currentTask = task;
     this.currentDimensionsPx = dimensionsPx;
-    console.log(
-      `shape: ${shape}, dimensions: ${dimensions}, task: ${task}, dimensionsPx: ${dimensionsPx}`
-    );
   }
 
   getShapeDetails(): {
@@ -56,7 +52,6 @@ export class AboutService {
   }
 
   setDrawingResponseAllowed(isAllowed: boolean) {
-    console.log('setDrawingResponseAllowed: ', isAllowed);
     this.drawingResponseAllowedSubject.next(isAllowed);
   }
 
