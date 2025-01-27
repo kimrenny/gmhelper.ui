@@ -51,6 +51,12 @@ export class ExampleAnimationComponent implements OnInit, OnDestroy {
     }
   }
 
+  private setFirstVisibility() {
+    this.hasBeenVisible = true;
+    this.aboutService.setComponentVisibility(true);
+    this.startAnimation();
+  }
+
   private startAnimation() {
     const delay = 15000;
     const firstAnimationDelay = 2500 + delay;
@@ -89,22 +95,47 @@ export class ExampleAnimationComponent implements OnInit, OnDestroy {
     const canvasElement = this.elementRef.nativeElement.querySelector(
       '.example-canvas-animation'
     );
-    const neonLine =
+    const neonElement =
       this.elementRef.nativeElement.querySelector('.neon-canvas');
-    if (canvasElement && neonLine) {
+
+    if (canvasElement && neonElement) {
       this.renderer.addClass(canvasElement, 'animate');
-      this.renderer.setStyle(neonLine, 'animation-play-state', 'running');
+
+      setTimeout(() => {
+        this.renderer.addClass(neonElement, 'neon-visible');
+
+        setTimeout(() => {
+          this.createSquares(neonElement);
+        }, 2500);
+      }, 0);
+
+      setTimeout(() => {
+        this.renderer.removeClass(neonElement, 'neon-visible');
+      }, 10000);
     }
   }
 
   private startAnimationBinary() {
     const binaryElement =
       this.elementRef.nativeElement.querySelector('.binary-animation');
-    const neonLine =
+
+    const neonElement =
       this.elementRef.nativeElement.querySelector('.neon-response');
-    if (binaryElement && neonLine) {
+
+    if (binaryElement && neonElement) {
       this.renderer.addClass(binaryElement, 'animate');
-      this.renderer.setStyle(neonLine, 'animation-play-state', 'running');
+
+      setTimeout(() => {
+        this.renderer.addClass(neonElement, 'neon-visible');
+
+        setTimeout(() => {
+          this.createSquares(neonElement);
+        }, 2500);
+      }, 15000);
+
+      setTimeout(() => {
+        this.renderer.removeClass(neonElement, 'neon-visible');
+      }, 25000);
     }
   }
 
@@ -116,10 +147,62 @@ export class ExampleAnimationComponent implements OnInit, OnDestroy {
     }
   }
 
-  private setFirstVisibility() {
-    this.hasBeenVisible = true;
-    this.aboutService.setComponentVisibility(true);
-    this.startAnimation();
+  private createSquares(neonElement: HTMLElement) {
+    const totalDuration = 7500;
+    const maxDelay = 500;
+    const minDelay = 100;
+    const createSquareDelay = 150;
+
+    const createSquare = () => {
+      const square = this.renderer.createElement('div');
+
+      this.renderer.setStyle(square, 'position', 'absolute');
+      this.renderer.setStyle(square, 'width', '5px');
+      this.renderer.setStyle(square, 'height', '5px');
+      this.renderer.setStyle(square, 'background-color', '#ffffff');
+
+      const top = Math.random() * 300 + 110;
+      this.renderer.setStyle(square, 'top', `${top}px`);
+      this.renderer.setStyle(square, 'left', '0px');
+      this.renderer.addClass(square, 'square');
+
+      const randomX = Math.random() * 150 + 100;
+      const randomY =
+        Math.random() < 0.5 ? -(Math.random() * 150) : Math.random() * 150;
+
+      const delay = Math.random() * (maxDelay - minDelay) + minDelay;
+
+      this.renderer.appendChild(neonElement, square);
+
+      this.renderer.setStyle(square, 'transition', 'transform 1s ease-out');
+      setTimeout(() => {
+        this.renderer.setStyle(
+          square,
+          'transform',
+          `translate(-${randomX}px, ${randomY}px)`
+        );
+      }, 0);
+
+      setTimeout(() => {
+        this.renderer.removeChild(neonElement, square);
+      }, delay + 1000);
+    };
+
+    const createSquaresBatch = () => {
+      const squareCount = Math.random() * 5 + 5;
+      for (let i = 0; i < squareCount; i++) {
+        createSquare();
+      }
+    };
+
+    const createSquareInterval = setInterval(
+      createSquaresBatch,
+      createSquareDelay
+    );
+
+    setTimeout(() => {
+      clearInterval(createSquareInterval);
+    }, totalDuration);
   }
 
   ngOnDestroy(): void {

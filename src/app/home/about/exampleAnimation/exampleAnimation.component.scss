@@ -6,7 +6,7 @@
 
 .example-canvas-animation {
   position: absolute;
-  left: 390px;
+  left: 399px;
   top: 100px;
 
   &.animate {
@@ -22,7 +22,7 @@
   overflow: hidden;
 
   &.animate {
-    animation: expandBinary 7.5s linear forwards;
+    animation: expandAndMove 25s linear forwards;
   }
 }
 
@@ -30,6 +30,45 @@
   position: absolute;
   left: 1200px;
   top: 100px;
+  clip-path: inset(0 100% 0 0);
+  overflow: hidden;
+
+  &.animate {
+    animation: expandResponse 7.5s linear forwards;
+  }
+}
+
+.neon-line {
+  position: absolute;
+  width: 4px;
+  height: 320px;
+  top: 90px;
+  background: #ffffff;
+  opacity: 0;
+  animation: none;
+  pointer-events: none;
+  z-index: 999;
+}
+
+.neon-canvas {
+  left: 799px;
+
+  &.neon-visible {
+    animation: neonGlowMoveAndClip 10s linear forwards;
+  }
+}
+
+.neon-response {
+  left: 1199px;
+
+  &.neon-visible {
+    animation: neonGlowExpandAndMove 25s linear forwards;
+  }
+}
+
+.square {
+  transition: transform 1s ease-out;
+  z-index: 9999;
 }
 
 @keyframes moveAndClip {
@@ -38,20 +77,67 @@
     clip-path: inset(0 0 0 0);
   }
   25% {
-    transform: translateX(97.5px);
+    transform: translateX(100px);
     clip-path: inset(0 0 0 0);
   }
   100% {
-    transform: translateX(390px);
+    transform: translateX(400px);
     clip-path: inset(0 100% 0 0);
   }
 }
 
-@keyframes expandBinary {
+@keyframes expandAndMove {
+  0% {
+    transform: translateX(0);
+    clip-path: inset(0 100% 0 0);
+  }
+  30% {
+    transform: translateX(0);
+    clip-path: inset(0 0 0 0);
+  }
+  60% {
+    transform: translateX(0);
+    clip-path: inset(0 0 0 0);
+  }
+  70% {
+    transform: translateX(100px);
+    clip-path: inset(0 0 0 0);
+  }
+  100% {
+    transform: translateX(400px);
+    clip-path: inset(0 100% 0 0);
+  }
+}
+
+@keyframes expandResponse {
   0% {
     clip-path: inset(0 100% 0 0);
   }
   100% {
     clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes neonGlowMoveAndClip {
+  0%,
+  25% {
+    opacity: 0.9;
+    background: #ffffff;
+  }
+  100% {
+    opacity: 1;
+    background: #ffffff;
+  }
+}
+
+@keyframes neonGlowExpandAndMove {
+  0%,
+  70% {
+    opacity: 0.9;
+    background: #ffffff;
+  }
+  100% {
+    opacity: 1;
+    background: #ffffff;
   }
 }
