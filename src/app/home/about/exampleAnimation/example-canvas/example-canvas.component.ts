@@ -389,7 +389,7 @@ export class ExampleCanvasComponent {
 
         setTimeout(() => {
           this.clearCanvas(this.canvasRef.nativeElement);
-        }, 20000);
+        }, 30000);
 
         delay += 2500;
         setTimeout(() => {
@@ -491,7 +491,7 @@ export class ExampleCanvasComponent {
           startY + (index - 1) * lineHeight + 10,
           lineWidth
         );
-        paddingY += 10;
+        paddingY += 20;
 
         await this.delay(delay);
         this.addText(svg, line, startX, startY + index * lineHeight + paddingY);

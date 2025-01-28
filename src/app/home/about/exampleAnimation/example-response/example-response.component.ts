@@ -30,6 +30,8 @@ export class ExampleResponseComponent {
       this.aboutService.drawingResponseAllowed$.subscribe((isAllowed) => {
         if (isAllowed) {
           this.drawShape();
+        } else {
+          this.clearCanvas(this.canvasRef.nativeElement);
         }
       });
   }
@@ -231,6 +233,11 @@ export class ExampleResponseComponent {
             )}, BC = ${Math.round(dim2)}, ${this.task}`
           );
         }, delay);
+        delay += 10000;
+
+        setTimeout(() => {
+          this.addSolution(container);
+        }, delay);
       } else {
         setTimeout(
           () => this.addVertexLabel(container, -padding, -padding, 'A'),
@@ -301,6 +308,11 @@ export class ExampleResponseComponent {
               this.task
             }`
           );
+        }, delay);
+        delay += 10000;
+
+        setTimeout(() => {
+          this.addSolution(container);
         }, delay);
       }
     }
@@ -387,7 +399,7 @@ export class ExampleResponseComponent {
           startY + (index - 1) * lineHeight + 10,
           lineWidth
         );
-        paddingY += 10;
+        paddingY += 20;
 
         await this.delay(delay);
         this.addText(svg, line, startX, startY + index * lineHeight + paddingY);
@@ -444,6 +456,80 @@ export class ExampleResponseComponent {
       this.renderer.setAttribute(lineElement, 'class', 'draw-line');
       this.renderer.appendChild(svg, lineElement);
     }
+  }
+
+  private addSolution(container: HTMLElement) {
+    const svg = container.querySelector('svg');
+    if (!svg) return;
+
+    const formulaCoords = {
+      x: 21,
+      y: 219,
+    };
+    const solutionCoords = {
+      x: 21,
+      y: 239,
+    };
+    const answerCoords = {
+      x: 21,
+      y: 259,
+    };
+
+    let formula = '';
+    let solution = '';
+    let answer = '';
+    let calc: number;
+
+    let delay = 500;
+
+    if (this.shape === 'triangle') {
+      if (this.task === 'S△ - ?') {
+        calc = 0.5 * this.dimensions[0] * this.dimensions[1];
+        formula = `S△ = 1/2 ab`;
+        solution = `S△ = 1/2 * ${this.dimensions[0]} * ${
+          this.dimensions[1]
+        } = ${0.5 * this.dimensions[0] * this.dimensions[1]}`;
+        answer = `S△ = ${calc}.`;
+      } else if (this.task === 'P△ - ?') {
+        calc = this.dimensions[0] + this.dimensions[1] + this.dimensions[2];
+        formula = `P△ = a + b + c`;
+        solution = `P△ = ${this.dimensions[0]} + ${this.dimensions[1]} + ${this.dimensions[2]} = ${calc}`;
+        answer = `P△ = ${calc}`;
+      }
+    } else if (this.shape === 'rectangle') {
+      if (this.task === 'S - ?') {
+        calc = this.dimensions[0] * this.dimensions[1];
+        formula = `S = ab`;
+        solution = `S = ${this.dimensions[0]} * ${this.dimensions[1]} = ${
+          this.dimensions[0] * this.dimensions[1]
+        }`;
+        answer = `S = ${calc}.`;
+      } else if (this.task === 'P - ?') {
+        calc =
+          this.dimensions[0] +
+          this.dimensions[1] +
+          this.dimensions[2] +
+          this.dimensions[3];
+        formula = `P = a + b + c`;
+        solution = `P = ${this.dimensions[0]} + ${this.dimensions[1]} + ${this.dimensions[2]} + ${this.dimensions[3]} = ${calc}`;
+        answer = `P = ${calc}`;
+      }
+    }
+
+    setTimeout(
+      () => this.addText(svg, formula, formulaCoords.x, formulaCoords.y),
+      delay
+    );
+    delay += 2500;
+    setTimeout(
+      () => this.addText(svg, solution, solutionCoords.x, solutionCoords.y),
+      delay
+    );
+    delay += 4000;
+    setTimeout(
+      () => this.addText(svg, answer, answerCoords.x, answerCoords.y),
+      delay
+    );
   }
 
   private delay(ms: number) {

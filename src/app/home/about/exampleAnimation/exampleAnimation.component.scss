@@ -6,7 +6,7 @@
 
 .example-canvas-animation {
   position: absolute;
-  left: 399px;
+  left: 349px;
   top: 100px;
 
   &.animate {
@@ -16,7 +16,7 @@
 
 .binary-animation {
   position: absolute;
-  left: 800px;
+  left: 750px;
   top: 100px;
   clip-path: inset(0 100% 0 0);
   overflow: hidden;
@@ -28,7 +28,7 @@
 
 .example-response {
   position: absolute;
-  left: 1200px;
+  left: 1150px;
   top: 100px;
   clip-path: inset(0 100% 0 0);
   overflow: hidden;
@@ -48,27 +48,23 @@
   animation: none;
   pointer-events: none;
   z-index: 999;
+  box-shadow: none;
 }
 
 .neon-canvas {
-  left: 799px;
+  left: 749px;
 
   &.neon-visible {
-    animation: neonGlowMoveAndClip 10s linear forwards;
+    animation: neonGlowMoveAndClip 12.5s linear forwards;
   }
 }
 
 .neon-response {
-  left: 1199px;
+  left: 1149px;
 
   &.neon-visible {
-    animation: neonGlowExpandAndMove 25s linear forwards;
+    animation: neonGlowMoveAndClip 12.5s linear forwards;
   }
-}
-
-.square {
-  transition: transform 1s ease-out;
-  z-index: 9999;
 }
 
 @keyframes moveAndClip {
@@ -120,24 +116,29 @@
 
 @keyframes neonGlowMoveAndClip {
   0%,
-  25% {
+  10% {
+    opacity: 0;
+    background: #ffffff;
+    box-shadow: none;
+  }
+  15% {
     opacity: 0.9;
     background: #ffffff;
+    box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.8),
+      0 0 20px 5px rgba(255, 255, 255, 0.6),
+      0 0 30px 10px rgba(255, 255, 255, 0.4);
   }
-  100% {
+  80% {
     opacity: 1;
     background: #ffffff;
+    box-shadow: 0 0 15px 3px rgba(255, 255, 255, 0.9),
+      0 0 25px 7px rgba(255, 255, 255, 0.7),
+      0 0 40px 15px rgba(255, 255, 255, 0.5);
   }
-}
-
-@keyframes neonGlowExpandAndMove {
-  0%,
-  70% {
-    opacity: 0.9;
-    background: #ffffff;
-  }
+  90%,
   100% {
-    opacity: 1;
+    opacity: 0;
     background: #ffffff;
+    box-shadow: none;
   }
 }

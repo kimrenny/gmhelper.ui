@@ -111,7 +111,7 @@ export class ExampleAnimationComponent implements OnInit, OnDestroy {
 
       setTimeout(() => {
         this.renderer.removeClass(neonElement, 'neon-visible');
-      }, 10000);
+      }, 12500);
     }
   }
 
@@ -135,7 +135,7 @@ export class ExampleAnimationComponent implements OnInit, OnDestroy {
 
       setTimeout(() => {
         this.renderer.removeClass(neonElement, 'neon-visible');
-      }, 25000);
+      }, 28000);
     }
   }
 
@@ -161,14 +161,15 @@ export class ExampleAnimationComponent implements OnInit, OnDestroy {
       this.renderer.setStyle(square, 'height', '5px');
       this.renderer.setStyle(square, 'background-color', '#ffffff');
 
-      const top = Math.random() * 300 + 110;
+      const top = Math.random() * 320;
       this.renderer.setStyle(square, 'top', `${top}px`);
       this.renderer.setStyle(square, 'left', '0px');
-      this.renderer.addClass(square, 'square');
 
       const randomX = Math.random() * 150 + 100;
       const randomY =
-        Math.random() < 0.5 ? -(Math.random() * 150) : Math.random() * 150;
+        Math.random() > 0.5
+          ? -(Math.random() * top)
+          : Math.random() * (320 - top);
 
       const delay = Math.random() * (maxDelay - minDelay) + minDelay;
 
