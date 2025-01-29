@@ -31,7 +31,9 @@ export class ExampleResponseComponent {
         if (isAllowed) {
           this.drawShape();
         } else {
-          this.clearCanvas(this.canvasRef.nativeElement);
+          if (this.canvasRef) {
+            this.clearCanvas(this.canvasRef.nativeElement);
+          }
         }
       });
   }
@@ -484,11 +486,9 @@ export class ExampleResponseComponent {
 
     if (this.shape === 'triangle') {
       if (this.task === 'S△ - ?') {
-        calc = 0.5 * this.dimensions[0] * this.dimensions[1];
+        calc = 0.5 * this.dimensions[0] * this.dimensions[2];
         formula = `S△ = 1/2 ab`;
-        solution = `S△ = 1/2 * ${this.dimensions[0]} * ${
-          this.dimensions[1]
-        } = ${0.5 * this.dimensions[0] * this.dimensions[1]}`;
+        solution = `S△ = 1/2 * ${this.dimensions[0]} * ${this.dimensions[2]} = ${calc}`;
         answer = `S△ = ${calc}.`;
       } else if (this.task === 'P△ - ?') {
         calc = this.dimensions[0] + this.dimensions[1] + this.dimensions[2];
@@ -500,18 +500,12 @@ export class ExampleResponseComponent {
       if (this.task === 'S - ?') {
         calc = this.dimensions[0] * this.dimensions[1];
         formula = `S = ab`;
-        solution = `S = ${this.dimensions[0]} * ${this.dimensions[1]} = ${
-          this.dimensions[0] * this.dimensions[1]
-        }`;
+        solution = `S = ${this.dimensions[0]} * ${this.dimensions[1]} = ${calc}`;
         answer = `S = ${calc}.`;
       } else if (this.task === 'P - ?') {
-        calc =
-          this.dimensions[0] +
-          this.dimensions[1] +
-          this.dimensions[2] +
-          this.dimensions[3];
-        formula = `P = a + b + c`;
-        solution = `P = ${this.dimensions[0]} + ${this.dimensions[1]} + ${this.dimensions[2]} + ${this.dimensions[3]} = ${calc}`;
+        calc = 2 * (this.dimensions[0] + this.dimensions[1]);
+        formula = `P = 2 * (a+b)`;
+        solution = `P = 2 * (${this.dimensions[0]} + ${this.dimensions[1]}) = ${calc}`;
         answer = `P = ${calc}`;
       }
     }

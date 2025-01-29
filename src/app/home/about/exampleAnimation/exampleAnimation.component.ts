@@ -25,10 +25,9 @@ export class ExampleAnimationComponent implements OnInit, OnDestroy {
   private observer: IntersectionObserver | null = null;
   private hasBeenVisible: boolean = false;
 
-  private animationExampleCanvasTimeout: any;
-  private animationBinaryTimeout: any;
-  private animationExampleResponseTimeout: any;
-  private restartTimeout: any;
+  private timeouts: any[] = [];
+
+  private isAnimating: boolean = false;
 
   constructor(
     private elementRef: ElementRef,
@@ -49,46 +48,92 @@ export class ExampleAnimationComponent implements OnInit, OnDestroy {
     if (this.elementRef.nativeElement) {
       this.observer.observe(this.elementRef.nativeElement);
     }
+
+    document.addEventListener('visibilitychange', this.handleVisibilityChange);
   }
 
+  private handleVisibilityChange = () => {
+    if (document.visibilityState === 'hidden') {
+      this.clearAllTimeouts();
+      this.resetAnimations();
+    } else {
+      this.hasBeenVisible = false;
+      this.restartAnimation();
+    }
+  };
+
   private setFirstVisibility() {
+    if (this.hasBeenVisible) return;
+
     this.hasBeenVisible = true;
-    this.aboutService.setComponentVisibility(true);
     this.startAnimation();
   }
 
   private startAnimation() {
+    this.clearAllTimeouts();
+
     const delay = 15000;
     const firstAnimationDelay = 2500 + delay;
     const secondAnimationDelay = firstAnimationDelay + 17500;
 
-    this.animationExampleCanvasTimeout = setTimeout(() => {
-      this.startAnimationExampleCanvas();
-    }, delay);
+    this.aboutService.setComponentVisibility(true);
 
-    this.animationBinaryTimeout = setTimeout(() => {
-      this.startAnimationBinary();
-    }, firstAnimationDelay);
+    this.timeouts.push(
+      setTimeout(() => {
+        this.startAnimationExampleCanvas();
+      }, delay)
+    );
 
-    this.animationExampleResponseTimeout = setTimeout(() => {
-      this.startAnimationResponseCanvas();
-    }, secondAnimationDelay);
+    this.timeouts.push(
+      setTimeout(() => {
+        this.startAnimationBinary();
+      }, firstAnimationDelay)
+    );
+
+    this.timeouts.push(
+      setTimeout(() => {
+        this.startAnimationResponseCanvas();
+      }, secondAnimationDelay)
+    );
 
     const totalDuration = secondAnimationDelay + 7500 + 40000;
-    this.restartTimeout = setTimeout(() => {
-      this.resetAnimations();
+    this.timeouts.push(
+      setTimeout(() => {
+        this.restartAnimation();
+      }, totalDuration)
+    );
+  }
+
+  private restartAnimation() {
+    if (this.isAnimating) return;
+
+    this.isAnimating = true;
+    this.clearAllTimeouts();
+    this.resetAnimations();
+
+    setTimeout(() => {
+      this.isAnimating = false;
       this.startAnimation();
-    }, totalDuration);
+    }, 100);
+  }
+
+  private clearAllTimeouts() {
+    this.timeouts.forEach(clearTimeout);
+    this.timeouts = [];
   }
 
   private resetAnimations() {
     const elements = this.elementRef.nativeElement.querySelectorAll(
-      '.example-canvas-animation, .binary-animation, .example-response'
+      '.example-canvas-animation, .binary-animation, .example-response, .neon-canvas, .neon-response'
     );
 
     elements.forEach((element: HTMLElement) => {
       this.renderer.removeClass(element, 'animate');
+      this.renderer.removeClass(element, 'neon-visible');
     });
+
+    this.aboutService.setComponentVisibility(false);
+    this.aboutService.setDrawingResponseAllowed(false);
   }
 
   private startAnimationExampleCanvas() {
@@ -145,6 +190,10 @@ export class ExampleAnimationComponent implements OnInit, OnDestroy {
     if (canvasElement) {
       this.renderer.addClass(canvasElement, 'animate');
     }
+
+    setTimeout(() => {
+      this.aboutService.setDrawingResponseAllowed(true);
+    }, 8500);
   }
 
   private createSquares(neonElement: HTMLElement) {
@@ -152,6 +201,7 @@ export class ExampleAnimationComponent implements OnInit, OnDestroy {
     const maxDelay = 500;
     const minDelay = 100;
     const createSquareDelay = 150;
+    const paddingY = 15;
 
     const createSquare = () => {
       const square = this.renderer.createElement('div');
@@ -165,11 +215,11 @@ export class ExampleAnimationComponent implements OnInit, OnDestroy {
       this.renderer.setStyle(square, 'top', `${top}px`);
       this.renderer.setStyle(square, 'left', '0px');
 
-      const randomX = Math.random() * 150 + 100;
+      const randomX = Math.random() * 150;
       const randomY =
         Math.random() > 0.5
-          ? -(Math.random() * top)
-          : Math.random() * (320 - top);
+          ? -(Math.random() * top - paddingY)
+          : Math.random() * (320 - top - paddingY);
 
       const delay = Math.random() * (maxDelay - minDelay) + minDelay;
 
@@ -210,17 +260,11 @@ export class ExampleAnimationComponent implements OnInit, OnDestroy {
     if (this.observer) {
       this.observer.disconnect();
     }
-    if (this.animationExampleCanvasTimeout) {
-      clearTimeout(this.animationExampleCanvasTimeout);
-    }
-    if (this.animationBinaryTimeout) {
-      clearTimeout(this.animationBinaryTimeout);
-    }
-    if (this.animationExampleResponseTimeout) {
-      clearTimeout(this.animationExampleResponseTimeout);
-    }
-    if (this.restartTimeout) {
-      clearTimeout(this.restartTimeout);
-    }
+    this.clearAllTimeouts();
+
+    document.removeEventListener(
+      'visibilitychange',
+      this.handleVisibilityChange
+    );
   }
 }

@@ -2,12 +2,14 @@ import {
   Component,
   ElementRef,
   Input,
+  OnDestroy,
+  OnInit,
   Renderer2,
   ViewChild,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AboutService } from 'src/app/services/about.service';
-import { Subscription } from 'rxjs';
+import { Subject, Subscription, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-example-canvas',
@@ -16,7 +18,7 @@ import { Subscription } from 'rxjs';
   templateUrl: './example-canvas.component.html',
   styleUrls: ['./example-canvas.component.scss'],
 })
-export class ExampleCanvasComponent {
+export class ExampleCanvasComponent implements OnInit, OnDestroy {
   @ViewChild('canvas', { static: true }) canvasRef!: ElementRef<HTMLDivElement>;
 
   private shapes = ['triangle', 'rectangle'];
@@ -27,11 +29,10 @@ export class ExampleCanvasComponent {
   private dimensionsPx: number[] = [];
   private generatedTask: string | null = null;
 
-  private resetTimeout: any;
-  private isAnimationPaused: boolean = false;
   private currentShapeTimeout: any;
 
   private subscription: Subscription = new Subscription();
+  private unsubscribe$ = new Subject<void>();
 
   constructor(
     private renderer: Renderer2,
@@ -39,38 +40,33 @@ export class ExampleCanvasComponent {
   ) {}
 
   ngOnInit(): void {
-    this.subscription = this.aboutService.componentVisibility$.subscribe(
-      (isActive) => {
+    this.aboutService.componentVisibility$
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe((isActive) => {
+        console.log('Visibility changed:', isActive);
         if (isActive) {
-          if (this.isAnimationPaused) {
-            this.resumeAnimation();
-          } else {
-            this.drawRandomShape();
-          }
+          this.drawRandomShape();
         } else {
           this.clearCanvas(this.canvasRef.nativeElement);
           this.clearShape();
         }
-      }
-    );
+      });
   }
 
   ngOnDestroy(): void {
-    this.subscription.unsubscribe();
-    if (this.resetTimeout) {
-      clearTimeout(this.resetTimeout);
-    }
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
     if (this.currentShapeTimeout) {
       clearTimeout(this.currentShapeTimeout);
     }
   }
 
   drawRandomShape() {
-    if (this.isAnimationPaused) return;
+    console.log(Date.now(), 'drawRandomShape is called.');
 
     const canvas = this.canvasRef.nativeElement;
-    this.clearCanvas(canvas);
     this.clearShape();
+    this.clearCanvas(canvas);
     this.aboutService.setDrawingResponseAllowed(false);
 
     this.drawnShape =
@@ -81,29 +77,6 @@ export class ExampleCanvasComponent {
     } else if (this.drawnShape === 'rectangle') {
       this.drawRectangle(canvas);
     }
-
-    if (this.resetTimeout) {
-      clearTimeout(this.resetTimeout);
-    }
-
-    this.resetTimeout = setTimeout(() => {
-      this.drawRandomShape();
-    }, 82500);
-  }
-
-  pauseAnimation() {
-    this.isAnimationPaused = true;
-    if (this.resetTimeout) {
-      clearTimeout(this.resetTimeout);
-    }
-    if (this.currentShapeTimeout) {
-      clearTimeout(this.currentShapeTimeout);
-    }
-  }
-
-  resumeAnimation() {
-    this.isAnimationPaused = false;
-    this.drawRandomShape();
   }
 
   private clearCanvas(container: HTMLElement) {
@@ -302,11 +275,6 @@ export class ExampleCanvasComponent {
             )}, BC = ${Math.round(dim2)}, ${this.generatedTask}`
           );
         }, delay);
-
-        delay += 2500;
-        setTimeout(() => {
-          this.aboutService.setDrawingResponseAllowed(true);
-        }, delay + 35000);
       } else {
         setTimeout(
           () => this.addVertexLabel(container, -padding, -padding, 'A'),
@@ -390,11 +358,6 @@ export class ExampleCanvasComponent {
         setTimeout(() => {
           this.clearCanvas(this.canvasRef.nativeElement);
         }, 30000);
-
-        delay += 2500;
-        setTimeout(() => {
-          this.aboutService.setDrawingResponseAllowed(true);
-        }, delay + 35000);
       }
     }
   }
