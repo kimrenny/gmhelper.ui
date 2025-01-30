@@ -15,7 +15,7 @@ export class BinaryAnimationComponent implements OnInit, OnDestroy {
     [];
   readonly columnCount: number = 10;
   readonly columnHeight: number = 15;
-  readonly animationDuration: number = 2;
+  readonly animationDuration: number = 2000;
 
   private isComponentVisible: boolean = false;
   private visibilitySubscription: Subscription | null = null;
@@ -41,7 +41,6 @@ export class BinaryAnimationComponent implements OnInit, OnDestroy {
   }
 
   startAnimation(): void {
-    console.log('startAnimation');
     const bitUpdateInterval =
       (this.animationDuration * 1000) / this.columnHeight;
 
@@ -63,7 +62,6 @@ export class BinaryAnimationComponent implements OnInit, OnDestroy {
   }
 
   stopAnimation(): void {
-    console.log('stopAnimation');
     this.columns.forEach((column) => {
       if (column['intervalId']) {
         clearInterval(column['intervalId']);

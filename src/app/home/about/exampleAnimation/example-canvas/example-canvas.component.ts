@@ -29,10 +29,11 @@ export class ExampleCanvasComponent implements OnInit, OnDestroy {
   private dimensionsPx: number[] = [];
   private generatedTask: string | null = null;
 
-  private currentShapeTimeout: any;
+  private timeouts: any[] = [];
 
   private subscription: Subscription = new Subscription();
   private unsubscribe$ = new Subject<void>();
+  private isDrawing = false;
 
   constructor(
     private renderer: Renderer2,
@@ -43,10 +44,19 @@ export class ExampleCanvasComponent implements OnInit, OnDestroy {
     this.aboutService.componentVisibility$
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe((isActive) => {
-        console.log('Visibility changed:', isActive);
         if (isActive) {
-          this.drawRandomShape();
+          if (!this.isDrawing) {
+            this.isDrawing = true;
+            this.clearAllTimeouts();
+            this.timeouts.push(
+              setTimeout(() => {
+                this.drawRandomShape();
+                this.isDrawing = false;
+              }, 10)
+            );
+          }
         } else {
+          this.clearAllTimeouts();
           this.clearCanvas(this.canvasRef.nativeElement);
           this.clearShape();
         }
@@ -56,14 +66,15 @@ export class ExampleCanvasComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
-    if (this.currentShapeTimeout) {
-      clearTimeout(this.currentShapeTimeout);
-    }
+    this.clearAllTimeouts();
+  }
+
+  private clearAllTimeouts() {
+    this.timeouts.forEach((t) => clearTimeout(t));
+    this.timeouts = [];
   }
 
   drawRandomShape() {
-    console.log(Date.now(), 'drawRandomShape is called.');
-
     const canvas = this.canvasRef.nativeElement;
     this.clearShape();
     this.clearCanvas(canvas);
@@ -128,9 +139,11 @@ export class ExampleCanvasComponent implements OnInit, OnDestroy {
 
     this.appendShape(svg, container);
 
-    setTimeout(() => {
-      this.addDimensions(container, leftSide, rightSide, bottomSide);
-    }, 2500);
+    this.timeouts.push(
+      setTimeout(() => {
+        this.addDimensions(container, leftSide, rightSide, bottomSide);
+      }, 2500)
+    );
   }
 
   private drawRectangle(container: HTMLElement) {
@@ -158,9 +171,11 @@ export class ExampleCanvasComponent implements OnInit, OnDestroy {
 
     this.appendShape(svg, container);
 
-    setTimeout(() => {
-      this.addDimensions(container, width, height, width, height);
-    }, 2500);
+    this.timeouts.push(
+      setTimeout(() => {
+        this.addDimensions(container, width, height, width, height);
+      }, 2500)
+    );
   }
 
   private createSVGElement(
@@ -209,53 +224,66 @@ export class ExampleCanvasComponent implements OnInit, OnDestroy {
       const padding = 10;
 
       if (dim4 == undefined || dim4 == 0) {
-        setTimeout(
-          () => this.addVertexLabel(container, -padding, side1 + padding, 'A'),
-          delay
+        this.timeouts.push(
+          setTimeout(
+            () =>
+              this.addVertexLabel(container, -padding, side1 + padding, 'A'),
+            delay
+          )
         );
         delay += 500;
-        setTimeout(
-          () => this.addVertexLabel(container, -padding, -padding, 'B'),
-          delay
+        this.timeouts.push(
+          setTimeout(
+            () => this.addVertexLabel(container, -padding, -padding, 'B'),
+            delay
+          )
         );
         delay += 500;
-        setTimeout(
-          () =>
-            this.addVertexLabel(
-              container,
-              side3 + padding,
-              side1 + padding,
-              'C'
-            ),
-          delay
+        this.timeouts.push(
+          setTimeout(
+            () =>
+              this.addVertexLabel(
+                container,
+                side3 + padding,
+                side1 + padding,
+                'C'
+              ),
+            delay
+          )
         );
         delay += 1000;
 
-        setTimeout(
-          () => this.addSideLengthLabel(container, -padding, side1 / 2, dim1),
-          delay
+        this.timeouts.push(
+          setTimeout(
+            () => this.addSideLengthLabel(container, -padding, side1 / 2, dim1),
+            delay
+          )
         );
         delay += 500;
-        setTimeout(
-          () =>
-            this.addSideLengthLabel(
-              container,
-              side3 / 2,
-              side1 + padding,
-              dim3
-            ),
-          delay
+        this.timeouts.push(
+          setTimeout(
+            () =>
+              this.addSideLengthLabel(
+                container,
+                side3 / 2,
+                side1 + padding,
+                dim3
+              ),
+            delay
+          )
         );
         delay += 500;
-        setTimeout(
-          () =>
-            this.addSideLengthLabel(
-              container,
-              side3 / 2 + padding,
-              side1 / 2 - padding,
-              dim2
-            ),
-          delay
+        this.timeouts.push(
+          setTimeout(
+            () =>
+              this.addSideLengthLabel(
+                container,
+                side3 / 2 + padding,
+                side1 / 2 - padding,
+                dim2
+              ),
+            delay
+          )
         );
         delay += 500;
         this.generatedTask = this.generateTask('triangle');
@@ -267,74 +295,98 @@ export class ExampleCanvasComponent implements OnInit, OnDestroy {
           this.dimensionsPx
         );
 
-        setTimeout(() => {
-          this.addGivenText(
-            container,
-            `AB = ${Math.round(dim1)}, AC = ${Math.round(
-              dim3
-            )}, BC = ${Math.round(dim2)}, ${this.generatedTask}`
-          );
-        }, delay);
+        this.timeouts.push(
+          setTimeout(() => {
+            this.addGivenText(
+              container,
+              `AB = ${Math.round(dim1)}, AC = ${Math.round(
+                dim3
+              )}, BC = ${Math.round(dim2)}, ${this.generatedTask}`
+            );
+          }, delay)
+        );
       } else {
-        setTimeout(
-          () => this.addVertexLabel(container, -padding, -padding, 'A'),
-          delay
+        this.timeouts.push(
+          setTimeout(
+            () => this.addVertexLabel(container, -padding, -padding, 'A'),
+            delay
+          )
         );
         delay += 500;
-        setTimeout(
-          () => this.addVertexLabel(container, side1 + padding, -padding, 'B'),
-          delay
+        this.timeouts.push(
+          setTimeout(
+            () =>
+              this.addVertexLabel(container, side1 + padding, -padding, 'B'),
+            delay
+          )
         );
         delay += 500;
-        setTimeout(
-          () =>
-            this.addVertexLabel(
-              container,
-              side1 + padding,
-              side2 + padding,
-              'C'
-            ),
+        this.timeouts.push(
+          setTimeout(
+            () =>
+              this.addVertexLabel(
+                container,
+                side1 + padding,
+                side2 + padding,
+                'C'
+              ),
+            delay
+          )
+        );
+        delay += 500;
+        this.timeouts.push(
+          setTimeout(
+            () =>
+              this.addVertexLabel(container, -padding, side2 + padding, 'D'),
+            delay
+          )
+        );
+        delay += 500;
 
-          delay
+        this.timeouts.push(
+          setTimeout(
+            () => this.addSideLengthLabel(container, side1 / 2, -padding, dim1),
+            delay
+          )
         );
         delay += 500;
-        setTimeout(
-          () => this.addVertexLabel(container, -padding, side2 + padding, 'D'),
-          delay
+        this.timeouts.push(
+          setTimeout(
+            () =>
+              this.addSideLengthLabel(
+                container,
+                side1 + padding,
+                side2 / 2,
+                dim2
+              ),
+            delay
+          )
         );
         delay += 500;
-
-        setTimeout(
-          () => this.addSideLengthLabel(container, side1 / 2, -padding, dim1),
-          delay
+        this.timeouts.push(
+          setTimeout(
+            () =>
+              this.addSideLengthLabel(
+                container,
+                side3 / 2,
+                side2 + padding,
+                dim3
+              ),
+            delay
+          )
         );
         delay += 500;
-        setTimeout(
-          () =>
-            this.addSideLengthLabel(
-              container,
-              side1 + padding,
-              side2 / 2,
-              dim2
-            ),
-          delay
-        );
-        delay += 500;
-        setTimeout(
-          () =>
-            this.addSideLengthLabel(
-              container,
-              side3 / 2,
-              side2 + padding,
-              dim3
-            ),
-          delay
-        );
-        delay += 500;
-        setTimeout(
-          () =>
-            this.addSideLengthLabel(container, -padding, side2 / 2, dim4 || 0),
-          delay
+        this.timeouts.push(
+          setTimeout(
+            () =>
+              this.addSideLengthLabel(
+                container,
+                -padding,
+                side2 / 2,
+                dim4 || 0
+              ),
+            delay
+          )
         );
         delay += 500;
         this.generatedTask = this.generateTask('rectangle');
@@ -346,18 +398,22 @@ export class ExampleCanvasComponent implements OnInit, OnDestroy {
           this.dimensionsPx
         );
 
-        setTimeout(() => {
-          this.addGivenText(
-            container,
-            `AB = CD = ${Math.round(dim1)}, BC = AD = ${Math.round(dim2)}, ${
-              this.generatedTask
-            }`
-          );
-        }, delay);
+        this.timeouts.push(
+          setTimeout(() => {
+            this.addGivenText(
+              container,
+              `AB = CD = ${Math.round(dim1)}, BC = AD = ${Math.round(dim2)}, ${
+                this.generatedTask
+              }`
+            );
+          }, delay)
+        );
 
-        setTimeout(() => {
-          this.clearCanvas(this.canvasRef.nativeElement);
-        }, 30000);
+        this.timeouts.push(
+          setTimeout(() => {
+            this.clearCanvas(this.canvasRef.nativeElement);
+          }, 30000)
+        );
       }
     }
   }
