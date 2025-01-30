@@ -1,7 +1,10 @@
 <div class="sidebar">
   <ul>
     <li>
-      <a href="#welcome" [class.active]="activeSection === 'welcome'">
+      <a
+        (click)="scrollToSection('welcome')"
+        [class.active]="activeSection === 'welcome'"
+      >
         <img
           src="../../../assets/icons/welcome.png"
           alt="Welcome"
@@ -11,13 +14,19 @@
       </a>
     </li>
     <li>
-      <a href="#about" [class.active]="activeSection === 'about'">
+      <a
+        (click)="scrollToSection('about')"
+        [class.active]="activeSection === 'about'"
+      >
         <img src="../../../assets/icons/about.png" alt="About" class="about" />
         <span class="nav-text">{{ "HOME.NAVBAR.ABOUT" | translate }}</span>
       </a>
     </li>
     <li>
-      <a href="#features" [class.active]="activeSection === 'features'">
+      <a
+        (click)="scrollToSection('features')"
+        [class.active]="activeSection === 'features'"
+      >
         <img
           src="../../../assets/icons/features.png"
           alt="Features"
@@ -27,7 +36,10 @@
       </a>
     </li>
     <li>
-      <a href="#contact" [class.active]="activeSection === 'contact'">
+      <a
+        (click)="scrollToSection('contact')"
+        [class.active]="activeSection === 'contact'"
+      >
         <img
           src="../../../assets/icons/contacts.png"
           alt="Contact"
@@ -37,7 +49,10 @@
       </a>
     </li>
     <li>
-      <a href="#start" [class.active]="activeSection === 'start'">
+      <a
+        (click)="scrollToSection('start')"
+        [class.active]="activeSection === 'start'"
+      >
         <img src="../../../assets/icons/start.png" alt="Start" class="start" />
         <span class="nav-text">{{ "HOME.NAVBAR.START" | translate }}</span>
       </a>

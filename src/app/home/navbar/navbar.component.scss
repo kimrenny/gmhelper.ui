@@ -23,6 +23,7 @@
     li {
       margin-bottom: 0.4rem;
       width: 100%;
+      cursor: pointer;
 
       a {
         display: flex;
@@ -71,10 +72,9 @@
           margin-right: 25px;
         }
 
-        /* Показать текст только в развернутом состоянии */
         .sidebar:hover & span {
-          display: inline; /* Показать текст при наведении */
-          color: #fff; /* Цвет текста */
+          display: inline;
+          color: #fff;
         }
       }
     }

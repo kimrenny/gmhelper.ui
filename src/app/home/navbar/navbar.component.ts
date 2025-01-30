@@ -1,5 +1,5 @@
 import { Component, AfterViewInit, HostListener } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { ChangeDetectorRef } from '@angular/core';
 
@@ -8,11 +8,14 @@ import { ChangeDetectorRef } from '@angular/core';
   standalone: true,
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.scss'],
-  imports: [TranslateModule],
+  imports: [TranslateModule, RouterModule],
 })
 export class NavbarComponent implements AfterViewInit {
+  sections: string[] = ['welcome', 'about', 'features', 'contact', 'start'];
   activeSection: string = 'welcome';
   userClicked: boolean = false;
+  scrolling: boolean = false;
+  lastScrollY: number = 0;
 
   constructor(
     private router: Router,
@@ -21,96 +24,81 @@ export class NavbarComponent implements AfterViewInit {
   ) {}
 
   ngAfterViewInit() {
-    this.initSmoothScroll();
-    this.initRouteListener();
-    this.setActiveSection();
-  }
-
-  private initSmoothScroll() {
-    const links = document.querySelectorAll('a[href^="#"]');
-
-    links.forEach((link) => {
-      link.addEventListener('click', (event) => {
-        event.preventDefault();
-        const href = (event.currentTarget as HTMLAnchorElement).getAttribute(
-          'href'
-        );
-        if (href) {
-          const targetId = href.substring(1);
-
-          if (this.router.url !== '/') {
-            this.router.navigate(['/'], { fragment: targetId }).then(() => {
-              this.scrollToSection(targetId);
-            });
-          } else {
-            this.scrollToSection(targetId);
-            this.updateURL(targetId);
-          }
-
-          this.userClicked = true;
-        }
-      });
-    });
-  }
-
-  private initRouteListener() {
-    this.route.fragment.subscribe((fragment) => {
-      if (fragment && !this.userClicked) {
-        this.scrollToSection(fragment);
+    this.route.queryParams.subscribe((params) => {
+      const section = params['section'];
+      if (section && this.sections.includes(section)) {
+        setTimeout(() => this.scrollToSection(section, false), 100);
       }
     });
+
+    document.body.style.overflow = 'hidden';
   }
 
-  private setActiveSection() {
-    if (this.userClicked) return;
+  public scrollToSection(sectionId: string, updateUrl: boolean = true) {
+    console.log('Attempt scroll to the section:', sectionId);
 
-    const sections = document.querySelectorAll('section');
-
-    const observerOptions = {
-      root: null,
-      rootMargin: '0px',
-      threshold: 0.5,
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          const sectionId = entry.target.getAttribute('id') || 'welcome';
-          if (this.activeSection !== sectionId) {
-            this.activeSection = sectionId;
-            this.updateURL(sectionId);
-          }
-        }
-      });
-    }, observerOptions);
-
-    sections.forEach((section) => {
-      observer.observe(section);
-    });
-  }
-
-  private updateURL(sectionId: string) {
-    this.router.navigate([], {
-      queryParams: { section: sectionId },
-      replaceUrl: true,
-    });
-  }
-
-  private scrollToSection(sectionId: string) {
     const targetElement = document.getElementById(sectionId);
 
-    if (targetElement) {
-      targetElement.scrollIntoView({ behavior: 'smooth' });
-      this.activeSection = sectionId;
+    if (!targetElement) {
+      const currentUrl = this.router.url;
+      if (currentUrl.includes('settings') || currentUrl.includes('register')) {
+        this.router.navigate(['']).then(() => {
+          this.scrollToSection(sectionId, true);
+        });
+      }
+    }
 
-      this.cdr.detectChanges();
+    if (targetElement) {
+      this.scrolling = true;
+      targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+      setTimeout(() => {
+        this.scrolling = false;
+        this.activeSection = sectionId;
+        this.userClicked = false;
+        this.cdr.detectChanges();
+
+        if (updateUrl) {
+          this.router.navigate([], {
+            queryParams: { section: sectionId },
+            replaceUrl: true,
+          });
+        }
+      }, 500);
     }
   }
 
-  @HostListener('window:scroll', [])
-  onWindowScroll() {
-    if (!this.userClicked) {
-      this.setActiveSection();
+  private scrollToNextSection(direction: 'up' | 'down') {
+    const currentIndex = this.sections.indexOf(this.activeSection);
+    let nextIndex = currentIndex;
+
+    if (direction === 'down' && currentIndex < this.sections.length - 1) {
+      nextIndex++;
+    } else if (direction === 'up' && currentIndex > 0) {
+      nextIndex--;
     }
+
+    if (nextIndex !== currentIndex) {
+      this.scrollToSection(this.sections[nextIndex]);
+    }
+  }
+
+  @HostListener('window:wheel', ['$event'])
+  onScroll(event: WheelEvent) {
+    event.preventDefault();
+
+    if (this.scrolling) return;
+
+    const direction = event.deltaY > 0 ? 'down' : 'up';
+
+    if (
+      direction === 'down' &&
+      this.activeSection === this.sections[this.sections.length - 1]
+    )
+      return;
+
+    if (direction === 'up' && this.activeSection === this.sections[0]) return;
+
+    this.scrollToNextSection(direction);
   }
 }

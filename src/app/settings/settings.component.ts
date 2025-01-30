@@ -6,7 +6,7 @@ import {
   Validators,
 } from '@angular/forms';
 
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 import { UserService } from '../services/user.service';
@@ -50,13 +50,9 @@ export class SettingsComponent implements OnInit {
     @Inject(UserService) private userService: UserService,
     private fb: FormBuilder,
     private cdr: ChangeDetectorRef,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {
-    console.log(
-      'SettingsComponent instantiated. UserService instance:',
-      userService
-    );
-    console.log(`SettingsComponent instance created: ${Math.random()}`);
     this.isAuthorized = this.userService.isAuthorized$;
     this.isServerAvailable = this.userService.isServerAvailable$;
   }
@@ -70,8 +66,6 @@ export class SettingsComponent implements OnInit {
       confirmNewPassword: [''],
       avatar: [null],
     });
-
-    console.log('SettingsComponent ngOnInit is called.');
 
     this.userService.checkAuthentication();
 
@@ -87,11 +81,9 @@ export class SettingsComponent implements OnInit {
 
     this.userService.isAuthorized$.subscribe((authorized) => {
       if (authorized && !this.devicesLoaded) {
-        //console.log('Calling getLoggedDevices');
         this.getLoggedDevices();
         this.devicesLoaded = true;
       } else {
-        //console.log('No authorized.');
       }
     });
   }
@@ -114,14 +106,10 @@ export class SettingsComponent implements OnInit {
   }
 
   getLoggedDevices() {
-    //console.log('called getLoggedDevices');
     this.userService.getLoggedDevices().subscribe({
       next: (devices) => {
-        console.log(devices);
         if (Array.isArray(devices) && devices.length > 0) {
           this.devices = devices;
-        } else {
-          //console.log('No devices found or invalid data structure.');
         }
       },
       error: (err) => {
@@ -201,7 +189,6 @@ export class SettingsComponent implements OnInit {
         next: () => {
           this.getUserDetails();
           //this.cdr.detectChanges();
-          //console.log('Data updated successfully.');
         },
         error: (err) => {
           console.error('Error updating data:', err);
@@ -257,8 +244,6 @@ export class SettingsComponent implements OnInit {
   async deactivateDevice(device: any) {
     this.userService.deactivateDevice(device).subscribe({
       next: () => {
-        //console.log('Device deactivated successfully.');
-
         this.userService.checkAuthentication(() => {
           this.getLoggedDevices();
         });

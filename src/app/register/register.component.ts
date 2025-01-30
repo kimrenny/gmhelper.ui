@@ -76,6 +76,16 @@ export class RegisterComponent {
     this.registerService.userIpAddress.subscribe(
       (ip) => (this.userIpAddress = ip)
     );
+
+    this.route.queryParams.subscribe((params) => {
+      const section = params['section'];
+      if (section) {
+        this.router.navigate([''], {
+          queryParams: { section: section },
+          replaceUrl: true,
+        });
+      }
+    });
   }
 
   ngAfterViewInit(): void {
