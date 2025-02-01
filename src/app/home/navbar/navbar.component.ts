@@ -1,7 +1,13 @@
 import { Component, AfterViewInit, HostListener } from '@angular/core';
-import { Router, RouterModule, ActivatedRoute } from '@angular/router';
+import {
+  Router,
+  RouterModule,
+  ActivatedRoute,
+  NavigationEnd,
+} from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { ChangeDetectorRef } from '@angular/core';
+import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-navbar',
@@ -16,6 +22,7 @@ export class NavbarComponent implements AfterViewInit {
   userClicked: boolean = false;
   scrolling: boolean = false;
   lastScrollY: number = 0;
+  isHomeComponentActive: boolean = false;
 
   constructor(
     private router: Router,
@@ -24,6 +31,12 @@ export class NavbarComponent implements AfterViewInit {
   ) {}
 
   ngAfterViewInit() {
+    this.router.events
+      .pipe(filter((event) => event instanceof NavigationEnd))
+      .subscribe(() => {
+        this.checkHomeComponent();
+      });
+
     this.route.queryParams.subscribe((params) => {
       const section = params['section'];
       if (section && this.sections.includes(section)) {
@@ -34,9 +47,15 @@ export class NavbarComponent implements AfterViewInit {
     document.body.style.overflow = 'hidden';
   }
 
-  public scrollToSection(sectionId: string, updateUrl: boolean = true) {
-    console.log('Attempt scroll to the section:', sectionId);
+  private checkHomeComponent() {
+    const url = this.router.url;
+    const hasSection = this.sections.some((section) =>
+      url.includes(`section=${section}`)
+    );
+    this.isHomeComponentActive = url === '/' || hasSection;
+  }
 
+  public scrollToSection(sectionId: string, updateUrl: boolean = true) {
     const targetElement = document.getElementById(sectionId);
 
     if (!targetElement) {
@@ -88,6 +107,8 @@ export class NavbarComponent implements AfterViewInit {
     event.preventDefault();
 
     if (this.scrolling) return;
+
+    if (!this.isHomeComponentActive) return;
 
     const direction = event.deltaY > 0 ? 'down' : 'up';
 
