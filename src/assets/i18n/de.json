@@ -142,7 +142,8 @@
         "SUCCESS": "Eine E-Mail zur Wiederherstellung des Passworts wurde gesendet.",
         "FAIL": "Fehler beim Senden der Wiederherstellungs-E-Mail. Bitte versuchen Sie es erneut."
       }
-    }
+    },
+    "REMEMBER_ME": "Angemeldet bleiben"
   },
   "SETTINGS": {
     "UNAUTHORIZED_MESSAGE": "Sie haben keine Berechtigung, auf diesen Inhalt zuzugreifen.",

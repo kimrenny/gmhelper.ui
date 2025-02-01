@@ -142,7 +142,8 @@
         "SUCCESS": "Password recovery email has been sent.",
         "FAIL": "Error sending recovery email. Please try again."
       }
-    }
+    },
+    "REMEMBER_ME": "Stay signed in"
   },
   "SETTINGS": {
     "UNAUTHORIZED_MESSAGE": "You don’t have permission to access this content.",

@@ -148,6 +148,15 @@
       {{ loginPasswordError | translate }}
     </div>
 
+    <div class="remember-me-container">
+      <div class="custom-checkbox" (click)="toggleRememberMe()">
+        <div class="checkmark" *ngIf="rememberMe"></div>
+      </div>
+      <label (click)="toggleRememberMe()">
+        {{ "REGISTER.REMEMBER_ME" | translate }}
+      </label>
+    </div>
+
     <div class="recaptcha-container" *ngIf="!isRegisterMode && isCaptchaLoaded">
       <ngx-recaptcha2
         [siteKey]="'6LdH7qIqAAAAAGivcgrDnNnpaIj_GNRwy_CTu95X'"

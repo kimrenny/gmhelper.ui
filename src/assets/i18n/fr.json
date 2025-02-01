@@ -142,7 +142,8 @@
         "SUCCESS": "E-mail de récupération du mot de passe envoyé.",
         "FAIL": "Erreur d'envoi de l'e-mail de récupération. Veuillez réessayer."
       }
-    }
+    },
+    "REMEMBER_ME": "Rester connecté"
   },
   "SETTINGS": {
     "UNAUTHORIZED_MESSAGE": "Vous n’avez pas la permission d’accéder à ce contenu.",

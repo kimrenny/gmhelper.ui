@@ -142,7 +142,8 @@
         "SUCCESS": "密码恢复电子邮件已发送。",
         "FAIL": "发送密码恢复电子邮件失败。请重试。"
       }
-    }
+    },
+    "REMEMBER_ME": "保持登录状态"
   },
   "SETTINGS": {
     "UNAUTHORIZED_MESSAGE": "您没有权限访问此内容。",

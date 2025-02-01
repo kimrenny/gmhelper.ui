@@ -17,6 +17,7 @@ import { UserService } from '../services/user.service';
 export class RegisterComponent {
   formType: 'signup' | 'login' = 'signup';
   isRegisterMode: boolean = true;
+  rememberMe: boolean = false;
   showForgotPassword: boolean = false;
   recoveryEmail: string = '';
   username: string = '';
@@ -62,9 +63,7 @@ export class RegisterComponent {
     private route: ActivatedRoute,
     private router: Router,
     @Inject(UserService) private userService: UserService
-  ) {
-    console.log('UserService instance:', userService);
-  }
+  ) {}
 
   ngOnInit(): void {
     this.route.queryParams.subscribe((params) => {
@@ -139,7 +138,6 @@ export class RegisterComponent {
       )
       .subscribe({
         next: (response) => {
-          console.log(response);
           this.registerFeedbackMessage = 'REGISTER.ERRORS.REGISTRATION.SUCCESS';
           this.clearMessageAfterDelay('register');
         },
@@ -184,17 +182,19 @@ export class RegisterComponent {
       return;
     }
 
+    console.log('login response: rememberMe:', this.rememberMe);
+
     this.registerService
       .loginUser(
         this.email,
         this.password,
         this.userIpAddress,
-        this.captchaLoginToken
+        this.captchaLoginToken,
+        this.rememberMe
       )
       .subscribe({
         next: (response: any) => {
           this.captchaLoginToken = '';
-          console.log('login response:', response);
           localStorage.setItem('authToken', response.accessToken);
           localStorage.setItem('refreshToken', response.refreshToken);
           this.userService.checkAuthentication();
@@ -323,6 +323,10 @@ export class RegisterComponent {
           this.clearMessageAfterDelay('recovery');
         },
       });
+  }
+
+  toggleRememberMe() {
+    this.rememberMe = !this.rememberMe;
   }
 
   onCaptchaRegisterChange(token: string): void {

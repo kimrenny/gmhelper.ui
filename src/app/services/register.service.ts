@@ -158,7 +158,8 @@ export class RegisterService {
     email: string,
     password: string,
     userIpAddress: string,
-    captchaToken: string
+    captchaToken: string,
+    rememberMe: boolean
   ) {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     const body = {
@@ -170,6 +171,7 @@ export class RegisterService {
       },
       ipAddress: userIpAddress,
       captchaToken,
+      remember: rememberMe,
     };
     return this.http.post('https://localhost:7057/api/user/login', body, {
       headers,
