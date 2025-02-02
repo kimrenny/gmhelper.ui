@@ -5,12 +5,10 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-
-import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 import { UserService } from '../services/user.service';
-import { Observable, take } from 'rxjs';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-settings',
@@ -49,9 +47,7 @@ export class SettingsComponent implements OnInit {
   constructor(
     @Inject(UserService) private userService: UserService,
     private fb: FormBuilder,
-    private cdr: ChangeDetectorRef,
-    private router: Router,
-    private route: ActivatedRoute
+    private cdr: ChangeDetectorRef
   ) {
     this.isAuthorized = this.userService.isAuthorized$;
     this.isServerAvailable = this.userService.isServerAvailable$;
