@@ -6,6 +6,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NgxCaptchaModule } from 'ngx-captcha';
 import { RegisterService } from '../services/register.service';
 import { UserService } from '../services/user.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-register',
@@ -57,13 +58,17 @@ export class RegisterComponent {
   isCaptchaLoaded: boolean = false;
   userIpAddress: string = '';
 
+  isAuthorized!: Observable<boolean>;
+
   constructor(
     private registerService: RegisterService,
     private cdr: ChangeDetectorRef,
     private route: ActivatedRoute,
     private router: Router,
     @Inject(UserService) private userService: UserService
-  ) {}
+  ) {
+    this.isAuthorized = this.userService.isAuthorized$;
+  }
 
   ngOnInit(): void {
     this.route.queryParams.subscribe((params) => {
@@ -83,6 +88,14 @@ export class RegisterComponent {
           queryParams: { section: section },
           replaceUrl: true,
         });
+      }
+    });
+
+    this.userService.isAuthorized$.subscribe((authorized) => {
+      if (authorized) {
+        setTimeout(() => {
+          this.router.navigate(['/']);
+        }, 100);
       }
     });
   }
@@ -182,8 +195,6 @@ export class RegisterComponent {
       return;
     }
 
-    console.log('login response: rememberMe:', this.rememberMe);
-
     this.registerService
       .loginUser(
         this.email,
@@ -201,7 +212,7 @@ export class RegisterComponent {
           this.loginFeedbackMessage = 'REGISTER.ERRORS.LOGIN.SUCCESS';
           this.clearMessageAfterDelay('login');
           setTimeout(() => {
-            this.router.navigate(['/']);
+            this.router.navigate(['/']); // Forced redirection in case of failure of subscription.
           }, 1000);
         },
         error: (error) => {
