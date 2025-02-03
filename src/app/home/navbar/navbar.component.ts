@@ -1,4 +1,9 @@
-import { Component, AfterViewInit, HostListener } from '@angular/core';
+import {
+  Component,
+  AfterViewInit,
+  HostListener,
+  OnDestroy,
+} from '@angular/core';
 import {
   Router,
   RouterModule,
@@ -16,13 +21,14 @@ import { filter } from 'rxjs';
   styleUrls: ['./navbar.component.scss'],
   imports: [TranslateModule, RouterModule],
 })
-export class NavbarComponent implements AfterViewInit {
+export class NavbarComponent implements AfterViewInit, OnDestroy {
   sections: string[] = ['welcome', 'about', 'features', 'contact', 'start'];
   activeSection: string = 'welcome';
   userClicked: boolean = false;
   scrolling: boolean = false;
   lastScrollY: number = 0;
   isHomeComponentActive: boolean = false;
+  private boundOnScroll = this.onScroll.bind(this);
 
   constructor(
     private router: Router,
@@ -45,6 +51,14 @@ export class NavbarComponent implements AfterViewInit {
     });
 
     document.body.style.overflow = 'hidden';
+
+    window.addEventListener('wheel', this.boundOnScroll, {
+      passive: false,
+    });
+  }
+
+  ngOnDestroy() {
+    window.removeEventListener('wheel', this.boundOnScroll);
   }
 
   private checkHomeComponent() {
@@ -102,7 +116,6 @@ export class NavbarComponent implements AfterViewInit {
     }
   }
 
-  @HostListener('window:wheel', ['$event'])
   onScroll(event: WheelEvent) {
     event.preventDefault();
 
