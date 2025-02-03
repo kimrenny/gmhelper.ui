@@ -6,18 +6,23 @@ import {
   Observable,
   throwError,
   tap,
-  timer,
-  finalize,
-  filter,
-  take,
-  map,
   switchMap,
-  shareReplay,
+  timer,
+  of,
 } from 'rxjs';
+import { TokenService } from './token.service';
 
 interface UserDetails {
   avatar: string | null;
   nickname: string;
+}
+
+enum CriticalErrors {
+  UserBlocked = 'User is blocked.',
+  UserNotFound = 'User not found.',
+  InvalidData = 'Invalid data.',
+  InvalidToken = 'Invalid token.',
+  Unauthorized = 'Unauthorized',
 }
 
 @Injectable({
@@ -36,65 +41,48 @@ export class UserService {
   private isServerAvailableSubject = new BehaviorSubject<boolean>(false);
   isServerAvailable$ = this.isServerAvailableSubject.asObservable();
 
-  private refreshingToken = false;
-  private refreshTokenSubject = new BehaviorSubject<string | null>(null);
+  private authHeaders: HttpHeaders | null = null;
 
-  constructor(private http: HttpClient) {
+  private readonly criticalErrors = new Set<string>(
+    Object.values(CriticalErrors)
+  );
+
+  private readonly api = 'https://localhost:7057/api';
+
+  constructor(private http: HttpClient, private tokenService: TokenService) {
     this.initializeAuthentication();
   }
 
+  private getAuthToken(): string | null {
+    return this.tokenService.getTokenFromStorage('authToken');
+  }
+
+  private getRefreshToken(): string | null {
+    return this.tokenService.getTokenFromStorage('refreshToken');
+  }
+
   private initializeAuthentication(): void {
-    const authToken = this.getTokenFromStorage('authToken');
-    const refreshToken = this.getTokenFromStorage('refreshToken');
+    const authToken = this.getAuthToken();
+    const refreshToken = this.getRefreshToken();
 
     if (!authToken && !refreshToken) {
       console.warn('No tokens found in localStorage.');
       return;
     }
 
-    this.ensureTokenValidity(authToken, refreshToken)
+    this.tokenService
+      .ensureTokenValidity(authToken, refreshToken)
       .pipe(
-        switchMap((accessToken) =>
-          this.loadUserDetails(accessToken).pipe(
-            catchError((err) => {
-              console.warn(
-                `Failed to load user details during initialization.`,
-                err
-              );
-              return throwError(() => err);
-            })
-          )
-        )
+        switchMap((accessToken) => this.loadUserDetails(accessToken)),
+        catchError((err) => {
+          console.warn(
+            `Failed to load user details during initialization.`,
+            err
+          );
+          return of(null);
+        })
       )
-      .subscribe({
-        next: () => {},
-        error: (err) => {
-          console.warn('Authentication failed during initialization:', err);
-        },
-      });
-  }
-
-  private getTokenFromStorage(key: string): string | null {
-    return localStorage.getItem(key);
-  }
-
-  private ensureTokenValidity(
-    authToken: string | null,
-    refreshToken: string | null
-  ): Observable<string> {
-    if (authToken && !this.isTokenExpired(authToken, 5 * 60 * 1000)) {
-      return new BehaviorSubject(authToken).asObservable();
-    }
-
-    if (refreshToken) {
-      return this.refreshToken(refreshToken).pipe(
-        map((tokens) => tokens.accessToken)
-      );
-    }
-
-    console.warn('No valid tokens available. Clearing user data.');
-    this.clearUser();
-    return throwError(() => new Error('No valid token available'));
+      .subscribe();
   }
 
   getUserDetails(): UserDetails {
@@ -102,26 +90,21 @@ export class UserService {
   }
 
   loadUserDetails(token: string, attempts = 0): Observable<UserDetails> {
-    return this.ensureTokenValidity(
-      token,
-      this.getTokenFromStorage('refreshToken')
-    ).pipe(
-      switchMap((validToken) => {
-        return this.http.get<UserDetails>(
-          'https://localhost:7057/api/user/details',
-          { headers: this.createAuthHeaders(token) }
-        );
-      }),
-      tap((userDetails) => {
-        if (userDetails.avatar) {
-          userDetails.avatar = `data:image/jpeg;base64,${userDetails.avatar}`;
-        }
-        this.userSubject.next(userDetails);
-        this.isAuthorizedSubject.next(true);
-        this.isServerAvailableSubject.next(true);
-      }),
-      catchError((error) => this.handleLoadUserError(error, token, attempts))
-    );
+    return this.http
+      .get<UserDetails>(`${this.api}/user/details`, {
+        headers: this.createAuthHeaders(token),
+      })
+      .pipe(
+        tap((userDetails) => {
+          if (userDetails.avatar) {
+            userDetails.avatar = `data:image/jpeg;base64,${userDetails.avatar}`;
+          }
+          this.userSubject.next(userDetails);
+          this.isAuthorizedSubject.next(true);
+          this.isServerAvailableSubject.next(true);
+        }),
+        catchError((error) => this.handleLoadUserError(error, token, attempts))
+      );
   }
 
   private handleLoadUserError(
@@ -131,55 +114,32 @@ export class UserService {
   ): Observable<UserDetails | never> {
     console.error('Error loading user details', error);
     this.isAuthorizedSubject.next(false);
+
     if (error.status === 0) {
       this.isServerAvailableSubject.next(false);
       if (attempts < 2) {
-        console.warn('Retrying request due to server unavailabbility...');
-        return this.retryLoadUserDetails(token, attempts + 1);
+        const retryDelay = Math.pow(2, attempts) * 10000;
+        console.warn(`Retrying in ${retryDelay / 1000} sec...`);
+        return timer(retryDelay).pipe(
+          switchMap(() => this.loadUserDetails(token, attempts + 1))
+        );
       } else {
-        console.warn('Server is unavailable. Keeping the user authorized.');
         return throwError(() => new Error('Server is unavailable'));
       }
     }
 
     if (error.message === 'User token is not active.') {
-      console.warn('User token inactive, clearing user...');
       this.clearUser();
       return throwError(() => new Error('User token is not active'));
     }
 
-    if (
-      [
-        'User is blocked.',
-        'User not found.',
-        'Invalid data.',
-        'Invalid token.',
-        'Unauthorized',
-      ].includes(error.message)
-    ) {
-      console.warn('Clearing user due to critical error:', error.message);
+    if (this.criticalErrors.has(error.message)) {
+      console.warn(`Clearing user due to critical error:, ${error.message}`);
       this.clearUser();
     }
 
     this.isServerAvailableSubject.next(true);
-
-    console.warn(`Unexpected error: ${error.message}`);
     return throwError(() => new Error('Failed to load user details'));
-  }
-
-  private retryLoadUserDetails(
-    token: string,
-    attempts: number
-  ): Observable<UserDetails> {
-    return new Observable<UserDetails>((observer) => {
-      setTimeout(() => {
-        this.loadUserDetails(token, attempts).subscribe({
-          next: (data) => observer.next(data),
-          error: (err) => observer.error(err),
-          complete: () => observer.complete(),
-        });
-      }, 10000);
-    });
   }
 
   updateUser(userDetails: UserDetails) {
@@ -187,10 +147,10 @@ export class UserService {
   }
 
   checkAuthentication(callback?: () => void): void {
-    const authToken = this.getTokenFromStorage('authToken');
-    const refreshToken = this.getTokenFromStorage('refreshToken');
+    const authToken = this.tokenService.getTokenFromStorage('authToken');
+    const refreshToken = this.tokenService.getTokenFromStorage('refreshToken');
 
-    this.ensureTokenValidity(authToken, refreshToken).subscribe({
+    this.tokenService.ensureTokenValidity(authToken, refreshToken).subscribe({
       next: (accessToken) => {
         this.loadUserDetails(accessToken).subscribe({
           next: () => {
@@ -209,120 +169,31 @@ export class UserService {
     });
   }
 
-  isTokenExpired(token: string, bufferTime: number = 5 * 60 * 1000): boolean {
-    try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      const exp = payload.exp * 1000;
-      return Date.now() >= exp - bufferTime;
-    } catch (error) {
-      console.error('Invalid token format', error);
-      return true;
-    }
-  }
-
-  refreshToken(
-    refreshToken: string,
-    attempts: number = 0
-  ): Observable<{ accessToken: string; refreshToken: string }> {
-    if (this.refreshingToken) {
-      return this.refreshTokenSubject.pipe(
-        filter((token): token is string => token !== null),
-        take(1),
-        map((newAccessToken: string) => ({
-          accessToken: newAccessToken,
-          refreshToken,
-        }))
-      );
-    }
-
-    this.refreshingToken = true;
-
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-    });
-
-    return this.http
-      .post<{ accessToken: string; refreshToken: string }>(
-        'https://localhost:7057/api/user/refresh-token',
-        JSON.stringify({ refreshToken }),
-        { headers }
-      )
-      .pipe(
-        tap((response) => {
-          localStorage.setItem('authToken', response.accessToken);
-          localStorage.setItem('refreshToken', response.refreshToken);
-          this.refreshTokenSubject.next(response.accessToken);
-          this.isAuthorizedSubject.next(true);
-        }),
-        catchError((error) =>
-          this.handleRefreshTokenError(error, refreshToken, attempts)
-        ),
-        finalize(() => {
-          this.refreshingToken = false;
-        })
-      );
-  }
-
-  private handleRefreshTokenError(
-    error: any,
-    refreshToken: string,
-    attempts: number
-  ): Observable<{ accessToken: string; refreshToken: string }> {
-    console.error('Failed to refresh token:', error);
-    if (error.status === 0) {
-      console.warn('Server unavailable...');
-      this.isServerAvailableSubject.next(false);
-
-      if (attempts < 3) {
-        console.warn(`Retrying token refresh (attempt ${attempts + 1})`);
-        this.refreshingToken = false;
-        return timer(5000).pipe(
-          switchMap(() => this.refreshToken(refreshToken, attempts + 1))
-        );
-      }
-
-      console.error('Failed to refresh token after multiple attempts.');
-      return throwError(() => new Error('Temporary server unavailability.'));
-    }
-
-    if (error.status === 400 || error.status === 401) {
-      console.error('Invalid token. Clearing user data.');
-      this.clearUser();
-    }
-
-    if (error.status === 409) {
-      console.warn('Another refresh token request is already in progress.');
-    }
-
-    this.refreshTokenSubject.next(null);
-    return throwError(() => new Error('Failed to refresh token'));
-  }
-
   getLoggedDevices(): Observable<any> {
-    const token = this.getTokenFromStorage('authToken');
+    const token = this.tokenService.getTokenFromStorage('authToken');
     if (!token) {
       return throwError(() => new Error('Token does not exist'));
     }
 
-    return this.http.get<any[]>('https://localhost:7057/api/user/devices', {
+    return this.http.get<any[]>(`${this.api}/user/devices`, {
       headers: this.createAuthHeaders(token),
     });
   }
 
   updateUserData(formData: FormData): Observable<any> {
-    const token = this.getTokenFromStorage('authToken');
+    const token = this.tokenService.getTokenFromStorage('authToken');
 
     if (!token) {
       return throwError(() => new Error('Token does not exist'));
     }
 
-    return this.http.put('https://localhost:7057/api/user/update', formData, {
+    return this.http.put(`${this.api}/user/update`, formData, {
       headers: this.createAuthHeaders(token),
     });
   }
 
   uploadAvatar(avatar: File): Observable<any> {
-    const token = this.getTokenFromStorage('authToken');
+    const token = this.tokenService.getTokenFromStorage('authToken');
 
     if (!token) {
       return throwError(() => new Error('Token does not exist'));
@@ -331,37 +202,40 @@ export class UserService {
     const formData = new FormData();
     formData.append('avatar', avatar);
 
-    return this.http.post(
-      'https://localhost:7057/api/user/upload-avatar',
-      formData,
-      { headers: this.createAuthHeaders(token) }
-    );
+    return this.http.post(`${this.api}/user/upload-avatar`, formData, {
+      headers: this.createAuthHeaders(token),
+    });
   }
 
   deactivateDevice(device: any): Observable<any> {
-    const token = this.getTokenFromStorage('authToken');
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${token}`,
-    });
+    const token = this.tokenService.getTokenFromStorage('authToken');
+    if (!token) {
+      return throwError(() => new Error('Token does not exist'));
+    }
 
     return this.http.patch(
-      `https://localhost:7057/api/user/devices/deactivate`,
+      `${this.api}/user/devices/deactivate`,
       {
         userAgent: device.userAgent,
         platform: device.platform,
         ipAddress: device.ipAddress,
       },
-      { headers }
+      { headers: this.createAuthHeaders(token) }
     );
   }
 
-  private createAuthHeaders(token: string) {
-    return new HttpHeaders({ Authorization: `Bearer ${token}` });
+  private createAuthHeaders(token: string): HttpHeaders {
+    if (
+      !this.authHeaders ||
+      this.authHeaders.get('Authorization') !== `Bearer ${token}`
+    ) {
+      this.authHeaders = new HttpHeaders({ Authorization: `Bearer ${token}` });
+    }
+    return this.authHeaders;
   }
 
   clearUser(): void {
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('refreshToken');
+    this.tokenService.clearTokens();
     this.isAuthorizedSubject.next(false);
     this.userSubject.next({
       avatar: null,
