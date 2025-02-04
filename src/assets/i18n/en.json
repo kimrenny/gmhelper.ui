@@ -171,5 +171,14 @@
         "NOTFOUND": "No devices found."
       }
     }
+  },
+  "ADMIN": {
+    "NAVBAR": {
+      "DASHBOARD": "Dashboard",
+      "USERS": "Users",
+      "TOKENS": "Tokens",
+      "LOGS": "Logs",
+      "SETTINGS": "Settings"
+    }
   }
 }

@@ -3,7 +3,6 @@ import {
   HostListener,
   OnInit,
   ChangeDetectorRef,
-  ChangeDetectionStrategy,
   Inject,
   OnDestroy,
 } from '@angular/core';
@@ -12,6 +11,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { Router, NavigationStart, RouterModule } from '@angular/router';
 import { UserService } from 'src/app/services/user.service';
 import { Subscription } from 'rxjs';
+import { TokenService } from 'src/app/services/token.service';
 
 @Component({
   selector: 'app-header',
@@ -25,12 +25,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
   userIsAuthenticated = false;
   userAvatarUrl = 'assets/icons/default-avatar.png';
   userNickname = 'Guest';
+  userRole: string | null = 'Guest';
   showUserMenu = false;
 
   private subscriptions = new Subscription();
 
   constructor(
     @Inject(UserService) private userService: UserService,
+    private tokenService: TokenService,
     private translate: TranslateService,
     private router: Router,
     private cdr: ChangeDetectorRef
@@ -64,9 +66,15 @@ export class HeaderComponent implements OnInit, OnDestroy {
       }
     });
 
+    const roleSub = this.tokenService.userRole$.subscribe((role) => {
+      this.userRole = role;
+      this.cdr.detectChanges();
+    });
+
     this.subscriptions.add(authSub);
     this.subscriptions.add(userSub);
     this.subscriptions.add(routerSub);
+    this.subscriptions.add(roleSub);
   }
 
   ngOnDestroy() {
@@ -115,5 +123,18 @@ export class HeaderComponent implements OnInit, OnDestroy {
   openUserSettings() {
     this.showUserMenu = false;
     this.router.navigate(['/settings']);
+  }
+
+  openAdminPanel() {
+    if (!this.checkAdminAccess()) return;
+
+    this.showUserMenu = false;
+    this.router.navigate(['/admin']);
+  }
+
+  checkAdminAccess() {
+    return this.userRole === 'Admin' || this.userRole === 'Owner'
+      ? true
+      : false;
   }
 }

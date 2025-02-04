@@ -171,5 +171,14 @@
         "NOTFOUND": "デバイスが見つかりません。"
       }
     }
+  },
+  "ADMIN": {
+    "NAVBAR": {
+      "DASHBOARD": "ダッシュボード",
+      "USERS": "ユーザー",
+      "TOKENS": "トークン",
+      "LOGS": "ログ",
+      "SETTINGS": "設定"
+    }
   }
 }

@@ -171,5 +171,14 @@
         "NOTFOUND": "Keine Geräte gefunden."
       }
     }
+  },
+  "ADMIN": {
+    "NAVBAR": {
+      "DASHBOARD": "Armaturenbrett",
+      "USERS": "Benutzer",
+      "TOKENS": "Token",
+      "LOGS": "Protokolle",
+      "SETTINGS": "Einstellungen"
+    }
   }
 }

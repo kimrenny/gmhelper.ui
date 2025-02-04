@@ -171,5 +171,14 @@
         "NOTFOUND": "기기를 찾을 수 없습니다."
       }
     }
+  },
+  "ADMIN": {
+    "NAVBAR": {
+      "DASHBOARD": "대시보드",
+      "USERS": "사용자",
+      "TOKENS": "토큰",
+      "LOGS": "로그",
+      "SETTINGS": "설정"
+    }
   }
 }

@@ -1,0 +1,71 @@
+<div class="admin-sidebar">
+  <ul>
+    <li>
+      <a
+        (click)="scrollToSection('dashboard')"
+        [class.active]="activeSection === 'dashboard'"
+      >
+        <img
+          src="../../../assets/icons/dashboard.png"
+          alt="Dashboard"
+          class="dashboard"
+        />
+        <span class="admin-nav-text">{{
+          "ADMIN.NAVBAR.DASHBOARD" | translate
+        }}</span>
+      </a>
+    </li>
+    <li>
+      <a
+        (click)="scrollToSection('users')"
+        [class.active]="activeSection === 'users'"
+      >
+        <img src="../../../assets/icons/users.png" alt="Users" class="users" />
+        <span class="admin-nav-text">{{
+          "ADMIN.NAVBAR.USERS" | translate
+        }}</span>
+      </a>
+    </li>
+    <li>
+      <a
+        (click)="scrollToSection('tokens')"
+        [class.active]="activeSection === 'tokens'"
+      >
+        <img
+          src="../../../assets/icons/tokens.png"
+          alt="Tokens"
+          class="tokens"
+        />
+        <span class="admin-nav-text">{{
+          "ADMIN.NAVBAR.TOKENS" | translate
+        }}</span>
+      </a>
+    </li>
+    <li>
+      <a
+        (click)="scrollToSection('logs')"
+        [class.active]="activeSection === 'logs'"
+      >
+        <img src="../../../assets/icons/logs.png" alt="Logs" class="logs" />
+        <span class="admin-nav-text">{{
+          "ADMIN.NAVBAR.LOGS" | translate
+        }}</span>
+      </a>
+    </li>
+    <li>
+      <a
+        (click)="scrollToSection('settings')"
+        [class.active]="activeSection === 'settings'"
+      >
+        <img
+          src="../../../assets/icons/settings.png"
+          alt="Settings"
+          class="settings"
+        />
+        <span class="admin-nav-text">{{
+          "ADMIN.NAVBAR.SETTINGS" | translate
+        }}</span>
+      </a>
+    </li>
+  </ul>
+</div>

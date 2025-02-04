@@ -171,5 +171,14 @@
         "NOTFOUND": "Aucun appareil trouvé."
       }
     }
+  },
+  "ADMIN": {
+    "NAVBAR": {
+      "DASHBOARD": "Tableau de bord",
+      "USERS": "Utilisateurs",
+      "TOKENS": "Jetons",
+      "LOGS": "Journaux",
+      "SETTINGS": "Paramètres"
+    }
   }
 }

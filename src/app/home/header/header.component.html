@@ -37,6 +37,7 @@
 
         <ul *ngIf="showUserMenu" class="user-menu-list">
           <li (click)="openUserSettings()">Settings</li>
+          <li *ngIf="checkAdminAccess()" (click)="openAdminPanel()">Admin</li>
           <li (click)="logout()">Logout</li>
         </ul>
       </div>

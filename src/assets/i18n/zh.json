@@ -171,5 +171,14 @@
         "NOTFOUND": "未找到设备。"
       }
     }
+  },
+  "ADMIN": {
+    "NAVBAR": {
+      "DASHBOARD": "仪表板",
+      "USERS": "用户",
+      "TOKENS": "令牌",
+      "LOGS": "日志",
+      "SETTINGS": "设置"
+    }
   }
 }
