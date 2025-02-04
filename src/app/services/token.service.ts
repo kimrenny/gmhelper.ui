@@ -30,6 +30,9 @@ export class TokenService {
   private isServerAvailableSubject = new BehaviorSubject<boolean>(false);
   isServerAvailable$ = this.isServerAvailableSubject.asObservable();
 
+  private userRoleSubject = new BehaviorSubject<string | null>(null);
+  userRole$ = this.userRoleSubject.asObservable();
+
   constructor(private http: HttpClient) {}
 
   public getTokenFromStorage(key: string): string | null {
@@ -41,6 +44,7 @@ export class TokenService {
     refreshToken: string | null
   ): Observable<string> {
     if (authToken && !this.isTokenExpired(authToken, 5 * 60 * 1000)) {
+      this.extractUserRole(authToken);
       return new BehaviorSubject(authToken).asObservable();
     }
 
@@ -98,6 +102,7 @@ export class TokenService {
           localStorage.setItem('refreshToken', response.refreshToken);
           this.refreshTokenSubject.next(response.accessToken);
           this.isAuthorizedSubject.next(true);
+          this.extractUserRole(response.accessToken);
         }),
         catchError((error) =>
           this.handleRefreshTokenError(error, refreshToken, attempts)
@@ -140,6 +145,21 @@ export class TokenService {
 
     this.refreshTokenSubject.next(null);
     return throwError(() => new Error('Failed to refresh token'));
+  }
+
+  private extractUserRole(token: string): void {
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      const role =
+        payload[
+          'http://schemas.microsoft.com/ws/2008/06/identity/claims/role'
+        ] || null;
+      this.userRoleSubject.next(role);
+      console.log(role);
+    } catch (error) {
+      console.error('Failed to extract user role', error);
+      this.userRoleSubject.next(null);
+    }
   }
 
   clearTokens(): void {
