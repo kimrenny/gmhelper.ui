@@ -41,8 +41,6 @@ export class UserService {
   private isServerAvailableSubject = new BehaviorSubject<boolean>(false);
   isServerAvailable$ = this.isServerAvailableSubject.asObservable();
 
-  private authHeaders: HttpHeaders | null = null;
-
   private readonly criticalErrors = new Set<string>(
     Object.values(CriticalErrors)
   );
@@ -92,7 +90,7 @@ export class UserService {
   loadUserDetails(token: string, attempts = 0): Observable<UserDetails> {
     return this.http
       .get<UserDetails>(`${this.api}/user/details`, {
-        headers: this.createAuthHeaders(token),
+        headers: this.tokenService.createAuthHeaders(token),
       })
       .pipe(
         tap((userDetails) => {
@@ -176,7 +174,7 @@ export class UserService {
     }
 
     return this.http.get<any[]>(`${this.api}/user/devices`, {
-      headers: this.createAuthHeaders(token),
+      headers: this.tokenService.createAuthHeaders(token),
     });
   }
 
@@ -188,7 +186,7 @@ export class UserService {
     }
 
     return this.http.put(`${this.api}/user/update`, formData, {
-      headers: this.createAuthHeaders(token),
+      headers: this.tokenService.createAuthHeaders(token),
     });
   }
 
@@ -203,7 +201,7 @@ export class UserService {
     formData.append('avatar', avatar);
 
     return this.http.post(`${this.api}/user/upload-avatar`, formData, {
-      headers: this.createAuthHeaders(token),
+      headers: this.tokenService.createAuthHeaders(token),
     });
   }
 
@@ -220,18 +218,8 @@ export class UserService {
         platform: device.platform,
         ipAddress: device.ipAddress,
       },
-      { headers: this.createAuthHeaders(token) }
+      { headers: this.tokenService.createAuthHeaders(token) }
     );
-  }
-
-  private createAuthHeaders(token: string): HttpHeaders {
-    if (
-      !this.authHeaders ||
-      this.authHeaders.get('Authorization') !== `Bearer ${token}`
-    ) {
-      this.authHeaders = new HttpHeaders({ Authorization: `Bearer ${token}` });
-    }
-    return this.authHeaders;
   }
 
   clearUser(): void {

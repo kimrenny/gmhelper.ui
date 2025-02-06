@@ -33,6 +33,8 @@ export class TokenService {
   private userRoleSubject = new BehaviorSubject<string | null>(null);
   userRole$ = this.userRoleSubject.asObservable();
 
+  private authHeaders: HttpHeaders | null = null;
+
   constructor(private http: HttpClient) {}
 
   public getTokenFromStorage(key: string): string | null {
@@ -160,6 +162,16 @@ export class TokenService {
       console.error('Failed to extract user role', error);
       this.userRoleSubject.next(null);
     }
+  }
+
+  public createAuthHeaders(token: string): HttpHeaders {
+    if (
+      !this.authHeaders ||
+      this.authHeaders.get('Authorization') !== `Bearer ${token}`
+    ) {
+      this.authHeaders = new HttpHeaders({ Authorization: `Bearer ${token}` });
+    }
+    return this.authHeaders;
   }
 
   clearTokens(): void {
