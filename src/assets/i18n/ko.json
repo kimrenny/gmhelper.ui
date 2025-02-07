@@ -179,6 +179,42 @@
       "TOKENS": "토큰",
       "LOGS": "로그",
       "SETTINGS": "설정"
+    },
+    "USERS": {
+      "NICKNAME": "닉네임",
+      "EMAIL": "이메일",
+      "ROLE": "역할",
+      "REG_DATE": "등록 날짜",
+      "STATUS": "상태",
+      "ACTION": "작업",
+      "ACTIVE": "활성",
+      "BLOCKED": "차단됨",
+      "BLOCK": "차단",
+      "UNBLOCK": "차단 해제",
+      "TOKENS": "토큰",
+      "IP_ADDRESS": "IP 주소",
+      "EXPIRATION": "만료",
+      "DEVICE": "장치",
+      "DETAILS": {
+        "TITLE": "사용자 상세 정보",
+        "CLOSE": "닫기"
+      },
+      "CONFIRM_ACTION": {
+        "TITLE": "작업 확인",
+        "YES": "예",
+        "NO": "아니요"
+      },
+      "UNBAN": {
+        "CONFIRM": "사용자의 차단을 해제하시겠습니까?"
+      },
+      "BAN": {
+        "CONFIRM": "사용자를 차단하시겠습니까?"
+      }
+    },
+    "ERRORS": {
+      "NOPERMISSION": "이 작업을 수행할 권한이 없습니다.",
+      "SELFBAN": "자신을 차단할 수 없습니다",
+      "ERROR": "오류"
     }
   }
 }

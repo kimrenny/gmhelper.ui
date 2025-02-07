@@ -179,6 +179,42 @@
       "TOKENS": "Tokens",
       "LOGS": "Logs",
       "SETTINGS": "Settings"
+    },
+    "USERS": {
+      "NICKNAME": "Nickname",
+      "EMAIL": "Email",
+      "ROLE": "Role",
+      "REG_DATE": "Registration Date",
+      "STATUS": "Status",
+      "ACTION": "Action",
+      "ACTIVE": "Active",
+      "BLOCKED": "Blocked",
+      "BLOCK": "Block",
+      "UNBLOCK": "Unblock",
+      "TOKENS": "Tokens",
+      "IP_ADDRESS": "IP Address",
+      "EXPIRATION": "Expiration",
+      "DEVICE": "Device",
+      "DETAILS": {
+        "TITLE": "User Details",
+        "CLOSE": "Close"
+      },
+      "CONFIRM_ACTION": {
+        "TITLE": "Confirm action",
+        "YES": "Yes",
+        "NO": "No"
+      },
+      "UNBAN": {
+        "CONFIRM": "Are you sure you want to unblock the user"
+      },
+      "BAN": {
+        "CONFIRM": "Are you sure you want to block the user"
+      }
+    },
+    "ERRORS": {
+      "NOPERMISSION": "You do not have permission to perform this action.",
+      "SELFBAN": "You cannot block yourself",
+      "ERROR": "Error"
     }
   }
 }

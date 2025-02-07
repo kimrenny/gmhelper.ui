@@ -179,6 +179,42 @@
       "TOKENS": "Jetons",
       "LOGS": "Journaux",
       "SETTINGS": "Paramètres"
+    },
+    "USERS": {
+      "NICKNAME": "Pseudo",
+      "EMAIL": "E-mail",
+      "ROLE": "Rôle",
+      "REG_DATE": "Date d'inscription",
+      "STATUS": "Statut",
+      "ACTION": "Action",
+      "ACTIVE": "Actif",
+      "BLOCKED": "Bloqué",
+      "BLOCK": "Bloquer",
+      "UNBLOCK": "Débloquer",
+      "TOKENS": "Jetons",
+      "IP_ADDRESS": "Adresse IP",
+      "EXPIRATION": "Expiration",
+      "DEVICE": "Appareil",
+      "DETAILS": {
+        "TITLE": "Détails de l'utilisateur",
+        "CLOSE": "Fermer"
+      },
+      "CONFIRM_ACTION": {
+        "TITLE": "Confirmer l'action",
+        "YES": "Oui",
+        "NO": "Non"
+      },
+      "UNBAN": {
+        "CONFIRM": "Êtes-vous sûr de vouloir débloquer l'utilisateur"
+      },
+      "BAN": {
+        "CONFIRM": "Êtes-vous sûr de vouloir bloquer l'utilisateur"
+      }
+    },
+    "ERRORS": {
+      "NOPERMISSION": "Vous n'avez pas l'autorisation d'effectuer cette action.",
+      "SELFBAN": "Vous ne pouvez pas vous bloquer",
+      "ERROR": "Erreur"
     }
   }
 }

@@ -16,6 +16,7 @@ interface LoginToken {
 }
 
 interface User {
+  id: string;
   username: string;
   email: string;
   role: string;
@@ -61,5 +62,22 @@ export class AdminService {
 
   getUsers(): Observable<User[] | null> {
     return this.users$;
+  }
+
+  actionUser(userId: string, action: 'ban' | 'unban'): Observable<any> {
+    const token = this.tokenService.getTokenFromStorage('authToken');
+
+    if (!token) {
+      return throwError(() => new Error('Token does not exist'));
+    }
+
+    const body = {
+      id: userId,
+      action: action,
+    };
+
+    return this.http.put(`${this.apiUrl}/users/action`, body, {
+      headers: this.tokenService.createAuthHeaders(token),
+    });
   }
 }

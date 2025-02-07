@@ -179,6 +179,42 @@
       "TOKENS": "令牌",
       "LOGS": "日志",
       "SETTINGS": "设置"
+    },
+    "USERS": {
+      "NICKNAME": "昵称",
+      "EMAIL": "电子邮件",
+      "ROLE": "角色",
+      "REG_DATE": "注册日期",
+      "STATUS": "状态",
+      "ACTION": "操作",
+      "ACTIVE": "活跃",
+      "BLOCKED": "已封锁",
+      "BLOCK": "封锁",
+      "UNBLOCK": "解封",
+      "TOKENS": "令牌",
+      "IP_ADDRESS": "IP地址",
+      "EXPIRATION": "过期时间",
+      "DEVICE": "设备",
+      "DETAILS": {
+        "TITLE": "用户详情",
+        "CLOSE": "关闭"
+      },
+      "CONFIRM_ACTION": {
+        "TITLE": "确认操作",
+        "YES": "是",
+        "NO": "否"
+      },
+      "UNBAN": {
+        "CONFIRM": "您确定要解锁用户吗？"
+      },
+      "BAN": {
+        "CONFIRM": "您确定要封锁用户吗？"
+      }
+    },
+    "ERRORS": {
+      "NOPERMISSION": "您没有权限执行此操作。",
+      "SELFBAN": "您无法封锁自己",
+      "ERROR": "错误"
     }
   }
 }

@@ -179,6 +179,42 @@
       "TOKENS": "トークン",
       "LOGS": "ログ",
       "SETTINGS": "設定"
+    },
+    "USERS": {
+      "NICKNAME": "ニックネーム",
+      "EMAIL": "メール",
+      "ROLE": "役割",
+      "REG_DATE": "登録日",
+      "STATUS": "ステータス",
+      "ACTION": "操作",
+      "ACTIVE": "アクティブ",
+      "BLOCKED": "ブロック済み",
+      "BLOCK": "ブロック",
+      "UNBLOCK": "ブロック解除",
+      "TOKENS": "トークン",
+      "IP_ADDRESS": "IPアドレス",
+      "EXPIRATION": "有効期限",
+      "DEVICE": "デバイス",
+      "DETAILS": {
+        "TITLE": "ユーザー詳細",
+        "CLOSE": "閉じる"
+      },
+      "CONFIRM_ACTION": {
+        "TITLE": "アクションを確認",
+        "YES": "はい",
+        "NO": "いいえ"
+      },
+      "UNBAN": {
+        "CONFIRM": "ユーザーのブロックを解除しますか？"
+      },
+      "BAN": {
+        "CONFIRM": "ユーザーをブロックしますか？"
+      }
+    },
+    "ERRORS": {
+      "NOPERMISSION": "この操作を実行する権限がありません。",
+      "SELFBAN": "自分をブロックすることはできません",
+      "ERROR": "エラー"
     }
   }
 }

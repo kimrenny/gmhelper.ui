@@ -179,6 +179,42 @@
       "TOKENS": "Token",
       "LOGS": "Protokolle",
       "SETTINGS": "Einstellungen"
+    },
+    "USERS": {
+      "NICKNAME": "Spitzname",
+      "EMAIL": "E-Mail",
+      "ROLE": "Rolle",
+      "REG_DATE": "Registrierungsdatum",
+      "STATUS": "Status",
+      "ACTION": "Aktion",
+      "ACTIVE": "Aktiv",
+      "BLOCKED": "Gesperrt",
+      "BLOCK": "Sperren",
+      "UNBLOCK": "Entsperren",
+      "TOKENS": "Token",
+      "IP_ADDRESS": "IP-Adresse",
+      "EXPIRATION": "Ablaufdatum",
+      "DEVICE": "Gerät",
+      "DETAILS": {
+        "TITLE": "Benutzerdetails",
+        "CLOSE": "Schließen"
+      },
+      "CONFIRM_ACTION": {
+        "TITLE": "Aktion bestätigen",
+        "YES": "Ja",
+        "NO": "Nein"
+      },
+      "UNBAN": {
+        "CONFIRM": "Sind Sie sicher, dass Sie den Benutzer entsperren möchten?"
+      },
+      "BAN": {
+        "CONFIRM": "Sind Sie sicher, dass Sie den Benutzer blockieren möchten?"
+      }
+    },
+    "ERRORS": {
+      "NOPERMISSION": "Sie haben keine Berechtigung, diese Aktion auszuführen.",
+      "SELFBAN": "Sie können sich nicht selbst blockieren",
+      "ERROR": "Fehler"
     }
   }
 }

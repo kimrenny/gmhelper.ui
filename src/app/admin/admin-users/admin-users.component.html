@@ -1,44 +1,47 @@
 <div class="admin-users-container">
   <div class="users-table">
     <div class="table-header">
-      <div class="column">{{ "USERS.NICKNAME" | translate }}</div>
-      <div class="column">{{ "USERS.EMAIL" | translate }}</div>
-      <div class="column">{{ "USERS.ROLE" | translate }}</div>
-      <div class="column">{{ "USERS.REG_DATE" | translate }}</div>
-      <div class="column">{{ "USERS.STATUS" | translate }}</div>
-      <div class="column">{{ "USERS.ACTION" | translate }}</div>
+      <div class="column">{{ "ADMIN.USERS.NICKNAME" | translate }}</div>
+      <div class="column">{{ "ADMIN.USERS.EMAIL" | translate }}</div>
+      <div class="column">{{ "ADMIN.USERS.ROLE" | translate }}</div>
+      <div class="column">{{ "ADMIN.USERS.REG_DATE" | translate }}</div>
+      <div class="column">{{ "ADMIN.USERS.STATUS" | translate }}</div>
+      <div class="column">{{ "ADMIN.USERS.ACTION" | translate }}</div>
     </div>
     <div class="table-body">
       <div
         class="table-row"
         *ngFor="let user of paginatedUsers"
         (click)="openUserDetails(user)"
+        [ngClass]="{ 'current-user': user.username === currentUsername }"
       >
         <div class="column">{{ user.username }}</div>
         <div class="column">{{ user.email }}</div>
         <div class="column">{{ user.role }}</div>
-        <div class="column">{{ user.registrationDate }}</div>
+        <div class="column">
+          {{ user.registrationDate | date : "medium" }} UTC
+        </div>
         <div class="column">
           <span
             class="status"
-            [ngClass]="{ active: user.isBlocked, inactive: !user.isBlocked }"
+            [ngClass]="{ active: !user.isBlocked, inactive: user.isBlocked }"
           >
             {{
-              user.isBlocked
-                ? ("USERS.ACTIVE" | translate)
-                : ("USERS.BLOCKED" | translate)
+              !user.isBlocked
+                ? ("ADMIN.USERS.ACTIVE" | translate)
+                : ("ADMIN.USERS.BLOCKED" | translate)
             }}
           </span>
         </div>
         <div class="column">
           <button
             class="toggle-btn"
-            (click)="toggleUserStatus(user); $event.stopPropagation()"
+            (click)="openConfirmModal(user); $event.stopPropagation()"
           >
             {{
-              user.isBlocked
-                ? ("USERS.BLOCK" | translate)
-                : ("USERS.UNBLOCK" | translate)
+              !user.isBlocked
+                ? ("ADMIN.USERS.BLOCK" | translate)
+                : ("ADMIN.USERS.UNBLOCK" | translate)
             }}
           </button>
         </div>
@@ -47,62 +50,82 @@
   </div>
 
   <div class="pagination">
-    <button (click)="prevPage()" [disabled]="currentPage === 1">
-      {{ "USERS.PREV_PAGE" | translate }}
-    </button>
+    <button (click)="prevPage()" [disabled]="currentPage === 1">«</button>
     <span>{{ currentPage }} / {{ totalPages }}</span>
     <button (click)="nextPage()" [disabled]="currentPage === totalPages">
-      {{ "USERS.NEXT_PAGE" | translate }}
+      »
     </button>
+  </div>
+
+  <div *ngIf="isConfirmModalOpen" class="modal-overlay">
+    <div class="modal-content">
+      <h3>{{ "ADMIN.USERS.CONFIRM_ACTION.TITLE" | translate }}</h3>
+      <p *ngIf="userToConfirm?.isBlocked">
+        {{ "ADMIN.USERS.UNBAN.CONFIRM" | translate }}
+        <strong>{{ userToConfirm?.username }}</strong
+        >?
+      </p>
+      <p *ngIf="!userToConfirm?.isBlocked">
+        {{ "ADMIN.USERS.BAN.CONFIRM" | translate }}
+        <strong>{{ userToConfirm?.username }}</strong
+        >?
+      </p>
+      <button (click)="confirmAction()">
+        {{ "ADMIN.USERS.CONFIRM_ACTION.YES" | translate }}
+      </button>
+      <button (click)="closeConfirmModal()">
+        {{ "ADMIN.USERS.CONFIRM_ACTION.NO" | translate }}
+      </button>
+    </div>
   </div>
 
   <div *ngIf="selectedUser" class="user-modal">
     <div class="modal-content">
-      <h3>{{ "USERS.DETAILS.TITLE" | translate }}</h3>
+      <h3>{{ "ADMIN.USERS.DETAILS.TITLE" | translate }}</h3>
       <p>
-        <strong>{{ "USERS.NICKNAME" | translate }}:</strong>
+        <strong>{{ "ADMIN.USERS.NICKNAME" | translate }}:</strong>
         {{ selectedUser.username }}
       </p>
       <p>
-        <strong>{{ "USERS.EMAIL" | translate }}:</strong>
+        <strong>{{ "ADMIN.USERS.EMAIL" | translate }}:</strong>
         {{ selectedUser.email }}
       </p>
 
       <p>
-        <strong>{{ "USERS.ROLE" | translate }}:</strong>
+        <strong>{{ "ADMIN.USERS.ROLE" | translate }}:</strong>
         {{ selectedUser.role }}
       </p>
       <p>
-        <strong>{{ "USERS.REG_DATE" | translate }}:</strong>
-        {{ selectedUser.registrationDate }}
+        <strong>{{ "ADMIN.USERS.REG_DATE" | translate }}:</strong>
+        {{ selectedUser.registrationDate | date : "medium" }} UTC
       </p>
       <p>
-        <strong>{{ "USERS.STATUS" | translate }}:</strong>
+        <strong>{{ "ADMIN.USERS.STATUS" | translate }}:</strong>
         {{
-          selectedUser.isBlocked
-            ? ("USERS.ACTIVE" | translate)
-            : ("USERS.BLOCKED" | translate)
+          !selectedUser.isBlocked
+            ? ("ADMIN.USERS.ACTIVE" | translate)
+            : ("ADMIN.USERS.BLOCKED" | translate)
         }}
       </p>
 
       <div *ngIf="selectedUser.loginTokens?.length">
-        <h4>{{ "USERS.TOKENS" | translate }}</h4>
+        <h4>{{ "ADMIN.USERS.TOKENS" | translate }}</h4>
         <ul>
           <li *ngFor="let token of paginatedTokens">
             <p>
-              <strong>{{ "USERS.IP_ADDRESS" | translate }}:</strong>
+              <strong>{{ "ADMIN.USERS.IP_ADDRESS" | translate }}:</strong>
               {{ token.ipAddress }}
             </p>
             <p>
-              <strong>{{ "USERS.EXPIRATION" | translate }}:</strong>
-              {{ token.expiration }}
+              <strong>{{ "ADMIN.USERS.EXPIRATION" | translate }}:</strong>
+              {{ token.expiration | date : "medium" }} UTC
             </p>
             <p>
-              <strong>{{ "USERS.DEVICE" | translate }}:</strong>
+              <strong>{{ "ADMIN.USERS.DEVICE" | translate }}:</strong>
               {{ token.deviceInfo.platform }} - {{ token.deviceInfo.userAgent }}
             </p>
             <p>
-              <strong>{{ "USERS.STATUS" | translate }}:</strong>
+              <strong>{{ "ADMIN.USERS.STATUS" | translate }}:</strong>
               {{ token.isActive ? "Active" : "Inactive" }}
             </p>
           </li>
@@ -110,20 +133,20 @@
 
         <div class="pagination">
           <button (click)="prevTokenPage()" [disabled]="tokenPage === 1">
-            {{ "USERS.PREV_PAGE" | translate }}
+            «
           </button>
           <span>{{ tokenPage }} / {{ totalTokenPages }}</span>
           <button
             (click)="nextTokenPage()"
             [disabled]="tokenPage === totalTokenPages"
           >
-            {{ "USERS.NEXT_PAGE" | translate }}
+            »
           </button>
         </div>
       </div>
 
       <button (click)="closeUserDetails()">
-        {{ "USERS.DETAILS.CLOSE" | translate }}
+        {{ "ADMIN.USERS.DETAILS.CLOSE" | translate }}
       </button>
     </div>
   </div>

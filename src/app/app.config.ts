@@ -9,6 +9,8 @@ import { LocationStrategy, PathLocationStrategy } from '@angular/common';
 import { GlobalErrorHandler } from './global-error-handler';
 import { ErrorHandler } from '@angular/core';
 import { UserService } from './services/user.service';
+import { provideToastr, ToastrModule } from 'ngx-toastr';
+import { provideAnimations } from '@angular/platform-browser/animations';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -22,8 +24,14 @@ export const appConfig: ApplicationConfig = {
           useFactory: (http: HttpClient) => new CustomTranslateLoader(http),
           deps: [HttpClient],
         },
+      }),
+      ToastrModule.forRoot({
+        positionClass: 'toast-bottom-right',
+        timeOut: 3000,
+        preventDuplicates: true,
       })
     ),
+    provideAnimations(),
     { provide: LocationStrategy, useClass: PathLocationStrategy },
     { provide: ErrorHandler, useClass: GlobalErrorHandler },
     UserService,
