@@ -215,6 +215,36 @@
       "NOPERMISSION": "You do not have permission to perform this action.",
       "SELFBAN": "You cannot block yourself",
       "ERROR": "Error"
+    },
+    "TOKENS": {
+      "ID": "ID",
+      "TOKEN": "Token",
+      "EXPIRATION": "Expiration",
+      "REFEXP": "Refresh Token Expiration",
+      "USERID": "User ID",
+      "IP": "IP Address",
+      "ISACTIVE": "Active",
+      "TOACTIVATE": "Activate",
+      "TODISABLE": "Disable",
+      "ACTION": "Action",
+      "DISABLED": "Disabled",
+      "DISABLE": {
+        "CONFIRM": "Are you sure you want to disable token"
+      },
+      "ACTIVE": {
+        "CONFIRM": "Are you sure you want to activate token"
+      },
+      "CONFIRM_ACTION": {
+        "YES": "Yes",
+        "NO": "No"
+      },
+      "DETAILS": {
+        "TITLE": "Token Details",
+        "CLOSE": "Close"
+      },
+      "EXP": "Expiration",
+      "DEVICEINFO": "Device Info",
+      "STATUS": "Status"
     }
   }
 }

@@ -215,6 +215,34 @@
       "NOPERMISSION": "이 작업을 수행할 권한이 없습니다.",
       "SELFBAN": "자신을 차단할 수 없습니다",
       "ERROR": "오류"
+    },
+    "TOKENS": {
+      "ID": "ID",
+      "TOKEN": "토큰",
+      "EXPIRATION": "만료",
+      "REFEXP": "리프레시 토큰 만료",
+      "USERID": "사용자 ID",
+      "IP": "IP 주소",
+      "ISACTIVE": "활성화",
+      "ACTION": "동작",
+      "DISABLED": "비활성화됨",
+      "DISABLE": {
+        "CONFIRM": "정말로 토큰을 비활성화하시겠습니까?"
+      },
+      "ACTIVE": {
+        "CONFIRM": "정말로 토큰을 활성화하시겠습니까?"
+      },
+      "CONFIRM_ACTION": {
+        "YES": "예",
+        "NO": "아니요"
+      },
+      "DETAILS": {
+        "TITLE": "토큰 세부정보",
+        "CLOSE": "닫기"
+      },
+      "EXP": "만료",
+      "DEVICEINFO": "디바이스 정보",
+      "STATUS": "상태"
     }
   }
 }

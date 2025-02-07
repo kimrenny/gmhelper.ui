@@ -25,11 +25,25 @@ interface User {
   loginTokens: LoginToken[];
 }
 
+interface Token {
+  id: string;
+  token: string;
+  expiration: string;
+  refreshTokenExpiration: string;
+  userId: string;
+  deviceInfo: DeviceInfo;
+  ipAddress: string;
+  isActive: boolean;
+}
+
 @Injectable({ providedIn: 'root' })
 export class AdminService {
   private readonly apiUrl = 'https://localhost:7057/api/admin';
   private usersSubject = new BehaviorSubject<User[] | null>(null);
   users$ = this.usersSubject.asObservable();
+
+  private tokensSubject = new BehaviorSubject<Token[] | null>(null);
+  tokens$ = this.tokensSubject.asObservable();
 
   constructor(private http: HttpClient, private tokenService: TokenService) {}
 
@@ -78,6 +92,54 @@ export class AdminService {
 
     return this.http.put(`${this.apiUrl}/users/action`, body, {
       headers: this.tokenService.createAuthHeaders(token),
+    });
+  }
+
+  getAllTokens(): void {
+    const token = this.tokenService.getTokenFromStorage('authToken');
+
+    if (!token) {
+      return;
+    }
+
+    this.tokenService.userRole$
+      .pipe(
+        switchMap((role) => {
+          if (role == 'Admin' || role == 'Owner') {
+            return this.http.get<Token[]>(`${this.apiUrl}/tokens`, {
+              headers: this.tokenService.createAuthHeaders(token),
+            });
+          } else {
+            return new Observable<Token[] | null>((observer) => {
+              observer.next(null);
+              observer.complete();
+            });
+          }
+        })
+      )
+      .subscribe((tokens) => {
+        this.tokensSubject.next(tokens);
+      });
+  }
+
+  getTokens(): Observable<Token[] | null> {
+    return this.tokens$;
+  }
+
+  actionToken(token: string, action: 'activate' | 'disable'): Observable<any> {
+    const authToken = this.tokenService.getTokenFromStorage('authToken');
+
+    if (!authToken) {
+      return throwError(() => new Error('Token does not exist'));
+    }
+
+    const body = {
+      id: token,
+      action: action,
+    };
+
+    return this.http.put(`${this.apiUrl}/tokens/action`, body, {
+      headers: this.tokenService.createAuthHeaders(authToken),
     });
   }
 }

@@ -144,20 +144,21 @@ export class AdminUsersComponent implements OnInit, OnDestroy {
   }
 
   openConfirmModal(user: User) {
-    if (
-      (user.role === 'Owner' || user.role === 'Admin') &&
-      this.userRole === 'Admin'
-    ) {
+    if (user.username === this.currentUsername) {
       this.toastr.error(
-        this.translate.instant('ADMIN.ERRORS.NOPERMISSION'),
+        this.translate.instant('ADMIN.ERRORS.SELFBAN'),
         this.translate.instant('ADMIN.ERRORS.ERROR')
       );
       return;
     }
 
-    if (user.username === this.currentUsername) {
+    if (
+      ((user.role === 'Owner' || user.role === 'Admin') &&
+        this.userRole === 'Admin') ||
+      (user.role === 'Owner' && this.userRole === 'Owner')
+    ) {
       this.toastr.error(
-        this.translate.instant('ADMIN.ERRORS.SELFBAN'),
+        this.translate.instant('ADMIN.ERRORS.NOPERMISSION'),
         this.translate.instant('ADMIN.ERRORS.ERROR')
       );
       return;
@@ -193,6 +194,14 @@ export class AdminUsersComponent implements OnInit, OnDestroy {
   }
 
   openUserDetails(user: User) {
+    if (user.role === 'Owner' && this.userRole === 'Admin') {
+      this.toastr.error(
+        this.translate.instant('ADMIN.ERRORS.NOPERMISSION'),
+        this.translate.instant('ADMIN.ERRORS.ERROR')
+      );
+      return;
+    }
+
     this.selectedUser = user;
     this.tokenPage = 1;
   }

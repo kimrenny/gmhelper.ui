@@ -1,1 +1,129 @@
-<div class="admin-tokens-container"></div>
+<div class="admin-tokens-container">
+  <div class="tokens-table">
+    <div class="table-header">
+      <div class="column">{{ "ADMIN.TOKENS.ID" | translate }}</div>
+      <div class="column">{{ "ADMIN.TOKENS.TOKEN" | translate }}</div>
+      <div class="column">{{ "ADMIN.TOKENS.EXPIRATION" | translate }}</div>
+      <div class="column">{{ "ADMIN.TOKENS.REFEXP" | translate }}</div>
+      <div class="column">{{ "ADMIN.TOKENS.USERID" | translate }}</div>
+      <div class="column">{{ "ADMIN.TOKENS.IP" | translate }}</div>
+      <div class="column">{{ "ADMIN.TOKENS.ISACTIVE" | translate }}</div>
+      <div class="column">{{ "ADMIN.TOKENS.ACTION" | translate }}</div>
+    </div>
+    <div class="table-body">
+      <div
+        class="table-row"
+        *ngFor="let token of paginatedTokens"
+        (click)="openTokenDetails(token)"
+        [ngClass]="{ 'current-token': token.token === currentToken }"
+      >
+        <div class="column">{{ token.id }}</div>
+        <div class="column">
+          {{ token.token | slice : 0 : 4 }}...{{ token.token | slice : -4 }}
+        </div>
+        <div class="column">{{ token.expiration | date : "short" }} UTC</div>
+        <div class="column">
+          {{ token.refreshTokenExpiration | date : "short" }} UTC
+        </div>
+        <div class="column">{{ token.userId }}</div>
+        <div class="column">{{ token.ipAddress }}</div>
+        <div class="column">
+          <span
+            class="status"
+            [ngClass]="{ active: token.isActive, inactive: !token.isActive }"
+          >
+            {{
+              token.isActive
+                ? ("ADMIN.TOKENS.ISACTIVE" | translate)
+                : ("ADMIN.TOKENS.DISABLED" | translate)
+            }}
+          </span>
+        </div>
+        <div class="column">
+          <button
+            class="toggle-btn"
+            (click)="openConfirmModal(token); $event.stopPropagation()"
+          >
+            {{
+              !token.isActive
+                ? ("ADMIN.TOKENS.TOACTIVATE" | translate)
+                : ("ADMIN.TOKENS.TODISABLE" | translate)
+            }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pagination">
+    <button (click)="prevPage()" [disabled]="currentPage === 1">«</button>
+    <span>{{ currentPage }} / {{ totalPages }}</span>
+    <button (click)="nextPage()" [disabled]="currentPage === totalPages">
+      »
+    </button>
+  </div>
+
+  <div *ngIf="isConfirmModalOpen" class="modal-overlay">
+    <div class="modal-content">
+      <h3>{{ "ADMIN.USERS.CONFIRM_ACTION.TITLE" | translate }}</h3>
+      <p *ngIf="tokenToConfirm?.isActive">
+        {{ "ADMIN.TOKENS.DISABLE.CONFIRM" | translate }}
+        <strong>{{ tokenToConfirm?.id }}</strong
+        >?
+      </p>
+      <p *ngIf="!tokenToConfirm?.isActive">
+        {{ "ADMIN.TOKENS.ACTIVE.CONFIRM" | translate }}
+        <strong>{{ tokenToConfirm?.id }}</strong
+        >?
+      </p>
+      <button (click)="confirmAction()">
+        {{ "ADMIN.TOKENS.CONFIRM_ACTION.YES" | translate }}
+      </button>
+      <button (click)="closeConfirmModal()">
+        {{ "ADMIN.TOKENS.CONFIRM_ACTION.NO" | translate }}
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="selectedToken" class="token-modal">
+    <div class="modal-content">
+      <h3>{{ "ADMIN.TOKENS.DETAILS.TITLE" | translate }}</h3>
+      <p>
+        <strong>{{ "ADMIN.TOKENS.ID" | translate }}:</strong>
+        {{ selectedToken.id }}
+      </p>
+      <p>
+        <strong>{{ "ADMIN.TOKENS.TOKEN" | translate }}:</strong>
+        {{ selectedToken.token | slice : 0 : 6 }}...{{
+          selectedToken.token | slice : -6
+        }}
+      </p>
+
+      <p>
+        <strong>{{ "ADMIN.TOKENS.EXP" | translate }}:</strong>
+        {{ selectedToken.expiration | date : "medium" }} UTC
+      </p>
+      <p>
+        <strong>{{ "ADMIN.TOKENS.REFEXP" | translate }}:</strong>
+        {{ selectedToken.refreshTokenExpiration | date : "medium" }} UTC
+      </p>
+      <p>
+        <strong>{{ "ADMIN.TOKENS.DEVICEINFO" | translate }}:</strong>
+        {{ selectedToken.deviceInfo.platform }} -
+        {{ selectedToken.deviceInfo.userAgent }}
+      </p>
+      <p>
+        <strong>{{ "ADMIN.TOKENS.STATUS" | translate }}:</strong>
+        {{
+          selectedToken.isActive
+            ? ("ADMIN.TOKENS.ISACTIVE" | translate)
+            : ("ADMIN.TOKENS.DISABLED" | translate)
+        }}
+      </p>
+
+      <button (click)="closeTokenDetails()">
+        {{ "ADMIN.TOKENS.DETAILS.CLOSE" | translate }}
+      </button>
+    </div>
+  </div>
+</div>

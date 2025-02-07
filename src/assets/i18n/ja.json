@@ -215,6 +215,34 @@
       "NOPERMISSION": "この操作を実行する権限がありません。",
       "SELFBAN": "自分をブロックすることはできません",
       "ERROR": "エラー"
+    },
+    "TOKENS": {
+      "ID": "ID",
+      "TOKEN": "トークン",
+      "EXPIRATION": "有効期限",
+      "REFEXP": "リフレッシュトークンの有効期限",
+      "USERID": "ユーザーID",
+      "IP": "IPアドレス",
+      "ISACTIVE": "アクティブ",
+      "ACTION": "アクション",
+      "DISABLED": "無効",
+      "DISABLE": {
+        "CONFIRM": "本当にトークンを無効にしますか？"
+      },
+      "ACTIVE": {
+        "CONFIRM": "本当にトークンを有効にしますか？"
+      },
+      "CONFIRM_ACTION": {
+        "YES": "はい",
+        "NO": "いいえ"
+      },
+      "DETAILS": {
+        "TITLE": "トークンの詳細",
+        "CLOSE": "閉じる"
+      },
+      "EXP": "有効期限",
+      "DEVICEINFO": "デバイス情報",
+      "STATUS": "ステータス"
     }
   }
 }

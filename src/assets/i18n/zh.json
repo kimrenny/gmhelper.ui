@@ -215,6 +215,34 @@
       "NOPERMISSION": "您没有权限执行此操作。",
       "SELFBAN": "您无法封锁自己",
       "ERROR": "错误"
+    },
+    "TOKENS": {
+      "ID": "ID",
+      "TOKEN": "令牌",
+      "EXPIRATION": "过期时间",
+      "REFEXP": "刷新令牌过期时间",
+      "USERID": "用户 ID",
+      "IP": "IP 地址",
+      "ISACTIVE": "活跃",
+      "ACTION": "操作",
+      "DISABLED": "已禁用",
+      "DISABLE": {
+        "CONFIRM": "你确定要禁用该令牌吗？"
+      },
+      "ACTIVE": {
+        "CONFIRM": "你确定要启用该令牌吗？"
+      },
+      "CONFIRM_ACTION": {
+        "YES": "是",
+        "NO": "否"
+      },
+      "DETAILS": {
+        "TITLE": "令牌详情",
+        "CLOSE": "关闭"
+      },
+      "EXP": "过期时间",
+      "DEVICEINFO": "设备信息",
+      "STATUS": "状态"
     }
   }
 }

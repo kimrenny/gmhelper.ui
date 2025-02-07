@@ -215,6 +215,34 @@
       "NOPERMISSION": "Vous n'avez pas l'autorisation d'effectuer cette action.",
       "SELFBAN": "Vous ne pouvez pas vous bloquer",
       "ERROR": "Erreur"
+    },
+    "TOKENS": {
+      "ID": "ID",
+      "TOKEN": "Jeton",
+      "EXPIRATION": "Expiration",
+      "REFEXP": "Expiration du Refresh Token",
+      "USERID": "ID utilisateur",
+      "IP": "Adresse IP",
+      "ISACTIVE": "Actif",
+      "ACTION": "Action",
+      "DISABLED": "Désactivé",
+      "DISABLE": {
+        "CONFIRM": "Êtes-vous sûr de vouloir désactiver le jeton"
+      },
+      "ACTIVE": {
+        "CONFIRM": "Êtes-vous sûr de vouloir activer le jeton"
+      },
+      "CONFIRM_ACTION": {
+        "YES": "Oui",
+        "NO": "Non"
+      },
+      "DETAILS": {
+        "TITLE": "Détails du jeton",
+        "CLOSE": "Fermer"
+      },
+      "EXP": "Expiration",
+      "DEVICEINFO": "Informations sur l'appareil",
+      "STATUS": "Statut"
     }
   }
 }

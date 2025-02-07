@@ -215,6 +215,34 @@
       "NOPERMISSION": "Sie haben keine Berechtigung, diese Aktion auszuführen.",
       "SELFBAN": "Sie können sich nicht selbst blockieren",
       "ERROR": "Fehler"
+    },
+    "TOKENS": {
+      "ID": "ID",
+      "TOKEN": "Token",
+      "EXPIRATION": "Ablaufdatum",
+      "REFEXP": "Ablaufdatum des Refresh-Tokens",
+      "USERID": "Benutzer-ID",
+      "IP": "IP-Adresse",
+      "ISACTIVE": "Aktiv",
+      "ACTION": "Aktion",
+      "DISABLED": "Deaktiviert",
+      "DISABLE": {
+        "CONFIRM": "Sind Sie sicher, dass Sie das Token deaktivieren möchten?"
+      },
+      "ACTIVE": {
+        "CONFIRM": "Sind Sie sicher, dass Sie das Token aktivieren möchten?"
+      },
+      "CONFIRM_ACTION": {
+        "YES": "Ja",
+        "NO": "Nein"
+      },
+      "DETAILS": {
+        "TITLE": "Token-Details",
+        "CLOSE": "Schließen"
+      },
+      "EXP": "Ablaufdatum",
+      "DEVICEINFO": "Geräteinformationen",
+      "STATUS": "Status"
     }
   }
 }

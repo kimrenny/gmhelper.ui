@@ -24,9 +24,6 @@ export class TokenService {
   private refreshingToken = false;
   private refreshTokenSubject = new BehaviorSubject<string | null>(null);
 
-  private isAuthorizedSubject = new BehaviorSubject<boolean>(false);
-  isAuthorized$ = this.isAuthorizedSubject.asObservable();
-
   private isServerAvailableSubject = new BehaviorSubject<boolean>(false);
   isServerAvailable$ = this.isServerAvailableSubject.asObservable();
 
@@ -60,7 +57,7 @@ export class TokenService {
     return throwError(() => new Error('No valid token available'));
   }
 
-  isTokenExpired(token: string, bufferTime: number = 5 * 60 * 1000): boolean {
+  isTokenExpired(token: string, bufferTime: number = 27 * 60 * 1000): boolean {
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
       const exp = payload.exp * 1000;
@@ -103,7 +100,6 @@ export class TokenService {
           localStorage.setItem('authToken', response.accessToken);
           localStorage.setItem('refreshToken', response.refreshToken);
           this.refreshTokenSubject.next(response.accessToken);
-          this.isAuthorizedSubject.next(true);
           this.extractUserRole(response.accessToken);
         }),
         catchError((error) =>
@@ -177,6 +173,5 @@ export class TokenService {
   clearTokens(): void {
     localStorage.removeItem('authToken');
     localStorage.removeItem('refreshToken');
-    this.isAuthorizedSubject.next(false);
   }
 }
