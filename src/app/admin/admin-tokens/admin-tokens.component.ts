@@ -45,6 +45,9 @@ export class AdminTokensComponent implements OnInit, OnDestroy {
 
   isAccessDeniedModalOpen: boolean = false;
 
+  sortColumn: keyof Token | null = null;
+  sortDirection: 'asc' | 'desc' = 'asc';
+
   private subscriptions = new Subscription();
 
   constructor(
@@ -60,7 +63,7 @@ export class AdminTokensComponent implements OnInit, OnDestroy {
     const roleSub = this.tokenService.userRole$.subscribe((role) => {
       this.userRole = role;
       if (this.userRole === 'Admin' || this.userRole === 'Owner') {
-        this.adminService.getAllTokens();
+        this.adminService.checkTokensData();
 
         this.adminService.getTokens().subscribe((tokens) => {
           if (tokens) {
@@ -143,5 +146,28 @@ export class AdminTokensComponent implements OnInit, OnDestroy {
 
   closeTokenDetails() {
     this.selectedToken = null;
+  }
+
+  sortByColumn(column: keyof Token): void {
+    if (this.sortColumn === column) {
+      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+      this.sortColumn = column;
+      this.sortDirection = 'asc';
+    }
+
+    this.tokens.sort((a, b) => {
+      let valueA = a[column];
+      let valueB = b[column];
+
+      if (typeof valueA === 'string' && typeof valueB === 'string') {
+        valueA = valueA.toLowerCase();
+        valueB = valueB.toLowerCase();
+      }
+
+      if (valueA < valueB) return this.sortDirection === 'asc' ? -1 : 1;
+      if (valueA > valueB) return this.sortDirection === 'asc' ? 1 : -1;
+      return 0;
+    });
   }
 }

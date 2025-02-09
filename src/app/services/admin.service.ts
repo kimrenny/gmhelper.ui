@@ -45,7 +45,10 @@ export class AdminService {
   private tokensSubject = new BehaviorSubject<Token[] | null>(null);
   tokens$ = this.tokensSubject.asObservable();
 
-  constructor(private http: HttpClient, private tokenService: TokenService) {}
+  constructor(private http: HttpClient, private tokenService: TokenService) {
+    this.getAllUsers();
+    this.getAllTokens();
+  }
 
   getAllUsers(): void {
     const token = this.tokenService.getTokenFromStorage('authToken');
@@ -76,6 +79,12 @@ export class AdminService {
 
   getUsers(): Observable<User[] | null> {
     return this.users$;
+  }
+
+  checkUsersData(): void {
+    if (!this.usersSubject.value) {
+      this.getAllUsers();
+    }
   }
 
   actionUser(userId: string, action: 'ban' | 'unban'): Observable<any> {
@@ -124,6 +133,12 @@ export class AdminService {
 
   getTokens(): Observable<Token[] | null> {
     return this.tokens$;
+  }
+
+  checkTokensData(): void {
+    if (!this.tokensSubject.value) {
+      this.getAllTokens();
+    }
   }
 
   actionToken(token: string, action: 'activate' | 'disable'): Observable<any> {

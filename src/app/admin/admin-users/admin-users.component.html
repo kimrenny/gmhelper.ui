@@ -1,11 +1,36 @@
 <div class="admin-users-container">
   <div class="users-table">
     <div class="table-header">
-      <div class="column">{{ "ADMIN.USERS.NICKNAME" | translate }}</div>
-      <div class="column">{{ "ADMIN.USERS.EMAIL" | translate }}</div>
-      <div class="column">{{ "ADMIN.USERS.ROLE" | translate }}</div>
-      <div class="column">{{ "ADMIN.USERS.REG_DATE" | translate }}</div>
-      <div class="column">{{ "ADMIN.USERS.STATUS" | translate }}</div>
+      <div class="column" (click)="sortByColumn('username')">
+        {{ "ADMIN.USERS.NICKNAME" | translate }}
+        <span *ngIf="sortColumn === 'username'" class="sort-arrow">
+          {{ sortDirection === "asc" ? "▼" : "▲" }}
+        </span>
+      </div>
+      <div class="column" (click)="sortByColumn('email')">
+        {{ "ADMIN.USERS.EMAIL" | translate }}
+        <span *ngIf="sortColumn === 'email'" class="sort-arrow">
+          {{ sortDirection === "asc" ? "▼" : "▲" }}
+        </span>
+      </div>
+      <div class="column" (click)="sortByColumn('role')">
+        {{ "ADMIN.USERS.ROLE" | translate }}
+        <span *ngIf="sortColumn === 'role'" class="sort-arrow">
+          {{ sortDirection === "asc" ? "▼" : "▲" }}
+        </span>
+      </div>
+      <div class="column" (click)="sortByColumn('registrationDate')">
+        {{ "ADMIN.USERS.REG_DATE" | translate }}
+        <span *ngIf="sortColumn === 'registrationDate'" class="sort-arrow">
+          {{ sortDirection === "asc" ? "▼" : "▲" }}
+        </span>
+      </div>
+      <div class="column" (click)="sortByColumn('isBlocked')">
+        {{ "ADMIN.USERS.STATUS" | translate }}
+        <span *ngIf="sortColumn === 'isBlocked'" class="sort-arrow">
+          {{ sortDirection === "asc" ? "▼" : "▲" }}
+        </span>
+      </div>
       <div class="column">{{ "ADMIN.USERS.ACTION" | translate }}</div>
     </div>
     <div class="table-body">
@@ -57,7 +82,7 @@
     </button>
   </div>
 
-  <div *ngIf="isConfirmModalOpen" class="modal-overlay">
+  <div *ngIf="isConfirmModalOpen" class="modal-overlay" @fadeInOut>
     <div class="modal-content">
       <h3>{{ "ADMIN.USERS.CONFIRM_ACTION.TITLE" | translate }}</h3>
       <p *ngIf="userToConfirm?.isBlocked">
@@ -79,7 +104,7 @@
     </div>
   </div>
 
-  <div *ngIf="selectedUser" class="user-modal">
+  <div *ngIf="selectedUser" class="user-modal" @fadeInOut>
     <div class="modal-content">
       <h3>{{ "ADMIN.USERS.DETAILS.TITLE" | translate }}</h3>
       <p>

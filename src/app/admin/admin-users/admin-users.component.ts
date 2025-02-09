@@ -7,6 +7,13 @@ import { Subscription } from 'rxjs';
 import { TokenService } from 'src/app/services/token.service';
 import { UserService } from 'src/app/services/user.service';
 import { ToastrService } from 'ngx-toastr';
+import {
+  animate,
+  state,
+  style,
+  transition,
+  trigger,
+} from '@angular/animations';
 
 interface DeviceInfo {
   userAgent: string;
@@ -36,6 +43,12 @@ interface User {
   imports: [CommonModule, TranslateModule],
   templateUrl: './admin-users.component.html',
   styleUrls: ['./admin-users.component.scss'],
+  animations: [
+    trigger('fadeInOut', [
+      state('void', style({ opacity: 0 })),
+      transition(':enter, :leave', [animate('300ms ease-in-out')]),
+    ]),
+  ],
 })
 export class AdminUsersComponent implements OnInit, OnDestroy {
   currentUsername!: string;
@@ -55,6 +68,9 @@ export class AdminUsersComponent implements OnInit, OnDestroy {
 
   isAccessDeniedModalOpen: boolean = false;
 
+  sortColumn: keyof User | null = null;
+  sortDirection: 'asc' | 'desc' = 'asc';
+
   private subscriptions = new Subscription();
 
   constructor(
@@ -69,7 +85,7 @@ export class AdminUsersComponent implements OnInit, OnDestroy {
     const roleSub = this.tokenService.userRole$.subscribe((role) => {
       this.userRole = role;
       if (this.userRole === 'Admin' || this.userRole === 'Owner') {
-        this.adminService.getAllUsers();
+        this.adminService.checkUsersData();
 
         this.adminService.getUsers().subscribe((users) => {
           if (users) {
@@ -209,5 +225,28 @@ export class AdminUsersComponent implements OnInit, OnDestroy {
   closeUserDetails() {
     this.selectedUser = null;
     this.tokenPage = 1;
+  }
+
+  sortByColumn(column: keyof User): void {
+    if (this.sortColumn === column) {
+      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+      this.sortColumn = column;
+      this.sortDirection = 'asc';
+    }
+
+    this.users.sort((a, b) => {
+      let valueA = a[column];
+      let valueB = b[column];
+
+      if (typeof valueA === 'string' && typeof valueB === 'string') {
+        valueA = valueA.toLowerCase();
+        valueB = valueB.toLowerCase();
+      }
+
+      if (valueA < valueB) return this.sortDirection === 'asc' ? -1 : 1;
+      if (valueA > valueB) return this.sortDirection === 'asc' ? 1 : -1;
+      return 0;
+    });
   }
 }

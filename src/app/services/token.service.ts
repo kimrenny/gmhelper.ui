@@ -57,7 +57,7 @@ export class TokenService {
     return throwError(() => new Error('No valid token available'));
   }
 
-  isTokenExpired(token: string, bufferTime: number = 27 * 60 * 1000): boolean {
+  isTokenExpired(token: string, bufferTime: number = 5 * 60 * 1000): boolean {
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
       const exp = payload.exp * 1000;
