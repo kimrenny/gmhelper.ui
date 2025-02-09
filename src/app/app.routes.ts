@@ -4,13 +4,20 @@ import { RegisterComponent } from './register/register.component';
 import { SettingsComponent } from './settings/settings.component';
 import { TokenService } from './services/token.service';
 import { inject } from '@angular/core';
-import { map } from 'rxjs';
+import { filter, map, switchMap } from 'rxjs';
 import { AdminComponent } from './admin/admin.component';
+import { UserService } from './services/user.service';
 
 const canActivateAdmin = () => {
   const tokenService = inject(TokenService);
-  return tokenService.userRole$.pipe(
-    map((role) => role === 'Admin' || role === 'Owner')
+  const userService = inject(UserService);
+
+  return userService.isAuthorized$.pipe(
+    filter((isAuthorized) => isAuthorized),
+    map(() => tokenService.userRole$),
+    switchMap((role$) =>
+      role$.pipe(map((role) => role === 'Admin' || role === 'Owner'))
+    )
   );
 };
 
