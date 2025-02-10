@@ -36,6 +36,11 @@ interface Token {
   isActive: boolean;
 }
 
+interface RegistrationData {
+  date: string;
+  registrations: number;
+}
+
 @Injectable({ providedIn: 'root' })
 export class AdminService {
   private readonly apiUrl = 'https://localhost:7057/api/admin';
@@ -45,9 +50,13 @@ export class AdminService {
   private tokensSubject = new BehaviorSubject<Token[] | null>(null);
   tokens$ = this.tokensSubject.asObservable();
 
+  private registrationDataSubject = new BehaviorSubject<any | null>(null);
+  registrationData$ = this.registrationDataSubject.asObservable();
+
   constructor(private http: HttpClient, private tokenService: TokenService) {
     this.getAllUsers();
     this.getAllTokens();
+    this.getRegistrationData();
   }
 
   getAllUsers(): void {
@@ -156,5 +165,48 @@ export class AdminService {
     return this.http.put(`${this.apiUrl}/tokens/action`, body, {
       headers: this.tokenService.createAuthHeaders(authToken),
     });
+  }
+
+  getRegistrationData(): void {
+    const authToken = this.tokenService.getTokenFromStorage('authToken');
+
+    if (!authToken) {
+      return;
+    }
+
+    this.tokenService.userRole$
+      .pipe(
+        switchMap((role) => {
+          if (this.checkAdminPermissions(role)) {
+            return this.http.get<Token[]>(
+              `${this.apiUrl}/dashboard/registrations`,
+              { headers: this.tokenService.createAuthHeaders(authToken) }
+            );
+          } else {
+            return new Observable<Token[] | null>((observer) => {
+              observer.next(null);
+              observer.complete();
+            });
+          }
+        })
+      )
+      .subscribe((data) => {
+        this.registrationDataSubject.next(data);
+        console.log(data);
+      });
+  }
+
+  checkRegistrationsData(): void {
+    if (!this.registrationDataSubject.value) {
+      this.getRegistrationData();
+    }
+  }
+
+  getRegistrationDataObservable(): Observable<RegistrationData[] | null> {
+    return this.registrationData$;
+  }
+
+  checkAdminPermissions(role: string | null): boolean {
+    return role == 'Admin' || role == 'Owner';
   }
 }

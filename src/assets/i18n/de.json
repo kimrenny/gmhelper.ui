@@ -243,6 +243,22 @@
       "EXP": "Ablaufdatum",
       "DEVICEINFO": "Geräteinformationen",
       "STATUS": "Status"
+    },
+    "DASHBOARD": {
+      "REGISTRATIONS": {
+        "SELECT_PERIOD": "Zeitraum auswählen",
+        "WEEK": "Woche",
+        "MONTH": "Monat",
+        "6_MONTHS": "180 Tage",
+        "YEAR": "Jahr",
+        "5_YEARS": "5 Jahre",
+        "ALL_TIME": "Gesamte Zeit",
+        "CHART": {
+          "TITLE": "Anzahl der Registrierungen für den Zeitraum",
+          "X_AXIS": "Daten",
+          "Y_AXIS": "Registrierungen"
+        }
+      }
     }
   }
 }

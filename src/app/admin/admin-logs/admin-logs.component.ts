@@ -6,8 +6,6 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './admin-logs.component.html',
-  styleUrls: ['./admin-logs.component.scss']
+  styleUrls: ['./admin-logs.component.scss'],
 })
-export class AdminLogsComponent {
-
-}
+export class AdminLogsComponent {}

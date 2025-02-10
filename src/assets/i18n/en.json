@@ -245,6 +245,22 @@
       "EXP": "Expiration",
       "DEVICEINFO": "Device Info",
       "STATUS": "Status"
+    },
+    "DASHBOARD": {
+      "REGISTRATIONS": {
+        "SELECT_PERIOD": "Select Period",
+        "WEEK": "Week",
+        "MONTH": "Month",
+        "6_MONTHS": "180 days",
+        "YEAR": "Year",
+        "5_YEARS": "5 Years",
+        "ALL_TIME": "All Time",
+        "CHART": {
+          "TITLE": "Number of registrations for the period",
+          "X_AXIS": "Dates",
+          "Y_AXIS": "Registrations"
+        }
+      }
     }
   }
 }

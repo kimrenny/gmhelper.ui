@@ -6,8 +6,6 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './admin-settings.component.html',
-  styleUrls: ['./admin-settings.component.scss']
+  styleUrls: ['./admin-settings.component.scss'],
 })
-export class AdminSettingsComponent {
-
-}
+export class AdminSettingsComponent {}

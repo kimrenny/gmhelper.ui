@@ -243,6 +243,22 @@
       "EXP": "有効期限",
       "DEVICEINFO": "デバイス情報",
       "STATUS": "ステータス"
+    },
+    "DASHBOARD": {
+      "REGISTRATIONS": {
+        "SELECT_PERIOD": "期間を選択",
+        "WEEK": "週",
+        "MONTH": "月",
+        "6_MONTHS": "180日",
+        "YEAR": "年",
+        "5_YEARS": "5年",
+        "ALL_TIME": "全期間",
+        "CHART": {
+          "TITLE": "期間内の登録数",
+          "X_AXIS": "日付",
+          "Y_AXIS": "登録数"
+        }
+      }
     }
   }
 }

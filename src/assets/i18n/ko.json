@@ -243,6 +243,22 @@
       "EXP": "만료",
       "DEVICEINFO": "디바이스 정보",
       "STATUS": "상태"
+    },
+    "DASHBOARD": {
+      "REGISTRATIONS": {
+        "SELECT_PERIOD": "기간 선택",
+        "WEEK": "주",
+        "MONTH": "월",
+        "6_MONTHS": "180일",
+        "YEAR": "년",
+        "5_YEARS": "5년",
+        "ALL_TIME": "전체 기간",
+        "CHART": {
+          "TITLE": "기간 동안의 등록 수",
+          "X_AXIS": "날짜",
+          "Y_AXIS": "등록 수"
+        }
+      }
     }
   }
 }

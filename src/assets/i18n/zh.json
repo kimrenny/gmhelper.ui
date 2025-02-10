@@ -243,6 +243,22 @@
       "EXP": "过期时间",
       "DEVICEINFO": "设备信息",
       "STATUS": "状态"
+    },
+    "DASHBOARD": {
+      "REGISTRATIONS": {
+        "SELECT_PERIOD": "选择期间",
+        "WEEK": "周",
+        "MONTH": "月",
+        "6_MONTHS": "180天",
+        "YEAR": "年",
+        "5_YEARS": "5年",
+        "ALL_TIME": "所有时间",
+        "CHART": {
+          "TITLE": "该时间段的注册数量",
+          "X_AXIS": "日期",
+          "Y_AXIS": "注册数量"
+        }
+      }
     }
   }
 }

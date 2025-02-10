@@ -1,4 +1,30 @@
 <div class="chart-container">
+  <div>
+    <label for="periodSelect">{{
+      "ADMIN.DASHBOARD.REGISTRATIONS.SELECT_PERIOD" | translate
+    }}</label>
+    <select id="periodSelect" (change)="onPeriodChange($event)">
+      <option value="week">
+        {{ "ADMIN.DASHBOARD.REGISTRATIONS.WEEK" | translate }}
+      </option>
+      <option value="month">
+        {{ "ADMIN.DASHBOARD.REGISTRATIONS.MONTH" | translate }}
+      </option>
+      <option value="6months">
+        {{ "ADMIN.DASHBOARD.REGISTRATIONS.6_MONTHS" | translate }}
+      </option>
+      <option value="year">
+        {{ "ADMIN.DASHBOARD.REGISTRATIONS.YEAR" | translate }}
+      </option>
+      <option value="5years">
+        {{ "ADMIN.DASHBOARD.REGISTRATIONS.5_YEARS" | translate }}
+      </option>
+      <option value="all">
+        {{ "ADMIN.DASHBOARD.REGISTRATIONS.ALL_TIME" | translate }}
+      </option>
+    </select>
+  </div>
+
   <canvas
     baseChart
     [data]="registrationChartData"
