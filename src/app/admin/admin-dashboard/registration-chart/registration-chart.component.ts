@@ -64,14 +64,14 @@ export class RegistrationChartComponent implements OnInit, OnDestroy {
     scales: {
       x: {
         title: {
-          display: true,
-          text: 'Date',
+          display: false,
+          text: '',
         },
       },
       y: {
         title: {
-          display: true,
-          text: 'Count of Registrations',
+          display: false,
+          text: '',
         },
         ticks: {
           beginAtZero: true,
@@ -126,8 +126,7 @@ export class RegistrationChartComponent implements OnInit, OnDestroy {
           .getRegistrationDataObservable()
           .subscribe((registrations) => {
             if (registrations) {
-              console.log('raw data: ', registrations);
-              this.updateChartData(registrations);
+              this.filterDataByDays(registrations, 7);
             }
           });
       }
@@ -153,125 +152,152 @@ export class RegistrationChartComponent implements OnInit, OnDestroy {
       });
   }
 
+  private filterDataByDays(data: RegistrationData[], days: number): void {
+    console.log('filterDataByDays input: ', data);
+    const currentDate = new Date();
+    const dateAgo = new Date(currentDate);
+    dateAgo.setDate(currentDate.getDate() - days);
+
+    const dateData: RegistrationData[] = [];
+
+    for (
+      let d = new Date(dateAgo);
+      d <= currentDate;
+      d.setDate(d.getDate() + 1)
+    ) {
+      const dateString = d.toISOString().split('T')[0];
+
+      const dayData = data.filter((item) => {
+        const itemDate = new Date(item.date);
+        return itemDate.toISOString().split('T')[0] === dateString;
+      });
+
+      dateData.push({
+        date: dateString,
+        registrations:
+          dayData.length > 0
+            ? dayData.reduce((acc, item) => acc + item.registrations, 0)
+            : 0,
+      });
+
+      console.log('filterDataByDays output: ', dateData);
+      this.updateChartData(dateData, true, false);
+    }
+  }
+
+  private filterDataBySixMonths(data: RegistrationData[]): void {
+    let filteredData = [...data];
+
+    filteredData = this.processData(data, 6, true);
+    this.updateChartData(filteredData, false, true);
+  }
+
+  private filterDataByYear(data: RegistrationData[]): void {
+    let filteredData = [...data];
+
+    filteredData = this.processData(data, 12, true);
+    this.updateChartData(filteredData, false, true);
+  }
+
+  private filterDataByFiveYears(data: RegistrationData[]): void {
+    let filteredData = [...data];
+
+    filteredData = this.processData(data, 5, false);
+    this.updateChartData(filteredData, false, false);
+  }
+
   private filterDataByPeriod(data: RegistrationData[], period: string): void {
     const currentDate = new Date();
     let filteredData = [...data];
 
     switch (period) {
       case 'week': {
-        const weekAgo = new Date(currentDate.getDate() - 7);
-        filteredData = data.filter((item) => new Date(item.date) >= weekAgo);
-        this.updateChartData(filteredData);
+        this.filterDataByDays(data, 7);
         break;
       }
 
       case 'month': {
-        const monthAgo = new Date();
-        monthAgo.setMonth(currentDate.getMonth() - 1);
-        filteredData = data.filter((item) => new Date(item.date) >= monthAgo);
-        this.updateChartData(filteredData);
+        this.filterDataByDays(data, 30);
         break;
       }
 
       case '6months': {
-        filteredData = this.processMonthlyData(data, 6);
-        this.updateChartDataByMonths(filteredData);
+        this.filterDataBySixMonths(data);
         break;
       }
 
       case 'year': {
-        filteredData = this.processMonthlyData(data, 12);
-        this.updateChartDataByMonths(filteredData);
+        this.filterDataByYear(data);
         break;
       }
 
       case '5years': {
-        filteredData = this.processYearlyData(data, 5);
-        this.updateChartDataByYears(filteredData);
+        this.filterDataByFiveYears(data);
         break;
       }
       case 'all': {
         const firstDate = new Date(data[0]?.date || currentDate);
-        const yearsDiff = currentDate.getFullYear() - firstDate.getFullYear();
+        const daysDiff = currentDate.getDate() - firstDate.getDate();
 
-        if (yearsDiff <= 1) {
-          filteredData = this.processMonthlyData(data, 12);
-          this.updateChartDataByMonths(filteredData);
-        } else {
-          filteredData = this.processYearlyData(data, 5);
-          this.updateChartDataByYears(filteredData);
+        if (daysDiff <= 7) {
+          this.filterDataByDays(data, 7);
+        } else if (daysDiff <= 30) {
+          this.filterDataByDays(data, 30);
+        } else if (daysDiff <= 180) {
+          this.filterDataBySixMonths(data);
+        } else if (daysDiff <= 365) {
+          this.filterDataByYear(data);
+        } else if (daysDiff <= 365 * 4 + 1) {
+          this.filterDataByFiveYears(data);
         }
         break;
       }
       default:
         filteredData = [...data];
-        this.updateChartData(filteredData);
+        this.updateChartData(filteredData, true, false);
     }
   }
 
-  aggregateByMonth(data: RegistrationData[]): RegistrationData[] {
-    const groupedData: { [key: string]: number } = {};
-
-    data.forEach(({ date, registrations }) => {
-      const month = date.substring(0, 7);
-      groupedData[month] = (groupedData[month] || 0) + registrations;
-    });
-
-    return Object.entries(groupedData)
-      .map(([date, registrations]) => ({
-        date,
-        registrations,
-      }))
-      .sort((a, b) => a.date.localeCompare(b.date));
-  }
-
-  aggregateByYear(data: RegistrationData[]): RegistrationData[] {
-    const groupedData: { [key: string]: number } = {};
-
-    data.forEach(({ date, registrations }) => {
-      const year = date.substring(0, 4);
-      groupedData[year] = (groupedData[year] || 0) + registrations;
-    });
-
-    return Object.entries(groupedData)
-      .map(([date, registrations]) => ({
-        date,
-        registrations,
-      }))
-      .sort((a, b) => a.date.localeCompare(b.date));
-  }
-
-  private processMonthlyData(
+  private processData(
     filteredData: RegistrationData[],
-    months: number
+    periodLength: number,
+    isMonthly: boolean
   ): RegistrationData[] {
     if (filteredData.length < 1) return [];
-    if (months !== 6 && months !== 12) return [];
-    const monthlyData: { [key: string]: number } = {};
+
+    const data: { [key: string]: number } = {};
 
     filteredData.forEach(({ date, registrations }) => {
-      const monthKey = date.slice(0, 7);
-      monthlyData[monthKey] = (monthlyData[monthKey] || 0) + registrations;
+      const key = isMonthly ? date.slice(0, 7) : date.slice(0, 4);
+      data[key] = (data[key] || 0) + registrations;
     });
 
-    let result = Object.entries(monthlyData)
+    let result = Object.entries(data)
       .map(([date, registrations]) => ({ date, registrations }))
       .sort((a, b) => a.date.localeCompare(b.date));
 
     const now = new Date();
     const lastPeriod: string[] = [];
-    for (let i = months - 1; i >= 0; i--) {
-      const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
-      lastPeriod.push(
-        `${date.getFullYear()}-${(date.getMonth() + 1)
+
+    for (let i = periodLength - 1; i >= 0; i--) {
+      const date = new Date(now);
+
+      if (isMonthly) {
+        date.setMonth(now.getMonth() - i);
+        const periodKey = `${date.getFullYear()}-${(date.getMonth() + 1)
           .toString()
-          .padStart(2, '0')}`
-      );
+          .padStart(2, '0')}`;
+        lastPeriod.push(periodKey);
+      } else {
+        date.setFullYear(now.getFullYear() - i);
+        const periodKey = `${date.getFullYear()}`;
+        lastPeriod.push(periodKey);
+      }
     }
 
-    lastPeriod.forEach((month) => {
-      if (!result.some((d) => d.date === month)) {
-        result.push({ date: month, registrations: 0 });
+    lastPeriod.forEach((period) => {
+      if (!result.some((d) => d.date === period)) {
+        result.push({ date: period, registrations: 0 });
       }
     });
 
@@ -280,124 +306,42 @@ export class RegistrationChartComponent implements OnInit, OnDestroy {
     return result;
   }
 
-  private processYearlyData(
-    filteredData: RegistrationData[],
-    years: number
-  ): RegistrationData[] {
-    if (filteredData.length < 1) return [];
-    const yearlyData: { [key: string]: number } = {};
+  private updateChartData(
+    filteredData: any[],
+    isDaily: boolean,
+    isMonthly: boolean
+  ): void {
+    const startDate = isDaily
+      ? new Date(filteredData[0]?.date || new Date())
+      : new Date(
+          filteredData[0]?.date + (isMonthly ? '-01' : '-01-01') || new Date()
+        );
 
-    filteredData.forEach(({ date, registrations }) => {
-      const monthKey = date.slice(0, 4);
-      yearlyData[monthKey] = (yearlyData[monthKey] || 0) + registrations;
-    });
+    const endDate = new Date();
 
-    let result = Object.entries(yearlyData)
-      .map(([date, registrations]) => ({ date, registrations }))
-      .sort((a, b) => a.date.localeCompare(b.date));
+    const allDates: string[] = [];
+    const dateCursor = new Date(startDate);
 
-    const now = new Date();
-    const lastPeriod: string[] = [];
-    for (let i = years - 1; i >= 0; i--) {
-      const date = new Date(now.getFullYear() - i, 1);
-      lastPeriod.push(`${date.getFullYear()}`);
-    }
-
-    lastPeriod.forEach((month) => {
-      if (!result.some((d) => d.date === month)) {
-        result.push({ date: month, registrations: 0 });
+    if (isDaily) {
+      while (dateCursor <= endDate) {
+        allDates.push(dateCursor.toISOString().split('T')[0]);
+        dateCursor.setDate(dateCursor.getDate() + 1);
       }
-    });
+    } else {
+      while (dateCursor <= endDate) {
+        const periodKey = isMonthly
+          ? `${dateCursor.getFullYear()}-${(dateCursor.getMonth() + 1)
+              .toString()
+              .padStart(2, '0')}`
+          : `${dateCursor.getFullYear()}`;
 
-    result.sort((a, b) => a.date.localeCompare(b.date));
-
-    return result;
-  }
-
-  private updateChartData(filteredData: any[]): void {
-    const startDate = new Date(filteredData[0]?.date || new Date());
-    const endDate = new Date();
-
-    const allDates: string[] = [];
-    const dateCursor = new Date(startDate);
-
-    while (dateCursor <= endDate) {
-      allDates.push(dateCursor.toISOString().split('T')[0]);
-      dateCursor.setDate(dateCursor.getDate() + 1);
-    }
-
-    const completeData = allDates.map((date) => {
-      const existing = filteredData.find((d) => d.date === date);
-      return existing ? existing : { date, registrations: 0 };
-    });
-
-    const chartData = completeData.map((data) => data.registrations);
-    const chartLabels = completeData.map((data) => data.date);
-
-    this.registrationChartData = {
-      labels: chartLabels,
-      datasets: [
-        {
-          data: chartData,
-          label: this.registrationChartData.datasets[0].label,
-          fill: false,
-          borderColor: '#4bc0c0',
-          tension: 0.1,
-          type: 'line',
-        },
-      ],
-    };
-  }
-
-  private updateChartDataByMonths(filteredData: any[]): void {
-    const startDate = new Date(filteredData[0]?.date + '-01' || new Date());
-    const endDate = new Date();
-    const allDates: string[] = [];
-    const dateCursor = new Date(startDate);
-
-    while (dateCursor <= endDate) {
-      const monthKey = `${dateCursor.getFullYear()}-${(
-        dateCursor.getMonth() + 1
-      )
-        .toString()
-        .padStart(2, '0')}`;
-      allDates.push(monthKey);
-      dateCursor.setMonth(dateCursor.getMonth() + 1);
-    }
-
-    const completeData = allDates.map((date) => {
-      const existing = filteredData.find((d) => d.date === date);
-      return existing ? existing : { date, registrations: 0 };
-    });
-
-    const chartData = completeData.map((data) => data.registrations);
-    const chartLabels = completeData.map((data) => data.date);
-
-    this.registrationChartData = {
-      labels: chartLabels,
-      datasets: [
-        {
-          data: chartData,
-          label: this.registrationChartData.datasets[0].label,
-          fill: false,
-          borderColor: '#4bc0c0',
-          tension: 0.1,
-          type: 'line',
-        },
-      ],
-    };
-  }
-
-  private updateChartDataByYears(filteredData: any[]): void {
-    const startDate = new Date(filteredData[0]?.date + '-01-01' || new Date());
-    const endDate = new Date();
-    const allDates: string[] = [];
-    const dateCursor = new Date(startDate);
-
-    while (dateCursor <= endDate) {
-      const yearKey = `${dateCursor.getFullYear()}`;
-      allDates.push(yearKey);
-      dateCursor.setFullYear(dateCursor.getFullYear() + 1);
+        allDates.push(periodKey);
+        if (isMonthly) {
+          dateCursor.setMonth(dateCursor.getMonth() + 1);
+        } else {
+          dateCursor.setFullYear(dateCursor.getFullYear() + 1);
+        }
+      }
     }
 
     const completeData = allDates.map((date) => {
