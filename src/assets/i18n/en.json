@@ -260,6 +260,11 @@
           "X_AXIS": "Dates",
           "Y_AXIS": "Registrations"
         }
+      },
+      "ACTIVE_USERS": {
+        "TITLE": "Created Tokens",
+        "ACTIVE_TOKENS": "Active",
+        "TOTAL_TOKENS": "Total"
       }
     }
   }

@@ -153,7 +153,6 @@ export class RegistrationChartComponent implements OnInit, OnDestroy {
   }
 
   private filterDataByDays(data: RegistrationData[], days: number): void {
-    console.log('filterDataByDays input: ', data);
     const currentDate = new Date();
     const dateAgo = new Date(currentDate);
     dateAgo.setDate(currentDate.getDate() - days);
@@ -180,7 +179,6 @@ export class RegistrationChartComponent implements OnInit, OnDestroy {
             : 0,
       });
 
-      console.log('filterDataByDays output: ', dateData);
       this.updateChartData(dateData, true, false);
     }
   }

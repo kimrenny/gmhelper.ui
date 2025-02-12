@@ -258,6 +258,11 @@
           "X_AXIS": "Дати",
           "Y_AXIS": "Реєстрації"
         }
+      },
+      "ACTIVE_USERS": {
+        "TITLE": "Створені токени",
+        "ACTIVE_TOKENS": "Активні",
+        "TOTAL_TOKENS": "Всього"
       }
     }
   }

@@ -258,6 +258,11 @@
           "X_AXIS": "Daten",
           "Y_AXIS": "Registrierungen"
         }
+      },
+      "ACTIVE_USERS": {
+        "TITLE": "Erstellte Tokens",
+        "ACTIVE_TOKENS": "Aktiv",
+        "TOTAL_TOKENS": "Gesamt"
       }
     }
   }

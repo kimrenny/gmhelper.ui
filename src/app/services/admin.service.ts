@@ -50,13 +50,22 @@ export class AdminService {
   private tokensSubject = new BehaviorSubject<Token[] | null>(null);
   tokens$ = this.tokensSubject.asObservable();
 
-  private registrationDataSubject = new BehaviorSubject<any | null>(null);
+  private registrationDataSubject = new BehaviorSubject<
+    RegistrationData[] | null
+  >(null);
   registrationData$ = this.registrationDataSubject.asObservable();
+
+  private activeTokensSubject = new BehaviorSubject<number | null>(null);
+  activeTokens$ = this.activeTokensSubject.asObservable();
+
+  private totalTokensSubject = new BehaviorSubject<number | null>(null);
+  totalTokens$ = this.totalTokensSubject.asObservable();
 
   constructor(private http: HttpClient, private tokenService: TokenService) {
     this.getAllUsers();
     this.getAllTokens();
     this.getRegistrationData();
+    this.getActiveTokens();
   }
 
   getAllUsers(): void {
@@ -178,12 +187,12 @@ export class AdminService {
       .pipe(
         switchMap((role) => {
           if (this.checkAdminPermissions(role)) {
-            return this.http.get<Token[]>(
+            return this.http.get<RegistrationData[]>(
               `${this.apiUrl}/dashboard/registrations`,
               { headers: this.tokenService.createAuthHeaders(authToken) }
             );
           } else {
-            return new Observable<Token[] | null>((observer) => {
+            return new Observable<RegistrationData[] | null>((observer) => {
               observer.next(null);
               observer.complete();
             });
@@ -192,7 +201,6 @@ export class AdminService {
       )
       .subscribe((data) => {
         this.registrationDataSubject.next(data);
-        console.log(data);
       });
   }
 
@@ -204,6 +212,48 @@ export class AdminService {
 
   getRegistrationDataObservable(): Observable<RegistrationData[] | null> {
     return this.registrationData$;
+  }
+
+  getActiveTokens(): void {
+    const authToken = this.tokenService.getTokenFromStorage('authToken');
+
+    if (!authToken) {
+      return;
+    }
+
+    this.tokenService.userRole$
+      .pipe(
+        switchMap((role) => {
+          if (this.checkAdminPermissions(role)) {
+            return this.http.get<any>(`${this.apiUrl}/dashboard/tokens`, {
+              headers: this.tokenService.createAuthHeaders(authToken),
+            });
+          } else {
+            return new Observable<any>((observer) => {
+              observer.next(null);
+              observer.complete();
+            });
+          }
+        })
+      )
+      .subscribe((data) => {
+        this.activeTokensSubject.next(data.activeTokens);
+        this.totalTokensSubject.next(data.totalTokens);
+      });
+  }
+
+  checkActiveTokens(): void {
+    if (!this.activeTokensSubject.value) {
+      this.getActiveTokens();
+    }
+  }
+
+  getActiveTokensObservable(): Observable<number | null> {
+    return this.activeTokens$;
+  }
+
+  getTotalTokensObservable(): Observable<number | null> {
+    return this.totalTokens$;
   }
 
   checkAdminPermissions(role: string | null): boolean {

@@ -258,6 +258,11 @@
           "X_AXIS": "日期",
           "Y_AXIS": "注册数量"
         }
+      },
+      "ACTIVE_USERS": {
+        "TITLE": "已创建的令牌",
+        "ACTIVE_TOKENS": "活动",
+        "TOTAL_TOKENS": "总计"
       }
     }
   }

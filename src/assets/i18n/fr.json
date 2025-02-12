@@ -258,6 +258,11 @@
           "X_AXIS": "Dates",
           "Y_AXIS": "Inscriptions"
         }
+      },
+      "ACTIVE_USERS": {
+        "TITLE": "Jetons créés",
+        "ACTIVE_TOKENS": "Actifs",
+        "TOTAL_TOKENS": "Total"
       }
     }
   }

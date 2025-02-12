@@ -258,6 +258,11 @@
           "X_AXIS": "日付",
           "Y_AXIS": "登録数"
         }
+      },
+      "ACTIVE_USERS": {
+        "TITLE": "作成されたトークン",
+        "ACTIVE_TOKENS": "アクティブ",
+        "TOTAL_TOKENS": "合計"
       }
     }
   }

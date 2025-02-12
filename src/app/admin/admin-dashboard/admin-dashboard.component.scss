@@ -22,4 +22,12 @@
     width: 500px;
     height: 800px;
   }
+
+  .active-users-container {
+    position: absolute;
+    right: calc(50px + 55px);
+    top: 50px;
+    width: 400px;
+    height: 120px;
+  }
 }

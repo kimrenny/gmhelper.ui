@@ -1,0 +1,48 @@
+.active-users-container {
+  width: 100%;
+  height: 100%;
+  background: #222;
+  padding: 30px 20px 50px 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 20px 5px rgba(189, 0, 214, 0.6);
+  position: relative;
+  text-align: center;
+  justify-content: center;
+  margin: 0;
+
+  .title {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #ffffff;
+    text-align: center;
+  }
+
+  .token-stats {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+
+    .token-block {
+      width: 40%;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.2);
+      text-align: center;
+
+      .count-title {
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: #bd00d6;
+      }
+
+      .count {
+        font-size: 16px;
+        font-weight: bold;
+        color: #4bc0c0;
+      }
+    }
+  }
+}
