@@ -36,6 +36,11 @@ interface Token {
   isActive: boolean;
 }
 
+interface RequestsData {
+  date: string;
+  count: number;
+}
+
 interface RegistrationData {
   date: string;
   registrations: number;
@@ -60,6 +65,11 @@ export class AdminService {
 
   private totalTokensSubject = new BehaviorSubject<number | null>(null);
   totalTokens$ = this.totalTokensSubject.asObservable();
+
+  private requestsDataSubject = new BehaviorSubject<RequestsData[] | null>(
+    null
+  );
+  requestsData$ = this.requestsDataSubject.asObservable();
 
   constructor(private http: HttpClient, private tokenService: TokenService) {
     this.getAllUsers();
@@ -254,6 +264,45 @@ export class AdminService {
 
   getTotalTokensObservable(): Observable<number | null> {
     return this.totalTokens$;
+  }
+
+  getRequestsData(): void {
+    const authToken = this.tokenService.getTokenFromStorage('authToken');
+
+    if (!authToken) {
+      return;
+    }
+
+    this.tokenService.userRole$
+      .pipe(
+        switchMap((role) => {
+          if (this.checkAdminPermissions(role)) {
+            return this.http.get<RequestsData[]>(
+              `${this.apiUrl}/logs/requests`,
+              { headers: this.tokenService.createAuthHeaders(authToken) }
+            );
+          } else {
+            return new Observable<RequestsData[] | null>((observer) => {
+              observer.next(null);
+              observer.complete();
+            });
+          }
+        })
+      )
+      .subscribe((data) => {
+        console.log(data);
+        this.requestsDataSubject.next(data);
+      });
+  }
+
+  checkRequestsData(): void {
+    if (!this.requestsDataSubject.value) {
+      this.getRequestsData();
+    }
+  }
+
+  getRequestsDataObservable(): Observable<RequestsData[] | null> {
+    return this.requestsData$;
   }
 
   checkAdminPermissions(role: string | null): boolean {

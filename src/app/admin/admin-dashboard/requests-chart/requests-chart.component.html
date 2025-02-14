@@ -1,0 +1,35 @@
+<div class="chart-container">
+  <div class="chart-header">
+    <label for="periodSelect" class="select-header">{{
+      "ADMIN.DASHBOARD.REQUESTS.SELECT_PERIOD" | translate
+    }}</label>
+    <select id="periodSelect" (change)="onPeriodChange($event)">
+      <option value="week">
+        {{ "ADMIN.DASHBOARD.REQUESTS.WEEK" | translate }}
+      </option>
+      <option value="month">
+        {{ "ADMIN.DASHBOARD.REQUESTS.MONTH" | translate }}
+      </option>
+      <option value="6months">
+        {{ "ADMIN.DASHBOARD.REQUESTS.6_MONTHS" | translate }}
+      </option>
+      <option value="year">
+        {{ "ADMIN.DASHBOARD.REQUESTS.YEAR" | translate }}
+      </option>
+      <option value="5years">
+        {{ "ADMIN.DASHBOARD.REQUESTS.5_YEARS" | translate }}
+      </option>
+      <option value="all">
+        {{ "ADMIN.DASHBOARD.REQUESTS.ALL_TIME" | translate }}
+      </option>
+    </select>
+  </div>
+
+  <canvas
+    baseChart
+    [data]="requestsChartData"
+    [options]="requestsChartOptions"
+    chartType="line"
+  >
+  </canvas>
+</div>
