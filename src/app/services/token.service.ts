@@ -153,7 +153,6 @@ export class TokenService {
           'http://schemas.microsoft.com/ws/2008/06/identity/claims/role'
         ] || null;
       this.userRoleSubject.next(role);
-      console.log(role);
     } catch (error) {
       console.error('Failed to extract user role', error);
       this.userRoleSubject.next(null);

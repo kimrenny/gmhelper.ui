@@ -1,6 +1,7 @@
 .admin-container {
   scroll-snap-type: y mandatory;
   overflow-y: hidden;
+  overflow-x: hidden;
   scrollbar-width: none;
   height: 100vh;
   margin: 0;

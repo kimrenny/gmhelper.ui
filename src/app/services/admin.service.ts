@@ -71,11 +71,19 @@ export class AdminService {
   );
   requestsData$ = this.requestsDataSubject.asObservable();
 
-  constructor(private http: HttpClient, private tokenService: TokenService) {
+  private isDataLoaded = false;
+
+  constructor(private http: HttpClient, private tokenService: TokenService) {}
+
+  loadAdminData(): void {
+    if (this.isDataLoaded) return;
+
     this.getAllUsers();
     this.getAllTokens();
     this.getRegistrationData();
     this.getActiveTokens();
+
+    this.isDataLoaded = true;
   }
 
   getAllUsers(): void {
@@ -290,7 +298,6 @@ export class AdminService {
         })
       )
       .subscribe((data) => {
-        console.log(data);
         this.requestsDataSubject.next(data);
       });
   }

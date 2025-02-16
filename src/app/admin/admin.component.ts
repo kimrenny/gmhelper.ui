@@ -34,21 +34,7 @@ export class AdminComponent implements OnInit, OnDestroy {
 
   constructor(private tokenService: TokenService, private router: Router) {}
 
-  ngOnInit(): void {
-    const roleSub = this.tokenService.userRole$.subscribe((role) => {
-      this.userRole = role;
-      if (this.userRole !== 'Owner' && this.userRole !== 'Admin') {
-        this.router.navigate([], {
-          queryParams: { section: 'welcome' },
-          replaceUrl: true,
-        });
-      }
-    });
+  ngOnInit(): void {}
 
-    this.subscriptions.add(roleSub);
-  }
-
-  ngOnDestroy(): void {
-    this.subscriptions.unsubscribe();
-  }
+  ngOnDestroy(): void {}
 }
