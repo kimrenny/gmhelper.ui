@@ -5,10 +5,11 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 import { UserService } from '../services/user.service';
 import { Observable } from 'rxjs';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-settings',
@@ -47,6 +48,8 @@ export class SettingsComponent implements OnInit {
   constructor(
     @Inject(UserService) private userService: UserService,
     private fb: FormBuilder,
+    private toastr: ToastrService,
+    private translate: TranslateService,
     private cdr: ChangeDetectorRef
   ) {
     this.isAuthorized = this.userService.isAuthorized$;
@@ -245,6 +248,21 @@ export class SettingsComponent implements OnInit {
         });
       },
       error: (err) => {
+        switch (err.error) {
+          case 'The current device cannot be deactivated.': {
+            this.toastr.error(
+              this.translate.instant('SETTINGS.DEVICES.ERROR.CURRENT_DEVICE'),
+              this.translate.instant('SETTINGS.DEVICES.ERROR.TITLE')
+            );
+            break;
+          }
+          default: {
+            this.toastr.error(
+              this.translate.instant('SETTINGS.DEVICES.ERROR.OTHER'),
+              this.translate.instant('SETTINGS.DEVICES.ERROR.TITLE')
+            );
+          }
+        }
         console.error('Error deactivating device:', err);
       },
     });

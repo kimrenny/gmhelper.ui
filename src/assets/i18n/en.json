@@ -168,6 +168,9 @@
       "REMOVE": "Disable",
       "TITLE": "Logged In Devices",
       "ERROR": {
+        "TITLE": "Error",
+        "CURRENT_DEVICE": "You cannot disable your current device.",
+        "OTHER": "An error occurred during the operation. Please try again later.",
         "NOTFOUND": "No devices found."
       }
     }

@@ -168,6 +168,9 @@
       "REMOVE": "Deaktivieren",
       "TITLE": "Angemeldete Geräte",
       "ERROR": {
+        "TITLE": "Fehler",
+        "CURRENT_DEVICE": "Sie können Ihr aktuelles Gerät nicht deaktivieren.",
+        "OTHER": "Es ist ein Fehler während der Operation aufgetreten. Bitte versuchen Sie es später noch einmal.",
         "NOTFOUND": "Keine Geräte gefunden."
       }
     }

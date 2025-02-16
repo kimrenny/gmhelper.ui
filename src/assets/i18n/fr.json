@@ -168,6 +168,9 @@
       "REMOVE": "Désactiver",
       "TITLE": "Appareils connectés",
       "ERROR": {
+        "TITLE": "Erreur",
+        "CURRENT_DEVICE": "Vous ne pouvez pas désactiver votre appareil actuel.",
+        "OTHER": "Une erreur est survenue lors de l'opération. Veuillez réessayer plus tard.",
         "NOTFOUND": "Aucun appareil trouvé."
       }
     }

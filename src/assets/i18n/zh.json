@@ -168,6 +168,9 @@
       "REMOVE": "禁用",
       "TITLE": "登录设备",
       "ERROR": {
+        "TITLE": "错误",
+        "CURRENT_DEVICE": "无法禁用当前设备。",
+        "OTHER": "操作过程中发生错误，请稍后再试。",
         "NOTFOUND": "未找到设备。"
       }
     }
