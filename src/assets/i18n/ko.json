@@ -247,16 +247,30 @@
     "DASHBOARD": {
       "REGISTRATIONS": {
         "SELECT_PERIOD": "기간 선택",
-        "WEEK": "주",
-        "MONTH": "월",
+        "WEEK": "1주",
+        "MONTH": "1개월",
         "6_MONTHS": "180일",
-        "YEAR": "년",
+        "YEAR": "1년",
         "5_YEARS": "5년",
         "ALL_TIME": "전체 기간",
         "CHART": {
           "TITLE": "기간 동안의 등록 수",
           "X_AXIS": "날짜",
           "Y_AXIS": "등록 수"
+        }
+      },
+      "REQUESTS": {
+        "SELECT_PERIOD": "기간 선택",
+        "WEEK": "1주",
+        "MONTH": "1개월",
+        "6_MONTHS": "180일",
+        "YEAR": "1년",
+        "5_YEARS": "5년",
+        "ALL_TIME": "전체 기간",
+        "CHART": {
+          "TITLE": "기간별 요청 수",
+          "X_AXIS": "날짜",
+          "Y_AXIS": "요청"
         }
       },
       "ACTIVE_USERS": {

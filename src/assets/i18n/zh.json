@@ -259,6 +259,20 @@
           "Y_AXIS": "注册数量"
         }
       },
+      "REQUESTS": {
+        "SELECT_PERIOD": "选择时间段",
+        "WEEK": "一周",
+        "MONTH": "一个月",
+        "6_MONTHS": "180天",
+        "YEAR": "一年",
+        "5_YEARS": "五年",
+        "ALL_TIME": "全部时间",
+        "CHART": {
+          "TITLE": "该时间段的请求数量",
+          "X_AXIS": "日期",
+          "Y_AXIS": "请求数"
+        }
+      },
       "ACTIVE_USERS": {
         "TITLE": "已创建的令牌",
         "ACTIVE_TOKENS": "活动",

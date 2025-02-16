@@ -259,6 +259,20 @@
           "Y_AXIS": "Inscriptions"
         }
       },
+      "REQUESTS": {
+        "SELECT_PERIOD": "Sélectionner une période",
+        "WEEK": "Semaine",
+        "MONTH": "Mois",
+        "6_MONTHS": "180 jours",
+        "YEAR": "Année",
+        "5_YEARS": "5 ans",
+        "ALL_TIME": "Tout le temps",
+        "CHART": {
+          "TITLE": "Nombre de requêtes pour la période",
+          "X_AXIS": "Dates",
+          "Y_AXIS": "Requêtes"
+        }
+      },
       "ACTIVE_USERS": {
         "TITLE": "Jetons créés",
         "ACTIVE_TOKENS": "Actifs",

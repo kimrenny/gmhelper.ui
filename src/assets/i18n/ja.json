@@ -259,6 +259,20 @@
           "Y_AXIS": "登録数"
         }
       },
+      "REQUESTS": {
+        "SELECT_PERIOD": "期間を選択",
+        "WEEK": "1週間",
+        "MONTH": "1ヶ月",
+        "6_MONTHS": "180日",
+        "YEAR": "1年",
+        "5_YEARS": "5年",
+        "ALL_TIME": "全期間",
+        "CHART": {
+          "TITLE": "期間ごとのリクエスト数",
+          "X_AXIS": "日付",
+          "Y_AXIS": "リクエスト"
+        }
+      },
       "ACTIVE_USERS": {
         "TITLE": "作成されたトークン",
         "ACTIVE_TOKENS": "アクティブ",
