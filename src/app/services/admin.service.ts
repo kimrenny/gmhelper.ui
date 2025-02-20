@@ -46,6 +46,11 @@ interface RegistrationData {
   registrations: number;
 }
 
+interface CountryStats {
+  country: string;
+  count: number;
+}
+
 @Injectable({ providedIn: 'root' })
 export class AdminService {
   private readonly apiUrl = 'https://localhost:7057/api/admin';
@@ -70,6 +75,11 @@ export class AdminService {
     null
   );
   requestsData$ = this.requestsDataSubject.asObservable();
+
+  private userCountryStatsSubject = new BehaviorSubject<CountryStats[] | null>(
+    null
+  );
+  userCountryStats$ = this.userCountryStatsSubject.asObservable();
 
   private isDataLoaded = false;
 
@@ -310,6 +320,34 @@ export class AdminService {
 
   getRequestsDataObservable(): Observable<RequestsData[] | null> {
     return this.requestsData$;
+  }
+
+  getUsersByCountry(): void {
+    const authToken = this.tokenService.getTokenFromStorage('authToken');
+
+    if (!authToken) {
+      return;
+    }
+
+    this.tokenService.userRole$
+      .pipe(
+        switchMap((role) => {
+          if (this.checkAdminPermissions(role)) {
+            return this.http.get<CountryStats[]>(
+              `${this.apiUrl}/country-rating`,
+              { headers: this.tokenService.createAuthHeaders(authToken) }
+            );
+          } else {
+            return new Observable<CountryStats[] | null>((observer) => {
+              observer.next(null);
+              observer.complete();
+            });
+          }
+        })
+      )
+      .subscribe((data) => {
+        this.userCountryStatsSubject.next(data);
+      });
   }
 
   checkAdminPermissions(role: string | null): boolean {
