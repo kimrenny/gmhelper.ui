@@ -38,4 +38,12 @@
     width: 400px;
     height: 120px;
   }
+
+  .country-stats-container {
+    position: absolute;
+    right: calc(50px + 55px);
+    top: calc(50px + 400px + 50px);
+    width: 400px;
+    height: 120px;
+  }
 }

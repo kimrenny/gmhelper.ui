@@ -92,6 +92,7 @@ export class AdminService {
     this.getAllTokens();
     this.getRegistrationData();
     this.getActiveTokens();
+    this.getUsersByCountry();
 
     this.isDataLoaded = true;
   }
@@ -348,6 +349,16 @@ export class AdminService {
       .subscribe((data) => {
         this.userCountryStatsSubject.next(data);
       });
+  }
+
+  checkCountriesData(): void {
+    if (!this.userCountryStatsSubject.value) {
+      this.getUsersByCountry();
+    }
+  }
+
+  getCountryUsersDataObservable(): Observable<CountryStats[] | null> {
+    return this.userCountryStats$;
   }
 
   checkAdminPermissions(role: string | null): boolean {
