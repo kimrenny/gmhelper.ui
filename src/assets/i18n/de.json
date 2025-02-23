@@ -280,6 +280,12 @@
         "TITLE": "Erstellte Tokens",
         "ACTIVE_TOKENS": "Aktiv",
         "TOTAL_TOKENS": "Gesamt"
+      },
+      "COUNTRY_STATS": {
+        "TITLE": "Benutzerstatistik nach Ländern",
+        "COUNTRY": "Land",
+        "COUNT": "Anzahl",
+        "OTHER": "Andere"
       }
     }
   }

@@ -280,6 +280,12 @@
         "TITLE": "已创建的令牌",
         "ACTIVE_TOKENS": "活动",
         "TOTAL_TOKENS": "总计"
+      },
+      "COUNTRY_STATS": {
+        "TITLE": "按国家划分的用户统计",
+        "COUNTRY": "国家",
+        "COUNT": "数量",
+        "OTHER": "其他"
       }
     }
   }

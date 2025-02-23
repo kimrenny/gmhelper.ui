@@ -280,6 +280,12 @@
         "TITLE": "Jetons créés",
         "ACTIVE_TOKENS": "Actifs",
         "TOTAL_TOKENS": "Total"
+      },
+      "COUNTRY_STATS": {
+        "TITLE": "Statistiques des utilisateurs par pays",
+        "COUNTRY": "Pays",
+        "COUNT": "Quantité",
+        "OTHER": "Autre"
       }
     }
   }

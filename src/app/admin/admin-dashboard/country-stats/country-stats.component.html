@@ -1,20 +1,20 @@
 <div class="country-stats-container">
   <div class="title">
-    {{ "ADMIN.DASHBOARD.COUNTRY-STATS.TITLE" | translate }}
+    {{ "ADMIN.DASHBOARD.COUNTRY_STATS.TITLE" | translate }}
   </div>
 
   <table class="stats-table">
     <thead>
       <tr>
-        <th>{{ "ADMIN.DASHBOARD.COUNTRY-STATS.COUNTRY" | translate }}</th>
-        <th>{{ "ADMIN.DASHBOARD.COUNTRY-STATS.COUNT" | translate }}</th>
+        <th>{{ "ADMIN.DASHBOARD.COUNTRY_STATS.COUNTRY" | translate }}</th>
+        <th>{{ "ADMIN.DASHBOARD.COUNTRY_STATS.COUNT" | translate }}</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let stat of countryStats">
         <td>
           <ng-container *ngIf="stat.country === 'OTHER'; else countryName">
-            {{ "ADMIN.DASHBOARD.COUNTRY-STATS.OTHER" | translate }}
+            {{ "ADMIN.DASHBOARD.COUNTRY_STATS.OTHER" | translate }}
           </ng-container>
           <ng-template #countryName>{{ stat.country }}</ng-template>
         </td>

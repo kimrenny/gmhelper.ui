@@ -280,6 +280,12 @@
         "TITLE": "作成されたトークン",
         "ACTIVE_TOKENS": "アクティブ",
         "TOTAL_TOKENS": "合計"
+      },
+      "COUNTRY_STATS": {
+        "TITLE": "国別のユーザー統計",
+        "COUNTRY": "国",
+        "COUNT": "数量",
+        "OTHER": "その他"
       }
     }
   }

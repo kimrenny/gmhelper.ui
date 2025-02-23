@@ -280,6 +280,12 @@
         "TITLE": "생성된 토큰",
         "ACTIVE_TOKENS": "활성",
         "TOTAL_TOKENS": "총계"
+      },
+      "COUNTRY_STATS": {
+        "TITLE": "국가별 사용자 통계",
+        "COUNTRY": "국가",
+        "COUNT": "수량",
+        "OTHER": "기타"
       }
     }
   }

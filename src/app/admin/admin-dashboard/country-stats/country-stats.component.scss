@@ -17,6 +17,7 @@
 
   .stats-table {
     width: 100%;
+    table-layout: fixed;
     border-collapse: collapse;
     background: rgba(255, 255, 255, 0.1);
     border-radius: 8px;
@@ -27,6 +28,10 @@
       padding: 10px;
       text-align: center;
       color: #ffffff;
+      word-wrap: break-word;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     th {
