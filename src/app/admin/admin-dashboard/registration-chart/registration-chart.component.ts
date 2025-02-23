@@ -46,6 +46,7 @@ interface RegistrationData {
 export class RegistrationChartComponent implements OnInit, OnDestroy {
   userRole: string | any;
   selectedPeriod: string = 'week';
+
   registrationChartData: any = {
     datasets: [
       {
@@ -91,31 +92,7 @@ export class RegistrationChartComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    let translations: { [key: string]: string } = {};
-
-    this.translateService
-      .get([
-        'ADMIN.DASHBOARD.REGISTRATIONS.CHART.TITLE',
-        'ADMIN.DASHBOARD.REGISTRATIONS.CHART.X_AXIS',
-        'ADMIN.DASHBOARD.REGISTRATIONS.CHART.Y_AXIS',
-        'ADMIN.DASHBOARD.REGISTRATIONS.SELECT_PERIOD',
-        'ADMIN.DASHBOARD.REGISTRATIONS.WEEK',
-        'ADMIN.DASHBOARD.REGISTRATIONS.MONTH',
-        'ADMIN.DASHBOARD.REGISTRATIONS.6_MONTHS',
-        'ADMIN.DASHBOARD.REGISTRATIONS.YEAR',
-        'ADMIN.DASHBOARD.REGISTRATIONS.5_YEARS',
-        'ADMIN.DASHBOARD.REGISTRATIONS.ALL_TIME',
-      ])
-      .subscribe((data) => {
-        translations = data;
-
-        this.registrationChartOptions.scales.x.title.text =
-          translations['ADMIN.DASHBOARD.REGISTRATIONS.CHART.X_AXIS'];
-        this.registrationChartOptions.scales.y.title.text =
-          translations['ADMIN.DASHBOARD.REGISTRATIONS.CHART.Y_AXIS'];
-        this.registrationChartData.datasets[0].label =
-          translations['ADMIN.DASHBOARD.REGISTRATIONS.CHART.TITLE'];
-      });
+    this.applyTranslations();
 
     const roleSub = this.tokenService.userRole$.subscribe((role) => {
       this.userRole = role;
@@ -132,7 +109,27 @@ export class RegistrationChartComponent implements OnInit, OnDestroy {
       }
     });
 
+    const langSub = this.translateService.onLangChange.subscribe(() => {
+      this.applyTranslations();
+    });
+
     this.subscriptions.add(roleSub);
+    this.subscriptions.add(langSub);
+  }
+
+  private applyTranslations(): void {
+    this.registrationChartOptions.scales.x.title.text =
+      this.translateService.instant(
+        'ADMIN.DASHBOARD.REGISTRATIONS.CHART.X_AXIS'
+      );
+    this.registrationChartOptions.scales.y.title.text =
+      this.translateService.instant(
+        'ADMIN.DASHBOARD.REGISTRATIONS.CHART.Y_AXIS'
+      );
+    this.registrationChartData.datasets[0].label =
+      this.translateService.instant(
+        'ADMIN.DASHBOARD.REGISTRATIONS.CHART.TITLE'
+      );
   }
 
   ngOnDestroy(): void {

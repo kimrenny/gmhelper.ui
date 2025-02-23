@@ -46,6 +46,7 @@ interface RequestsData {
 export class RequestsChartComponent implements OnInit, OnDestroy {
   userRole: string | any;
   selectedPeriod: string = 'week';
+
   requestsChartData: any = {
     datasets: [
       {
@@ -91,31 +92,7 @@ export class RequestsChartComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    let translations: { [key: string]: string } = {};
-
-    this.translateService
-      .get([
-        'ADMIN.DASHBOARD.REQUESTS.CHART.TITLE',
-        'ADMIN.DASHBOARD.REQUESTS.CHART.X_AXIS',
-        'ADMIN.DASHBOARD.REQUESTS.CHART.Y_AXIS',
-        'ADMIN.DASHBOARD.REQUESTS.SELECT_PERIOD',
-        'ADMIN.DASHBOARD.REQUESTS.WEEK',
-        'ADMIN.DASHBOARD.REQUESTS.MONTH',
-        'ADMIN.DASHBOARD.REQUESTS.6_MONTHS',
-        'ADMIN.DASHBOARD.REQUESTS.YEAR',
-        'ADMIN.DASHBOARD.REQUESTS.5_YEARS',
-        'ADMIN.DASHBOARD.REQUESTS.ALL_TIME',
-      ])
-      .subscribe((data) => {
-        translations = data;
-
-        this.requestsChartOptions.scales.x.title.text =
-          translations['ADMIN.DASHBOARD.REQUESTS.CHART.X_AXIS'];
-        this.requestsChartOptions.scales.y.title.text =
-          translations['ADMIN.DASHBOARD.REQUESTS.CHART.Y_AXIS'];
-        this.requestsChartData.datasets[0].label =
-          translations['ADMIN.DASHBOARD.REQUESTS.CHART.TITLE'];
-      });
+    this.applyTranslations();
 
     const roleSub = this.tokenService.userRole$.subscribe((role) => {
       this.userRole = role;
@@ -130,7 +107,22 @@ export class RequestsChartComponent implements OnInit, OnDestroy {
       }
     });
 
+    const langSub = this.translateService.onLangChange.subscribe(() => {
+      this.applyTranslations();
+    });
+
     this.subscriptions.add(roleSub);
+    this.subscriptions.add(langSub);
+  }
+
+  private applyTranslations(): void {
+    this.requestsChartOptions.scales.x.title.text =
+      this.translateService.instant('ADMIN.DASHBOARD.REQUESTS.CHART.X_AXIS');
+    this.requestsChartOptions.scales.y.title.text =
+      this.translateService.instant('ADMIN.DASHBOARD.REQUESTS.CHART.Y_AXIS');
+    this.requestsChartData.datasets[0].label = this.translateService.instant(
+      'ADMIN.DASHBOARD.REQUESTS.CHART.TITLE'
+    );
   }
 
   ngOnDestroy(): void {
