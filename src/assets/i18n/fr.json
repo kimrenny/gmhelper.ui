@@ -279,7 +279,9 @@
       "ACTIVE_USERS": {
         "TITLE": "Jetons créés",
         "ACTIVE_TOKENS": "Actifs",
-        "TOTAL_TOKENS": "Total"
+        "TOTAL_TOKENS": "Total",
+        "ACTIVE_ADMIN_TOKENS": "Jetons Admin Actifs",
+        "TOTAL_ADMIN_TOKENS": "Total des Jetons Admin"
       },
       "COUNTRY_STATS": {
         "TITLE": "Statistiques des utilisateurs par pays",

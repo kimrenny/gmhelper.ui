@@ -15,6 +15,8 @@ import { TranslateModule } from '@ngx-translate/core';
 export class ActiveUsersComponent implements OnInit, OnDestroy {
   activeTokens: number | any;
   totalTokens: number | any;
+  activeAdminTokens: number | any;
+  totalAdminTokens: number | any;
   userRole: string | any;
   private subscriptions = new Subscription();
 
@@ -38,6 +40,22 @@ export class ActiveUsersComponent implements OnInit, OnDestroy {
             this.totalTokens = tokens;
           }
         });
+
+        this.adminService
+          .getActiveAdminTokensObservable()
+          .subscribe((tokens) => {
+            if (tokens) {
+              this.activeAdminTokens = tokens;
+            }
+          });
+
+        this.adminService
+          .getTotalAdminTokensObservable()
+          .subscribe((tokens) => {
+            if (tokens) {
+              this.totalAdminTokens = tokens;
+            }
+          });
       }
     });
 

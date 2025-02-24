@@ -46,6 +46,13 @@ interface RegistrationData {
   registrations: number;
 }
 
+interface CreatedTokens {
+  activeTokens: number;
+  totalTokens: number;
+  activeAdminTokens: number;
+  totalAdminTokens: number;
+}
+
 interface CountryStats {
   country: string;
   count: number;
@@ -71,6 +78,12 @@ export class AdminService {
   private totalTokensSubject = new BehaviorSubject<number | null>(null);
   totalTokens$ = this.totalTokensSubject.asObservable();
 
+  private activeAdminTokensSubject = new BehaviorSubject<number | null>(null);
+  activeAdminTokens$ = this.activeAdminTokensSubject.asObservable();
+
+  private totalAdminTokensSubject = new BehaviorSubject<number | null>(null);
+  totalAdminTokens$ = this.totalAdminTokensSubject.asObservable();
+
   private requestsDataSubject = new BehaviorSubject<RequestsData[] | null>(
     null
   );
@@ -91,7 +104,7 @@ export class AdminService {
     this.getAllUsers();
     this.getAllTokens();
     this.getRegistrationData();
-    this.getActiveTokens();
+    this.getCreatedTokens();
     this.getUsersByCountry();
 
     this.isDataLoaded = true;
@@ -243,7 +256,7 @@ export class AdminService {
     return this.registrationData$;
   }
 
-  getActiveTokens(): void {
+  getCreatedTokens(): void {
     const authToken = this.tokenService.getTokenFromStorage('authToken');
 
     if (!authToken) {
@@ -254,11 +267,14 @@ export class AdminService {
       .pipe(
         switchMap((role) => {
           if (this.checkAdminPermissions(role)) {
-            return this.http.get<any>(`${this.apiUrl}/dashboard/tokens`, {
-              headers: this.tokenService.createAuthHeaders(authToken),
-            });
+            return this.http.get<CreatedTokens>(
+              `${this.apiUrl}/dashboard/tokens`,
+              {
+                headers: this.tokenService.createAuthHeaders(authToken),
+              }
+            );
           } else {
-            return new Observable<any>((observer) => {
+            return new Observable<CreatedTokens | null>((observer) => {
               observer.next(null);
               observer.complete();
             });
@@ -266,14 +282,16 @@ export class AdminService {
         })
       )
       .subscribe((data) => {
-        this.activeTokensSubject.next(data.activeTokens);
-        this.totalTokensSubject.next(data.totalTokens);
+        this.activeTokensSubject.next(data?.activeTokens ?? 0);
+        this.totalTokensSubject.next(data?.totalTokens ?? 0);
+        this.activeAdminTokensSubject.next(data?.activeAdminTokens ?? 0);
+        this.totalAdminTokensSubject.next(data?.totalAdminTokens ?? 0);
       });
   }
 
-  checkActiveTokens(): void {
+  checkCreatedTokens(): void {
     if (!this.activeTokensSubject.value) {
-      this.getActiveTokens();
+      this.getCreatedTokens();
     }
   }
 
@@ -282,6 +300,14 @@ export class AdminService {
   }
 
   getTotalTokensObservable(): Observable<number | null> {
+    return this.totalTokens$;
+  }
+
+  getActiveAdminTokensObservable(): Observable<number | null> {
+    return this.activeTokens$;
+  }
+
+  getTotalAdminTokensObservable(): Observable<number | null> {
     return this.totalTokens$;
   }
 

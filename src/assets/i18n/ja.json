@@ -279,7 +279,9 @@
       "ACTIVE_USERS": {
         "TITLE": "作成されたトークン",
         "ACTIVE_TOKENS": "アクティブ",
-        "TOTAL_TOKENS": "合計"
+        "TOTAL_TOKENS": "合計",
+        "ACTIVE_ADMIN_TOKENS": "アクティブな管理者トークン",
+        "TOTAL_ADMIN_TOKENS": "管理者トークンの合計"
       },
       "COUNTRY_STATS": {
         "TITLE": "国別のユーザー統計",

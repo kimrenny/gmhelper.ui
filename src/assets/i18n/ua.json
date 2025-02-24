@@ -279,7 +279,9 @@
       "ACTIVE_USERS": {
         "TITLE": "Створені токени",
         "ACTIVE_TOKENS": "Активні",
-        "TOTAL_TOKENS": "Всього"
+        "TOTAL_TOKENS": "Всього",
+        "ACTIVE_ADMIN_TOKENS": "Актив. адмін. токени",
+        "TOTAL_ADMIN_TOKENS": "Всього адмін. токенів"
       },
       "COUNTRY_STATS": {
         "TITLE": "Статистика користувачів за країнами",

@@ -279,7 +279,9 @@
       "ACTIVE_USERS": {
         "TITLE": "생성된 토큰",
         "ACTIVE_TOKENS": "활성",
-        "TOTAL_TOKENS": "총계"
+        "TOTAL_TOKENS": "총계",
+        "ACTIVE_ADMIN_TOKENS": "활성 관리자 토큰",
+        "TOTAL_ADMIN_TOKENS": "총 관리자 토큰"
       },
       "COUNTRY_STATS": {
         "TITLE": "국가별 사용자 통계",

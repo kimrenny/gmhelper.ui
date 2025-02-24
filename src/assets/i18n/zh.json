@@ -279,7 +279,9 @@
       "ACTIVE_USERS": {
         "TITLE": "已创建的令牌",
         "ACTIVE_TOKENS": "活动",
-        "TOTAL_TOKENS": "总计"
+        "TOTAL_TOKENS": "总计",
+        "ACTIVE_ADMIN_TOKENS": "活跃的管理员令牌",
+        "TOTAL_ADMIN_TOKENS": "管理员令牌总数"
       },
       "COUNTRY_STATS": {
         "TITLE": "按国家划分的用户统计",

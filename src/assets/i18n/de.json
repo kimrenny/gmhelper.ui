@@ -279,7 +279,9 @@
       "ACTIVE_USERS": {
         "TITLE": "Erstellte Tokens",
         "ACTIVE_TOKENS": "Aktiv",
-        "TOTAL_TOKENS": "Gesamt"
+        "TOTAL_TOKENS": "Gesamt",
+        "ACTIVE_ADMIN_TOKENS": "Aktive Admin-Token",
+        "TOTAL_ADMIN_TOKENS": "Gesamte Admin-Token"
       },
       "COUNTRY_STATS": {
         "TITLE": "Benutzerstatistik nach Ländern",
