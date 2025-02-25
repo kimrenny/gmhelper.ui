@@ -288,6 +288,11 @@
         "COUNTRY": "국가",
         "COUNT": "수량",
         "OTHER": "기타"
+      },
+      "ROLE_STATS": {
+        "TITLE": "역할별 사용자 통계",
+        "ROLE": "역할",
+        "COUNT": "수량"
       }
     }
   }

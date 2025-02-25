@@ -288,6 +288,11 @@
         "COUNTRY": "国",
         "COUNT": "数量",
         "OTHER": "その他"
+      },
+      "ROLE_STATS": {
+        "TITLE": "役割別ユーザー統計",
+        "ROLE": "役割",
+        "COUNT": "数"
       }
     }
   }

@@ -288,6 +288,11 @@
         "COUNTRY": "Pays",
         "COUNT": "Quantité",
         "OTHER": "Autre"
+      },
+      "ROLE_STATS": {
+        "TITLE": "Statistiques des utilisateurs par rôle",
+        "ROLE": "Rôle",
+        "COUNT": "Nombre"
       }
     }
   }

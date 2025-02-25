@@ -288,6 +288,11 @@
         "COUNTRY": "国家",
         "COUNT": "数量",
         "OTHER": "其他"
+      },
+      "ROLE_STATS": {
+        "TITLE": "按角色划分的用户统计",
+        "ROLE": "角色",
+        "COUNT": "数量"
       }
     }
   }

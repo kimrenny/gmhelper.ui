@@ -58,6 +58,11 @@ interface CountryStats {
   count: number;
 }
 
+interface RoleStats {
+  role: string;
+  count: number;
+}
+
 @Injectable({ providedIn: 'root' })
 export class AdminService {
   private readonly apiUrl = 'https://localhost:7057/api/admin';
@@ -94,6 +99,9 @@ export class AdminService {
   );
   userCountryStats$ = this.userCountryStatsSubject.asObservable();
 
+  private userRoleStatsSubject = new BehaviorSubject<RoleStats[] | null>(null);
+  userRoleStats$ = this.userRoleStatsSubject.asObservable();
+
   private isDataLoaded = false;
 
   constructor(private http: HttpClient, private tokenService: TokenService) {}
@@ -106,6 +114,7 @@ export class AdminService {
     this.getRegistrationData();
     this.getCreatedTokens();
     this.getUsersByCountry();
+    this.getRoleStats();
 
     this.isDataLoaded = true;
   }
@@ -385,6 +394,43 @@ export class AdminService {
 
   getCountryUsersDataObservable(): Observable<CountryStats[] | null> {
     return this.userCountryStats$;
+  }
+
+  getRoleStats(): void {
+    const authToken = this.tokenService.getTokenFromStorage('authToken');
+
+    if (!authToken) {
+      return;
+    }
+
+    this.tokenService.userRole$
+      .pipe(
+        switchMap((role) => {
+          if (this.checkAdminPermissions(role)) {
+            return this.http.get<RoleStats[]>(`${this.apiUrl}/role-stats`, {
+              headers: this.tokenService.createAuthHeaders(authToken),
+            });
+          } else {
+            return new Observable<RoleStats[] | null>((observer) => {
+              observer.next(null);
+              observer.complete();
+            });
+          }
+        })
+      )
+      .subscribe((data) => {
+        this.userRoleStatsSubject.next(data);
+      });
+  }
+
+  checkRoleData(): void {
+    if (!this.userRoleStatsSubject.value) {
+      this.getRoleStats();
+    }
+  }
+
+  getRoleStatsDataObservable(): Observable<RoleStats[] | null> {
+    return this.userRoleStats$;
   }
 
   checkAdminPermissions(role: string | null): boolean {

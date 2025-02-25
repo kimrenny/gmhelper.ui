@@ -1,0 +1,20 @@
+<div class="role-stats-container">
+  <div class="title">
+    {{ "ADMIN.DASHBOARD.ROLE_STATS.TITLE" | translate }}
+  </div>
+
+  <table class="stats-table">
+    <thead>
+      <tr>
+        <th>{{ "ADMIN.DASHBOARD.ROLE_STATS.ROLE" | translate }}</th>
+        <th>{{ "ADMIN.DASHBOARD.ROLE_STATS.COUNT" | translate }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let stat of roleStats">
+        <td>{{ stat.role }}</td>
+        <td>{{ stat.count }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
