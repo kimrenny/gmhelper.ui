@@ -5,6 +5,7 @@ import { ActiveUsersComponent } from './active-users/active-users.component';
 import { RequestsChartComponent } from './requests-chart/requests-chart.component';
 import { CountryStatsComponent } from './country-stats/country-stats.component';
 import { RoleStatsComponent } from './role-stats/role-stats.component';
+import { BlockStatsComponent } from './block-stats/block-stats.component';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -16,6 +17,7 @@ import { RoleStatsComponent } from './role-stats/role-stats.component';
     RequestsChartComponent,
     CountryStatsComponent,
     RoleStatsComponent,
+    BlockStatsComponent,
   ],
   templateUrl: './admin-dashboard.component.html',
   styleUrls: ['./admin-dashboard.component.scss'],

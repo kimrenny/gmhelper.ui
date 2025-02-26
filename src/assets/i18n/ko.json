@@ -293,6 +293,11 @@
         "TITLE": "역할별 사용자 통계",
         "ROLE": "역할",
         "COUNT": "수량"
+      },
+      "BLOCK_STATS": {
+        "TITLE": "사용자 차단 통계",
+        "STATUS": "상태",
+        "COUNT": "수량"
       }
     }
   }

@@ -292,7 +292,12 @@
       "ROLE_STATS": {
         "TITLE": "役割別ユーザー統計",
         "ROLE": "役割",
-        "COUNT": "数"
+        "COUNT": "数量"
+      },
+      "BLOCK_STATS": {
+        "TITLE": "ユーザーバン統計",
+        "STATUS": "ステータス",
+        "COUNT": "数量"
       }
     }
   }

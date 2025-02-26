@@ -293,6 +293,11 @@
         "TITLE": "Benutzerstatistiken nach Rolle",
         "ROLE": "Rolle",
         "COUNT": "Anzahl"
+      },
+      "BLOCK_STATS": {
+        "TITLE": "Benutzersperrstatistik",
+        "STATUS": "Status",
+        "COUNT": "Anzahl"
       }
     }
   }

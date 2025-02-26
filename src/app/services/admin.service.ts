@@ -63,6 +63,11 @@ interface RoleStats {
   count: number;
 }
 
+interface BlockStats {
+  status: string;
+  count: number;
+}
+
 @Injectable({ providedIn: 'root' })
 export class AdminService {
   private readonly apiUrl = 'https://localhost:7057/api/admin';
@@ -102,6 +107,11 @@ export class AdminService {
   private userRoleStatsSubject = new BehaviorSubject<RoleStats[] | null>(null);
   userRoleStats$ = this.userRoleStatsSubject.asObservable();
 
+  private userBlockStatsSubject = new BehaviorSubject<BlockStats[] | null>(
+    null
+  );
+  userBlockStats$ = this.userBlockStatsSubject.asObservable();
+
   private isDataLoaded = false;
 
   constructor(private http: HttpClient, private tokenService: TokenService) {}
@@ -115,6 +125,7 @@ export class AdminService {
     this.getCreatedTokens();
     this.getUsersByCountry();
     this.getRoleStats();
+    this.getBlockStats();
 
     this.isDataLoaded = true;
   }
@@ -431,6 +442,43 @@ export class AdminService {
 
   getRoleStatsDataObservable(): Observable<RoleStats[] | null> {
     return this.userRoleStats$;
+  }
+
+  getBlockStats(): void {
+    const authToken = this.tokenService.getTokenFromStorage('authToken');
+
+    if (!authToken) {
+      return;
+    }
+
+    this.tokenService.userRole$
+      .pipe(
+        switchMap((role) => {
+          if (this.checkAdminPermissions(role)) {
+            return this.http.get<BlockStats[]>(`${this.apiUrl}/block-stats`, {
+              headers: this.tokenService.createAuthHeaders(authToken),
+            });
+          } else {
+            return new Observable<BlockStats[] | null>((observer) => {
+              observer.next(null);
+              observer.complete();
+            });
+          }
+        })
+      )
+      .subscribe((data) => {
+        this.userBlockStatsSubject.next(data);
+      });
+  }
+
+  checkBlockData(): void {
+    if (!this.userBlockStatsSubject.value) {
+      this.getBlockStats();
+    }
+  }
+
+  getBlockStatsDataObservable(): Observable<BlockStats[] | null> {
+    return this.userBlockStats$;
   }
 
   checkAdminPermissions(role: string | null): boolean {

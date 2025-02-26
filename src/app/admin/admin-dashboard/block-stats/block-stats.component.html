@@ -1,0 +1,20 @@
+<div class="block-stats-container">
+  <div class="title">
+    {{ "ADMIN.DASHBOARD.BLOCK_STATS.TITLE" | translate }}
+  </div>
+
+  <table class="stats-table">
+    <thead>
+      <tr>
+        <th>{{ "ADMIN.DASHBOARD.BLOCK_STATS.STATUS" | translate }}</th>
+        <th>{{ "ADMIN.DASHBOARD.BLOCK_STATS.COUNT" | translate }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let stat of blockStats">
+        <td>{{ stat.status }}</td>
+        <td>{{ stat.count }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

@@ -293,6 +293,11 @@
         "TITLE": "按角色划分的用户统计",
         "ROLE": "角色",
         "COUNT": "数量"
+      },
+      "BLOCK_STATS": {
+        "TITLE": "用户封禁统计",
+        "STATUS": "状态",
+        "COUNT": "数量"
       }
     }
   }

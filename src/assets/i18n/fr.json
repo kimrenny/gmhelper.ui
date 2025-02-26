@@ -292,7 +292,12 @@
       "ROLE_STATS": {
         "TITLE": "Statistiques des utilisateurs par rôle",
         "ROLE": "Rôle",
-        "COUNT": "Nombre"
+        "COUNT": "Quantité"
+      },
+      "BLOCK_STATS": {
+        "TITLE": "Statistiques de bannissement des utilisateurs",
+        "STATUS": "Statut",
+        "COUNT": "Quantité"
       }
     }
   }
