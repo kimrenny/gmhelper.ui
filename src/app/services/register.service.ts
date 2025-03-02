@@ -6,23 +6,7 @@ import { BehaviorSubject } from 'rxjs';
   providedIn: 'root',
 })
 export class RegisterService {
-  public userIpAddress = new BehaviorSubject<string>('');
-
   constructor(private http: HttpClient) {}
-
-  getUserIpAddress() {
-    this.http
-      .get<{ ip: string }>('https://api.ipify.org?format=json')
-      .subscribe({
-        next: (response) => {
-          this.userIpAddress.next(response.ip);
-        },
-        error: (error) => {
-          console.error('Error fetching IP address:', error);
-          this.userIpAddress.next('');
-        },
-      });
-  }
 
   validateUsername(username: string): string {
     const usernamePattern = /^[A-Za-z][A-Za-z0-9]{3,23}$/;
@@ -123,7 +107,6 @@ export class RegisterService {
     username: string,
     email: string,
     password: string,
-    userIpAddress: string,
     captchaToken: string
   ) {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
@@ -131,11 +114,6 @@ export class RegisterService {
       username,
       email,
       password,
-      deviceInfo: {
-        userAgent: navigator.userAgent,
-        platform: navigator.platform,
-      },
-      ipAddress: userIpAddress,
       captchaToken,
     };
 
@@ -157,7 +135,6 @@ export class RegisterService {
   loginUser(
     email: string,
     password: string,
-    userIpAddress: string,
     captchaToken: string,
     rememberMe: boolean
   ) {
@@ -165,11 +142,6 @@ export class RegisterService {
     const body = {
       email,
       password,
-      deviceInfo: {
-        userAgent: navigator.userAgent,
-        platform: navigator.platform,
-      },
-      ipAddress: userIpAddress,
       captchaToken,
       remember: rememberMe,
     };
@@ -178,19 +150,10 @@ export class RegisterService {
     });
   }
 
-  recoveryPasswordUser(
-    email: string,
-    userIpAddress: string,
-    captchaToken: string
-  ) {
+  recoveryPasswordUser(email: string, captchaToken: string) {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     const body = {
       email,
-      deviceInfo: {
-        userAgent: navigator.userAgent,
-        platform: navigator.platform,
-      },
-      ipAddress: userIpAddress,
       captchaToken: captchaToken,
     };
 

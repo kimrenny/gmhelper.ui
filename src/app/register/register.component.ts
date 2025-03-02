@@ -56,7 +56,6 @@ export class RegisterComponent {
   recoveryCaptchaError: string = '';
 
   isCaptchaLoaded: boolean = false;
-  userIpAddress: string = '';
 
   isAuthorized!: Observable<boolean>;
 
@@ -75,11 +74,6 @@ export class RegisterComponent {
       this.formType = params['type'] || 'signup';
       this.isRegisterMode = this.formType === 'signup';
     });
-
-    this.registerService.getUserIpAddress();
-    this.registerService.userIpAddress.subscribe(
-      (ip) => (this.userIpAddress = ip)
-    );
 
     this.route.queryParams.subscribe((params) => {
       const section = params['section'];
@@ -146,7 +140,6 @@ export class RegisterComponent {
         this.username,
         this.email,
         this.password,
-        this.userIpAddress,
         this.captchaRegisterToken
       )
       .subscribe({
@@ -199,7 +192,6 @@ export class RegisterComponent {
       .loginUser(
         this.email,
         this.password,
-        this.userIpAddress,
         this.captchaLoginToken,
         this.rememberMe
       )
@@ -316,11 +308,7 @@ export class RegisterComponent {
     }
 
     this.registerService
-      .recoveryPasswordUser(
-        this.recoveryEmail,
-        this.userIpAddress,
-        this.captchaRecoveryToken
-      )
+      .recoveryPasswordUser(this.recoveryEmail, this.captchaRecoveryToken)
       .subscribe({
         next: () => {
           this.captchaRecoveryToken = '';
