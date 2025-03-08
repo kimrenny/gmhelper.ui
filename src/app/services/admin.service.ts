@@ -68,6 +68,42 @@ interface BlockStats {
   count: number;
 }
 
+interface RequestLog {
+  id: number;
+  timestamp: string;
+  method: string;
+  path: string;
+  userId: string;
+  requestBody: string;
+  statusCode: number;
+  startTime: string;
+  endTime: string;
+  elapsedTime: number;
+  ipAddress: string;
+  userAgent: string;
+  status: string;
+  requestType: string;
+}
+
+interface AuthLog {
+  id: number;
+  timestamp: string;
+  userId: string;
+  ipAddress: string;
+  userAgent: string;
+  status: string;
+  message: string;
+}
+
+interface ErrorLog {
+  id: number;
+  timestamp: string;
+  message: string;
+  stackTrace: string;
+  endpoint: string;
+  exceptionDetails: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class AdminService {
   private readonly apiUrl = 'https://localhost:7057/api/admin';
@@ -112,6 +148,17 @@ export class AdminService {
   );
   userBlockStats$ = this.userBlockStatsSubject.asObservable();
 
+  private requestLogsDataSubject = new BehaviorSubject<RequestLog[] | null>(
+    null
+  );
+  requestLogsData$ = this.requestLogsDataSubject.asObservable();
+
+  private authLogsDataSubject = new BehaviorSubject<AuthLog[] | null>(null);
+  authLogsData$ = this.authLogsDataSubject.asObservable();
+
+  private errorLogsDataSubject = new BehaviorSubject<ErrorLog[] | null>(null);
+  errorLogsData$ = this.errorLogsDataSubject.asObservable();
+
   private isDataLoaded = false;
 
   constructor(private http: HttpClient, private tokenService: TokenService) {}
@@ -126,6 +173,9 @@ export class AdminService {
     this.getUsersByCountry();
     this.getRoleStats();
     this.getBlockStats();
+    this.getRequestLogData();
+    this.getAuthLogData();
+    this.getErrorLogData();
 
     this.isDataLoaded = true;
   }
@@ -479,6 +529,117 @@ export class AdminService {
 
   getBlockStatsDataObservable(): Observable<BlockStats[] | null> {
     return this.userBlockStats$;
+  }
+
+  getRequestLogData(): void {
+    const authToken = this.tokenService.getTokenFromStorage('authToken');
+
+    if (!authToken) {
+      return;
+    }
+
+    this.tokenService.userRole$
+      .pipe(
+        switchMap((role) => {
+          if (this.checkAdminPermissions(role)) {
+            return this.http.get<RequestLog[]>(`${this.apiUrl}/logs/all`, {
+              headers: this.tokenService.createAuthHeaders(authToken),
+            });
+          } else {
+            return new Observable<RequestLog[] | null>((observer) => {
+              observer.next(null);
+              observer.complete();
+            });
+          }
+        })
+      )
+      .subscribe((data) => {
+        this.requestLogsDataSubject.next(data);
+      });
+  }
+
+  checkRequestLogData(): void {
+    if (!this.requestLogsDataSubject.value) {
+      this.getRequestsData();
+    }
+  }
+
+  getRequestLogsDataObservable(): Observable<RequestLog[] | null> {
+    return this.requestLogsData$;
+  }
+
+  getAuthLogData(): void {
+    const authToken = this.tokenService.getTokenFromStorage('authToken');
+
+    if (!authToken) {
+      return;
+    }
+
+    this.tokenService.userRole$
+      .pipe(
+        switchMap((role) => {
+          if (this.checkAdminPermissions(role)) {
+            return this.http.get<AuthLog[]>(`${this.apiUrl}/logs/auth/all`, {
+              headers: this.tokenService.createAuthHeaders(authToken),
+            });
+          } else {
+            return new Observable<AuthLog[] | null>((observer) => {
+              observer.next(null);
+              observer.complete();
+            });
+          }
+        })
+      )
+      .subscribe((data) => {
+        this.authLogsDataSubject.next(data);
+      });
+  }
+
+  checkAuthLogData(): void {
+    if (!this.authLogsDataSubject.value) {
+      this.getAuthLogData();
+    }
+  }
+
+  getAuthLogDataObservable(): Observable<AuthLog[] | null> {
+    return this.authLogsData$;
+  }
+
+  getErrorLogData(): void {
+    const authToken = this.tokenService.getTokenFromStorage('authToken');
+
+    if (!authToken) {
+      return;
+    }
+
+    this.tokenService.userRole$
+      .pipe(
+        switchMap((role) => {
+          if (this.checkAdminPermissions(role)) {
+            return this.http.get<ErrorLog[]>(`${this.apiUrl}/logs/errors/all`, {
+              headers: this.tokenService.createAuthHeaders(authToken),
+            });
+          } else {
+            return new Observable<ErrorLog[] | null>((observer) => {
+              observer.next(null);
+              observer.complete();
+            });
+          }
+        })
+      )
+      .subscribe((data) => {
+        this.errorLogsDataSubject.next(data);
+      });
+  }
+
+  checkErrorLogData(): void {
+    if (!this.errorLogsDataSubject.value) {
+      this.getErrorLogData();
+    }
+  }
+
+  getErrorLogDataObservable(): Observable<ErrorLog[] | null> {
+    return this.errorLogsData$;
   }
 
   checkAdminPermissions(role: string | null): boolean {
