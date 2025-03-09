@@ -1,0 +1,138 @@
+<div class="admin-all-logs-container">
+  <div class="logs-table">
+    <div class="table-header">
+      <div class="column" (click)="sortByColumn('id')">
+        {{ "ADMIN.LOGS.ID" | translate }}
+        <span *ngIf="sortColumn === 'id'" class="sort-arrow">
+          {{ sortDirection === "asc" ? "▼" : "▲" }}
+        </span>
+      </div>
+      <div class="column" (click)="sortByColumn('timestamp')">
+        {{ "ADMIN.LOGS.TIMESTAMP" | translate }}
+        <span *ngIf="sortColumn === 'timestamp'" class="sort-arrow">
+          {{ sortDirection === "asc" ? "▼" : "▲" }}
+        </span>
+      </div>
+      <div class="column" (click)="sortByColumn('method')">
+        {{ "ADMIN.LOGS.METHOD" | translate }}
+        <span *ngIf="sortColumn === 'method'" class="sort-arrow">
+          {{ sortDirection === "asc" ? "▼" : "▲" }}
+        </span>
+      </div>
+      <div class="column" (click)="sortByColumn('path')">
+        {{ "ADMIN.LOGS.PATH" | translate }}
+        <span *ngIf="sortColumn === 'path'" class="sort-arrow">
+          {{ sortDirection === "asc" ? "▼" : "▲" }}
+        </span>
+      </div>
+      <div class="column" (click)="sortByColumn('userId')">
+        {{ "ADMIN.LOGS.USERID" | translate }}
+        <span *ngIf="sortColumn === 'userId'" class="sort-arrow">
+          {{ sortDirection === "asc" ? "▼" : "▲" }}
+        </span>
+      </div>
+      <div class="column" (click)="sortByColumn('requestBody')">
+        {{ "ADMIN.LOGS.REQUESTBODY.TITLE" | translate }}
+        <span *ngIf="sortColumn === 'requestBody'" class="sort-arrow">
+          {{ sortDirection === "asc" ? "▼" : "▲" }}
+        </span>
+      </div>
+      <div class="column" (click)="sortByColumn('statusCode')">
+        {{ "ADMIN.LOGS.STATUSCODE" | translate }}
+        <span *ngIf="sortColumn === 'statusCode'" class="sort-arrow">
+          {{ sortDirection === "asc" ? "▼" : "▲" }}
+        </span>
+      </div>
+      <div class="column" (click)="sortByColumn('startTime')">
+        {{ "ADMIN.LOGS.START_TIME" | translate }}
+        <span *ngIf="sortColumn === 'startTime'" class="sort-arrow">
+          {{ sortDirection === "asc" ? "▼" : "▲" }}
+        </span>
+      </div>
+      <div class="column" (click)="sortByColumn('endTime')">
+        {{ "ADMIN.LOGS.END_TIME" | translate }}
+        <span *ngIf="sortColumn === 'endTime'" class="sort-arrow">
+          {{ sortDirection === "asc" ? "▼" : "▲" }}
+        </span>
+      </div>
+      <div class="column" (click)="sortByColumn('elapsedTime')">
+        {{ "ADMIN.LOGS.ELAPSED_TIME" | translate }}
+        <span *ngIf="sortColumn === 'elapsedTime'" class="sort-arrow">
+          {{ sortDirection === "asc" ? "▼" : "▲" }}
+        </span>
+      </div>
+      <div class="column" (click)="sortByColumn('ipAddress')">
+        {{ "ADMIN.LOGS.IP" | translate }}
+        <span *ngIf="sortColumn === 'ipAddress'" class="sort-arrow">
+          {{ sortDirection === "asc" ? "▼" : "▲" }}
+        </span>
+      </div>
+      <div class="column" (click)="sortByColumn('userAgent')">
+        {{ "ADMIN.LOGS.USERAGENT" | translate }}
+        <span *ngIf="sortColumn === 'userAgent'" class="sort-arrow">
+          {{ sortDirection === "asc" ? "▼" : "▲" }}
+        </span>
+      </div>
+      <div class="column" (click)="sortByColumn('status')">
+        {{ "ADMIN.LOGS.STATUS" | translate }}
+        <span *ngIf="sortColumn === 'status'" class="sort-arrow">
+          {{ sortDirection === "asc" ? "▼" : "▲" }}
+        </span>
+      </div>
+      <div class="column" (click)="sortByColumn('requestType')">
+        {{ "ADMIN.LOGS.REQUEST_TYPE" | translate }}
+        <span *ngIf="sortColumn === 'requestType'" class="sort-arrow">
+          {{ sortDirection === "asc" ? "▼" : "▲" }}
+        </span>
+      </div>
+    </div>
+    <div class="table-body">
+      <div class="table-row" *ngFor="let log of paginatedLogs">
+        <div class="column">{{ log.id }}</div>
+        <div class="column">
+          {{ log.timestamp | date : "dd.MM.yyyy HH:mm:ss" }}
+        </div>
+        <div class="column">{{ log.method }}</div>
+        <div class="column">
+          {{ getFormattedPath(log.path) }}
+        </div>
+        <div class="column">
+          {{
+            log.userId.length > 8 ? log.userId.slice(0, 8) + "..." : log.userId
+          }}
+        </div>
+        <div class="column">
+          {{
+            log.requestBody
+              ? log.requestBody.length > 10
+                ? log.requestBody.slice(0, 10) + "..."
+                : log.requestBody
+              : ("ADMIN.LOGS.REQUESTBODY.EMPTY" | translate)
+          }}
+        </div>
+        <div class="column">{{ log.statusCode }}</div>
+        <div class="column">{{ log.startTime }}</div>
+        <div class="column">{{ log.endTime }}</div>
+        <div class="column">{{ log.elapsedTime }}</div>
+        <div class="column">{{ log.ipAddress }}</div>
+        <div class="column">
+          {{
+            log.userAgent.length > 10
+              ? log.userAgent.slice(0, 10) + "..."
+              : log.userAgent
+          }}
+        </div>
+        <div class="column">{{ log.status }}</div>
+        <div class="column">{{ log.requestType }}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pagination">
+    <button (click)="prevPage()" [disabled]="currentPage === 1">«</button>
+    <span>{{ currentPage }} / {{ totalPages }}</span>
+    <button (click)="nextPage()" [disabled]="currentPage === totalPages">
+      »
+    </button>
+  </div>
+</div>

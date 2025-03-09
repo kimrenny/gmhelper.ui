@@ -1,0 +1,86 @@
+<div class="admin-error-logs-container">
+  <div class="logs-table">
+    <div class="table-header">
+      <div class="column" (click)="sortByColumn('id')">
+        {{ "ADMIN.LOGS.ID" | translate }}
+        <span *ngIf="sortColumn === 'id'" class="sort-arrow">
+          {{ sortDirection === "asc" ? "▼" : "▲" }}
+        </span>
+      </div>
+      <div class="column" (click)="sortByColumn('timestamp')">
+        {{ "ADMIN.LOGS.TIMESTAMP" | translate }}
+        <span *ngIf="sortColumn === 'timestamp'" class="sort-arrow">
+          {{ sortDirection === "asc" ? "▼" : "▲" }}
+        </span>
+      </div>
+      <div class="column" (click)="sortByColumn('message')">
+        {{ "ADMIN.LOGS.MESSAGE" | translate }}
+        <span *ngIf="sortColumn === 'message'" class="sort-arrow">
+          {{ sortDirection === "asc" ? "▼" : "▲" }}
+        </span>
+      </div>
+      <div class="column" (click)="sortByColumn('stackTrace')">
+        {{ "ADMIN.LOGS.STACKTRACE" | translate }}
+        <span *ngIf="sortColumn === 'stackTrace'" class="sort-arrow">
+          {{ sortDirection === "asc" ? "▼" : "▲" }}
+        </span>
+      </div>
+      <div class="column" (click)="sortByColumn('endpoint')">
+        {{ "ADMIN.LOGS.ENDPOINT" | translate }}
+        <span *ngIf="sortColumn === 'endpoint'" class="sort-arrow">
+          {{ sortDirection === "asc" ? "▼" : "▲" }}
+        </span>
+      </div>
+      <div class="column" (click)="sortByColumn('exceptionDetails')">
+        {{ "ADMIN.LOGS.EXCEPTIONDETAILS" | translate }}
+        <span *ngIf="sortColumn === 'exceptionDetails'" class="sort-arrow">
+          {{ sortDirection === "asc" ? "▼" : "▲" }}
+        </span>
+      </div>
+    </div>
+    <div class="table-body">
+      <div class="table-row" *ngFor="let log of paginatedLogs">
+        <div class="column">{{ log.id }}</div>
+        <div class="column">
+          {{ log.timestamp | date : "dd.MM.yyyy HH:mm:ss" }}
+        </div>
+        <div class="column">
+          {{
+            log.message.length > 8
+              ? log.message.slice(0, 8) + "..."
+              : log.message
+          }}
+        </div>
+        <div class="column">
+          {{
+            log.stackTrace.length > 12
+              ? log.stackTrace.slice(0, 12) + "..."
+              : log.stackTrace
+          }}
+        </div>
+        <div class="column">
+          {{
+            log.endpoint.length > 8
+              ? log.endpoint.slice(0, 8) + "..."
+              : log.endpoint
+          }}
+        </div>
+        <div class="column">
+          {{
+            log.exceptionDetails.length > 8
+              ? log.exceptionDetails.slice(0, 8) + "..."
+              : log.exceptionDetails
+          }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pagination">
+    <button (click)="prevPage()" [disabled]="currentPage === 1">«</button>
+    <span>{{ currentPage }} / {{ totalPages }}</span>
+    <button (click)="nextPage()" [disabled]="currentPage === totalPages">
+      »
+    </button>
+  </div>
+</div>
