@@ -299,6 +299,34 @@
         "STATUS": "Statut",
         "COUNT": "Quantité"
       }
+    },
+    "LOGS": {
+      "ID": "ID",
+      "TIMESTAMP": "Horodatage",
+      "METHOD": "Méthode",
+      "PATH": "Chemin",
+      "USERID": "ID utilisateur",
+      "REQUESTBODY": {
+        "TITLE": "Corps de la requête",
+        "EMPTY": "-"
+      },
+      "STATUSCODE": "Statut",
+      "START_TIME": "Début",
+      "END_TIME": "Fin",
+      "ELAPSED_TIME": "Total",
+      "IP": "IP",
+      "USERAGENT": "Agent utilisateur",
+      "STATUS": "Statut",
+      "REQUEST_TYPE": "Type",
+      "MESSAGE": "Message",
+      "STACKTRACE": "Trace de pile",
+      "ENDPOINT": "Point de terminaison",
+      "EXCEPTIONDETAILS": "Détails de l'exc.",
+      "BUTTON": {
+        "ALL": "Tous",
+        "AUTH": "Auth",
+        "ERROR": "Erreur"
+      }
     }
   }
 }

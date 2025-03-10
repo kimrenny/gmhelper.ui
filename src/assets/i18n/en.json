@@ -301,6 +301,34 @@
         "STATUS": "Status",
         "COUNT": "Quantity"
       }
+    },
+    "LOGS": {
+      "ID": "ID",
+      "TIMESTAMP": "Timestamp",
+      "METHOD": "Method",
+      "PATH": "Path",
+      "USERID": "User ID",
+      "REQUESTBODY": {
+        "TITLE": "Requestbody",
+        "EMPTY": "-"
+      },
+      "STATUSCODE": "Status",
+      "START_TIME": "Start",
+      "END_TIME": "End",
+      "ELAPSED_TIME": "Total",
+      "IP": "IP",
+      "USERAGENT": "Useragent",
+      "STATUS": "Status",
+      "REQUEST_TYPE": "Type",
+      "MESSAGE": "Message",
+      "STACKTRACE": "Stacktrace",
+      "ENDPOINT": "Endpoint",
+      "EXCEPTIONDETAILS": "Ex. Details",
+      "BUTTON": {
+        "ALL": "All",
+        "AUTH": "Auth",
+        "ERROR": "Error"
+      }
     }
   }
 }

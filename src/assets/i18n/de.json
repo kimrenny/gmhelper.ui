@@ -299,6 +299,34 @@
         "STATUS": "Status",
         "COUNT": "Anzahl"
       }
+    },
+    "LOGS": {
+      "ID": "ID",
+      "TIMESTAMP": "Zeitstempel",
+      "METHOD": "Methode",
+      "PATH": "Pfad",
+      "USERID": "Benutzer-ID",
+      "REQUESTBODY": {
+        "TITLE": "Anfragekörper",
+        "EMPTY": "-"
+      },
+      "STATUSCODE": "Status",
+      "START_TIME": "Start",
+      "END_TIME": "Ende",
+      "ELAPSED_TIME": "Gesamt",
+      "IP": "IP",
+      "USERAGENT": "Benutzeragent",
+      "STATUS": "Status",
+      "REQUEST_TYPE": "Typ",
+      "MESSAGE": "Nachricht",
+      "STACKTRACE": "Stacktrace",
+      "ENDPOINT": "Endpunkt",
+      "EXCEPTIONDETAILS": "Ausnahmedetails",
+      "BUTTON": {
+        "ALL": "Alle",
+        "AUTH": "Auth",
+        "ERROR": "Fehler"
+      }
     }
   }
 }

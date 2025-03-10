@@ -31,7 +31,7 @@ export class AdminAuthLogsComponent implements OnInit, OnDestroy {
 
   selectedLog: AuthLog | null = null;
   currentPage: number = 1;
-  logsPerPage: number = 15;
+  logsPerPage: number = 30;
 
   isConfirmModalOpen: boolean = false;
   logToConfirm: AuthLog | null = null;

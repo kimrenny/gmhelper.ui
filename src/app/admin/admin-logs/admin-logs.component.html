@@ -1,14 +1,34 @@
 <div class="admin-logs-container">
+  <div class="buttons-container">
+    <button (click)="setActiveLog('all')" [class.active]="activeLog === 'all'">
+      {{ "ADMIN.LOGS.BUTTON.ALL" | translate }}
+    </button>
+    <button
+      (click)="setActiveLog('auth')"
+      [class.active]="activeLog === 'auth'"
+    >
+      {{ "ADMIN.LOGS.BUTTON.AUTH" | translate }}
+    </button>
+    <button
+      (click)="setActiveLog('error')"
+      [class.active]="activeLog === 'error'"
+    >
+      {{ "ADMIN.LOGS.BUTTON.ERROR" | translate }}
+    </button>
+  </div>
+
   <app-admin-logs-all
     class="admin-logs-all-container"
-    *ngIf="false"
+    *ngIf="activeLog === 'all'"
   ></app-admin-logs-all>
+
   <app-admin-auth-logs
     class="admin-auth-container"
-    *ngIf="false"
+    *ngIf="activeLog === 'auth'"
   ></app-admin-auth-logs>
+
   <app-admin-error-logs
     class="admin-error-container"
-    *ngIf="true"
+    *ngIf="activeLog === 'error'"
   ></app-admin-error-logs>
 </div>

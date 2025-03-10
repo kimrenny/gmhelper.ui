@@ -299,6 +299,34 @@
         "STATUS": "Статус",
         "COUNT": "Количество"
       }
+    },
+    "LOGS": {
+      "ID": "ID",
+      "TIMESTAMP": "Временная метка",
+      "METHOD": "Метод",
+      "PATH": "Путь",
+      "USERID": "ID пользователя",
+      "REQUESTBODY": {
+        "TITLE": "Тело запроса",
+        "EMPTY": "-"
+      },
+      "STATUSCODE": "Статус",
+      "START_TIME": "Начало",
+      "END_TIME": "Конец",
+      "ELAPSED_TIME": "Всего",
+      "IP": "IP",
+      "USERAGENT": "Юзерагент",
+      "STATUS": "Статус",
+      "REQUEST_TYPE": "Тип",
+      "MESSAGE": "Сообщение",
+      "STACKTRACE": "Стек-трейс",
+      "ENDPOINT": "Эндпоинт",
+      "EXCEPTIONDETAILS": "Детали исключения",
+      "BUTTON": {
+        "ALL": "Все",
+        "AUTH": "Авторизация",
+        "ERROR": "Ошибка"
+      }
     }
   }
 }

@@ -299,6 +299,34 @@
         "STATUS": "상태",
         "COUNT": "수량"
       }
+    },
+    "LOGS": {
+      "ID": "ID",
+      "TIMESTAMP": "타임스탬프",
+      "METHOD": "메서드",
+      "PATH": "경로",
+      "USERID": "사용자 ID",
+      "REQUESTBODY": {
+        "TITLE": "요청 본문",
+        "EMPTY": "-"
+      },
+      "STATUSCODE": "상태",
+      "START_TIME": "시작",
+      "END_TIME": "끝",
+      "ELAPSED_TIME": "총합",
+      "IP": "IP",
+      "USERAGENT": "사용자 에이전트",
+      "STATUS": "상태",
+      "REQUEST_TYPE": "유형",
+      "MESSAGE": "메시지",
+      "STACKTRACE": "스택 추적",
+      "ENDPOINT": "엔드포인트",
+      "EXCEPTIONDETAILS": "예외 세부정보",
+      "BUTTON": {
+        "ALL": "전체",
+        "AUTH": "인증",
+        "ERROR": "오류"
+      }
     }
   }
 }

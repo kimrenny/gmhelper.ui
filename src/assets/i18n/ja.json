@@ -299,6 +299,34 @@
         "STATUS": "ステータス",
         "COUNT": "数量"
       }
+    },
+    "LOGS": {
+      "ID": "ID",
+      "TIMESTAMP": "タイムスタンプ",
+      "METHOD": "メソッド",
+      "PATH": "パス",
+      "USERID": "ユーザーID",
+      "REQUESTBODY": {
+        "TITLE": "リクエストボディ",
+        "EMPTY": "-"
+      },
+      "STATUSCODE": "ステータス",
+      "START_TIME": "開始",
+      "END_TIME": "終了",
+      "ELAPSED_TIME": "合計",
+      "IP": "IP",
+      "USERAGENT": "ユーザーエージェント",
+      "STATUS": "ステータス",
+      "REQUEST_TYPE": "タイプ",
+      "MESSAGE": "メッセージ",
+      "STACKTRACE": "スタックトレース",
+      "ENDPOINT": "エンドポイント",
+      "EXCEPTIONDETAILS": "例外詳細",
+      "BUTTON": {
+        "ALL": "すべて",
+        "AUTH": "認証",
+        "ERROR": "エラー"
+      }
     }
   }
 }

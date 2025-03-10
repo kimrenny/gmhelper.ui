@@ -299,6 +299,34 @@
         "STATUS": "状态",
         "COUNT": "数量"
       }
+    },
+    "LOGS": {
+      "ID": "ID",
+      "TIMESTAMP": "时间戳",
+      "METHOD": "方法",
+      "PATH": "路径",
+      "USERID": "用户 ID",
+      "REQUESTBODY": {
+        "TITLE": "请求体",
+        "EMPTY": "-"
+      },
+      "STATUSCODE": "状态",
+      "START_TIME": "开始",
+      "END_TIME": "结束",
+      "ELAPSED_TIME": "总计",
+      "IP": "IP",
+      "USERAGENT": "用户代理",
+      "STATUS": "状态",
+      "REQUEST_TYPE": "类型",
+      "MESSAGE": "消息",
+      "STACKTRACE": "堆栈跟踪",
+      "ENDPOINT": "端点",
+      "EXCEPTIONDETAILS": "异常详情",
+      "BUTTON": {
+        "ALL": "全部",
+        "AUTH": "认证",
+        "ERROR": "错误"
+      }
     }
   }
 }

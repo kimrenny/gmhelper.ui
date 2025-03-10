@@ -38,7 +38,7 @@ export class AdminAllLogsComponent implements OnInit, OnDestroy {
 
   selectedLog: RequestLog | null = null;
   currentPage: number = 1;
-  logsPerPage: number = 15;
+  logsPerPage: number = 30;
 
   isConfirmModalOpen: boolean = false;
   logToConfirm: RequestLog | null = null;

@@ -299,6 +299,34 @@
         "STATUS": "Статус",
         "COUNT": "Кількість"
       }
+    },
+    "LOGS": {
+      "ID": "ID",
+      "TIMESTAMP": "Часова мітка",
+      "METHOD": "Метод",
+      "PATH": "Шлях",
+      "USERID": "ID користувача",
+      "REQUESTBODY": {
+        "TITLE": "Тіло запиту",
+        "EMPTY": "-"
+      },
+      "STATUSCODE": "Статус",
+      "START_TIME": "Початок",
+      "END_TIME": "Кінець",
+      "ELAPSED_TIME": "Загалом",
+      "IP": "IP",
+      "USERAGENT": "Юзерагент",
+      "STATUS": "Статус",
+      "REQUEST_TYPE": "Тип",
+      "MESSAGE": "Повідомлення",
+      "STACKTRACE": "Стек-трейс",
+      "ENDPOINT": "Ендпоінт",
+      "EXCEPTIONDETAILS": "Деталі винятку",
+      "BUTTON": {
+        "ALL": "Всі",
+        "AUTH": "Авторизація",
+        "ERROR": "Помилка"
+      }
     }
   }
 }

@@ -90,7 +90,7 @@
       <div class="table-row" *ngFor="let log of paginatedLogs">
         <div class="column">{{ log.id }}</div>
         <div class="column">
-          {{ log.timestamp | date : "dd.MM.yyyy HH:mm:ss" }}
+          {{ log.timestamp | date : "HH:mm:ss" }}
         </div>
         <div class="column">{{ log.method }}</div>
         <div class="column">
@@ -98,7 +98,7 @@
         </div>
         <div class="column">
           {{
-            log.userId.length > 8 ? log.userId.slice(0, 8) + "..." : log.userId
+            log.userId.length > 6 ? log.userId.slice(0, 6) + "..." : log.userId
           }}
         </div>
         <div class="column">
@@ -111,8 +111,8 @@
           }}
         </div>
         <div class="column">{{ log.statusCode }}</div>
-        <div class="column">{{ log.startTime }}</div>
-        <div class="column">{{ log.endTime }}</div>
+        <div class="column">{{ log.startTime.slice(6) }}</div>
+        <div class="column">{{ log.endTime.slice(6) }}</div>
         <div class="column">{{ log.elapsedTime }}</div>
         <div class="column">{{ log.ipAddress }}</div>
         <div class="column">
