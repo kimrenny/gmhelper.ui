@@ -1,7 +1,15 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, switchMap, throwError } from 'rxjs';
+import {
+  BehaviorSubject,
+  map,
+  Observable,
+  switchMap,
+  tap,
+  throwError,
+} from 'rxjs';
 import { TokenService } from './token.service';
+import { ApiResponse } from '../models/api-response.model';
 
 interface DeviceInfo {
   userAgent: string;
@@ -191,9 +199,11 @@ export class AdminService {
       .pipe(
         switchMap((role) => {
           if (role == 'Admin' || role == 'Owner') {
-            return this.http.get<User[]>(`${this.apiUrl}/users`, {
-              headers: this.tokenService.createAuthHeaders(token),
-            });
+            return this.http
+              .get<ApiResponse<User[]>>(`${this.apiUrl}/users`, {
+                headers: this.tokenService.createAuthHeaders(token),
+              })
+              .pipe(map((response) => response.data));
           } else {
             return new Observable<User[] | null>((observer) => {
               observer.next(null);
@@ -245,9 +255,11 @@ export class AdminService {
       .pipe(
         switchMap((role) => {
           if (role == 'Admin' || role == 'Owner') {
-            return this.http.get<Token[]>(`${this.apiUrl}/tokens`, {
-              headers: this.tokenService.createAuthHeaders(token),
-            });
+            return this.http
+              .get<ApiResponse<Token[]>>(`${this.apiUrl}/tokens`, {
+                headers: this.tokenService.createAuthHeaders(token),
+              })
+              .pipe(map((response) => response.data));
           } else {
             return new Observable<Token[] | null>((observer) => {
               observer.next(null);
@@ -299,10 +311,12 @@ export class AdminService {
       .pipe(
         switchMap((role) => {
           if (this.checkAdminPermissions(role)) {
-            return this.http.get<RegistrationData[]>(
-              `${this.apiUrl}/dashboard/registrations`,
-              { headers: this.tokenService.createAuthHeaders(authToken) }
-            );
+            return this.http
+              .get<ApiResponse<RegistrationData[]>>(
+                `${this.apiUrl}/dashboard/registrations`,
+                { headers: this.tokenService.createAuthHeaders(authToken) }
+              )
+              .pipe(map((response) => response.data));
           } else {
             return new Observable<RegistrationData[] | null>((observer) => {
               observer.next(null);
@@ -337,12 +351,14 @@ export class AdminService {
       .pipe(
         switchMap((role) => {
           if (this.checkAdminPermissions(role)) {
-            return this.http.get<CreatedTokens>(
-              `${this.apiUrl}/dashboard/tokens`,
-              {
-                headers: this.tokenService.createAuthHeaders(authToken),
-              }
-            );
+            return this.http
+              .get<ApiResponse<CreatedTokens>>(
+                `${this.apiUrl}/dashboard/tokens`,
+                {
+                  headers: this.tokenService.createAuthHeaders(authToken),
+                }
+              )
+              .pipe(map((response) => response.data));
           } else {
             return new Observable<CreatedTokens | null>((observer) => {
               observer.next(null);
@@ -392,10 +408,15 @@ export class AdminService {
       .pipe(
         switchMap((role) => {
           if (this.checkAdminPermissions(role)) {
-            return this.http.get<RequestsData[]>(
-              `${this.apiUrl}/logs/requests`,
-              { headers: this.tokenService.createAuthHeaders(authToken) }
-            );
+            return this.http
+              .get<ApiResponse<RequestsData[]>>(
+                `${this.apiUrl}/logs/requests`,
+                { headers: this.tokenService.createAuthHeaders(authToken) }
+              )
+              .pipe(
+                tap((response) => console.log(response)),
+                map((response) => response.data)
+              );
           } else {
             return new Observable<RequestsData[] | null>((observer) => {
               observer.next(null);
@@ -406,6 +427,7 @@ export class AdminService {
       )
       .subscribe((data) => {
         this.requestsDataSubject.next(data);
+        console.log(data);
       });
   }
 
@@ -430,10 +452,12 @@ export class AdminService {
       .pipe(
         switchMap((role) => {
           if (this.checkAdminPermissions(role)) {
-            return this.http.get<CountryStats[]>(
-              `${this.apiUrl}/country-rating`,
-              { headers: this.tokenService.createAuthHeaders(authToken) }
-            );
+            return this.http
+              .get<ApiResponse<CountryStats[]>>(
+                `${this.apiUrl}/country-rating`,
+                { headers: this.tokenService.createAuthHeaders(authToken) }
+              )
+              .pipe(map((response) => response.data));
           } else {
             return new Observable<CountryStats[] | null>((observer) => {
               observer.next(null);
@@ -468,9 +492,11 @@ export class AdminService {
       .pipe(
         switchMap((role) => {
           if (this.checkAdminPermissions(role)) {
-            return this.http.get<RoleStats[]>(`${this.apiUrl}/role-stats`, {
-              headers: this.tokenService.createAuthHeaders(authToken),
-            });
+            return this.http
+              .get<ApiResponse<RoleStats[]>>(`${this.apiUrl}/role-stats`, {
+                headers: this.tokenService.createAuthHeaders(authToken),
+              })
+              .pipe(map((response) => response.data));
           } else {
             return new Observable<RoleStats[] | null>((observer) => {
               observer.next(null);
@@ -505,9 +531,11 @@ export class AdminService {
       .pipe(
         switchMap((role) => {
           if (this.checkAdminPermissions(role)) {
-            return this.http.get<BlockStats[]>(`${this.apiUrl}/block-stats`, {
-              headers: this.tokenService.createAuthHeaders(authToken),
-            });
+            return this.http
+              .get<ApiResponse<BlockStats[]>>(`${this.apiUrl}/block-stats`, {
+                headers: this.tokenService.createAuthHeaders(authToken),
+              })
+              .pipe(map((response) => response.data));
           } else {
             return new Observable<BlockStats[] | null>((observer) => {
               observer.next(null);
@@ -542,9 +570,11 @@ export class AdminService {
       .pipe(
         switchMap((role) => {
           if (this.checkAdminPermissions(role)) {
-            return this.http.get<RequestLog[]>(`${this.apiUrl}/logs/all`, {
-              headers: this.tokenService.createAuthHeaders(authToken),
-            });
+            return this.http
+              .get<ApiResponse<RequestLog[]>>(`${this.apiUrl}/logs/all`, {
+                headers: this.tokenService.createAuthHeaders(authToken),
+              })
+              .pipe(map((response) => response.data));
           } else {
             return new Observable<RequestLog[] | null>((observer) => {
               observer.next(null);
@@ -579,9 +609,11 @@ export class AdminService {
       .pipe(
         switchMap((role) => {
           if (this.checkAdminPermissions(role)) {
-            return this.http.get<AuthLog[]>(`${this.apiUrl}/logs/auth/all`, {
-              headers: this.tokenService.createAuthHeaders(authToken),
-            });
+            return this.http
+              .get<ApiResponse<AuthLog[]>>(`${this.apiUrl}/logs/auth/all`, {
+                headers: this.tokenService.createAuthHeaders(authToken),
+              })
+              .pipe(map((response) => response.data));
           } else {
             return new Observable<AuthLog[] | null>((observer) => {
               observer.next(null);
@@ -616,9 +648,11 @@ export class AdminService {
       .pipe(
         switchMap((role) => {
           if (this.checkAdminPermissions(role)) {
-            return this.http.get<ErrorLog[]>(`${this.apiUrl}/logs/errors/all`, {
-              headers: this.tokenService.createAuthHeaders(authToken),
-            });
+            return this.http
+              .get<ApiResponse<ErrorLog[]>>(`${this.apiUrl}/logs/errors/all`, {
+                headers: this.tokenService.createAuthHeaders(authToken),
+              })
+              .pipe(map((response) => response.data));
           } else {
             return new Observable<ErrorLog[] | null>((observer) => {
               observer.next(null);
