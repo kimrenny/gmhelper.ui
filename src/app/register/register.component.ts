@@ -61,7 +61,7 @@ export class RegisterComponent {
 
   constructor(
     private registerService: RegisterService,
-    private cdr: ChangeDetectorRef,
+    @Inject(ChangeDetectorRef) private cdr: ChangeDetectorRef,
     private route: ActivatedRoute,
     private router: Router,
     @Inject(UserService) private userService: UserService
