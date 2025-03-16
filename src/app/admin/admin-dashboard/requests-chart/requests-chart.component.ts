@@ -18,6 +18,8 @@ import {
 } from 'chart.js';
 import { TranslateModule } from '@ngx-translate/core';
 import { TranslateService } from '@ngx-translate/core';
+import { filterDataByDays } from './filter/filter';
+import { processData } from './process/process';
 
 Chart.register(
   CategoryScale,
@@ -34,6 +36,11 @@ Chart.register(
 interface RequestsData {
   date: string;
   count: number;
+}
+
+interface CombinedRequestsData {
+  regular: RequestsData[];
+  admin: RequestsData[];
 }
 
 @Component({
@@ -99,9 +106,14 @@ export class RequestsChartComponent implements OnInit, OnDestroy {
       if (this.userRole === 'Admin' || this.userRole === 'Owner') {
         this.adminService.checkRequestsData();
 
-        this.adminService.getRequestsDataObservable().subscribe((count) => {
-          if (count) {
-            this.filterDataByDays(count, 7);
+        this.adminService.getRequestsDataObservable().subscribe((data) => {
+          console.log(data);
+          if (data?.regular) {
+            this.updateChartData(
+              filterDataByDays(data?.regular, 7),
+              true,
+              false
+            );
           }
         });
       }
@@ -133,62 +145,32 @@ export class RequestsChartComponent implements OnInit, OnDestroy {
     const selectedPeriod = (event.target as HTMLSelectElement).value;
     this.selectedPeriod = selectedPeriod;
 
-    this.adminService.getRequestsDataObservable().subscribe((count) => {
-      if (count) {
-        this.filterDataByPeriod(count, this.selectedPeriod);
+    this.adminService.getRequestsDataObservable().subscribe((data) => {
+      console.log(data);
+      if (data) {
+        this.filterDataByPeriod(data?.regular, this.selectedPeriod);
       }
     });
-  }
-
-  private filterDataByDays(data: RequestsData[], days: number): void {
-    const currentDate = new Date();
-    const dateAgo = new Date(currentDate);
-    dateAgo.setDate(currentDate.getDate() - days);
-
-    const dateData: RequestsData[] = [];
-
-    for (
-      let d = new Date(dateAgo);
-      d <= currentDate;
-      d.setDate(d.getDate() + 1)
-    ) {
-      const dateString = d.toISOString().split('T')[0];
-
-      const dayData = data.filter((item) => {
-        const itemDate = new Date(item.date);
-        return itemDate.toISOString().split('T')[0] === dateString;
-      });
-
-      dateData.push({
-        date: dateString,
-        count:
-          dayData.length > 0
-            ? dayData.reduce((acc, item) => acc + item.count, 0)
-            : 0,
-      });
-
-      this.updateChartData(dateData, true, false);
-    }
   }
 
   private filterDataBySixMonths(data: RequestsData[]): void {
     let filteredData = [...data];
 
-    filteredData = this.processData(data, 6, true);
+    filteredData = processData(data, 6, true);
     this.updateChartData(filteredData, false, true);
   }
 
   private filterDataByYear(data: RequestsData[]): void {
     let filteredData = [...data];
 
-    filteredData = this.processData(data, 12, true);
+    filteredData = processData(data, 12, true);
     this.updateChartData(filteredData, false, true);
   }
 
   private filterDataByFiveYears(data: RequestsData[]): void {
     let filteredData = [...data];
 
-    filteredData = this.processData(data, 5, false);
+    filteredData = processData(data, 5, false);
     this.updateChartData(filteredData, false, false);
   }
 
@@ -198,12 +180,12 @@ export class RequestsChartComponent implements OnInit, OnDestroy {
 
     switch (period) {
       case 'week': {
-        this.filterDataByDays(data, 7);
+        this.updateChartData(filterDataByDays(data, 7), true, false);
         break;
       }
 
       case 'month': {
-        this.filterDataByDays(data, 30);
+        this.updateChartData(filterDataByDays(data, 30), true, false);
         break;
       }
 
@@ -226,9 +208,9 @@ export class RequestsChartComponent implements OnInit, OnDestroy {
         const daysDiff = currentDate.getDate() - firstDate.getDate();
 
         if (daysDiff <= 7) {
-          this.filterDataByDays(data, 7);
+          this.updateChartData(filterDataByDays(data, 7), true, false);
         } else if (daysDiff <= 30) {
-          this.filterDataByDays(data, 30);
+          this.updateChartData(filterDataByDays(data, 30), true, false);
         } else if (daysDiff <= 180) {
           this.filterDataBySixMonths(data);
         } else if (daysDiff <= 365) {
@@ -242,54 +224,6 @@ export class RequestsChartComponent implements OnInit, OnDestroy {
         filteredData = [...data];
         this.updateChartData(filteredData, true, false);
     }
-  }
-
-  private processData(
-    filteredData: RequestsData[],
-    periodLength: number,
-    isMonthly: boolean
-  ): RequestsData[] {
-    if (filteredData.length < 1) return [];
-
-    const data: { [key: string]: number } = {};
-
-    filteredData.forEach(({ date, count }) => {
-      const key = isMonthly ? date.slice(0, 7) : date.slice(0, 4);
-      data[key] = (data[key] || 0) + count;
-    });
-
-    let result = Object.entries(data)
-      .map(([date, count]) => ({ date, count }))
-      .sort((a, b) => a.date.localeCompare(b.date));
-
-    const now = new Date();
-    const lastPeriod: string[] = [];
-
-    for (let i = periodLength - 1; i >= 0; i--) {
-      const date = new Date(now);
-
-      if (isMonthly) {
-        date.setMonth(now.getMonth() - i);
-        const periodKey = `${date.getFullYear()}-${(date.getMonth() + 1)
-          .toString()
-          .padStart(2, '0')}`;
-        lastPeriod.push(periodKey);
-      } else {
-        date.setFullYear(now.getFullYear() - i);
-        const periodKey = `${date.getFullYear()}`;
-        lastPeriod.push(periodKey);
-      }
-    }
-
-    lastPeriod.forEach((period) => {
-      if (!result.some((d) => d.date === period)) {
-        result.push({ date: period, count: 0 });
-      }
-    });
-
-    result.sort((a, b) => a.date.localeCompare(b.date));
-
-    return result;
   }
 
   private updateChartData(

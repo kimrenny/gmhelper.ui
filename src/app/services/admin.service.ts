@@ -49,6 +49,11 @@ interface RequestsData {
   count: number;
 }
 
+interface CombinedRequestsData {
+  regular: RequestsData[];
+  admin: RequestsData[];
+}
+
 interface RegistrationData {
   date: string;
   registrations: number;
@@ -138,9 +143,8 @@ export class AdminService {
   private totalAdminTokensSubject = new BehaviorSubject<number | null>(null);
   totalAdminTokens$ = this.totalAdminTokensSubject.asObservable();
 
-  private requestsDataSubject = new BehaviorSubject<RequestsData[] | null>(
-    null
-  );
+  private requestsDataSubject =
+    new BehaviorSubject<CombinedRequestsData | null>(null);
   requestsData$ = this.requestsDataSubject.asObservable();
 
   private userCountryStatsSubject = new BehaviorSubject<CountryStats[] | null>(
@@ -409,7 +413,7 @@ export class AdminService {
         switchMap((role) => {
           if (this.checkAdminPermissions(role)) {
             return this.http
-              .get<ApiResponse<RequestsData[]>>(
+              .get<ApiResponse<CombinedRequestsData>>(
                 `${this.apiUrl}/logs/requests`,
                 { headers: this.tokenService.createAuthHeaders(authToken) }
               )
@@ -418,7 +422,7 @@ export class AdminService {
                 map((response) => response.data)
               );
           } else {
-            return new Observable<RequestsData[] | null>((observer) => {
+            return new Observable<CombinedRequestsData | null>((observer) => {
               observer.next(null);
               observer.complete();
             });
@@ -437,7 +441,7 @@ export class AdminService {
     }
   }
 
-  getRequestsDataObservable(): Observable<RequestsData[] | null> {
+  getRequestsDataObservable(): Observable<CombinedRequestsData | null> {
     return this.requestsData$;
   }
 
