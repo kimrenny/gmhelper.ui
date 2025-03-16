@@ -5,11 +5,6 @@ interface RequestsData {
   count: number;
 }
 
-interface CombinedRequestsData {
-  regular: RequestsData[];
-  admin: RequestsData[];
-}
-
 export function filterDataByDays(
   data: RequestsData[],
   days: number

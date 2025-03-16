@@ -38,11 +38,6 @@ interface RequestsData {
   count: number;
 }
 
-interface CombinedRequestsData {
-  regular: RequestsData[];
-  admin: RequestsData[];
-}
-
 @Component({
   selector: 'app-requests-chart',
   standalone: true,
@@ -58,9 +53,17 @@ export class RequestsChartComponent implements OnInit, OnDestroy {
     datasets: [
       {
         data: [],
-        label: 'Requests',
+        label: 'Regular Requests',
         fill: false,
         borderColor: '#4bc0c0',
+        tension: 0.1,
+        type: 'line',
+      },
+      {
+        data: [],
+        label: 'Admin Requests',
+        fill: false,
+        borderColor: '#9b51e0',
         tension: 0.1,
         type: 'line',
       },
@@ -107,10 +110,10 @@ export class RequestsChartComponent implements OnInit, OnDestroy {
         this.adminService.checkRequestsData();
 
         this.adminService.getRequestsDataObservable().subscribe((data) => {
-          console.log(data);
-          if (data?.regular) {
+          if (data?.regular && data?.admin) {
             this.updateChartData(
               filterDataByDays(data?.regular, 7),
+              filterDataByDays(data?.admin, 7),
               true,
               false
             );
@@ -133,7 +136,10 @@ export class RequestsChartComponent implements OnInit, OnDestroy {
     this.requestsChartOptions.scales.y.title.text =
       this.translateService.instant('ADMIN.DASHBOARD.REQUESTS.CHART.Y_AXIS');
     this.requestsChartData.datasets[0].label = this.translateService.instant(
-      'ADMIN.DASHBOARD.REQUESTS.CHART.TITLE'
+      'ADMIN.DASHBOARD.REQUESTS.CHART.REGULAR.TITLE'
+    );
+    this.requestsChartData.datasets[1].label = this.translateService.instant(
+      'ADMIN.DASHBOARD.REQUESTS.CHART.ADMIN.TITLE'
     );
   }
 
@@ -146,140 +152,235 @@ export class RequestsChartComponent implements OnInit, OnDestroy {
     this.selectedPeriod = selectedPeriod;
 
     this.adminService.getRequestsDataObservable().subscribe((data) => {
-      console.log(data);
       if (data) {
-        this.filterDataByPeriod(data?.regular, this.selectedPeriod);
+        this.filterDataByPeriod(
+          data?.regular,
+          data?.admin,
+          this.selectedPeriod
+        );
       }
     });
   }
 
-  private filterDataBySixMonths(data: RequestsData[]): void {
-    let filteredData = [...data];
+  private filterDataBySixMonths(
+    dataRegular: RequestsData[],
+    dataAdmin: RequestsData[]
+  ): void {
+    let filteredDataRegular = [...dataRegular];
+    let filteredDataAdmin = [...dataAdmin];
 
-    filteredData = processData(data, 6, true);
-    this.updateChartData(filteredData, false, true);
+    filteredDataRegular = processData(dataRegular, 6, true);
+    filteredDataAdmin = processData(dataAdmin, 6, true);
+    this.updateChartData(filteredDataRegular, filteredDataAdmin, false, true);
   }
 
-  private filterDataByYear(data: RequestsData[]): void {
-    let filteredData = [...data];
+  private filterDataByYear(
+    dataRegular: RequestsData[],
+    dataAdmin: RequestsData[]
+  ): void {
+    let filteredDataRegular = [...dataRegular];
+    let filteredDataAdmin = [...dataAdmin];
 
-    filteredData = processData(data, 12, true);
-    this.updateChartData(filteredData, false, true);
+    filteredDataRegular = processData(dataRegular, 12, true);
+    filteredDataAdmin = processData(dataAdmin, 12, true);
+    this.updateChartData(filteredDataRegular, filteredDataAdmin, false, true);
   }
 
-  private filterDataByFiveYears(data: RequestsData[]): void {
-    let filteredData = [...data];
+  private filterDataByFiveYears(
+    dataRegular: RequestsData[],
+    dataAdmin: RequestsData[]
+  ): void {
+    let filteredDataRegular = [...dataRegular];
+    let filteredDataAdmin = [...dataAdmin];
 
-    filteredData = processData(data, 5, false);
-    this.updateChartData(filteredData, false, false);
+    filteredDataRegular = processData(dataRegular, 5, false);
+    filteredDataAdmin = processData(dataAdmin, 5, false);
+    this.updateChartData(filteredDataRegular, filteredDataAdmin, false, false);
   }
 
-  private filterDataByPeriod(data: RequestsData[], period: string): void {
+  private filterDataByPeriod(
+    dataRegular: RequestsData[],
+    dataAdmin: RequestsData[],
+    period: string
+  ): void {
     const currentDate = new Date();
-    let filteredData = [...data];
+    let filteredDataRegular = [...dataRegular];
+    let filteredDataAdmin = [...dataAdmin];
 
     switch (period) {
       case 'week': {
-        this.updateChartData(filterDataByDays(data, 7), true, false);
+        this.updateChartData(
+          filterDataByDays(filteredDataRegular, 7),
+          filterDataByDays(filteredDataAdmin, 7),
+          true,
+          false
+        );
         break;
       }
 
       case 'month': {
-        this.updateChartData(filterDataByDays(data, 30), true, false);
+        this.updateChartData(
+          filterDataByDays(filteredDataRegular, 30),
+          filterDataByDays(filteredDataAdmin, 30),
+          true,
+          false
+        );
         break;
       }
 
       case '6months': {
-        this.filterDataBySixMonths(data);
+        this.filterDataBySixMonths(filteredDataRegular, filteredDataAdmin);
         break;
       }
 
       case 'year': {
-        this.filterDataByYear(data);
+        this.filterDataByYear(filteredDataRegular, filteredDataAdmin);
         break;
       }
 
       case '5years': {
-        this.filterDataByFiveYears(data);
+        this.filterDataByFiveYears(filteredDataRegular, filteredDataAdmin);
         break;
       }
       case 'all': {
-        const firstDate = new Date(data[0]?.date || currentDate);
+        const firstDate = new Date(dataRegular[0]?.date || currentDate);
         const daysDiff = currentDate.getDate() - firstDate.getDate();
 
         if (daysDiff <= 7) {
-          this.updateChartData(filterDataByDays(data, 7), true, false);
+          this.updateChartData(
+            filterDataByDays(filteredDataRegular, 7),
+            filterDataByDays(filteredDataAdmin, 7),
+            true,
+            false
+          );
         } else if (daysDiff <= 30) {
-          this.updateChartData(filterDataByDays(data, 30), true, false);
+          this.updateChartData(
+            filterDataByDays(filteredDataRegular, 30),
+            filterDataByDays(filteredDataAdmin, 30),
+            true,
+            false
+          );
         } else if (daysDiff <= 180) {
-          this.filterDataBySixMonths(data);
+          this.filterDataBySixMonths(filteredDataRegular, filteredDataAdmin);
         } else if (daysDiff <= 365) {
-          this.filterDataByYear(data);
+          this.filterDataByYear(filteredDataRegular, filteredDataAdmin);
         } else if (daysDiff <= 365 * 4 + 1) {
-          this.filterDataByFiveYears(data);
+          this.filterDataByFiveYears(filteredDataRegular, filteredDataAdmin);
         }
         break;
       }
       default:
-        filteredData = [...data];
-        this.updateChartData(filteredData, true, false);
+        filteredDataRegular = [...dataRegular];
+        filteredDataAdmin = [...dataAdmin];
+        this.updateChartData(
+          filteredDataRegular,
+          filteredDataAdmin,
+          true,
+          false
+        );
     }
   }
 
   private updateChartData(
-    filteredData: any[],
+    filteredDataRegular: any[],
+    filteredDataAdmin: any[],
     isDaily: boolean,
     isMonthly: boolean
   ): void {
-    const startDate = isDaily
-      ? new Date(filteredData[0]?.date || new Date())
+    const startDateRegular = isDaily
+      ? new Date(filteredDataRegular[0]?.date || new Date())
       : new Date(
-          filteredData[0]?.date + (isMonthly ? '-01' : '-01-01') || new Date()
+          filteredDataRegular[0]?.date + (isMonthly ? '-01' : '-01-01') ||
+            new Date()
+        );
+    const startDateAdmin = isDaily
+      ? new Date(filteredDataAdmin[0]?.date || new Date())
+      : new Date(
+          filteredDataAdmin[0]?.date + (isMonthly ? '-01' : '-01-01') ||
+            new Date()
         );
 
     const endDate = new Date();
 
-    const allDates: string[] = [];
-    const dateCursor = new Date(startDate);
+    const allDatesRegular: string[] = [];
+    const allDatesAdmin: string[] = [];
+    const dateCursorRegular = new Date(startDateRegular);
+    const dateCursorAdmin = new Date(startDateAdmin);
 
     if (isDaily) {
-      while (dateCursor <= endDate) {
-        allDates.push(dateCursor.toISOString().split('T')[0]);
-        dateCursor.setDate(dateCursor.getDate() + 1);
+      while (dateCursorRegular <= endDate) {
+        allDatesRegular.push(dateCursorRegular.toISOString().split('T')[0]);
+        dateCursorRegular.setDate(dateCursorRegular.getDate() + 1);
+      }
+
+      while (dateCursorAdmin <= endDate) {
+        allDatesAdmin.push(dateCursorAdmin.toISOString().split('T')[0]);
+        dateCursorAdmin.setDate(dateCursorAdmin.getDate() + 1);
       }
     } else {
-      while (dateCursor <= endDate) {
+      while (dateCursorRegular <= endDate) {
         const periodKey = isMonthly
-          ? `${dateCursor.getFullYear()}-${(dateCursor.getMonth() + 1)
+          ? `${dateCursorRegular.getFullYear()}-${(
+              dateCursorRegular.getMonth() + 1
+            )
               .toString()
               .padStart(2, '0')}`
-          : `${dateCursor.getFullYear()}`;
+          : `${dateCursorRegular.getFullYear()}`;
 
-        allDates.push(periodKey);
+        allDatesRegular.push(periodKey);
         if (isMonthly) {
-          dateCursor.setMonth(dateCursor.getMonth() + 1);
+          dateCursorRegular.setMonth(dateCursorRegular.getMonth() + 1);
         } else {
-          dateCursor.setFullYear(dateCursor.getFullYear() + 1);
+          dateCursorRegular.setFullYear(dateCursorRegular.getFullYear() + 1);
+        }
+      }
+
+      while (dateCursorAdmin <= endDate) {
+        const periodKey = isMonthly
+          ? `${dateCursorAdmin.getFullYear()}-${(dateCursorAdmin.getMonth() + 1)
+              .toString()
+              .padStart(2, '0')}`
+          : `${dateCursorAdmin.getFullYear()}`;
+
+        allDatesAdmin.push(periodKey);
+        if (isMonthly) {
+          dateCursorAdmin.setMonth(dateCursorAdmin.getMonth() + 1);
+        } else {
+          dateCursorAdmin.setFullYear(dateCursorAdmin.getFullYear() + 1);
         }
       }
     }
 
-    const completeData = allDates.map((date) => {
-      const existing = filteredData.find((d) => d.date === date);
-      return existing ? existing : { date, count: 0 };
+    const completeDataRegular = allDatesRegular.map((date) => {
+      const existingRegular = filteredDataRegular.find((d) => d.date === date);
+      return existingRegular ? existingRegular : { date, count: 0 };
     });
 
-    const chartData = completeData.map((data) => data.count);
-    const chartLabels = completeData.map((data) => data.date);
+    const completeDataAdmin = allDatesAdmin.map((date) => {
+      const existingAdmin = filteredDataAdmin.find((d) => d.date === date);
+      return existingAdmin ? existingAdmin : { date, count: 0 };
+    });
+
+    const chartDataRegular = completeDataRegular.map((data) => data.count);
+    const chartDataAdmin = completeDataAdmin.map((data) => data.count);
+    const chartLabels = completeDataRegular.map((data) => data.date);
 
     this.requestsChartData = {
       labels: chartLabels,
       datasets: [
         {
-          data: chartData,
+          data: chartDataRegular,
           label: this.requestsChartData.datasets[0].label,
           fill: false,
           borderColor: '#4bc0c0',
+          tension: 0.1,
+          type: 'line',
+        },
+        {
+          data: chartDataAdmin,
+          label: this.requestsChartData.datasets[1].label,
+          fill: false,
+          borderColor: '#9b51e0',
           tension: 0.1,
           type: 'line',
         },

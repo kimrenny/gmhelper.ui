@@ -3,11 +3,6 @@ interface RequestsData {
   count: number;
 }
 
-interface CombinedRequestsData {
-  regular: RequestsData[];
-  admin: RequestsData[];
-}
-
 export function processData(
   filteredData: RequestsData[],
   periodLength: number,

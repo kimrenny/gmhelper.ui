@@ -271,9 +271,14 @@
         "5_YEARS": "5 ans",
         "ALL_TIME": "Tout le temps",
         "CHART": {
-          "TITLE": "Nombre de requêtes pour la période",
           "X_AXIS": "Dates",
-          "Y_AXIS": "Requêtes"
+          "Y_AXIS": "Requêtes",
+          "REGULAR": {
+            "TITLE": "Requêtes régulières"
+          },
+          "ADMIN": {
+            "TITLE": "Requêtes admin"
+          }
         }
       },
       "ACTIVE_USERS": {

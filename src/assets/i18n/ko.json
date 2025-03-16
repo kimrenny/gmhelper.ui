@@ -271,9 +271,14 @@
         "5_YEARS": "5년",
         "ALL_TIME": "전체 기간",
         "CHART": {
-          "TITLE": "기간별 요청 수",
           "X_AXIS": "날짜",
-          "Y_AXIS": "요청"
+          "Y_AXIS": "요청",
+          "REGULAR": {
+            "TITLE": "일반 요청"
+          },
+          "ADMIN": {
+            "TITLE": "관리자 요청"
+          }
         }
       },
       "ACTIVE_USERS": {

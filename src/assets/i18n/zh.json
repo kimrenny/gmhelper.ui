@@ -271,9 +271,14 @@
         "5_YEARS": "五年",
         "ALL_TIME": "全部时间",
         "CHART": {
-          "TITLE": "该时间段的请求数量",
           "X_AXIS": "日期",
-          "Y_AXIS": "请求数"
+          "Y_AXIS": "请求",
+          "REGULAR": {
+            "TITLE": "常规请求"
+          },
+          "ADMIN": {
+            "TITLE": "管理员请求"
+          }
         }
       },
       "ACTIVE_USERS": {
