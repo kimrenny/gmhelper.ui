@@ -185,7 +185,7 @@ export class UserService {
       return throwError(() => new Error('Token does not exist'));
     }
 
-    return this.http.put(`${this.api}/user/update`, formData, {
+    return this.http.patch(`${this.api}/user/update-user`, formData, {
       headers: this.tokenService.createAuthHeaders(token),
     });
   }
