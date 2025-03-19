@@ -104,8 +104,8 @@
         <div class="column">
           {{
             log.requestBody
-              ? log.requestBody.length > 10
-                ? log.requestBody.slice(0, 10) + "..."
+              ? log.requestBody.length > 5
+                ? log.requestBody.slice(0, 5) + "..."
                 : log.requestBody
               : ("ADMIN.LOGS.REQUESTBODY.EMPTY" | translate)
           }}
