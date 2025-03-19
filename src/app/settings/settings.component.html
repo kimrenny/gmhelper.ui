@@ -16,10 +16,22 @@
   >
     <div class="settings-sidebar" [class.open]="menuOpen">
       <div class="settings-tabs">
-        <button [class.active]="isSettingsActive" (click)="showSettings()">
+        <button
+          [class.active]="selectedSection === 'user'"
+          (click)="showUserSettings()"
+        >
+          {{ "SETTINGS.BUTTON.USER_SETTINGS" | translate }}
+        </button>
+        <button
+          [class.active]="selectedSection === 'settings'"
+          (click)="showSettings()"
+        >
           {{ "SETTINGS.BUTTON.SETTINGS" | translate }}
         </button>
-        <button [class.active]="!isSettingsActive" (click)="showDevices()">
+        <button
+          [class.active]="selectedSection === 'devices'"
+          (click)="showDevices()"
+        >
           {{ "SETTINGS.BUTTON.DEVICEINFO" | translate }}
         </button>
       </div>
@@ -28,7 +40,7 @@
     <button class="menu-toggle" (click)="toggleMenu()">☰</button>
     <h2 class="settings-title">{{ "SETTINGS.TITLE" | translate }}</h2>
 
-    <div *ngIf="isSettingsActive">
+    <div *ngIf="selectedSection === 'user'">
       <div class="user-info">
         <img
           [src]="userAvatarUrl || '../../assets/icons/default-avatar.png'"
@@ -151,7 +163,35 @@
       </form>
     </div>
 
-    <div *ngIf="!isSettingsActive">
+    <div *ngIf="selectedSection === 'settings'">
+      <div class="settings-section">
+        <div class="language-selection">
+          <div #dropdown class="language-dropdown" (click)="toggleDropdown()">
+            <div class="selected-lang">
+              {{
+                selectedLanguageName || "SETTINGS.DROPDOWN.LANG.SELECT"
+                  | translate
+              }}
+            </div>
+            <div class="dropdown-icon">▼</div>
+          </div>
+          <div *ngIf="isDropdownOpen" class="language-options">
+            <div
+              class="language-option"
+              *ngFor="let lang of languages"
+              (click)="selectLanguage(lang)"
+            >
+              {{ lang.name }}
+            </div>
+          </div>
+          <button class="save-button" (click)="saveLanguage()">
+            {{ "SETTINGS.BUTTON.SAVE" | translate }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="selectedSection === 'devices'">
       <div class="devices-section">
         <h3>{{ "SETTINGS.DEVICES.TITLE" | translate }}</h3>
         <ul *ngIf="devices?.length">

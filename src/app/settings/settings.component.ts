@@ -1,7 +1,16 @@
-import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  HostListener,
+  Inject,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
+  FormsModule,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
@@ -14,21 +23,38 @@ import { ToastrService } from 'ngx-toastr';
 @Component({
   selector: 'app-settings',
   standalone: true,
-  imports: [TranslateModule, ReactiveFormsModule, CommonModule],
+  imports: [TranslateModule, ReactiveFormsModule, CommonModule, FormsModule],
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.scss'],
 })
 export class SettingsComponent implements OnInit {
+  @ViewChild('dropdown') dropdownRef!: ElementRef;
+
   settingsForm!: FormGroup;
   devices: any[] = [];
   devicesLoaded: boolean = false;
   showPassword: boolean = false;
-  isSettingsActive: boolean = true;
+  selectedSection: 'user' | 'settings' | 'devices' = 'user';
   selectedAvatar: File | null = null;
   menuOpen = false;
   userNickname: string = '';
   userAvatarUrl: string = '';
   userAvatarUpload: string = '';
+  selectedLanguage: string = 'en';
+  selectedLanguageName: string = 'English';
+  languages = [
+    { code: 'de', name: 'Deutsch' },
+    { code: 'en', name: 'English' },
+    { code: 'fr', name: 'Français' },
+    { code: 'ja', name: '日本語' },
+    { code: 'ko', name: '한국어' },
+    { code: 'ru', name: 'Русский' },
+    { code: 'ua', name: 'Українська' },
+    { code: 'zh', name: '中文' },
+  ];
+
+  isDropdownOpen: boolean = false;
+
   isAuthorized!: Observable<boolean>;
   isServerAvailable!: Observable<boolean>;
 
@@ -117,16 +143,34 @@ export class SettingsComponent implements OnInit {
     });
   }
 
+  selectLanguage(lang: { code: string; name: string }) {
+    this.selectedLanguage = lang.code;
+    this.selectedLanguageName = lang.name;
+    this.isDropdownOpen = false;
+  }
+
+  saveLanguage() {
+    console.log('Selected language:', this.selectedLanguage);
+  }
+
   toggleMenu() {
     this.menuOpen = !this.menuOpen;
   }
 
+  toggleDropdown() {
+    this.isDropdownOpen = !this.isDropdownOpen;
+  }
+
+  showUserSettings() {
+    this.selectedSection = 'user';
+  }
+
   showSettings() {
-    this.isSettingsActive = true;
+    this.selectedSection = 'settings';
   }
 
   showDevices() {
-    this.isSettingsActive = false;
+    this.selectedSection = 'devices';
   }
 
   onSubmit() {
@@ -385,4 +429,12 @@ export class SettingsComponent implements OnInit {
 
     return Math.min(strength, 5);
   }
+
+  // @HostListener('document:click', ['$event'])
+  // onDocumentClick(event: MouseEvent): void {
+  //   const clickedInside = this.dropdownRef.nativeElement.contains(event.target);
+  //   if (!clickedInside) {
+  //     this.isDropdownOpen = false;
+  //   }
+  // }
 }
