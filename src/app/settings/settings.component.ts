@@ -40,7 +40,8 @@ export class SettingsComponent implements OnInit {
   userNickname: string = '';
   userAvatarUrl: string = '';
   userAvatarUpload: string = '';
-  selectedLanguage: string = 'en';
+  selectedLanguage: 'de' | 'en' | 'fr' | 'ja' | 'ko' | 'ru' | 'ua' | 'zh' =
+    'en';
   selectedLanguageName: string = 'English';
   languages = [
     { code: 'de', name: 'Deutsch' },
@@ -144,13 +145,23 @@ export class SettingsComponent implements OnInit {
   }
 
   selectLanguage(lang: { code: string; name: string }) {
-    this.selectedLanguage = lang.code;
+    this.selectedLanguage = lang.code as
+      | 'de'
+      | 'en'
+      | 'fr'
+      | 'ja'
+      | 'ko'
+      | 'ru'
+      | 'ua'
+      | 'zh';
     this.selectedLanguageName = lang.name;
     this.isDropdownOpen = false;
   }
 
   saveLanguage() {
-    console.log('Selected language:', this.selectedLanguage);
+    this.userService.updateLanguage(this.selectedLanguage).subscribe({
+      error: (err) => console.error('Error: ', err),
+    });
   }
 
   toggleMenu() {

@@ -15,6 +15,7 @@ import { TokenService } from './token.service';
 interface UserDetails {
   avatar: string | null;
   nickname: string;
+  language: 'de' | 'en' | 'fr' | 'ja' | 'ko' | 'ru' | 'ua' | 'zh';
 }
 
 enum CriticalErrors {
@@ -32,6 +33,7 @@ export class UserService {
   private userSubject = new BehaviorSubject<UserDetails>({
     avatar: null,
     nickname: 'Guest',
+    language: 'en',
   });
   user$ = this.userSubject.asObservable();
 
@@ -205,6 +207,28 @@ export class UserService {
     });
   }
 
+  updateLanguage(
+    language: 'de' | 'en' | 'fr' | 'ja' | 'ko' | 'ru' | 'ua' | 'zh'
+  ): Observable<any> {
+    const token = this.tokenService.getTokenFromStorage('authToken');
+
+    if (!token) {
+      return throwError(() => new Error('Token does not exist'));
+    }
+
+    const url = `${this.api}/user/update-language`;
+    const body = { language: language.toUpperCase() };
+    const headers = this.tokenService.createAuthHeaders(token);
+
+    return this.http.patch(url, body, { headers }).pipe(
+      tap({
+        next: () => {
+          this.loadUserDetails(token).subscribe();
+        },
+      })
+    );
+  }
+
   deactivateDevice(device: any): Observable<any> {
     const token = this.tokenService.getTokenFromStorage('authToken');
     if (!token) {
@@ -228,6 +252,7 @@ export class UserService {
     this.userSubject.next({
       avatar: null,
       nickname: 'Guest',
+      language: 'en',
     });
   }
 }
