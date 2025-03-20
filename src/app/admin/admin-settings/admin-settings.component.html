@@ -1,1 +1,17 @@
-<div class="admin-settings-container"></div>
+<div class="admin-settings-container">
+  <div class="settings-container">
+    <div class="settings-section" *ngFor="let section of sections">
+      <h2>{{ section.title }}</h2>
+      <div class="switches-container">
+        <div class="switch" *ngFor="let switchItem of section.switches">
+          <label>{{ switchItem.label }}</label>
+          <input
+            type="checkbox"
+            [checked]="switchItem.value"
+            (change)="handleSwitchChange(switchItem, section.title)"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
