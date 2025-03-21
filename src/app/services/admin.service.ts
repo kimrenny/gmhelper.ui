@@ -417,10 +417,7 @@ export class AdminService {
                 `${this.apiUrl}/logs/requests`,
                 { headers: this.tokenService.createAuthHeaders(authToken) }
               )
-              .pipe(
-                tap((response) => console.log(response)),
-                map((response) => response.data)
-              );
+              .pipe(map((response) => response.data));
           } else {
             return new Observable<CombinedRequestsData | null>((observer) => {
               observer.next(null);
@@ -431,7 +428,6 @@ export class AdminService {
       )
       .subscribe((data) => {
         this.requestsDataSubject.next(data);
-        console.log(data);
       });
   }
 
