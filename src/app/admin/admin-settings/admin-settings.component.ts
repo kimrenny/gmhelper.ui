@@ -2,6 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AdminSettingsService } from 'src/app/services/admin-settings.service';
 
+interface AdminSettings {
+  settings: boolean[][];
+}
+
 @Component({
   selector: 'app-admin-settings',
   standalone: true,
@@ -14,41 +18,41 @@ export class AdminSettingsComponent implements OnInit {
     {
       title: 'Dashboard',
       switches: [
-        { label: 'Switch 1', value: true },
-        { label: 'Switch 2', value: true },
-        { label: 'Switch 3', value: true },
-        { label: 'Switch 4', value: true },
-        { label: 'Switch 5', value: true },
+        { label: 'Setting1', value: true },
+        { label: 'Setting2', value: true },
+        { label: 'Setting3', value: true },
+        { label: 'Setting4', value: true },
+        { label: 'Setting5', value: true },
       ],
     },
     {
       title: 'Users',
       switches: [
-        { label: 'Switch 1', value: true },
-        { label: 'Switch 2', value: true },
-        { label: 'Switch 3', value: true },
-        { label: 'Switch 4', value: true },
-        { label: 'Switch 5', value: true },
+        { label: 'Setting1', value: true },
+        { label: 'Setting2', value: true },
+        { label: 'Setting3', value: true },
+        { label: 'Setting4', value: true },
+        { label: 'Setting5', value: true },
       ],
     },
     {
       title: 'Tokens',
       switches: [
-        { label: 'Switch 1', value: true },
-        { label: 'Switch 2', value: true },
-        { label: 'Switch 3', value: true },
-        { label: 'Switch 4', value: true },
-        { label: 'Switch 5', value: true },
+        { label: 'Setting1', value: true },
+        { label: 'Setting2', value: true },
+        { label: 'Setting3', value: true },
+        { label: 'Setting4', value: true },
+        { label: 'Setting5', value: true },
       ],
     },
     {
       title: 'Logs',
       switches: [
-        { label: 'Switch 1', value: true },
-        { label: 'Switch 2', value: true },
-        { label: 'Switch 3', value: true },
-        { label: 'Switch 4', value: true },
-        { label: 'Switch 5', value: true },
+        { label: 'Setting1', value: true },
+        { label: 'Setting2', value: true },
+        { label: 'Setting3', value: true },
+        { label: 'Setting4', value: true },
+        { label: 'Setting5', value: true },
       ],
     },
   ];
@@ -56,29 +60,43 @@ export class AdminSettingsComponent implements OnInit {
   constructor(private settingsService: AdminSettingsService) {}
 
   ngOnInit() {
-    this.settingsService.getSettings().subscribe((settings) => {
-      settings.forEach((switchValues, sectionIndex) => {
+    this.settingsService.getSettings(true).subscribe((settings) => {
+      if (settings && Array.isArray(settings) && settings.length > 0) {
+        this.initSwitches(settings);
+      } else {
+        console.error('Invalid settings data received:', settings);
+      }
+    });
+  }
+
+  initSwitches(settings: boolean[][]) {
+    if (settings.length !== this.sections.length) {
+      console.error('Number of sections does not match settings.');
+      return;
+    }
+
+    settings.forEach((switchValues, sectionIndex) => {
+      if (this.sections[sectionIndex]) {
         switchValues.forEach((value, switchIndex) => {
-          this.sections[sectionIndex].switches[switchIndex] = {
-            label: '',
-            value: value,
-          };
+          if (this.sections[sectionIndex].switches[switchIndex]) {
+            this.sections[sectionIndex].switches[switchIndex].value = value;
+          }
         });
-      });
+      }
     });
   }
 
   handleSwitchChange(switchItem: any, sectionTitle: string) {
     switchItem.value = !switchItem.value;
-    console.log(
-      `Component: ${sectionTitle}, Switch: ${switchItem.label}, State: ${switchItem.value}`
-    );
-    this.saveSettings();
-  }
 
-  saveSettings() {
-    this.settingsService.saveSettings().subscribe(() => {
-      console.log('Settings saved');
-    });
+    const sectionIndex = this.sections.findIndex(
+      (section) => section.title === sectionTitle
+    );
+    const sectionId = sectionIndex + 1;
+    this.settingsService
+      .updateSwitch(sectionId, switchItem.label, switchItem.value)
+      .subscribe(() => {
+        console.log('Switch updated');
+      });
   }
 }
