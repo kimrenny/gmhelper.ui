@@ -18,41 +18,41 @@ export class AdminSettingsComponent implements OnInit {
     {
       title: 'Dashboard',
       switches: [
-        { label: 'Setting1', value: true },
-        { label: 'Setting2', value: true },
-        { label: 'Setting3', value: true },
-        { label: 'Setting4', value: true },
-        { label: 'Setting5', value: true },
+        { label: 'Requests', value: true },
+        { label: 'Tokens', value: true },
+        { label: 'Banned', value: true },
+        { label: 'Roles', value: true },
+        { label: 'Country', value: true },
       ],
     },
     {
       title: 'Users',
       switches: [
-        { label: 'Setting1', value: true },
-        { label: 'Setting2', value: true },
-        { label: 'Setting3', value: true },
-        { label: 'Setting4', value: true },
-        { label: 'Setting5', value: true },
+        { label: 'Username', value: true },
+        { label: 'Email', value: true },
+        { label: 'Registration', value: true },
+        { label: 'Modal', value: true },
+        { label: 'Modal: Token', value: true },
       ],
     },
     {
       title: 'Tokens',
       switches: [
-        { label: 'Setting1', value: true },
-        { label: 'Setting2', value: true },
-        { label: 'Setting3', value: true },
-        { label: 'Setting4', value: true },
-        { label: 'Setting5', value: true },
+        { label: 'Token', value: true },
+        { label: 'Expirations', value: true },
+        { label: 'User ID', value: true },
+        { label: 'Modal', value: true },
+        { label: 'Actions', value: true },
       ],
     },
     {
       title: 'Logs',
       switches: [
-        { label: 'Setting1', value: true },
-        { label: 'Setting2', value: true },
-        { label: 'Setting3', value: true },
-        { label: 'Setting4', value: true },
-        { label: 'Setting5', value: true },
+        { label: 'Timestamp', value: true },
+        { label: 'Duration', value: true },
+        { label: 'Request', value: true },
+        { label: 'User ID', value: true },
+        { label: 'Modal', value: true },
       ],
     },
   ];
@@ -92,11 +92,9 @@ export class AdminSettingsComponent implements OnInit {
     const sectionIndex = this.sections.findIndex(
       (section) => section.title === sectionTitle
     );
-    const sectionId = sectionIndex + 1;
+    const sectionId = sectionIndex + 5;
     this.settingsService
       .updateSwitch(sectionId, switchItem.label, switchItem.value)
-      .subscribe(() => {
-        console.log('Switch updated');
-      });
+      .subscribe(() => {});
   }
 }
