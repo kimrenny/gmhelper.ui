@@ -89,12 +89,8 @@ export class AdminSettingsComponent implements OnInit {
   handleSwitchChange(switchItem: any, sectionTitle: string) {
     switchItem.value = !switchItem.value;
 
-    const sectionIndex = this.sections.findIndex(
-      (section) => section.title === sectionTitle
-    );
-    const sectionId = sectionIndex + 5;
     this.settingsService
-      .updateSwitch(sectionId, switchItem.label, switchItem.value)
+      .updateSwitch(sectionTitle, switchItem.label, switchItem.value)
       .subscribe(() => {});
   }
 }

@@ -80,7 +80,7 @@ export class AdminSettingsService {
   }
 
   updateSwitch(
-    sectionId: number,
+    sectionTitle: string,
     switchLabel: string,
     newValue: boolean
   ): Observable<void> {
@@ -93,12 +93,10 @@ export class AdminSettingsService {
     }
 
     const body = {
-      sectionId: sectionId,
+      sectionTitle: sectionTitle,
       switchLabel: switchLabel,
       newValue: newValue,
     };
-
-    console.log(body, authToken);
 
     return this.tokenService.userRole$.pipe(
       switchMap((role) => {
