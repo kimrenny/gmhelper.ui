@@ -9,8 +9,10 @@ import {
   switchMap,
   timer,
   of,
+  map,
 } from 'rxjs';
 import { TokenService } from './token.service';
+import { ApiResponse } from '../models/api-response.model';
 
 interface UserDetails {
   avatar: string | null;
@@ -91,10 +93,11 @@ export class UserService {
 
   loadUserDetails(token: string, attempts = 0): Observable<UserDetails> {
     return this.http
-      .get<UserDetails>(`${this.api}/user/details`, {
+      .get<ApiResponse<UserDetails>>(`${this.api}/user/details`, {
         headers: this.tokenService.createAuthHeaders(token),
       })
       .pipe(
+        map((response) => response.data),
         tap((userDetails) => {
           if (userDetails.avatar) {
             userDetails.avatar = `data:image/jpeg;base64,${userDetails.avatar}`;
