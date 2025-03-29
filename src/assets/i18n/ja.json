@@ -149,11 +149,13 @@
     "UNAUTHORIZED_MESSAGE": "このコンテンツにアクセスする権限がありません。",
     "TITLE": "設定",
     "BUTTON": {
-      "SETTINGS": "設定",
-      "DEVICEINFO": "ログイン済みデバイス",
+      "USER_SETTINGS": "ユーザー",
+      "APP_SETTINGS": "アプリ",
+      "DEVICEINFO": "ログインデバイス",
       "CONFIRM": "変更を保存",
       "CLEAR_AVATAR": "削除",
-      "UPLOAD_AVATAR": "アバターを保存"
+      "UPLOAD_AVATAR": "アバターを保存",
+      "SAVE": "保存"
     },
     "FORM": {
       "AVATAR": "アバター",
@@ -332,6 +334,14 @@
         "AUTH": "認証",
         "ERROR": "エラー"
       }
+    },
+    "SETTINGS": {
+      "SUCCESS": "設定が正常に更新されました",
+      "ERROR": "設定の更新エラー"
     }
+  },
+  "LANGUAGE": {
+    "CHANGE_TITLE": "言語が変更されました",
+    "TEMPORARY_MESSAGE": "選択した言語は一時的なものです。設定でデフォルトの言語を変更できます。"
   }
 }

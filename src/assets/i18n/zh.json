@@ -149,11 +149,13 @@
     "UNAUTHORIZED_MESSAGE": "您没有权限访问此内容。",
     "TITLE": "设置",
     "BUTTON": {
-      "SETTINGS": "设置",
+      "USER_SETTINGS": "用户",
+      "APP_SETTINGS": "应用",
       "DEVICEINFO": "登录设备",
       "CONFIRM": "保存更改",
-      "CLEAR_AVATAR": "移除",
-      "UPLOAD_AVATAR": "保存头像"
+      "CLEAR_AVATAR": "删除",
+      "UPLOAD_AVATAR": "保存头像",
+      "SAVE": "保存"
     },
     "FORM": {
       "AVATAR": "头像",
@@ -332,6 +334,14 @@
         "AUTH": "认证",
         "ERROR": "错误"
       }
+    },
+    "SETTINGS": {
+      "SUCCESS": "设置更新成功",
+      "ERROR": "更新设置时出错"
     }
+  },
+  "LANGUAGE": {
+    "CHANGE_TITLE": "语言已更改",
+    "TEMPORARY_MESSAGE": "所选语言是临时的。您可以在设置中更改默认语言。"
   }
 }

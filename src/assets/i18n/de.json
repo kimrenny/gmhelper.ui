@@ -149,11 +149,13 @@
     "UNAUTHORIZED_MESSAGE": "Sie haben keine Berechtigung, auf diesen Inhalt zuzugreifen.",
     "TITLE": "Einstellungen",
     "BUTTON": {
-      "SETTINGS": "Einstellungen",
+      "USER_SETTINGS": "Benutzer",
+      "APP_SETTINGS": "App",
       "DEVICEINFO": "Angemeldete Geräte",
       "CONFIRM": "Änderungen speichern",
       "CLEAR_AVATAR": "Entfernen",
-      "UPLOAD_AVATAR": "Avatar speichern"
+      "UPLOAD_AVATAR": "Avatar speichern",
+      "SAVE": "Speichern"
     },
     "FORM": {
       "AVATAR": "Avatar",
@@ -332,6 +334,14 @@
         "AUTH": "Auth",
         "ERROR": "Fehler"
       }
+    },
+    "SETTINGS": {
+      "SUCCESS": "Einstellungen erfolgreich aktualisiert",
+      "ERROR": "Fehler beim Aktualisieren der Einstellungen"
     }
+  },
+  "LANGUAGE": {
+    "CHANGE_TITLE": "Sprache geändert",
+    "TEMPORARY_MESSAGE": "Die ausgewählte Sprache ist temporär. Sie können die Standardsprache in den Einstellungen ändern."
   }
 }

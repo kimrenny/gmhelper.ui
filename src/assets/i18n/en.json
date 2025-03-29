@@ -149,11 +149,13 @@
     "UNAUTHORIZED_MESSAGE": "You don’t have permission to access this content.",
     "TITLE": "Settings",
     "BUTTON": {
-      "SETTINGS": "Settings",
+      "USER_SETTINGS": "User",
+      "APP_SETTINGS": "App",
       "DEVICEINFO": "Logged In Devices",
       "CONFIRM": "Save changes",
       "CLEAR_AVATAR": "Remove",
-      "UPLOAD_AVATAR": "Save avatar"
+      "UPLOAD_AVATAR": "Save avatar",
+      "SAVE": "Save"
     },
     "FORM": {
       "AVATAR": "Avatar",
@@ -334,6 +336,14 @@
         "AUTH": "Auth",
         "ERROR": "Error"
       }
+    },
+    "SETTINGS": {
+      "SUCCESS": "Settings updated successfully",
+      "ERROR": "Error updating settings"
     }
+  },
+  "LANGUAGE": {
+    "CHANGE_TITLE": "Language Changed",
+    "TEMPORARY_MESSAGE": "The selected language is temporary. You can change the default language in settings."
   }
 }

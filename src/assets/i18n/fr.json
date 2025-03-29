@@ -149,11 +149,13 @@
     "UNAUTHORIZED_MESSAGE": "Vous n’avez pas la permission d’accéder à ce contenu.",
     "TITLE": "Paramètres",
     "BUTTON": {
-      "SETTINGS": "Paramètres",
+      "USER_SETTINGS": "Utilisateur",
+      "APP_SETTINGS": "Application",
       "DEVICEINFO": "Appareils connectés",
       "CONFIRM": "Enregistrer les modifications",
       "CLEAR_AVATAR": "Supprimer",
-      "UPLOAD_AVATAR": "Enregistrer l’avatar"
+      "UPLOAD_AVATAR": "Enregistrer l'avatar",
+      "SAVE": "Enregistrer"
     },
     "FORM": {
       "AVATAR": "Avatar",
@@ -332,6 +334,14 @@
         "AUTH": "Auth",
         "ERROR": "Erreur"
       }
+    },
+    "SETTINGS": {
+      "SUCCESS": "Paramètres mis à jour avec succès",
+      "ERROR": "Erreur de mise à jour des paramètres"
     }
+  },
+  "LANGUAGE": {
+    "CHANGE_TITLE": "Langue modifiée",
+    "TEMPORARY_MESSAGE": "La langue sélectionnée est temporaire. Vous pouvez modifier la langue par défaut dans les paramètres."
   }
 }
