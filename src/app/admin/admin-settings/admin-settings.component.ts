@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AdminSettingsService } from 'src/app/services/admin-settings.service';
+import { TranslateService } from '@ngx-translate/core';
+import { ToastrService } from 'ngx-toastr';
 
 interface AdminSettings {
   settings: boolean[][];
@@ -57,7 +59,11 @@ export class AdminSettingsComponent implements OnInit {
     },
   ];
 
-  constructor(private settingsService: AdminSettingsService) {}
+  constructor(
+    private settingsService: AdminSettingsService,
+    private translate: TranslateService,
+    private toastr: ToastrService
+  ) {}
 
   ngOnInit() {
     this.settingsService.getSettings(true).subscribe((settings) => {
@@ -91,6 +97,23 @@ export class AdminSettingsComponent implements OnInit {
 
     this.settingsService
       .updateSwitch(sectionTitle, switchItem.label, switchItem.value)
-      .subscribe(() => {});
+      .subscribe({
+        next: () => {
+          this.showAlert('ADMIN.SETTINGS.SUCCESS');
+        },
+        error: () => {
+          switchItem.value = !switchItem.value; // rollback changes in case of error
+          this.showAlert('ADMIN.SETTINGS.ERROR', true);
+        },
+      });
+  }
+
+  private showAlert(key: string, isError = false) {
+    const message = this.translate.instant(key);
+    if (isError) {
+      this.toastr.error(message);
+    } else {
+      this.toastr.success(message);
+    }
   }
 }
