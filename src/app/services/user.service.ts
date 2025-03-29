@@ -87,6 +87,10 @@ export class UserService {
       .subscribe();
   }
 
+  getUserDetailsAsObservable(): Observable<UserDetails> {
+    return this.userSubject.asObservable();
+  }
+
   getUserDetails(): UserDetails {
     return this.userSubject.getValue();
   }
@@ -101,6 +105,27 @@ export class UserService {
         tap((userDetails) => {
           if (userDetails.avatar) {
             userDetails.avatar = `data:image/jpeg;base64,${userDetails.avatar}`;
+          }
+
+          const listLangs: UserDetails['language'][] = [
+            'en',
+            'de',
+            'fr',
+            'ja',
+            'ko',
+            'ru',
+            'ua',
+            'zh',
+          ];
+
+          if (userDetails.language) {
+            const lang =
+              userDetails.language.toLowerCase() as UserDetails['language'];
+            if (listLangs.includes(lang)) {
+              userDetails.language = lang;
+            } else {
+              userDetails.language = 'en';
+            }
           }
           this.userSubject.next(userDetails);
           this.isAuthorizedSubject.next(true);
@@ -226,7 +251,7 @@ export class UserService {
     return this.http.patch(url, body, { headers }).pipe(
       tap({
         next: () => {
-          this.loadUserDetails(token).subscribe();
+          this.loadUserDetails(token).subscribe((result) => {});
         },
       })
     );
