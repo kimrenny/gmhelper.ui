@@ -7,11 +7,13 @@ import {
   OnDestroy,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TranslateService } from '@ngx-translate/core';
 import { Router, NavigationStart, RouterModule } from '@angular/router';
 import { UserService } from 'src/app/services/user.service';
 import { Subscription } from 'rxjs';
 import { TokenService } from 'src/app/services/token.service';
+import { LanguageService } from 'src/app/services/language.service';
+import { ToastrService } from 'ngx-toastr';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-header',
@@ -33,20 +35,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
   constructor(
     @Inject(UserService) private userService: UserService,
     private tokenService: TokenService,
+    private languageService: LanguageService,
     private translate: TranslateService,
+    private toastr: ToastrService,
     private router: Router,
     private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
-    const savedLanguage = localStorage.getItem('language');
-    if (savedLanguage) {
-      this.translate.use(savedLanguage);
-    } else {
-      this.translate.setDefaultLang('en');
-      this.translate.use('en');
-    }
-
     const authSub = this.userService.isAuthorized$.subscribe(
       (isAuthenticated) => {
         this.userIsAuthenticated = isAuthenticated;
@@ -86,9 +82,16 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   selectLanguage(language: string) {
-    this.translate.use(language);
-    localStorage.setItem('language', language);
+    this.languageService.setLanguage(language);
     this.showLanguageMenu = false;
+
+    this.translate.onLangChange.subscribe(() => {
+      this.toastr.info(
+        this.translate.instant('LANGUAGE.TEMPORARY_MESSAGE'),
+        this.translate.instant('LANGUAGE.CHANGE_TITLE'),
+        { timeOut: 5000 }
+      );
+    });
   }
 
   @HostListener('document:click', ['$event'])
