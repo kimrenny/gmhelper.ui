@@ -2,9 +2,24 @@
   <app-registration-chart
     class="registration-chart-container"
   ></app-registration-chart>
-  <app-requests-chart class="requests-chart-container"></app-requests-chart>
-  <app-active-users class="active-users-container"></app-active-users>
-  <app-country-stats class="country-stats-container"></app-country-stats>
-  <app-role-stats class="role-stats-container"></app-role-stats>
-  <app-block-stats class="block-stats-container"></app-block-stats>
+  <app-requests-chart
+    class="requests-chart-container"
+    *ngIf="showRequests"
+  ></app-requests-chart>
+  <app-active-users
+    class="active-users-container"
+    *ngIf="showActiveUsers"
+  ></app-active-users>
+  <app-country-stats
+    class="country-stats-container"
+    *ngIf="showCountryStats"
+  ></app-country-stats>
+  <app-role-stats
+    class="role-stats-container"
+    *ngIf="showRoleStats"
+  ></app-role-stats>
+  <app-block-stats
+    class="block-stats-container"
+    *ngIf="showBlockStats"
+  ></app-block-stats>
 </div>

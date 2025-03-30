@@ -100,6 +100,11 @@ export class AdminSettingsComponent implements OnInit {
       .subscribe({
         next: () => {
           this.showAlert('ADMIN.SETTINGS.SUCCESS');
+          this.settingsService.updateSettings(
+            sectionTitle,
+            switchItem.label,
+            switchItem.value
+          );
         },
         error: () => {
           switchItem.value = !switchItem.value; // rollback changes in case of error
