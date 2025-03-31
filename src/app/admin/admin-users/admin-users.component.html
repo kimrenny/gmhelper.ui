@@ -1,13 +1,17 @@
 <div class="admin-users-container">
   <div class="users-table">
     <div class="table-header">
-      <div class="column" (click)="sortByColumn('username')">
+      <div
+        class="column"
+        *ngIf="showUsername"
+        (click)="sortByColumn('username')"
+      >
         {{ "ADMIN.USERS.NICKNAME" | translate }}
         <span *ngIf="sortColumn === 'username'" class="sort-arrow">
           {{ sortDirection === "asc" ? "▼" : "▲" }}
         </span>
       </div>
-      <div class="column" (click)="sortByColumn('email')">
+      <div class="column" *ngIf="showEmail" (click)="sortByColumn('email')">
         {{ "ADMIN.USERS.EMAIL" | translate }}
         <span *ngIf="sortColumn === 'email'" class="sort-arrow">
           {{ sortDirection === "asc" ? "▼" : "▲" }}
@@ -19,7 +23,11 @@
           {{ sortDirection === "asc" ? "▼" : "▲" }}
         </span>
       </div>
-      <div class="column" (click)="sortByColumn('registrationDate')">
+      <div
+        class="column"
+        *ngIf="showRegistration"
+        (click)="sortByColumn('registrationDate')"
+      >
         {{ "ADMIN.USERS.REG_DATE" | translate }}
         <span *ngIf="sortColumn === 'registrationDate'" class="sort-arrow">
           {{ sortDirection === "asc" ? "▼" : "▲" }}
@@ -40,10 +48,10 @@
         (click)="openUserDetails(user)"
         [ngClass]="{ 'current-user': user.username === currentUsername }"
       >
-        <div class="column">{{ user.username }}</div>
-        <div class="column">{{ user.email }}</div>
+        <div class="column" *ngIf="showUsername">{{ user.username }}</div>
+        <div class="column" *ngIf="showEmail">{{ user.email }}</div>
         <div class="column">{{ user.role }}</div>
-        <div class="column">
+        <div class="column" *ngIf="showRegistration">
           {{ user.registrationDate | date : "short" }} UTC
         </div>
         <div class="column">
@@ -133,7 +141,7 @@
         }}
       </p>
 
-      <div *ngIf="selectedUser.loginTokens?.length">
+      <div *ngIf="selectedUser.loginTokens?.length && showModalToken">
         <h4>{{ "ADMIN.USERS.TOKENS" | translate }}</h4>
         <ul>
           <li *ngFor="let token of paginatedTokens">

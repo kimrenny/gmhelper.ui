@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { TranslateService } from '@ngx-translate/core';
 import { AdminService } from 'src/app/services/admin.service';
-import { Subscription } from 'rxjs';
+import { filter, Subscription } from 'rxjs';
 import { TokenService } from 'src/app/services/token.service';
 import { UserService } from 'src/app/services/user.service';
 import { ToastrService } from 'ngx-toastr';
@@ -14,6 +14,7 @@ import {
   transition,
   trigger,
 } from '@angular/animations';
+import { AdminSettingsService } from 'src/app/services/admin-settings.service';
 
 interface DeviceInfo {
   userAgent: string;
@@ -71,10 +72,17 @@ export class AdminUsersComponent implements OnInit, OnDestroy {
   sortColumn: keyof User | null = null;
   sortDirection: 'asc' | 'desc' = 'asc';
 
+  showUsername = true;
+  showEmail = true;
+  showRegistration = true;
+  showModal = true;
+  showModalToken = true;
+
   private subscriptions = new Subscription();
 
   constructor(
     private adminService: AdminService,
+    private adminSettingsService: AdminSettingsService,
     private tokenService: TokenService,
     private userService: UserService,
     private toastr: ToastrService,
@@ -99,8 +107,23 @@ export class AdminUsersComponent implements OnInit, OnDestroy {
       this.currentUsername = userDetails.nickname;
     });
 
+    const settingsSub = this.adminSettingsService
+      .getSettingsData()
+      .pipe(filter(Boolean))
+      .subscribe((settings) => {
+        if (Array.isArray(settings) && settings.length > 0) {
+          const switches = settings[1];
+          this.showUsername = switches[0];
+          this.showEmail = switches[1];
+          this.showRegistration = switches[2];
+          this.showModal = switches[3];
+          this.showModalToken = switches[4];
+        }
+      });
+
     this.subscriptions.add(roleSub);
     this.subscriptions.add(userSub);
+    this.subscriptions.add(settingsSub);
   }
 
   ngOnDestroy(): void {
@@ -213,6 +236,14 @@ export class AdminUsersComponent implements OnInit, OnDestroy {
     if (user.role === 'Owner' && this.userRole === 'Admin') {
       this.toastr.error(
         this.translate.instant('ADMIN.ERRORS.NOPERMISSION'),
+        this.translate.instant('ADMIN.ERRORS.ERROR')
+      );
+      return;
+    }
+
+    if (!this.showModal) {
+      this.toastr.error(
+        this.translate.instant('ADMIN.ERRORS.DISABLED'),
         this.translate.instant('ADMIN.ERRORS.ERROR')
       );
       return;

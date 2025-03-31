@@ -42,7 +42,6 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
       .getSettingsData()
       .pipe(filter(Boolean))
       .subscribe((settings) => {
-        console.log(settings);
         if (Array.isArray(settings) && settings.length > 0) {
           const switches = settings[0];
           this.showRequests = switches[0];
