@@ -7,19 +7,23 @@
           {{ sortDirection === "asc" ? "▼" : "▲" }}
         </span>
       </div>
-      <div class="column" (click)="sortByColumn('token')">
+      <div class="column" *ngIf="showToken" (click)="sortByColumn('token')">
         {{ "ADMIN.TOKENS.TOKEN" | translate }}
         <span *ngIf="sortColumn === 'token'" class="sort-arrow">
           {{ sortDirection === "asc" ? "▼" : "▲" }}
         </span>
       </div>
-      <div class="column" (click)="sortByColumn('expiration')">
+      <div class="column" *ngIf="showExp" (click)="sortByColumn('expiration')">
         {{ "ADMIN.TOKENS.EXPIRATION" | translate }}
         <span *ngIf="sortColumn === 'expiration'" class="sort-arrow">
           {{ sortDirection === "asc" ? "▼" : "▲" }}
         </span>
       </div>
-      <div class="column" (click)="sortByColumn('refreshTokenExpiration')">
+      <div
+        class="column"
+        *ngIf="showExp"
+        (click)="sortByColumn('refreshTokenExpiration')"
+      >
         {{ "ADMIN.TOKENS.REFEXP" | translate }}
         <span
           *ngIf="sortColumn === 'refreshTokenExpiration'"
@@ -28,7 +32,7 @@
           {{ sortDirection === "asc" ? "▼" : "▲" }}
         </span>
       </div>
-      <div class="column" (click)="sortByColumn('userId')">
+      <div class="column" *ngIf="showUserId" (click)="sortByColumn('userId')">
         {{ "ADMIN.TOKENS.USERID" | translate }}
         <span *ngIf="sortColumn === 'userId'" class="sort-arrow">
           {{ sortDirection === "asc" ? "▼" : "▲" }}
@@ -56,14 +60,16 @@
         [ngClass]="{ 'current-token': token.token === currentToken }"
       >
         <div class="column">{{ token.id }}</div>
-        <div class="column">
+        <div class="column" *ngIf="showToken">
           {{ token.token | slice : 0 : 4 }}...{{ token.token | slice : -4 }}
         </div>
-        <div class="column">{{ token.expiration | date : "short" }} UTC</div>
-        <div class="column">
+        <div class="column" *ngIf="showExp">
+          {{ token.expiration | date : "short" }} UTC
+        </div>
+        <div class="column" *ngIf="showExp">
           {{ token.refreshTokenExpiration | date : "short" }} UTC
         </div>
-        <div class="column">{{ token.userId }}</div>
+        <div class="column" *ngIf="showUserId">{{ token.userId }}</div>
         <div class="column">{{ token.ipAddress }}</div>
         <div class="column">
           <span

@@ -1,11 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TokenService } from 'src/app/services/token.service';
-import { Subscription } from 'rxjs';
+import { filter, Subscription } from 'rxjs';
 import { AdminService } from 'src/app/services/admin.service';
 import { ToastrService } from 'ngx-toastr';
 import { TranslateService } from '@ngx-translate/core';
 import { TranslateModule } from '@ngx-translate/core';
+import { AdminSettingsService } from 'src/app/services/admin-settings.service';
 
 interface DeviceInfo {
   userAgent: string;
@@ -48,10 +49,17 @@ export class AdminTokensComponent implements OnInit, OnDestroy {
   sortColumn: keyof Token | null = null;
   sortDirection: 'asc' | 'desc' = 'asc';
 
+  showToken = true;
+  showExp = true;
+  showUserId = true;
+  showModal = true;
+  allowActions = true;
+
   private subscriptions = new Subscription();
 
   constructor(
     private adminService: AdminService,
+    private adminSettingsService: AdminSettingsService,
     private tokenService: TokenService,
     private toastr: ToastrService,
     private translate: TranslateService
@@ -73,7 +81,22 @@ export class AdminTokensComponent implements OnInit, OnDestroy {
       }
     });
 
+    const settingsSub = this.adminSettingsService
+      .getSettingsData()
+      .pipe(filter(Boolean))
+      .subscribe((settings) => {
+        if (Array.isArray(settings) && settings.length > 0) {
+          const switches = settings[2];
+          this.showToken = switches[0];
+          this.showExp = switches[1];
+          this.showUserId = switches[2];
+          this.showModal = switches[3];
+          this.allowActions = switches[4];
+        }
+      });
+
     this.subscriptions.add(roleSub);
+    this.subscriptions.add(settingsSub);
   }
 
   ngOnDestroy(): void {
@@ -103,6 +126,14 @@ export class AdminTokensComponent implements OnInit, OnDestroy {
   }
 
   openConfirmModal(token: Token) {
+    if (!this.allowActions) {
+      this.toastr.error(
+        this.translate.instant('ADMIN.ERRORS.DISABLED'),
+        this.translate.instant('ADMIN.ERRORS.ERROR')
+      );
+      return;
+    }
+
     if (token.token === this.currentToken) {
       this.toastr.error(
         this.translate.instant('ADMIN.ERRORS.SELFBAN'),
@@ -141,6 +172,13 @@ export class AdminTokensComponent implements OnInit, OnDestroy {
   }
 
   openTokenDetails(token: Token) {
+    if (!this.showModal) {
+      this.toastr.error(
+        this.translate.instant('ADMIN.ERRORS.DISABLED'),
+        this.translate.instant('ADMIN.ERRORS.ERROR')
+      );
+      return;
+    }
     this.selectedToken = token;
   }
 
