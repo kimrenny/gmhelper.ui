@@ -7,13 +7,17 @@
           {{ sortDirection === "asc" ? "▼" : "▲" }}
         </span>
       </div>
-      <div class="column" (click)="sortByColumn('timestamp')">
+      <div
+        class="column"
+        *ngIf="showTimestamp"
+        (click)="sortByColumn('timestamp')"
+      >
         {{ "ADMIN.LOGS.TIMESTAMP" | translate }}
         <span *ngIf="sortColumn === 'timestamp'" class="sort-arrow">
           {{ sortDirection === "asc" ? "▼" : "▲" }}
         </span>
       </div>
-      <div class="column" (click)="sortByColumn('userId')">
+      <div class="column" *ngIf="showUserId" (click)="sortByColumn('userId')">
         {{ "ADMIN.LOGS.USERID" | translate }}
         <span *ngIf="sortColumn === 'userId'" class="sort-arrow">
           {{ sortDirection === "asc" ? "▼" : "▲" }}
@@ -45,12 +49,16 @@
       </div>
     </div>
     <div class="table-body">
-      <div class="table-row" *ngFor="let log of paginatedLogs">
+      <div
+        class="table-row"
+        *ngFor="let log of paginatedLogs"
+        (click)="openLogDetails(log)"
+      >
         <div class="column">{{ log.id }}</div>
-        <div class="column">
+        <div class="column" *ngIf="showTimestamp">
           {{ log.timestamp | date : "dd.MM.yyyy" }}
         </div>
-        <div class="column">
+        <div class="column" *ngIf="showUserId">
           {{
             log.userId.length > 6 ? log.userId.slice(0, 6) + "..." : log.userId
           }}
@@ -81,5 +89,48 @@
     <button (click)="nextPage()" [disabled]="currentPage === totalPages">
       »
     </button>
+  </div>
+
+  <div *ngIf="selectedLog" class="log-modal">
+    <div class="modal-content">
+      <h3>{{ "ADMIN.LOGS.DETAILS.TITLE" | translate }}</h3>
+      <p>
+        <strong>{{ "ADMIN.LOGS.ID" | translate }}:</strong>
+        {{ selectedLog.id }}
+      </p>
+      <p>
+        <strong>{{ "ADMIN.LOGS.TIMESTAMP" | translate }}:</strong>
+        {{ selectedLog.timestamp }}
+      </p>
+
+      <p>
+        <strong>{{ "ADMIN.LOGS.USERID" | translate }}:</strong>
+        {{ selectedLog.userId }}
+      </p>
+      <p>
+        <strong>{{ "ADMIN.LOGS.IP" | translate }}:</strong>
+        {{ selectedLog.ipAddress }}
+      </p>
+      <p>
+        <strong>{{ "ADMIN.LOGS.USERAGENT" | translate }}:</strong>
+        {{ selectedLog.userAgent }}
+      </p>
+      <p>
+        <strong>{{ "ADMIN.LOGS.STATUS" | translate }}:</strong>
+        {{ selectedLog.status }}
+      </p>
+      <p>
+        <strong>{{ "ADMIN.LOGS.MESSAGE" | translate }}:</strong>
+        {{
+          selectedLog.message
+            ? selectedLog.message
+            : ("ADMIN.LOGS.REQUESTBODY.EMPTY" | translate)
+        }}
+      </p>
+
+      <button (click)="closeLogDetails()">
+        {{ "ADMIN.TOKENS.DETAILS.CLOSE" | translate }}
+      </button>
+    </div>
   </div>
 </div>

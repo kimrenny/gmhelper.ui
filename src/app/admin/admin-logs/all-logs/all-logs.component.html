@@ -7,7 +7,11 @@
           {{ sortDirection === "asc" ? "▼" : "▲" }}
         </span>
       </div>
-      <div class="column" (click)="sortByColumn('timestamp')">
+      <div
+        class="column"
+        *ngIf="showTimestamp"
+        (click)="sortByColumn('timestamp')"
+      >
         {{ "ADMIN.LOGS.TIMESTAMP" | translate }}
         <span *ngIf="sortColumn === 'timestamp'" class="sort-arrow">
           {{ sortDirection === "asc" ? "▼" : "▲" }}
@@ -25,13 +29,17 @@
           {{ sortDirection === "asc" ? "▼" : "▲" }}
         </span>
       </div>
-      <div class="column" (click)="sortByColumn('userId')">
+      <div class="column" *ngIf="showUserId" (click)="sortByColumn('userId')">
         {{ "ADMIN.LOGS.USERID" | translate }}
         <span *ngIf="sortColumn === 'userId'" class="sort-arrow">
           {{ sortDirection === "asc" ? "▼" : "▲" }}
         </span>
       </div>
-      <div class="column" (click)="sortByColumn('requestBody')">
+      <div
+        class="column"
+        *ngIf="showRequest"
+        (click)="sortByColumn('requestBody')"
+      >
         {{ "ADMIN.LOGS.REQUESTBODY.TITLE" | translate }}
         <span *ngIf="sortColumn === 'requestBody'" class="sort-arrow">
           {{ sortDirection === "asc" ? "▼" : "▲" }}
@@ -43,19 +51,31 @@
           {{ sortDirection === "asc" ? "▼" : "▲" }}
         </span>
       </div>
-      <div class="column" (click)="sortByColumn('startTime')">
+      <div
+        class="column"
+        *ngIf="showDuration"
+        (click)="sortByColumn('startTime')"
+      >
         {{ "ADMIN.LOGS.START_TIME" | translate }}
         <span *ngIf="sortColumn === 'startTime'" class="sort-arrow">
           {{ sortDirection === "asc" ? "▼" : "▲" }}
         </span>
       </div>
-      <div class="column" (click)="sortByColumn('endTime')">
+      <div
+        class="column"
+        *ngIf="showDuration"
+        (click)="sortByColumn('endTime')"
+      >
         {{ "ADMIN.LOGS.END_TIME" | translate }}
         <span *ngIf="sortColumn === 'endTime'" class="sort-arrow">
           {{ sortDirection === "asc" ? "▼" : "▲" }}
         </span>
       </div>
-      <div class="column" (click)="sortByColumn('elapsedTime')">
+      <div
+        class="column"
+        *ngIf="showDuration"
+        (click)="sortByColumn('elapsedTime')"
+      >
         {{ "ADMIN.LOGS.ELAPSED_TIME" | translate }}
         <span *ngIf="sortColumn === 'elapsedTime'" class="sort-arrow">
           {{ sortDirection === "asc" ? "▼" : "▲" }}
@@ -87,21 +107,25 @@
       </div>
     </div>
     <div class="table-body">
-      <div class="table-row" *ngFor="let log of paginatedLogs">
+      <div
+        class="table-row"
+        *ngFor="let log of paginatedLogs"
+        (click)="openLogDetails(log)"
+      >
         <div class="column">{{ log.id }}</div>
-        <div class="column">
+        <div class="column" *ngIf="showTimestamp">
           {{ log.timestamp | date : "HH:mm:ss" }}
         </div>
         <div class="column">{{ log.method }}</div>
         <div class="column">
           {{ getFormattedPath(log.path) }}
         </div>
-        <div class="column">
+        <div class="column" *ngIf="showUserId">
           {{
             log.userId.length > 6 ? log.userId.slice(0, 6) + "..." : log.userId
           }}
         </div>
-        <div class="column">
+        <div class="column" *ngIf="showRequest">
           {{
             log.requestBody
               ? log.requestBody.length > 5
@@ -111,9 +135,13 @@
           }}
         </div>
         <div class="column">{{ log.statusCode }}</div>
-        <div class="column">{{ log.startTime.slice(6) }}</div>
-        <div class="column">{{ log.endTime.slice(6) }}</div>
-        <div class="column">{{ log.elapsedTime }}</div>
+        <div class="column" *ngIf="showDuration">
+          {{ log.startTime.slice(6) }}
+        </div>
+        <div class="column" *ngIf="showDuration">
+          {{ log.endTime.slice(6) }}
+        </div>
+        <div class="column" *ngIf="showDuration">{{ log.elapsedTime }}</div>
         <div class="column">{{ log.ipAddress }}</div>
         <div class="column">
           {{
@@ -134,5 +162,76 @@
     <button (click)="nextPage()" [disabled]="currentPage === totalPages">
       »
     </button>
+  </div>
+
+  <div *ngIf="selectedLog" class="log-modal">
+    <div class="modal-content">
+      <h3>{{ "ADMIN.LOGS.DETAILS.TITLE" | translate }}</h3>
+      <p>
+        <strong>{{ "ADMIN.LOGS.ID" | translate }}:</strong>
+        {{ selectedLog.id }}
+      </p>
+      <p>
+        <strong>{{ "ADMIN.LOGS.TIMESTAMP" | translate }}:</strong>
+        {{ selectedLog.timestamp }}
+      </p>
+
+      <p>
+        <strong>{{ "ADMIN.LOGS.METHOD" | translate }}:</strong>
+        {{ selectedLog.method }}
+      </p>
+      <p>
+        <strong>{{ "ADMIN.LOGS.PATH" | translate }}:</strong>
+        {{ selectedLog.path }}
+      </p>
+      <p>
+        <strong>{{ "ADMIN.LOGS.USERID" | translate }}:</strong>
+        {{ selectedLog.userId }}
+      </p>
+      <p>
+        <strong>{{ "ADMIN.LOGS.REQUESTBODY.TITLE" | translate }}:</strong>
+        {{
+          selectedLog.requestBody
+            ? selectedLog.requestBody
+            : ("ADMIN.LOGS.REQUESTBODY.EMPTY" | translate)
+        }}
+      </p>
+      <p>
+        <strong>{{ "ADMIN.LOGS.STATUSCODE" | translate }}:</strong>
+        {{ selectedLog.statusCode }}
+      </p>
+      <p>
+        <strong>{{ "ADMIN.LOGS.START_TIME" | translate }}:</strong>
+        {{ selectedLog.startTime }}
+      </p>
+      <p>
+        <strong>{{ "ADMIN.LOGS.END_TIME" | translate }}:</strong>
+        {{ selectedLog.endTime }}
+      </p>
+      <p>
+        <strong>{{ "ADMIN.LOGS.ELAPSED_TIME" | translate }}:</strong>
+        {{ selectedLog.elapsedTime }}
+      </p>
+      <p>
+        <strong>{{ "ADMIN.LOGS.IP" | translate }}:</strong>
+        {{ selectedLog.ipAddress }}
+      </p>
+      <p>
+        <strong>{{ "ADMIN.LOGS.USERAGENT" | translate }}:</strong>
+        {{ selectedLog.userAgent }}
+      </p>
+      <p>
+        <strong>{{ "ADMIN.LOGS.STATUS" | translate }}:</strong>
+        {{ selectedLog.status }}
+      </p>
+      <p>
+        <strong>{{ "ADMIN.LOGS.REQUEST_TYPE" | translate }}:</strong>
+        {{ selectedLog.requestType }}
+      </p>
+
+      <button (click)="closeLogDetails()">
+        {{ "ADMIN.TOKENS.DETAILS.CLOSE" | translate }}
+      </button>
+    </div>
   </div>
 </div>

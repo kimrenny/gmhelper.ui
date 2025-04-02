@@ -7,7 +7,11 @@
           {{ sortDirection === "asc" ? "▼" : "▲" }}
         </span>
       </div>
-      <div class="column" (click)="sortByColumn('timestamp')">
+      <div
+        class="column"
+        *ngIf="showTimestamp"
+        (click)="sortByColumn('timestamp')"
+      >
         {{ "ADMIN.LOGS.TIMESTAMP" | translate }}
         <span *ngIf="sortColumn === 'timestamp'" class="sort-arrow">
           {{ sortDirection === "asc" ? "▼" : "▲" }}
@@ -39,9 +43,13 @@
       </div>
     </div>
     <div class="table-body">
-      <div class="table-row" *ngFor="let log of paginatedLogs">
+      <div
+        class="table-row"
+        *ngFor="let log of paginatedLogs"
+        (click)="openLogDetails(log)"
+      >
         <div class="column">{{ log.id }}</div>
-        <div class="column">
+        <div class="column" *ngIf="showTimestamp">
           {{ log.timestamp | date : "dd.MM.yyyy HH:mm:ss" }}
         </div>
         <div class="column">
@@ -82,5 +90,52 @@
     <button (click)="nextPage()" [disabled]="currentPage === totalPages">
       »
     </button>
+  </div>
+
+  <div *ngIf="selectedLog" class="log-modal">
+    <div class="modal-content">
+      <h3>{{ "ADMIN.LOGS.DETAILS.TITLE" | translate }}</h3>
+      <p>
+        <strong>{{ "ADMIN.LOGS.ID" | translate }}:</strong>
+        {{ selectedLog.id }}
+      </p>
+      <p>
+        <strong>{{ "ADMIN.LOGS.TIMESTAMP" | translate }}:</strong>
+        {{ selectedLog.timestamp | date : "dd.MM.yyyy HH:mm:ss" }}
+      </p>
+
+      <p>
+        <strong>{{ "ADMIN.LOGS.MESSAGE" | translate }}:</strong>
+        {{
+          selectedLog.message.length > 200
+            ? selectedLog.message.slice(0, 200) + "..."
+            : selectedLog.message
+        }}
+      </p>
+      <p>
+        <strong>{{ "ADMIN.LOGS.STACKTRACE" | translate }}:</strong>
+        {{
+          selectedLog.stackTrace.length > 300
+            ? selectedLog.stackTrace.slice(0, 300) + "..."
+            : selectedLog.stackTrace
+        }}
+      </p>
+      <p>
+        <strong>{{ "ADMIN.LOGS.ENDPOINT" | translate }}:</strong>
+        {{ selectedLog.endpoint }}
+      </p>
+      <p>
+        <strong>{{ "ADMIN.LOGS.EXCEPTIONDETAILS" | translate }}:</strong>
+        {{
+          selectedLog.exceptionDetails.length > 300
+            ? selectedLog.exceptionDetails.slice(0, 300) + "..."
+            : selectedLog.exceptionDetails
+        }}
+      </p>
+
+      <button (click)="closeLogDetails()">
+        {{ "ADMIN.TOKENS.DETAILS.CLOSE" | translate }}
+      </button>
+    </div>
   </div>
 </div>

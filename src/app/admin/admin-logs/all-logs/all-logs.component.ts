@@ -1,11 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TokenService } from 'src/app/services/token.service';
-import { Subscription } from 'rxjs';
+import { filter, Subscription } from 'rxjs';
 import { AdminService } from 'src/app/services/admin.service';
 import { ToastrService } from 'ngx-toastr';
 import { TranslateService } from '@ngx-translate/core';
 import { TranslateModule } from '@ngx-translate/core';
+import { AdminSettingsService } from 'src/app/services/admin-settings.service';
 
 interface RequestLog {
   id: number;
@@ -48,10 +49,17 @@ export class AdminAllLogsComponent implements OnInit, OnDestroy {
   sortColumn: keyof RequestLog | null = null;
   sortDirection: 'asc' | 'desc' = 'asc';
 
+  showTimestamp = true;
+  showDuration = true;
+  showRequest = true;
+  showUserId = true;
+  showModal = true;
+
   private subscriptions = new Subscription();
 
   constructor(
     private adminService: AdminService,
+    private adminSettingsService: AdminSettingsService,
     private tokenService: TokenService,
     private toastr: ToastrService,
     private translate: TranslateService
@@ -71,7 +79,22 @@ export class AdminAllLogsComponent implements OnInit, OnDestroy {
       }
     });
 
+    const settingsSub = this.adminSettingsService
+      .getSettingsData()
+      .pipe(filter(Boolean))
+      .subscribe((settings) => {
+        if (Array.isArray(settings) && settings.length > 0) {
+          const switches = settings[3];
+          this.showTimestamp = switches[0];
+          this.showDuration = switches[1];
+          this.showRequest = switches[2];
+          this.showUserId = switches[3];
+          this.showModal = switches[4];
+        }
+      });
+
     this.subscriptions.add(roleSub);
+    this.subscriptions.add(settingsSub);
   }
 
   ngOnDestroy(): void {
@@ -98,6 +121,21 @@ export class AdminAllLogsComponent implements OnInit, OnDestroy {
     if (this.currentPage < this.totalPages) {
       this.currentPage++;
     }
+  }
+
+  openLogDetails(log: RequestLog) {
+    if (!this.showModal) {
+      this.toastr.error(
+        this.translate.instant('ADMIN.ERRORS.DISABLED'),
+        this.translate.instant('ADMIN.ERRORS.ERROR')
+      );
+      return;
+    }
+    this.selectedLog = log;
+  }
+
+  closeLogDetails() {
+    this.selectedLog = null;
   }
 
   sortByColumn(column: keyof RequestLog): void {
