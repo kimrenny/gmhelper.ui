@@ -1,10 +1,20 @@
 <div class="admin-settings-container">
   <div class="settings-container">
     <div class="settings-section" *ngFor="let section of sections">
-      <h2>{{ section.title }}</h2>
+      <h2>
+        {{
+          "ADMIN.SETTINGS." + (section.title | uppercase) + ".TITLE" | translate
+        }}
+      </h2>
       <div class="switches-container">
         <div class="switch" *ngFor="let switchItem of section.switches">
-          <label>{{ switchItem.label }}</label>
+          <label>{{
+            "ADMIN.SETTINGS." +
+              (section.title | uppercase) +
+              "." +
+              (switchItem.label | uppercase | replaceColon | replaceSpaces)
+              | translate
+          }}</label>
           <input
             type="checkbox"
             [checked]="switchItem.value"

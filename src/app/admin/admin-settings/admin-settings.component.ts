@@ -1,17 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AdminSettingsService } from 'src/app/services/admin-settings.service';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
-
-interface AdminSettings {
-  settings: boolean[][];
-}
+import { ReplaceColonPipe } from 'src/app/pipes/replace-colon.pipe';
+import { ReplaceSpacesPipe } from 'src/app/pipes/replace-spaces.pipe';
 
 @Component({
   selector: 'app-admin-settings',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslateModule, ReplaceColonPipe, ReplaceSpacesPipe],
   templateUrl: './admin-settings.component.html',
   styleUrls: ['./admin-settings.component.scss'],
 })
