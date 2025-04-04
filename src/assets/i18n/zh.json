@@ -219,7 +219,8 @@
     "ERRORS": {
       "NOPERMISSION": "您没有权限执行此操作。",
       "SELFBAN": "您无法封锁自己",
-      "ERROR": "错误"
+      "ERROR": "错误",
+      "DISABLED": "该功能已被用户设置禁用"
     },
     "TOKENS": {
       "ID": "ID",
@@ -229,6 +230,8 @@
       "USERID": "用户 ID",
       "IP": "IP 地址",
       "ISACTIVE": "活跃",
+      "TOACTIVATE": "启用",
+      "TODISABLE": "禁用",
       "ACTION": "操作",
       "DISABLED": "已禁用",
       "DISABLE": {
@@ -337,7 +340,39 @@
     },
     "SETTINGS": {
       "SUCCESS": "设置更新成功",
-      "ERROR": "更新设置时出错"
+      "ERROR": "更新设置时出错",
+      "DASHBOARD": {
+        "TITLE": "仪表盘",
+        "REQUESTS": "请求",
+        "TOKENS": "令牌",
+        "BANNED": "禁用",
+        "ROLES": "角色",
+        "COUNTRY": "国家"
+      },
+      "USERS": {
+        "TITLE": "用户",
+        "USERNAME": "用户名",
+        "EMAIL": "电子邮件",
+        "REGISTRATION": "注册",
+        "MODAL": "模态",
+        "MODAL_TOKEN": "模态: 令牌"
+      },
+      "TOKENS": {
+        "TITLE": "令牌",
+        "TOKEN": "令牌",
+        "EXPIRATIONS": "过期",
+        "USER_ID": "用户ID",
+        "MODAL": "模态",
+        "ACTIONS": "操作"
+      },
+      "LOGS": {
+        "TITLE": "日志",
+        "TIMESTAMP": "时间戳",
+        "DURATION": "持续时间",
+        "REQUEST": "请求",
+        "USER_ID": "用户ID",
+        "MODAL": "模态"
+      }
     }
   },
   "LANGUAGE": {

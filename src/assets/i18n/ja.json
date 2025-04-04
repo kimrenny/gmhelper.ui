@@ -219,7 +219,8 @@
     "ERRORS": {
       "NOPERMISSION": "この操作を実行する権限がありません。",
       "SELFBAN": "自分をブロックすることはできません",
-      "ERROR": "エラー"
+      "ERROR": "エラー",
+      "DISABLED": "この機能はユーザー設定で無効になっています"
     },
     "TOKENS": {
       "ID": "ID",
@@ -229,6 +230,8 @@
       "USERID": "ユーザーID",
       "IP": "IPアドレス",
       "ISACTIVE": "アクティブ",
+      "TOACTIVATE": "有効化",
+      "TODISABLE": "無効化",
       "ACTION": "アクション",
       "DISABLED": "無効",
       "DISABLE": {
@@ -337,7 +340,39 @@
     },
     "SETTINGS": {
       "SUCCESS": "設定が正常に更新されました",
-      "ERROR": "設定の更新エラー"
+      "ERROR": "設定の更新エラー",
+      "DASHBOARD": {
+        "TITLE": "ダッシュボード",
+        "REQUESTS": "リクエスト",
+        "TOKENS": "トークン",
+        "BANNED": "禁止",
+        "ROLES": "役割",
+        "COUNTRY": "国"
+      },
+      "USERS": {
+        "TITLE": "ユーザー",
+        "USERNAME": "ユーザー名",
+        "EMAIL": "メールアドレス",
+        "REGISTRATION": "登録",
+        "MODAL": "モーダル",
+        "MODAL_TOKEN": "モーダル: トークン"
+      },
+      "TOKENS": {
+        "TITLE": "トークン",
+        "TOKEN": "トークン",
+        "EXPIRATIONS": "有効期限",
+        "USER_ID": "ユーザーID",
+        "MODAL": "モーダル",
+        "ACTIONS": "アクション"
+      },
+      "LOGS": {
+        "TITLE": "ログ",
+        "TIMESTAMP": "タイムスタンプ",
+        "DURATION": "期間",
+        "REQUEST": "リクエスト",
+        "USER_ID": "ユーザーID",
+        "MODAL": "モーダル"
+      }
     }
   },
   "LANGUAGE": {

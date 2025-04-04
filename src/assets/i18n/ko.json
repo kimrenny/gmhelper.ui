@@ -219,7 +219,8 @@
     "ERRORS": {
       "NOPERMISSION": "이 작업을 수행할 권한이 없습니다.",
       "SELFBAN": "자신을 차단할 수 없습니다",
-      "ERROR": "오류"
+      "ERROR": "오류",
+      "DISABLED": "이 기능은 사용자 설정에 의해 비활성화되었습니다"
     },
     "TOKENS": {
       "ID": "ID",
@@ -229,6 +230,8 @@
       "USERID": "사용자 ID",
       "IP": "IP 주소",
       "ISACTIVE": "활성화",
+      "TOACTIVATE": "활성화",
+      "TODISABLE": "비활성화",
       "ACTION": "동작",
       "DISABLED": "비활성화됨",
       "DISABLE": {
@@ -337,7 +340,39 @@
     },
     "SETTINGS": {
       "SUCCESS": "설정이 성공적으로 업데이트되었습니다",
-      "ERROR": "설정 업데이트 오류"
+      "ERROR": "설정 업데이트 오류",
+      "DASHBOARD": {
+        "TITLE": "대시보드",
+        "REQUESTS": "요청",
+        "TOKENS": "토큰",
+        "BANNED": "차단됨",
+        "ROLES": "역할",
+        "COUNTRY": "국가"
+      },
+      "USERS": {
+        "TITLE": "사용자",
+        "USERNAME": "사용자 이름",
+        "EMAIL": "이메일",
+        "REGISTRATION": "등록",
+        "MODAL": "모달",
+        "MODAL_TOKEN": "모달: 토큰"
+      },
+      "TOKENS": {
+        "TITLE": "토큰",
+        "TOKEN": "토큰",
+        "EXPIRATIONS": "만료",
+        "USER_ID": "사용자 ID",
+        "MODAL": "모달",
+        "ACTIONS": "동작"
+      },
+      "LOGS": {
+        "TITLE": "로그",
+        "TIMESTAMP": "타임스탬프",
+        "DURATION": "기간",
+        "REQUEST": "요청",
+        "USER_ID": "사용자 ID",
+        "MODAL": "모달"
+      }
     }
   },
   "LANGUAGE": {

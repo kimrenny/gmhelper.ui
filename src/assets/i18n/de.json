@@ -219,7 +219,8 @@
     "ERRORS": {
       "NOPERMISSION": "Sie haben keine Berechtigung, diese Aktion auszuführen.",
       "SELFBAN": "Sie können sich nicht selbst blockieren",
-      "ERROR": "Fehler"
+      "ERROR": "Fehler",
+      "DISABLED": "Die Funktion ist durch Benutzereinstellungen deaktiviert"
     },
     "TOKENS": {
       "ID": "ID",
@@ -229,6 +230,8 @@
       "USERID": "Benutzer-ID",
       "IP": "IP-Adresse",
       "ISACTIVE": "Aktiv",
+      "TOACTIVATE": "Aktivieren",
+      "TODISABLE": "Deaktivieren",
       "ACTION": "Aktion",
       "DISABLED": "Deaktiviert",
       "DISABLE": {
@@ -337,7 +340,39 @@
     },
     "SETTINGS": {
       "SUCCESS": "Einstellungen erfolgreich aktualisiert",
-      "ERROR": "Fehler beim Aktualisieren der Einstellungen"
+      "ERROR": "Fehler beim Aktualisieren der Einstellungen",
+      "DASHBOARD": {
+        "TITLE": "Dashboard",
+        "REQUESTS": "Anfragen",
+        "TOKENS": "Tokens",
+        "BANNED": "Gesperrt",
+        "ROLES": "Rollen",
+        "COUNTRY": "Land"
+      },
+      "USERS": {
+        "TITLE": "Benutzer",
+        "USERNAME": "Benutzername",
+        "EMAIL": "E-Mail",
+        "REGISTRATION": "Registrierung",
+        "MODAL": "Modal",
+        "MODAL_TOKEN": "Modal: Token"
+      },
+      "TOKENS": {
+        "TITLE": "Tokens",
+        "TOKEN": "Token",
+        "EXPIRATIONS": "Ablauf",
+        "USER_ID": "Benutzer-ID",
+        "MODAL": "Modal",
+        "ACTIONS": "Aktionen"
+      },
+      "LOGS": {
+        "TITLE": "Protokolle",
+        "TIMESTAMP": "Zeitstempel",
+        "DURATION": "Dauer",
+        "REQUEST": "Anfrage",
+        "USER_ID": "Benutzer-ID",
+        "MODAL": "Modal"
+      }
     }
   },
   "LANGUAGE": {

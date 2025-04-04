@@ -219,7 +219,8 @@
     "ERRORS": {
       "NOPERMISSION": "Vous n'avez pas l'autorisation d'effectuer cette action.",
       "SELFBAN": "Vous ne pouvez pas vous bloquer",
-      "ERROR": "Erreur"
+      "ERROR": "Erreur",
+      "DISABLED": "La fonction est désactivée dans les paramètres de l'utilisateur"
     },
     "TOKENS": {
       "ID": "ID",
@@ -229,6 +230,8 @@
       "USERID": "ID utilisateur",
       "IP": "Adresse IP",
       "ISACTIVE": "Actif",
+      "TOACTIVATE": "Activer",
+      "TODISABLE": "Désactiver",
       "ACTION": "Action",
       "DISABLED": "Désactivé",
       "DISABLE": {
@@ -337,7 +340,39 @@
     },
     "SETTINGS": {
       "SUCCESS": "Paramètres mis à jour avec succès",
-      "ERROR": "Erreur de mise à jour des paramètres"
+      "ERROR": "Erreur de mise à jour des paramètres",
+      "DASHBOARD": {
+        "TITLE": "Tableau de bord",
+        "REQUESTS": "Demandes",
+        "TOKENS": "Jetons",
+        "BANNED": "Interdit",
+        "ROLES": "Rôles",
+        "COUNTRY": "Pays"
+      },
+      "USERS": {
+        "TITLE": "Utilisateurs",
+        "USERNAME": "Nom d'utilisateur",
+        "EMAIL": "E-mail",
+        "REGISTRATION": "Enregistrement",
+        "MODAL": "Modal",
+        "MODAL_TOKEN": "Modal: Jeton"
+      },
+      "TOKENS": {
+        "TITLE": "Jetons",
+        "TOKEN": "Jeton",
+        "EXPIRATIONS": "Expirations",
+        "USER_ID": "ID de l'utilisateur",
+        "MODAL": "Modal",
+        "ACTIONS": "Actions"
+      },
+      "LOGS": {
+        "TITLE": "Journaux",
+        "TIMESTAMP": "Horodatage",
+        "DURATION": "Durée",
+        "REQUEST": "Demande",
+        "USER_ID": "ID de l'utilisateur",
+        "MODAL": "Modal"
+      }
     }
   },
   "LANGUAGE": {

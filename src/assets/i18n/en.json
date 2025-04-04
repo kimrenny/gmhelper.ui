@@ -219,7 +219,8 @@
     "ERRORS": {
       "NOPERMISSION": "You do not have permission to perform this action.",
       "SELFBAN": "You cannot block yourself",
-      "ERROR": "Error"
+      "ERROR": "Error",
+      "DISABLED": "The function is disabled by user settings"
     },
     "TOKENS": {
       "ID": "ID",
@@ -339,7 +340,39 @@
     },
     "SETTINGS": {
       "SUCCESS": "Settings updated successfully",
-      "ERROR": "Error updating settings"
+      "ERROR": "Error updating settings",
+      "DASHBOARD": {
+        "TITLE": "Dashboard",
+        "REQUESTS": "Requests",
+        "TOKENS": "Tokens",
+        "BANNED": "Banned",
+        "ROLES": "Roles",
+        "COUNTRY": "Country"
+      },
+      "USERS": {
+        "TITLE": "Users",
+        "USERNAME": "Username",
+        "EMAIL": "Email",
+        "REGISTRATION": "Registration",
+        "MODAL": "Modal",
+        "MODAL_TOKEN": "Modal: Token"
+      },
+      "TOKENS": {
+        "TITLE": "Tokens",
+        "TOKEN": "Token",
+        "EXPIRATIONS": "Expirations",
+        "USER_ID": "User ID",
+        "MODAL": "Modal",
+        "ACTIONS": "Actions"
+      },
+      "LOGS": {
+        "TITLE": "Logs",
+        "TIMESTAMP": "Timestamp",
+        "DURATION": "Duration",
+        "REQUEST": "Request",
+        "USER_ID": "User ID",
+        "MODAL": "Modal"
+      }
     }
   },
   "LANGUAGE": {
