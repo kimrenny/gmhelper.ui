@@ -1,25 +1,20 @@
 <div class="admin-dashboard-container">
-  <app-registration-chart
-    class="registration-chart-container"
-  ></app-registration-chart>
+  <app-registration-chart class="dashboard-item"></app-registration-chart>
   <app-requests-chart
-    class="requests-chart-container"
+    class="dashboard-item"
     *ngIf="showRequests"
   ></app-requests-chart>
   <app-active-users
-    class="active-users-container"
+    class="dashboard-item"
     *ngIf="showActiveUsers"
   ></app-active-users>
   <app-country-stats
-    class="country-stats-container"
+    class="dashboard-item"
     *ngIf="showCountryStats"
   ></app-country-stats>
-  <app-role-stats
-    class="role-stats-container"
-    *ngIf="showRoleStats"
-  ></app-role-stats>
+  <app-role-stats class="dashboard-item" *ngIf="showRoleStats"></app-role-stats>
   <app-block-stats
-    class="block-stats-container"
+    class="dashboard-item"
     *ngIf="showBlockStats"
   ></app-block-stats>
 </div>
