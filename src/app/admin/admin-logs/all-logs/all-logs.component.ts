@@ -7,6 +7,7 @@ import { ToastrService } from 'ngx-toastr';
 import { TranslateService } from '@ngx-translate/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { AdminSettingsService } from 'src/app/services/admin-settings.service';
+import { TruncatePipe } from 'src/app/pipes/truncate.pipe';
 
 interface RequestLog {
   id: number;
@@ -28,7 +29,7 @@ interface RequestLog {
 @Component({
   selector: 'app-admin-logs-all',
   standalone: true,
-  imports: [CommonModule, TranslateModule],
+  imports: [CommonModule, TranslateModule, TruncatePipe],
   templateUrl: './all-logs.component.html',
   styleUrls: ['./all-logs.component.scss'],
 })

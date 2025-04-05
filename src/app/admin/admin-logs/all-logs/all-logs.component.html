@@ -12,25 +12,25 @@
         *ngIf="showTimestamp"
         (click)="sortByColumn('timestamp')"
       >
-        {{ "ADMIN.LOGS.TIMESTAMP" | translate }}
+        {{ "ADMIN.LOGS.TIMESTAMP" | translate | truncate : 5 }}
         <span *ngIf="sortColumn === 'timestamp'" class="sort-arrow">
           {{ sortDirection === "asc" ? "▼" : "▲" }}
         </span>
       </div>
       <div class="column" (click)="sortByColumn('method')">
-        {{ "ADMIN.LOGS.METHOD" | translate }}
+        {{ "ADMIN.LOGS.METHOD" | translate | truncate : 5 }}
         <span *ngIf="sortColumn === 'method'" class="sort-arrow">
           {{ sortDirection === "asc" ? "▼" : "▲" }}
         </span>
       </div>
       <div class="column" (click)="sortByColumn('path')">
-        {{ "ADMIN.LOGS.PATH" | translate }}
+        {{ "ADMIN.LOGS.PATH" | translate | truncate : 5 }}
         <span *ngIf="sortColumn === 'path'" class="sort-arrow">
           {{ sortDirection === "asc" ? "▼" : "▲" }}
         </span>
       </div>
       <div class="column" *ngIf="showUserId" (click)="sortByColumn('userId')">
-        {{ "ADMIN.LOGS.USERID" | translate }}
+        {{ "ADMIN.LOGS.USERID" | translate | truncate : 5 }}
         <span *ngIf="sortColumn === 'userId'" class="sort-arrow">
           {{ sortDirection === "asc" ? "▼" : "▲" }}
         </span>
@@ -40,13 +40,13 @@
         *ngIf="showRequest"
         (click)="sortByColumn('requestBody')"
       >
-        {{ "ADMIN.LOGS.REQUESTBODY.TITLE" | translate }}
+        {{ "ADMIN.LOGS.REQUESTBODY.TITLE" | translate | truncate : 5 }}
         <span *ngIf="sortColumn === 'requestBody'" class="sort-arrow">
           {{ sortDirection === "asc" ? "▼" : "▲" }}
         </span>
       </div>
       <div class="column" (click)="sortByColumn('statusCode')">
-        {{ "ADMIN.LOGS.STATUSCODE" | translate }}
+        {{ "ADMIN.LOGS.STATUSCODE" | translate | truncate : 5 }}
         <span *ngIf="sortColumn === 'statusCode'" class="sort-arrow">
           {{ sortDirection === "asc" ? "▼" : "▲" }}
         </span>
@@ -56,7 +56,7 @@
         *ngIf="showDuration"
         (click)="sortByColumn('startTime')"
       >
-        {{ "ADMIN.LOGS.START_TIME" | translate }}
+        {{ "ADMIN.LOGS.START_TIME" | translate | truncate : 5 }}
         <span *ngIf="sortColumn === 'startTime'" class="sort-arrow">
           {{ sortDirection === "asc" ? "▼" : "▲" }}
         </span>
@@ -66,7 +66,7 @@
         *ngIf="showDuration"
         (click)="sortByColumn('endTime')"
       >
-        {{ "ADMIN.LOGS.END_TIME" | translate }}
+        {{ "ADMIN.LOGS.END_TIME" | translate | truncate : 5 }}
         <span *ngIf="sortColumn === 'endTime'" class="sort-arrow">
           {{ sortDirection === "asc" ? "▼" : "▲" }}
         </span>
@@ -76,31 +76,31 @@
         *ngIf="showDuration"
         (click)="sortByColumn('elapsedTime')"
       >
-        {{ "ADMIN.LOGS.ELAPSED_TIME" | translate }}
+        {{ "ADMIN.LOGS.ELAPSED_TIME" | translate | truncate : 5 }}
         <span *ngIf="sortColumn === 'elapsedTime'" class="sort-arrow">
           {{ sortDirection === "asc" ? "▼" : "▲" }}
         </span>
       </div>
       <div class="column" (click)="sortByColumn('ipAddress')">
-        {{ "ADMIN.LOGS.IP" | translate }}
+        {{ "ADMIN.LOGS.IP" | translate | truncate : 5 }}
         <span *ngIf="sortColumn === 'ipAddress'" class="sort-arrow">
           {{ sortDirection === "asc" ? "▼" : "▲" }}
         </span>
       </div>
       <div class="column" (click)="sortByColumn('userAgent')">
-        {{ "ADMIN.LOGS.USERAGENT" | translate }}
+        {{ "ADMIN.LOGS.USERAGENT" | translate | truncate : 5 }}
         <span *ngIf="sortColumn === 'userAgent'" class="sort-arrow">
           {{ sortDirection === "asc" ? "▼" : "▲" }}
         </span>
       </div>
       <div class="column" (click)="sortByColumn('status')">
-        {{ "ADMIN.LOGS.STATUS" | translate }}
+        {{ "ADMIN.LOGS.STATUS" | translate | truncate : 5 }}
         <span *ngIf="sortColumn === 'status'" class="sort-arrow">
           {{ sortDirection === "asc" ? "▼" : "▲" }}
         </span>
       </div>
       <div class="column" (click)="sortByColumn('requestType')">
-        {{ "ADMIN.LOGS.REQUEST_TYPE" | translate }}
+        {{ "ADMIN.LOGS.REQUEST_TYPE" | translate | truncate : 5 }}
         <span *ngIf="sortColumn === 'requestType'" class="sort-arrow">
           {{ sortDirection === "asc" ? "▼" : "▲" }}
         </span>

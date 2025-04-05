@@ -24,7 +24,7 @@
 .table-header,
 .table-row {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
@@ -35,7 +35,7 @@
 
   .sort-arrow {
     position: absolute;
-    right: 25px;
+    padding-right: 10px;
     font-size: 14px;
     transition: transform 0.2s ease-in-out;
   }
@@ -52,14 +52,11 @@
 
 .column {
   text-align: center;
-  min-width: 50px;
-  flex-grow: 1;
-  flex-basis: 200px;
-  display: flex;
+  min-width: 65px;
   justify-content: center;
   align-items: center;
   position: relative;
-  padding-right: 20px;
+  padding: 0 10px;
 }
 
 .pagination {

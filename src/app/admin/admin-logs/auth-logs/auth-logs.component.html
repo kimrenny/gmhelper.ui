@@ -12,37 +12,37 @@
         *ngIf="showTimestamp"
         (click)="sortByColumn('timestamp')"
       >
-        {{ "ADMIN.LOGS.TIMESTAMP" | translate }}
+        {{ "ADMIN.LOGS.TIMESTAMP" | translate | truncate : 5 }}
         <span *ngIf="sortColumn === 'timestamp'" class="sort-arrow">
           {{ sortDirection === "asc" ? "▼" : "▲" }}
         </span>
       </div>
       <div class="column" *ngIf="showUserId" (click)="sortByColumn('userId')">
-        {{ "ADMIN.LOGS.USERID" | translate }}
+        {{ "ADMIN.LOGS.USERID" | translate | truncate : 5 }}
         <span *ngIf="sortColumn === 'userId'" class="sort-arrow">
           {{ sortDirection === "asc" ? "▼" : "▲" }}
         </span>
       </div>
       <div class="column" (click)="sortByColumn('ipAddress')">
-        {{ "ADMIN.LOGS.IP" | translate }}
+        {{ "ADMIN.LOGS.IP" | translate | truncate : 5 }}
         <span *ngIf="sortColumn === 'ipAddress'" class="sort-arrow">
           {{ sortDirection === "asc" ? "▼" : "▲" }}
         </span>
       </div>
       <div class="column" (click)="sortByColumn('userAgent')">
-        {{ "ADMIN.LOGS.USERAGENT" | translate }}
+        {{ "ADMIN.LOGS.USERAGENT" | translate | truncate : 5 }}
         <span *ngIf="sortColumn === 'userAgent'" class="sort-arrow">
           {{ sortDirection === "asc" ? "▼" : "▲" }}
         </span>
       </div>
       <div class="column" (click)="sortByColumn('status')">
-        {{ "ADMIN.LOGS.STATUS" | translate }}
+        {{ "ADMIN.LOGS.STATUS" | translate | truncate : 5 }}
         <span *ngIf="sortColumn === 'status'" class="sort-arrow">
           {{ sortDirection === "asc" ? "▼" : "▲" }}
         </span>
       </div>
       <div class="column" (click)="sortByColumn('message')">
-        {{ "ADMIN.LOGS.MESSAGE" | translate }}
+        {{ "ADMIN.LOGS.MESSAGE" | translate | truncate : 5 }}
         <span *ngIf="sortColumn === 'message'" class="sort-arrow">
           {{ sortDirection === "asc" ? "▼" : "▲" }}
         </span>

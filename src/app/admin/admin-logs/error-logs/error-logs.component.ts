@@ -7,6 +7,7 @@ import { ToastrService } from 'ngx-toastr';
 import { TranslateService } from '@ngx-translate/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { AdminSettingsService } from 'src/app/services/admin-settings.service';
+import { TruncatePipe } from 'src/app/pipes/truncate.pipe';
 
 interface ErrorLog {
   id: number;
@@ -20,7 +21,7 @@ interface ErrorLog {
 @Component({
   selector: 'app-admin-error-logs',
   standalone: true,
-  imports: [CommonModule, TranslateModule],
+  imports: [CommonModule, TranslateModule, TruncatePipe],
   templateUrl: './error-logs.component.html',
   styleUrls: ['./error-logs.component.scss'],
 })

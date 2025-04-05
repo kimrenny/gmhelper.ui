@@ -7,6 +7,7 @@ import { ToastrService } from 'ngx-toastr';
 import { TranslateService } from '@ngx-translate/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { AdminSettingsService } from 'src/app/services/admin-settings.service';
+import { TruncatePipe } from 'src/app/pipes/truncate.pipe';
 
 interface AuthLog {
   id: number;
@@ -21,7 +22,7 @@ interface AuthLog {
 @Component({
   selector: 'app-admin-auth-logs',
   standalone: true,
-  imports: [CommonModule, TranslateModule],
+  imports: [CommonModule, TranslateModule, TruncatePipe],
   templateUrl: './auth-logs.component.html',
   styleUrls: ['./auth-logs.component.scss'],
 })
