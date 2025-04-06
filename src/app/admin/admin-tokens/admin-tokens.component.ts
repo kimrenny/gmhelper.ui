@@ -7,6 +7,7 @@ import { ToastrService } from 'ngx-toastr';
 import { TranslateService } from '@ngx-translate/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { AdminSettingsService } from 'src/app/services/admin-settings.service';
+import { FormsModule } from '@angular/forms';
 
 interface DeviceInfo {
   userAgent: string;
@@ -27,7 +28,7 @@ interface Token {
 @Component({
   selector: 'app-admin-tokens',
   standalone: true,
-  imports: [CommonModule, TranslateModule],
+  imports: [CommonModule, FormsModule, TranslateModule],
   templateUrl: './admin-tokens.component.html',
   styleUrls: ['./admin-tokens.component.scss'],
 })
@@ -39,6 +40,7 @@ export class AdminTokensComponent implements OnInit, OnDestroy {
 
   selectedToken: Token | null = null;
   currentPage: number = 1;
+  pageInput: number = 1;
   tokensPerPage: number = 10;
 
   isConfirmModalOpen: boolean = false;
@@ -116,13 +118,26 @@ export class AdminTokensComponent implements OnInit, OnDestroy {
   prevPage() {
     if (this.currentPage > 1) {
       this.currentPage--;
+      this.pageInput = this.currentPage;
     }
   }
 
   nextPage() {
     if (this.currentPage < this.totalPages) {
       this.currentPage++;
+      this.pageInput = this.currentPage;
     }
+  }
+
+  goToPage(page: number) {
+    if (page < 1) {
+      this.currentPage = 1;
+    } else if (page > this.totalPages) {
+      this.currentPage = this.totalPages;
+    } else {
+      this.currentPage = page;
+    }
+    this.pageInput = this.currentPage;
   }
 
   openConfirmModal(token: Token) {

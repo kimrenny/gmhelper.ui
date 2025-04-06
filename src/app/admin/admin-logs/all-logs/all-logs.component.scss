@@ -10,15 +10,18 @@
 }
 
 .logs-table {
-  width: 90%;
+  width: 95%;
   max-width: 1500px;
   position: relative;
-  top: 100px;
+  top: 150px;
   background: rgba(255, 255, 255, 0.1);
   border-radius: 10px;
   box-shadow: 0 0 20px 5px rgba(189, 0, 214, 0.6);
   overflow: hidden;
-  padding-bottom: 20px;
+}
+
+.logs-content {
+  padding: 0 0px 20px 0px;
 }
 
 .table-header,
@@ -34,8 +37,7 @@
   padding: 15px;
 
   .sort-arrow {
-    position: absolute;
-    padding-right: 10px;
+    padding-left: 15px;
     font-size: 14px;
     transition: transform 0.2s ease-in-out;
   }
@@ -52,11 +54,15 @@
 
 .column {
   text-align: center;
-  min-width: 65px;
+  min-width: 75px;
+  display: flex;
   justify-content: center;
   align-items: center;
   position: relative;
   padding: 0 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .pagination {
@@ -86,10 +92,42 @@
     }
   }
 
-  span {
+  .page-input {
+    width: 35px;
+    text-align: center;
+    border: none;
+    border-radius: 5px;
+    background-color: transparent;
+    color: #fff;
     font-size: 16px;
     font-weight: bold;
-    color: #ffffff;
+    font-family: inherit;
+    line-height: 1;
+    letter-spacing: normal;
+
+    &:focus {
+      outline: none;
+    }
+
+    &::-webkit-inner-spin-button,
+    &::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+  }
+
+  .slash {
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+    margin: 0 5px;
+  }
+
+  .total-pages {
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+    margin-right: 10px;
   }
 }
 

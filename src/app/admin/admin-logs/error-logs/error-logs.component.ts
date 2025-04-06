@@ -8,6 +8,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { AdminSettingsService } from 'src/app/services/admin-settings.service';
 import { TruncatePipe } from 'src/app/pipes/truncate.pipe';
+import { FormsModule } from '@angular/forms';
 
 interface ErrorLog {
   id: number;
@@ -21,7 +22,7 @@ interface ErrorLog {
 @Component({
   selector: 'app-admin-error-logs',
   standalone: true,
-  imports: [CommonModule, TranslateModule, TruncatePipe],
+  imports: [CommonModule, FormsModule, TranslateModule, TruncatePipe],
   templateUrl: './error-logs.component.html',
   styleUrls: ['./error-logs.component.scss'],
 })
@@ -32,6 +33,7 @@ export class AdminErrorLogsComponent implements OnInit, OnDestroy {
 
   selectedLog: ErrorLog | null = null;
   currentPage: number = 1;
+  pageInput: number = 1;
   logsPerPage: number = 30;
 
   isConfirmModalOpen: boolean = false;
@@ -105,13 +107,26 @@ export class AdminErrorLogsComponent implements OnInit, OnDestroy {
   prevPage() {
     if (this.currentPage > 1) {
       this.currentPage--;
+      this.pageInput = this.currentPage;
     }
   }
 
   nextPage() {
     if (this.currentPage < this.totalPages) {
       this.currentPage++;
+      this.pageInput = this.currentPage;
     }
+  }
+
+  goToPage(page: number) {
+    if (page < 1) {
+      this.currentPage = 1;
+    } else if (page > this.totalPages) {
+      this.currentPage = this.totalPages;
+    } else {
+      this.currentPage = page;
+    }
+    this.pageInput = this.currentPage;
   }
 
   openLogDetails(log: ErrorLog) {

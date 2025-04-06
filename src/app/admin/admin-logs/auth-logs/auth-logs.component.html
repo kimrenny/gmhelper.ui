@@ -84,10 +84,25 @@
   </div>
 
   <div class="pagination">
+    <button *ngIf="currentPage !== 1" (click)="goToPage(1)">««</button>
     <button (click)="prevPage()" [disabled]="currentPage === 1">«</button>
-    <span>{{ currentPage }} / {{ totalPages }}</span>
+
+    <input
+      type="number"
+      class="page-input"
+      [(ngModel)]="pageInput"
+      (change)="goToPage(pageInput)"
+      [min]="1"
+      [max]="totalPages"
+    />
+    <span class="slash">/</span>
+    <span class="total-pages">{{ totalPages }}</span>
+
     <button (click)="nextPage()" [disabled]="currentPage === totalPages">
       »
+    </button>
+    <button *ngIf="currentPage !== totalPages" (click)="goToPage(totalPages)">
+      »»
     </button>
   </div>
 

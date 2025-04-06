@@ -15,6 +15,7 @@ import {
   trigger,
 } from '@angular/animations';
 import { AdminSettingsService } from 'src/app/services/admin-settings.service';
+import { FormsModule } from '@angular/forms';
 
 interface DeviceInfo {
   userAgent: string;
@@ -41,7 +42,7 @@ interface User {
 @Component({
   selector: 'app-admin-users',
   standalone: true,
-  imports: [CommonModule, TranslateModule],
+  imports: [CommonModule, FormsModule, TranslateModule],
   templateUrl: './admin-users.component.html',
   styleUrls: ['./admin-users.component.scss'],
   animations: [
@@ -59,9 +60,11 @@ export class AdminUsersComponent implements OnInit, OnDestroy {
 
   selectedUser: User | null = null;
   currentPage: number = 1;
+  pageInput: number = 1;
   usersPerPage: number = 10;
 
   tokenPage: number = 1;
+  inputTokenPage: number = 1;
   tokensPerPage: number = 1;
 
   isConfirmModalOpen: boolean = false;
@@ -161,25 +164,51 @@ export class AdminUsersComponent implements OnInit, OnDestroy {
   prevPage() {
     if (this.currentPage > 1) {
       this.currentPage--;
+      this.pageInput = this.currentPage;
     }
   }
 
   nextPage() {
     if (this.currentPage < this.totalPages) {
       this.currentPage++;
+      this.pageInput = this.currentPage;
     }
+  }
+
+  goToPage(page: number) {
+    if (page < 1) {
+      this.currentPage = 1;
+    } else if (page > this.totalPages) {
+      this.currentPage = this.totalPages;
+    } else {
+      this.currentPage = page;
+    }
+    this.pageInput = this.currentPage;
   }
 
   prevTokenPage() {
     if (this.tokenPage > 1) {
       this.tokenPage--;
+      this.inputTokenPage = this.tokenPage;
     }
   }
 
   nextTokenPage() {
     if (this.tokenPage < this.totalTokenPages) {
       this.tokenPage++;
+      this.inputTokenPage = this.tokenPage;
     }
+  }
+
+  goToTokenPage(page: number) {
+    if (page < 1) {
+      this.tokenPage = 1;
+    } else if (page > this.totalTokenPages) {
+      this.tokenPage = this.totalTokenPages;
+    } else {
+      this.tokenPage = page;
+    }
+    this.inputTokenPage = this.tokenPage;
   }
 
   openConfirmModal(user: User) {
