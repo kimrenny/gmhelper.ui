@@ -1,7 +1,11 @@
 <div class="admin-error-logs-container">
   <div class="logs-table">
     <div class="table-header">
-      <div class="column" (click)="sortByColumn('id')">
+      <div
+        class="column"
+        (click)="sortByColumn('id')"
+        [appTooltip]="'DESCRIPTION.ADMIN.LOGS.ID'"
+      >
         {{ "ADMIN.LOGS.ID" | translate | truncate : 10 }}
         <span *ngIf="sortColumn === 'id'" class="sort-arrow">
           {{ sortDirection === "asc" ? "▼" : "▲" }}
@@ -11,31 +15,48 @@
         class="column"
         *ngIf="showTimestamp"
         (click)="sortByColumn('timestamp')"
+        [appTooltip]="'DESCRIPTION.ADMIN.LOGS.TIMESTAMP'"
       >
         {{ "ADMIN.LOGS.TIMESTAMP" | translate | truncate : 10 }}
         <span *ngIf="sortColumn === 'timestamp'" class="sort-arrow">
           {{ sortDirection === "asc" ? "▼" : "▲" }}
         </span>
       </div>
-      <div class="column" (click)="sortByColumn('message')">
+      <div
+        class="column"
+        (click)="sortByColumn('message')"
+        [appTooltip]="'DESCRIPTION.ADMIN.LOGS.MESSAGE'"
+      >
         {{ "ADMIN.LOGS.MESSAGE" | translate | truncate : 10 }}
         <span *ngIf="sortColumn === 'message'" class="sort-arrow">
           {{ sortDirection === "asc" ? "▼" : "▲" }}
         </span>
       </div>
-      <div class="column" (click)="sortByColumn('stackTrace')">
+      <div
+        class="column"
+        (click)="sortByColumn('stackTrace')"
+        [appTooltip]="'DESCRIPTION.ADMIN.LOGS.STACKTRACE'"
+      >
         {{ "ADMIN.LOGS.STACKTRACE" | translate | truncate : 10 }}
         <span *ngIf="sortColumn === 'stackTrace'" class="sort-arrow">
           {{ sortDirection === "asc" ? "▼" : "▲" }}
         </span>
       </div>
-      <div class="column" (click)="sortByColumn('endpoint')">
+      <div
+        class="column"
+        (click)="sortByColumn('endpoint')"
+        [appTooltip]="'DESCRIPTION.ADMIN.LOGS.ENDPOINT'"
+      >
         {{ "ADMIN.LOGS.ENDPOINT" | translate | truncate : 10 }}
         <span *ngIf="sortColumn === 'endpoint'" class="sort-arrow">
           {{ sortDirection === "asc" ? "▼" : "▲" }}
         </span>
       </div>
-      <div class="column" (click)="sortByColumn('exceptionDetails')">
+      <div
+        class="column"
+        (click)="sortByColumn('exceptionDetails')"
+        [appTooltip]="'DESCRIPTION.ADMIN.LOGS.EXDETAILS'"
+      >
         {{ "ADMIN.LOGS.EXCEPTIONDETAILS" | translate | truncate : 10 }}
         <span *ngIf="sortColumn === 'exceptionDetails'" class="sort-arrow">
           {{ sortDirection === "asc" ? "▼" : "▲" }}

@@ -378,5 +378,47 @@
   "LANGUAGE": {
     "CHANGE_TITLE": "Мову змінено",
     "TEMPORARY_MESSAGE": "Обрана мова є тимчасовою. Ви можете змінити мову за замовчуванням у налаштуваннях."
+  },
+  "DESCRIPTION": {
+    "ADMIN": {
+      "USERS": {
+        "NICKNAME": "Ім’я користувача",
+        "EMAIL": "Email користувача",
+        "ROLE": "Роль користувача",
+        "REGISTRATION_DATE": "Дата реєстрації",
+        "STATUS": "Статус користувача",
+        "ACTION": "Блокування"
+      },
+      "TOKENS": {
+        "ID": "ID токена",
+        "TOKEN": "Токен доступу",
+        "EXPIRATION": "Термін дії",
+        "REFEXP": "Термін оновлення",
+        "USERID": "ID користувача",
+        "IP": "IP користувача",
+        "ISACTIVE": "Статус токена",
+        "ACTION": "Дії з токеном"
+      },
+      "LOGS": {
+        "ID": "ID логу",
+        "TIMESTAMP": "Час логу",
+        "METHOD": "HTTP метод",
+        "PATH": "Шлях запиту",
+        "USERID": "ID користувача",
+        "REQUESTBODY": "Тіло запиту",
+        "STATUSCODE": "HTTP статус",
+        "START_TIME": "Час початку",
+        "END_TIME": "Час завершення",
+        "ELAPSED_TIME": "Час виконання",
+        "IP": "IP користувача",
+        "USERAGENT": "Пристрій",
+        "STATUS": "Статус логу",
+        "REQUEST_TYPE": "Тип запиту",
+        "MESSAGE": "Повідомлення",
+        "STACKTRACE": "Стек помилки",
+        "ENDPOINT": "API-ендпоінт",
+        "EXDETAILS": "Деталі помилки"
+      }
+    }
   }
 }

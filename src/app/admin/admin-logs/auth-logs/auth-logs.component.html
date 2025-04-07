@@ -1,7 +1,11 @@
 <div class="admin-auth-logs-container">
   <div class="logs-table">
     <div class="table-header">
-      <div class="column" (click)="sortByColumn('id')">
+      <div
+        class="column"
+        (click)="sortByColumn('id')"
+        [appTooltip]="'DESCRIPTION.ADMIN.LOGS.ID'"
+      >
         {{ "ADMIN.LOGS.ID" | translate }}
         <span *ngIf="sortColumn === 'id'" class="sort-arrow">
           {{ sortDirection === "asc" ? "▼" : "▲" }}
@@ -11,37 +15,59 @@
         class="column"
         *ngIf="showTimestamp"
         (click)="sortByColumn('timestamp')"
+        [appTooltip]="'DESCRIPTION.ADMIN.LOGS.TIMESTAMP'"
       >
         {{ "ADMIN.LOGS.TIMESTAMP" | translate | truncate : 5 }}
         <span *ngIf="sortColumn === 'timestamp'" class="sort-arrow">
           {{ sortDirection === "asc" ? "▼" : "▲" }}
         </span>
       </div>
-      <div class="column" *ngIf="showUserId" (click)="sortByColumn('userId')">
+      <div
+        class="column"
+        *ngIf="showUserId"
+        (click)="sortByColumn('userId')"
+        [appTooltip]="'DESCRIPTION.ADMIN.LOGS.USERID'"
+      >
         {{ "ADMIN.LOGS.USERID" | translate | truncate : 5 }}
         <span *ngIf="sortColumn === 'userId'" class="sort-arrow">
           {{ sortDirection === "asc" ? "▼" : "▲" }}
         </span>
       </div>
-      <div class="column" (click)="sortByColumn('ipAddress')">
+      <div
+        class="column"
+        (click)="sortByColumn('ipAddress')"
+        [appTooltip]="'DESCRIPTION.ADMIN.LOGS.IP'"
+      >
         {{ "ADMIN.LOGS.IP" | translate | truncate : 5 }}
         <span *ngIf="sortColumn === 'ipAddress'" class="sort-arrow">
           {{ sortDirection === "asc" ? "▼" : "▲" }}
         </span>
       </div>
-      <div class="column" (click)="sortByColumn('userAgent')">
+      <div
+        class="column"
+        (click)="sortByColumn('userAgent')"
+        [appTooltip]="'DESCRIPTION.ADMIN.LOGS.USERAGENT'"
+      >
         {{ "ADMIN.LOGS.USERAGENT" | translate | truncate : 5 }}
         <span *ngIf="sortColumn === 'userAgent'" class="sort-arrow">
           {{ sortDirection === "asc" ? "▼" : "▲" }}
         </span>
       </div>
-      <div class="column" (click)="sortByColumn('status')">
+      <div
+        class="column"
+        (click)="sortByColumn('status')"
+        [appTooltip]="'DESCRIPTION.ADMIN.LOGS.STATUS'"
+      >
         {{ "ADMIN.LOGS.STATUS" | translate | truncate : 5 }}
         <span *ngIf="sortColumn === 'status'" class="sort-arrow">
           {{ sortDirection === "asc" ? "▼" : "▲" }}
         </span>
       </div>
-      <div class="column" (click)="sortByColumn('message')">
+      <div
+        class="column"
+        (click)="sortByColumn('message')"
+        [appTooltip]="'DESCRIPTION.ADMIN.LOGS.MESSAGE'"
+      >
         {{ "ADMIN.LOGS.MESSAGE" | translate | truncate : 5 }}
         <span *ngIf="sortColumn === 'message'" class="sort-arrow">
           {{ sortDirection === "asc" ? "▼" : "▲" }}

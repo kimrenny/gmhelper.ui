@@ -378,5 +378,47 @@
   "LANGUAGE": {
     "CHANGE_TITLE": "言語が変更されました",
     "TEMPORARY_MESSAGE": "選択した言語は一時的なものです。設定でデフォルトの言語を変更できます。"
+  },
+  "DESCRIPTION": {
+    "ADMIN": {
+      "USERS": {
+        "NICKNAME": "ユーザー名",
+        "EMAIL": "ユーザーのメール",
+        "ROLE": "ユーザーの役割",
+        "REGISTRATION_DATE": "登録日",
+        "STATUS": "ユーザーの状態",
+        "ACTION": "ブロック操作"
+      },
+      "TOKENS": {
+        "ID": "トークンID",
+        "TOKEN": "アクセス・トークン",
+        "EXPIRATION": "有効期限",
+        "REFEXP": "リフレッシュ期限",
+        "USERID": "ユーザーID",
+        "IP": "ユーザーIP",
+        "ISACTIVE": "トークンの状態",
+        "ACTION": "トークン操作"
+      },
+      "LOGS": {
+        "ID": "ログID",
+        "TIMESTAMP": "ログの時刻",
+        "METHOD": "HTTPメソッド",
+        "PATH": "リクエストパス",
+        "USERID": "ユーザーID",
+        "REQUESTBODY": "リクエストボディ",
+        "STATUSCODE": "HTTPステータス",
+        "START_TIME": "開始時間",
+        "END_TIME": "終了時間",
+        "ELAPSED_TIME": "処理時間",
+        "IP": "ユーザーIP",
+        "USERAGENT": "ユーザー端末",
+        "STATUS": "ログの状態",
+        "REQUEST_TYPE": "リクエストタイプ",
+        "MESSAGE": "ログメッセージ",
+        "STACKTRACE": "スタックトレース",
+        "ENDPOINT": "APIエンドポイント",
+        "EXDETAILS": "エラー詳細"
+      }
+    }
   }
 }

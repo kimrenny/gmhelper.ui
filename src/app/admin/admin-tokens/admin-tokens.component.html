@@ -1,19 +1,33 @@
 <div class="admin-tokens-container">
   <div class="tokens-table">
     <div class="table-header">
-      <div class="column" (click)="sortByColumn('id')">
+      <div
+        class="column"
+        (click)="sortByColumn('id')"
+        [appTooltip]="'DESCRIPTION.ADMIN.TOKENS.ID'"
+      >
         {{ "ADMIN.TOKENS.ID" | translate }}
         <span *ngIf="sortColumn === 'id'" class="sort-arrow">
           {{ sortDirection === "asc" ? "▼" : "▲" }}
         </span>
       </div>
-      <div class="column" *ngIf="showToken" (click)="sortByColumn('token')">
+      <div
+        class="column"
+        *ngIf="showToken"
+        (click)="sortByColumn('token')"
+        [appTooltip]="'DESCRIPTION.ADMIN.TOKENS.TOKEN'"
+      >
         {{ "ADMIN.TOKENS.TOKEN" | translate }}
         <span *ngIf="sortColumn === 'token'" class="sort-arrow">
           {{ sortDirection === "asc" ? "▼" : "▲" }}
         </span>
       </div>
-      <div class="column" *ngIf="showExp" (click)="sortByColumn('expiration')">
+      <div
+        class="column"
+        *ngIf="showExp"
+        (click)="sortByColumn('expiration')"
+        [appTooltip]="'DESCRIPTION.ADMIN.TOKENS.EXPIRATION'"
+      >
         {{ "ADMIN.TOKENS.EXPIRATION" | translate }}
         <span *ngIf="sortColumn === 'expiration'" class="sort-arrow">
           {{ sortDirection === "asc" ? "▼" : "▲" }}
@@ -23,6 +37,7 @@
         class="column"
         *ngIf="showExp"
         (click)="sortByColumn('refreshTokenExpiration')"
+        [appTooltip]="'DESCRIPTION.ADMIN.TOKENS.REFEXP'"
       >
         {{ "ADMIN.TOKENS.REFEXP" | translate }}
         <span
@@ -32,25 +47,40 @@
           {{ sortDirection === "asc" ? "▼" : "▲" }}
         </span>
       </div>
-      <div class="column" *ngIf="showUserId" (click)="sortByColumn('userId')">
+      <div
+        class="column"
+        *ngIf="showUserId"
+        (click)="sortByColumn('userId')"
+        [appTooltip]="'DESCRIPTION.ADMIN.TOKENS.USERID'"
+      >
         {{ "ADMIN.TOKENS.USERID" | translate }}
         <span *ngIf="sortColumn === 'userId'" class="sort-arrow">
           {{ sortDirection === "asc" ? "▼" : "▲" }}
         </span>
       </div>
-      <div class="column" (click)="sortByColumn('ipAddress')">
+      <div
+        class="column"
+        (click)="sortByColumn('ipAddress')"
+        [appTooltip]="'DESCRIPTION.ADMIN.TOKENS.IP'"
+      >
         {{ "ADMIN.TOKENS.IP" | translate }}
         <span *ngIf="sortColumn === 'ipAddress'" class="sort-arrow">
           {{ sortDirection === "asc" ? "▼" : "▲" }}
         </span>
       </div>
-      <div class="column" (click)="sortByColumn('isActive')">
+      <div
+        class="column"
+        (click)="sortByColumn('isActive')"
+        [appTooltip]="'DESCRIPTION.ADMIN.TOKENS.ISACTIVE'"
+      >
         {{ "ADMIN.TOKENS.ISACTIVE" | translate }}
         <span *ngIf="sortColumn === 'isActive'" class="sort-arrow">
           {{ sortDirection === "asc" ? "▼" : "▲" }}
         </span>
       </div>
-      <div class="column">{{ "ADMIN.TOKENS.ACTION" | translate }}</div>
+      <div class="column" [appTooltip]="'DESCRIPTION.ADMIN.TOKENS.ACTION'">
+        {{ "ADMIN.TOKENS.ACTION" | translate }}
+      </div>
     </div>
     <div class="table-body">
       <div

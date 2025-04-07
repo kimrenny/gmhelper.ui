@@ -378,5 +378,47 @@
   "LANGUAGE": {
     "CHANGE_TITLE": "언어 변경됨",
     "TEMPORARY_MESSAGE": "선택한 언어는 임시입니다. 설정에서 기본 언어를 변경할 수 있습니다."
+  },
+  "DESCRIPTION": {
+    "ADMIN": {
+      "USERS": {
+        "NICKNAME": "사용자 이름",
+        "EMAIL": "사용자 이메일",
+        "ROLE": "사용자 역할",
+        "REGISTRATION_DATE": "가입일",
+        "STATUS": "사용자 상태",
+        "ACTION": "차단 작업"
+      },
+      "TOKENS": {
+        "ID": "토큰 ID",
+        "TOKEN": "액세스 토큰",
+        "EXPIRATION": "만료 시간",
+        "REFEXP": "리프레시 만료 시간",
+        "USERID": "사용자 ID",
+        "IP": "사용자 IP",
+        "ISACTIVE": "토큰 상태",
+        "ACTION": "토큰 작업"
+      },
+      "LOGS": {
+        "ID": "로그 ID",
+        "TIMESTAMP": "로그 시간",
+        "METHOD": "HTTP 메서드",
+        "PATH": "요청 경로",
+        "USERID": "사용자 ID",
+        "REQUESTBODY": "요청 본문",
+        "STATUSCODE": "HTTP 상태 코드",
+        "START_TIME": "시작 시간",
+        "END_TIME": "종료 시간",
+        "ELAPSED_TIME": "소요 시간",
+        "IP": "사용자 IP",
+        "USERAGENT": "사용자 기기",
+        "STATUS": "로그 상태",
+        "REQUEST_TYPE": "요청 유형",
+        "MESSAGE": "로그 메시지",
+        "STACKTRACE": "에러 추적",
+        "ENDPOINT": "API 엔드포인트",
+        "EXDETAILS": "에러 상세"
+      }
+    }
   }
 }

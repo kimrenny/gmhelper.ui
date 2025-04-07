@@ -8,6 +8,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { AdminSettingsService } from 'src/app/services/admin-settings.service';
 import { FormsModule } from '@angular/forms';
+import { TooltipDirective } from 'src/app/shared/directives/tooltip/tooltip.directive';
 
 interface DeviceInfo {
   userAgent: string;
@@ -28,7 +29,7 @@ interface Token {
 @Component({
   selector: 'app-admin-tokens',
   standalone: true,
-  imports: [CommonModule, FormsModule, TranslateModule],
+  imports: [CommonModule, FormsModule, TranslateModule, TooltipDirective],
   templateUrl: './admin-tokens.component.html',
   styleUrls: ['./admin-tokens.component.scss'],
 })

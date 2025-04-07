@@ -378,5 +378,47 @@
   "LANGUAGE": {
     "CHANGE_TITLE": "Langue modifiée",
     "TEMPORARY_MESSAGE": "La langue sélectionnée est temporaire. Vous pouvez modifier la langue par défaut dans les paramètres."
+  },
+  "DESCRIPTION": {
+    "ADMIN": {
+      "USERS": {
+        "NICKNAME": "Nom d'utilisateur",
+        "EMAIL": "Email utilisateur",
+        "ROLE": "Rôle utilisateur",
+        "REGISTRATION_DATE": "Date d’inscription",
+        "STATUS": "Statut utilisateur",
+        "ACTION": "Actions blocage"
+      },
+      "TOKENS": {
+        "ID": "ID jeton",
+        "TOKEN": "Jeton accès",
+        "EXPIRATION": "Expiration",
+        "REFEXP": "Expiration refresh",
+        "USERID": "ID utilisateur",
+        "IP": "IP utilisateur",
+        "ISACTIVE": "Statut jeton",
+        "ACTION": "Actions jeton"
+      },
+      "LOGS": {
+        "ID": "ID log",
+        "TIMESTAMP": "Heure log",
+        "METHOD": "Méthode HTTP",
+        "PATH": "Chemin requête",
+        "USERID": "ID utilisateur",
+        "REQUESTBODY": "Corps requête",
+        "STATUSCODE": "Code statut",
+        "START_TIME": "Début",
+        "END_TIME": "Fin",
+        "ELAPSED_TIME": "Durée",
+        "IP": "IP utilisateur",
+        "USERAGENT": "Appareil",
+        "STATUS": "Statut log",
+        "REQUEST_TYPE": "Type requête",
+        "MESSAGE": "Message log",
+        "STACKTRACE": "Trace erreur",
+        "ENDPOINT": "Point API",
+        "EXDETAILS": "Détails erreur"
+      }
+    }
   }
 }

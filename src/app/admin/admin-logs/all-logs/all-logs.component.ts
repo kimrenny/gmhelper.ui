@@ -9,6 +9,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { AdminSettingsService } from 'src/app/services/admin-settings.service';
 import { TruncatePipe } from 'src/app/pipes/truncate.pipe';
 import { FormsModule } from '@angular/forms';
+import { TooltipDirective } from 'src/app/shared/directives/tooltip/tooltip.directive';
 
 interface RequestLog {
   id: number;
@@ -30,7 +31,13 @@ interface RequestLog {
 @Component({
   selector: 'app-admin-logs-all',
   standalone: true,
-  imports: [CommonModule, FormsModule, TranslateModule, TruncatePipe],
+  imports: [
+    CommonModule,
+    FormsModule,
+    TranslateModule,
+    TruncatePipe,
+    TooltipDirective,
+  ],
   templateUrl: './all-logs.component.html',
   styleUrls: ['./all-logs.component.scss'],
 })

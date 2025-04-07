@@ -378,5 +378,47 @@
   "LANGUAGE": {
     "CHANGE_TITLE": "Sprache geändert",
     "TEMPORARY_MESSAGE": "Die ausgewählte Sprache ist temporär. Sie können die Standardsprache in den Einstellungen ändern."
+  },
+  "DESCRIPTION": {
+    "ADMIN": {
+      "USERS": {
+        "NICKNAME": "Benutzername",
+        "EMAIL": "Benutzer-E-Mail",
+        "ROLE": "Benutzerrolle",
+        "REGISTRATION_DATE": "Registrierungsdatum",
+        "STATUS": "Benutzerstatus",
+        "ACTION": "Sperraktionen"
+      },
+      "TOKENS": {
+        "ID": "Token-ID",
+        "TOKEN": "Zugangstoken",
+        "EXPIRATION": "Ablaufdatum",
+        "REFEXP": "Ablaufdatum des Refresh-Tokens",
+        "USERID": "Benutzer-ID",
+        "IP": "Benutzer-IP",
+        "ISACTIVE": "Token-Status",
+        "ACTION": "Tokenaktionen"
+      },
+      "LOGS": {
+        "ID": "Log-ID",
+        "TIMESTAMP": "Log-Zeit",
+        "METHOD": "HTTP-Methode",
+        "PATH": "Anfragepfad",
+        "USERID": "Benutzer-ID",
+        "REQUESTBODY": "Anfrageinhalt",
+        "STATUSCODE": "HTTP-Statuscode",
+        "START_TIME": "Startzeit",
+        "END_TIME": "Endzeit",
+        "ELAPSED_TIME": "Dauer",
+        "IP": "Benutzer-IP",
+        "USERAGENT": "Benutzergerät",
+        "STATUS": "Log-Status",
+        "REQUEST_TYPE": "Anfragetyp",
+        "MESSAGE": "Log-Nachricht",
+        "STACKTRACE": "Fehler-Stack",
+        "ENDPOINT": "API-Endpunkt",
+        "EXDETAILS": "Fehlerdetails"
+      }
+    }
   }
 }

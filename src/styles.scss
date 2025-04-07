@@ -17,3 +17,26 @@ body {
 .select-none {
   user-select: none;
 }
+
+.tooltip-text {
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.85);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(25px) translateY(10px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  z-index: 100;
+
+  &.top {
+    top: 100%;
+    left: 25%;
+    transform: translateX(-25px) translateY(10px);
+    margin-bottom: 8px;
+  }
+}

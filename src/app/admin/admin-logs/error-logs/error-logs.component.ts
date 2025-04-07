@@ -9,6 +9,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { AdminSettingsService } from 'src/app/services/admin-settings.service';
 import { TruncatePipe } from 'src/app/pipes/truncate.pipe';
 import { FormsModule } from '@angular/forms';
+import { TooltipDirective } from 'src/app/shared/directives/tooltip/tooltip.directive';
 
 interface ErrorLog {
   id: number;
@@ -22,7 +23,13 @@ interface ErrorLog {
 @Component({
   selector: 'app-admin-error-logs',
   standalone: true,
-  imports: [CommonModule, FormsModule, TranslateModule, TruncatePipe],
+  imports: [
+    CommonModule,
+    FormsModule,
+    TranslateModule,
+    TruncatePipe,
+    TooltipDirective,
+  ],
   templateUrl: './error-logs.component.html',
   styleUrls: ['./error-logs.component.scss'],
 })

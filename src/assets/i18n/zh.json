@@ -378,5 +378,47 @@
   "LANGUAGE": {
     "CHANGE_TITLE": "语言已更改",
     "TEMPORARY_MESSAGE": "所选语言是临时的。您可以在设置中更改默认语言。"
+  },
+  "DESCRIPTION": {
+    "ADMIN": {
+      "USERS": {
+        "NICKNAME": "用户名",
+        "EMAIL": "用户邮箱",
+        "ROLE": "用户角色",
+        "REGISTRATION_DATE": "注册日期",
+        "STATUS": "用户状态",
+        "ACTION": "封禁操作"
+      },
+      "TOKENS": {
+        "ID": "令牌ID",
+        "TOKEN": "访问令牌",
+        "EXPIRATION": "到期时间",
+        "REFEXP": "刷新到期时间",
+        "USERID": "用户ID",
+        "IP": "用户IP地址",
+        "ISACTIVE": "令牌状态",
+        "ACTION": "令牌操作"
+      },
+      "LOGS": {
+        "ID": "日志ID",
+        "TIMESTAMP": "日志时间",
+        "METHOD": "HTTP方法",
+        "PATH": "请求路径",
+        "USERID": "用户ID",
+        "REQUESTBODY": "请求正文",
+        "STATUSCODE": "HTTP状态码",
+        "START_TIME": "开始时间",
+        "END_TIME": "结束时间",
+        "ELAPSED_TIME": "耗时",
+        "IP": "用户IP地址",
+        "USERAGENT": "用户设备",
+        "STATUS": "日志状态",
+        "REQUEST_TYPE": "请求类型",
+        "MESSAGE": "日志信息",
+        "STACKTRACE": "错误堆栈",
+        "ENDPOINT": "API端点",
+        "EXDETAILS": "错误详情"
+      }
+    }
   }
 }

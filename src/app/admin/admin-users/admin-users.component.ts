@@ -16,6 +16,7 @@ import {
 } from '@angular/animations';
 import { AdminSettingsService } from 'src/app/services/admin-settings.service';
 import { FormsModule } from '@angular/forms';
+import { TooltipDirective } from 'src/app/shared/directives/tooltip/tooltip.directive';
 
 interface DeviceInfo {
   userAgent: string;
@@ -42,7 +43,7 @@ interface User {
 @Component({
   selector: 'app-admin-users',
   standalone: true,
-  imports: [CommonModule, FormsModule, TranslateModule],
+  imports: [CommonModule, FormsModule, TranslateModule, TooltipDirective],
   templateUrl: './admin-users.component.html',
   styleUrls: ['./admin-users.component.scss'],
   animations: [

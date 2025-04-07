@@ -378,5 +378,47 @@
   "LANGUAGE": {
     "CHANGE_TITLE": "Language Changed",
     "TEMPORARY_MESSAGE": "The selected language is temporary. You can change the default language in settings."
+  },
+  "DESCRIPTION": {
+    "ADMIN": {
+      "USERS": {
+        "NICKNAME": "Username",
+        "EMAIL": "User email",
+        "ROLE": "User role",
+        "REGISTRATION_DATE": "User registration date",
+        "STATUS": "User status",
+        "ACTION": "Block actions"
+      },
+      "TOKENS": {
+        "ID": "Token ID",
+        "TOKEN": "Access token",
+        "EXPIRATION": "Token expiration",
+        "REFEXP": "Refresh token expiration",
+        "USERID": "User ID",
+        "IP": "User IP",
+        "ISACTIVE": "Token status",
+        "ACTION": "Token actions"
+      },
+      "LOGS": {
+        "ID": "Log ID",
+        "TIMESTAMP": "Log time",
+        "METHOD": "HTTP method",
+        "PATH": "Request path",
+        "USERID": "User ID",
+        "REQUESTBODY": "Request body",
+        "STATUSCODE": "HTTP status",
+        "START_TIME": "Start time",
+        "END_TIME": "End time",
+        "ELAPSED_TIME": "Time taken",
+        "IP": "User IP",
+        "USERAGENT": "User device",
+        "STATUS": "Log status",
+        "REQUEST_TYPE": "Request type",
+        "MESSAGE": "Log message",
+        "STACKTRACE": "Error trace",
+        "ENDPOINT": "API endpoint",
+        "EXDETAILS": "Error details"
+      }
+    }
   }
 }

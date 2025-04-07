@@ -5,19 +5,29 @@
         class="column"
         *ngIf="showUsername"
         (click)="sortByColumn('username')"
+        [appTooltip]="'DESCRIPTION.ADMIN.USERS.NICKNAME'"
       >
         {{ "ADMIN.USERS.NICKNAME" | translate }}
         <span *ngIf="sortColumn === 'username'" class="sort-arrow">
           {{ sortDirection === "asc" ? "▼" : "▲" }}
         </span>
       </div>
-      <div class="column" *ngIf="showEmail" (click)="sortByColumn('email')">
+      <div
+        class="column"
+        *ngIf="showEmail"
+        (click)="sortByColumn('email')"
+        [appTooltip]="'DESCRIPTION.ADMIN.USERS.EMAIL'"
+      >
         {{ "ADMIN.USERS.EMAIL" | translate }}
         <span *ngIf="sortColumn === 'email'" class="sort-arrow">
           {{ sortDirection === "asc" ? "▼" : "▲" }}
         </span>
       </div>
-      <div class="column" (click)="sortByColumn('role')">
+      <div
+        class="column"
+        (click)="sortByColumn('role')"
+        [appTooltip]="'DESCRIPTION.ADMIN.USERS.ROLE'"
+      >
         {{ "ADMIN.USERS.ROLE" | translate }}
         <span *ngIf="sortColumn === 'role'" class="sort-arrow">
           {{ sortDirection === "asc" ? "▼" : "▲" }}
@@ -27,19 +37,26 @@
         class="column"
         *ngIf="showRegistration"
         (click)="sortByColumn('registrationDate')"
+        [appTooltip]="'DESCRIPTION.ADMIN.USERS.REGISTRATION_DATE'"
       >
         {{ "ADMIN.USERS.REG_DATE" | translate }}
         <span *ngIf="sortColumn === 'registrationDate'" class="sort-arrow">
           {{ sortDirection === "asc" ? "▼" : "▲" }}
         </span>
       </div>
-      <div class="column" (click)="sortByColumn('isBlocked')">
+      <div
+        class="column"
+        (click)="sortByColumn('isBlocked')"
+        [appTooltip]="'DESCRIPTION.ADMIN.USERS.STATUS'"
+      >
         {{ "ADMIN.USERS.STATUS" | translate }}
         <span *ngIf="sortColumn === 'isBlocked'" class="sort-arrow">
           {{ sortDirection === "asc" ? "▼" : "▲" }}
         </span>
       </div>
-      <div class="column">{{ "ADMIN.USERS.ACTION" | translate }}</div>
+      <div class="column" [appTooltip]="'DESCRIPTION.ADMIN.USERS.ACTION'">
+        {{ "ADMIN.USERS.ACTION" | translate }}
+      </div>
     </div>
     <div class="table-body">
       <div

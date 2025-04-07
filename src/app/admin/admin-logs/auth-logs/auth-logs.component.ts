@@ -9,6 +9,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { AdminSettingsService } from 'src/app/services/admin-settings.service';
 import { TruncatePipe } from 'src/app/pipes/truncate.pipe';
 import { FormsModule } from '@angular/forms';
+import { TooltipDirective } from 'src/app/shared/directives/tooltip/tooltip.directive';
 
 interface AuthLog {
   id: number;
@@ -23,7 +24,13 @@ interface AuthLog {
 @Component({
   selector: 'app-admin-auth-logs',
   standalone: true,
-  imports: [CommonModule, FormsModule, TranslateModule, TruncatePipe],
+  imports: [
+    CommonModule,
+    FormsModule,
+    TranslateModule,
+    TruncatePipe,
+    TooltipDirective,
+  ],
   templateUrl: './auth-logs.component.html',
   styleUrls: ['./auth-logs.component.scss'],
 })
