@@ -7,6 +7,7 @@ import { NgxCaptchaModule } from 'ngx-captcha';
 import { RegisterService } from '../services/register.service';
 import { UserService } from '../services/user.service';
 import { Observable } from 'rxjs';
+import { ApiResponse } from '../models/api-response.model';
 
 @Component({
   selector: 'app-register',
@@ -149,27 +150,33 @@ export class RegisterComponent {
         },
         error: (error) => {
           console.error('Registration error:', error);
-          switch (error.error) {
-            case 'Invalid data.':
-              this.registerFeedbackMessage =
-                'REGISTER.ERRORS.REGISTRATION.FAIL.DATA';
-              break;
-            case 'Invalid CAPTCHA token.':
-              this.registerFeedbackMessage =
-                'REGISTER.ERRORS.REGISTRATION.FAIL.CAPTCHA';
-              break;
-            case 'Violation of service rules. All user accounts have been blocked.':
-              this.registerFeedbackMessage =
-                'REGISTER.ERRORS.REGISTRATION.FAIL.BANNED';
-              break;
-            default:
-              this.registerFeedbackMessage =
-                'REGISTER.ERRORS.REGISTRATION.FAIL.UNKNOWN';
-              break;
+          if (error.error && error.error.message) {
+            this.handleRegisterError(error.error.message);
           }
-          this.clearMessageAfterDelay('register');
         },
       });
+  }
+
+  handleRegisterError(message: string | any) {
+    switch (message) {
+      case 'Email is already used by another user.':
+      case 'Invalid data.':
+        this.registerFeedbackMessage = 'REGISTER.ERRORS.REGISTRATION.FAIL.DATA';
+        break;
+      case 'Invalid CAPTCHA token.':
+        this.registerFeedbackMessage =
+          'REGISTER.ERRORS.REGISTRATION.FAIL.CAPTCHA';
+        break;
+      case 'Violation of service rules. All user accounts have been blocked.':
+        this.registerFeedbackMessage =
+          'REGISTER.ERRORS.REGISTRATION.FAIL.BANNED';
+        break;
+      default:
+        this.registerFeedbackMessage =
+          'REGISTER.ERRORS.REGISTRATION.FAIL.UNKNOWN';
+        break;
+    }
+    this.clearMessageAfterDelay('register');
   }
 
   login() {
@@ -196,43 +203,56 @@ export class RegisterComponent {
         this.rememberMe
       )
       .subscribe({
-        next: (response: any) => {
+        next: (response: ApiResponse<any>) => {
+          console.log(response);
           this.captchaLoginToken = '';
-          localStorage.setItem('authToken', response.accessToken);
-          localStorage.setItem('refreshToken', response.refreshToken);
-          this.userService.checkAuthentication();
-          this.loginFeedbackMessage = 'REGISTER.ERRORS.LOGIN.SUCCESS';
-          this.clearMessageAfterDelay('login');
-          setTimeout(() => {
-            this.router.navigate(['/']); // Forced redirection in case of failure of subscription.
-          }, 1000);
+          if (response.success) {
+            localStorage.setItem('authToken', response.data.accessToken);
+            localStorage.setItem('refreshToken', response.data.refreshToken);
+            this.userService.checkAuthentication();
+            this.loginFeedbackMessage = 'REGISTER.ERRORS.LOGIN.SUCCESS';
+            this.clearMessageAfterDelay('login');
+            setTimeout(() => {
+              this.router.navigate(['/']); // Forced redirection in case of failure of subscription.
+            }, 1000);
+          } else {
+            this.handleLoginError(response.message);
+          }
         },
         error: (error) => {
           console.error('Login error:', error);
-          switch (error.error) {
-            case 'Invalid credentials.':
-              this.loginFeedbackMessage = 'REGISTER.ERRORS.LOGIN.FAIL.DATA';
-              break;
-            case 'Invalid CAPTCHA token.':
-              this.loginFeedbackMessage = 'REGISTER.ERRORS.LOGIN.FAIL.CAPTCHA';
-              break;
-            case 'User is banned.':
-              this.loginFeedbackMessage = 'REGISTER.ERRORS.LOGIN.FAIL.BANNED';
-              break;
-            case 'Suspicious activity detected. Accounts blocked.':
-              this.loginFeedbackMessage = 'REGISTER.ERRORS.LOGIN.FAIL.BANNED';
-              break;
-            case 'User not found.':
-              this.loginFeedbackMessage =
-                'REGISTER.ERRORS.LOGIN.FAIL.USERNOTFOUND';
-              break;
-            default:
-              this.loginFeedbackMessage = 'REGISTER.ERRORS.LOGIN.FAIL.UNKNOWN';
-              break;
+          if (error.error && error.error.message) {
+            this.handleLoginError(error.error.message);
+          } else {
+            this.loginFeedbackMessage = 'REGISTER.ERRORS.LOGIN.FAIL.UNKNOWN';
+            this.clearMessageAfterDelay('login');
           }
-          this.clearMessageAfterDelay('login');
         },
       });
+  }
+
+  handleLoginError(message: string | null) {
+    switch (message) {
+      case 'Invalid credentials.':
+        this.loginFeedbackMessage = 'REGISTER.ERRORS.LOGIN.FAIL.DATA';
+        break;
+      case 'Invalid CAPTCHA token.':
+        this.loginFeedbackMessage = 'REGISTER.ERRORS.LOGIN.FAIL.CAPTCHA';
+        break;
+      case 'User is banned.':
+        this.loginFeedbackMessage = 'REGISTER.ERRORS.LOGIN.FAIL.BANNED';
+        break;
+      case 'Suspicious activity detected. Accounts blocked.':
+        this.loginFeedbackMessage = 'REGISTER.ERRORS.LOGIN.FAIL.BANNED';
+        break;
+      case 'User not found.':
+        this.loginFeedbackMessage = 'REGISTER.ERRORS.LOGIN.FAIL.USERNOTFOUND';
+        break;
+      default:
+        this.loginFeedbackMessage = 'REGISTER.ERRORS.LOGIN.FAIL.UNKNOWN';
+        break;
+    }
+    this.clearMessageAfterDelay('login');
   }
 
   validateUsername() {

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs';
+import { ApiResponse } from '../models/api-response.model';
 
 @Injectable({
   providedIn: 'root',
@@ -117,9 +118,13 @@ export class RegisterService {
       captchaToken,
     };
 
-    return this.http.post('https://localhost:7057/api/user/register', body, {
-      headers,
-    });
+    return this.http.post<ApiResponse<any>>(
+      'https://localhost:7057/api/user/register',
+      body,
+      {
+        headers,
+      }
+    );
   }
 
   validateLoginPassword(password: string): string {
@@ -145,9 +150,13 @@ export class RegisterService {
       captchaToken,
       remember: rememberMe,
     };
-    return this.http.post('https://localhost:7057/api/user/login', body, {
-      headers,
-    });
+    return this.http.post<ApiResponse<any>>(
+      'https://localhost:7057/api/user/login',
+      body,
+      {
+        headers,
+      }
+    );
   }
 
   recoveryPasswordUser(email: string, captchaToken: string) {
