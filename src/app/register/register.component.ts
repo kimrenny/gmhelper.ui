@@ -248,6 +248,9 @@ export class RegisterComponent {
       case 'User not found.':
         this.loginFeedbackMessage = 'REGISTER.ERRORS.LOGIN.FAIL.USERNOTFOUND';
         break;
+      case 'Please activate your account by following the link sent to your email.':
+        this.loginFeedbackMessage = 'REGISTER.ERRORS.LOGIN.FAIL.NOTACTIVE';
+        break;
       default:
         this.loginFeedbackMessage = 'REGISTER.ERRORS.LOGIN.FAIL.UNKNOWN';
         break;

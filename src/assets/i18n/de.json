@@ -132,7 +132,8 @@
           "CAPTCHA": "Die Überprüfung „Ich bin kein Roboter“ ist fehlgeschlagen.",
           "BANNED": "Dieses Konto wurde gesperrt.",
           "UNKNOWN": "Ein unbekannter Fehler ist aufgetreten. Versuchen Sie es später erneut.",
-          "USERNOTFOUND": "Benutzer nicht gefunden. Überprüfen Sie die Informationen und versuchen Sie es erneut."
+          "USERNOTFOUND": "Benutzer nicht gefunden. Überprüfen Sie die Informationen und versuchen Sie es erneut.",
+          "NOTACTIVE": "Bitte aktivieren Sie Ihr Konto, indem Sie dem Link folgen, der an Ihre E-Mail gesendet wurde."
         }
       },
       "RECOVER": {

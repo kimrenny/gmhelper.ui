@@ -132,7 +132,8 @@
           "CAPTCHA": "The \"I'm not a robot\" check failed.",
           "BANNED": "This account has been blocked.",
           "UNKNOWN": "An unknown error occurred. Try again later.",
-          "USERNOTFOUND": "User not found. Check information and try again."
+          "USERNOTFOUND": "User not found. Check information and try again.",
+          "NOTACTIVE": "Please activate your account by following the link sent to your email."
         }
       },
       "RECOVER": {
