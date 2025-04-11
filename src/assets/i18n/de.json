@@ -428,8 +428,12 @@
         "TITLE": "E-Mail-Bestätigung",
         "PROCESSING": "Ihre Anfrage wird verarbeitet...",
         "SUCCESS": "Ihre E-Mail wurde erfolgreich bestätigt.",
+        "INVALID": "Der Bestätigungslink ist ungültig.",
+        "ALREADY_USED": "Dieser Bestätigungslink wurde bereits verwendet.",
+        "NEW_LINK_SENT": "Der Link ist abgelaufen. Ein neuer Link wurde an Ihre E-Mail-Adresse gesendet.",
         "ERROR": "Es ist ein Fehler bei der E-Mail-Bestätigung aufgetreten.",
-        "TIMER": "Weiterleitung zur Startseite in:"
+        "TIMER": "Weiterleitung zur Startseite in:",
+        "CAPTCHA_REQUIRED": "Bitte vervollständigen Sie die CAPTCHA, um fortzufahren."
       }
     }
   }

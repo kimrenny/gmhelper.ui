@@ -428,8 +428,12 @@
         "TITLE": "Email confirmation",
         "PROCESSING": "Processing your request...",
         "SUCCESS": "Your email has been successfully confirmed.",
+        "INVALID": "The confirmation link is invalid.",
+        "ALREADY_USED": "This confirmation link has already been used.",
+        "NEW_LINK_SENT": "The confirmation link has expired. A new one has been sent to your email.",
         "ERROR": "An error occurred during email confirmation.",
-        "TIMER": "Redirecting to the homepage in:"
+        "TIMER": "Redirecting to the homepage in:",
+        "CAPTCHA_REQUIRED": "Please complete the CAPTCHA to proceed."
       }
     }
   }

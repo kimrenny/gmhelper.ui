@@ -428,8 +428,12 @@
         "TITLE": "Confirmation de l'email",
         "PROCESSING": "Traitement de votre demande...",
         "SUCCESS": "Votre email a été confirmé avec succès.",
+        "INVALID": "Le lien de confirmation est invalide.",
+        "ALREADY_USED": "Ce lien de confirmation a déjà été utilisé.",
+        "NEW_LINK_SENT": "Le lien a expiré. Un nouveau lien a été envoyé à votre adresse e-mail.",
         "ERROR": "Une erreur est survenue lors de la confirmation de l'email.",
-        "TIMER": "Redirection vers la page d'accueil dans:"
+        "TIMER": "Redirection vers la page d'accueil dans:",
+        "CAPTCHA_REQUIRED": "Veuillez compléter le CAPTCHA pour continuer."
       }
     }
   }

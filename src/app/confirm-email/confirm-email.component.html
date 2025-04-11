@@ -1,12 +1,22 @@
 <div class="confirm-wrapper">
   <div class="confirm-box">
     <h2>{{ "AUTH.EMAIL.CONFIRM.TITLE" | translate }}</h2>
+
+    <div class="recaptcha-container" *ngIf="isCaptchaLoaded && !captchaPassed">
+      <ngx-recaptcha2
+        [siteKey]="'6LdH7qIqAAAAAGivcgrDnNnpaIj_GNRwy_CTu95X'"
+        [id]="'recaptcha-confirm'"
+        (success)="onCaptchaConfirmChange($event)"
+        [size]="'normal'"
+      ></ngx-recaptcha2>
+    </div>
     <p *ngIf="message">
       <span *ngIf="message === 'AUTH.EMAIL.CONFIRM.PROCESSING'">
         <div class="spinner"></div>
       </span>
       {{ message | translate }}
     </p>
+
     <p *ngIf="showTimer">
       {{ "AUTH.EMAIL.CONFIRM.TIMER" | translate }} {{ countdown }}
     </p>
