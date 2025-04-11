@@ -421,5 +421,16 @@
         "EXDETAILS": "Fehlerdetails"
       }
     }
+  },
+  "AUTH": {
+    "EMAIL": {
+      "CONFIRM": {
+        "TITLE": "E-Mail-Bestätigung",
+        "PROCESSING": "Ihre Anfrage wird verarbeitet...",
+        "SUCCESS": "Ihre E-Mail wurde erfolgreich bestätigt.",
+        "ERROR": "Es ist ein Fehler bei der E-Mail-Bestätigung aufgetreten.",
+        "TIMER": "Weiterleitung zur Startseite in:"
+      }
+    }
   }
 }

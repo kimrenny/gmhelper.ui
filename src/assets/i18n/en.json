@@ -421,5 +421,16 @@
         "EXDETAILS": "Error details"
       }
     }
+  },
+  "AUTH": {
+    "EMAIL": {
+      "CONFIRM": {
+        "TITLE": "Email confirmation",
+        "PROCESSING": "Processing your request...",
+        "SUCCESS": "Your email has been successfully confirmed.",
+        "ERROR": "An error occurred during email confirmation.",
+        "TIMER": "Redirecting to the homepage in:"
+      }
+    }
   }
 }

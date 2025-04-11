@@ -1,0 +1,14 @@
+<div class="confirm-wrapper">
+  <div class="confirm-box">
+    <h2>{{ "AUTH.EMAIL.CONFIRM.TITLE" | translate }}</h2>
+    <p *ngIf="message">
+      <span *ngIf="message === 'AUTH.EMAIL.CONFIRM.PROCESSING'">
+        <div class="spinner"></div>
+      </span>
+      {{ message | translate }}
+    </p>
+    <p *ngIf="showTimer">
+      {{ "AUTH.EMAIL.CONFIRM.TIMER" | translate }} {{ countdown }}
+    </p>
+  </div>
+</div>

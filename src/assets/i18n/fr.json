@@ -421,5 +421,16 @@
         "EXDETAILS": "Détails erreur"
       }
     }
+  },
+  "AUTH": {
+    "EMAIL": {
+      "CONFIRM": {
+        "TITLE": "Confirmation de l'email",
+        "PROCESSING": "Traitement de votre demande...",
+        "SUCCESS": "Votre email a été confirmé avec succès.",
+        "ERROR": "Une erreur est survenue lors de la confirmation de l'email.",
+        "TIMER": "Redirection vers la page d'accueil dans:"
+      }
+    }
   }
 }
