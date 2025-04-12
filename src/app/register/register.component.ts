@@ -337,7 +337,7 @@ export class RegisterComponent {
           this.captchaRecoveryToken = '';
           this.recoveryFeedbackMessage = 'REGISTER.ERRORS.RECOVER.SUCCESS';
           this.clearMessageAfterDelay('recovery');
-          setTimeout(() => this.closeForgotPassword(), 2000);
+          setTimeout(() => this.closeForgotPassword(), 4000);
         },
         error: (error) => {
           console.error(error);

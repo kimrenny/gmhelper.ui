@@ -1,28 +1,39 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  Inject,
+  inject,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
-import { NgxCaptchaModule } from 'ngx-captcha';
+import { NgxCaptchaModule, ReCaptcha2Component } from 'ngx-captcha';
+import { RegisterService } from '../services/register.service';
 import { Subscription } from 'rxjs';
 import { UserService } from '../services/user.service';
 
 @Component({
   standalone: true,
-  selector: 'app-confirm-email',
-  imports: [CommonModule, TranslateModule, NgxCaptchaModule],
-  templateUrl: './confirm-email.component.html',
-  styleUrls: ['./confirm-email.component.scss'],
+  selector: 'app-password-recovery',
+  imports: [CommonModule, TranslateModule, NgxCaptchaModule, FormsModule],
+  templateUrl: './password-recovery.component.html',
+  styleUrls: ['./password-recovery.component.scss'],
 })
-export class ConfirmEmailComponent implements OnInit, OnDestroy {
+export class PasswordRecoveryComponent implements OnInit, OnDestroy {
   private userSubscription!: Subscription;
 
   private route = inject(ActivatedRoute);
   private http = inject(HttpClient);
-  private router = inject(Router);
   private api = 'https://localhost:7057';
 
-  message = 'AUTH.EMAIL.CONFIRM.CAPTCHA_REQUIRED';
+  password: string = '';
+
+  message = 'AUTH.RECOVERY.CAPTCHA_REQUIRED';
   showTimer = false;
   countdown = 5;
   intervalId?: any;
@@ -31,7 +42,30 @@ export class ConfirmEmailComponent implements OnInit, OnDestroy {
   captchaPassed = false;
   captchaToken: string | null = null;
 
-  constructor(private userService: UserService) {}
+  passwordError: string = '';
+  passwordStrength: number = 0;
+  passwordStrengthBars: number[] = [0, 1, 2];
+  showPasswordHint: boolean = false;
+
+  passwordValidations = {
+    hasMinLength: false,
+    hasUpperCase: false,
+    hasLowerCase: false,
+    hasDigit: false,
+    hasSpecialChar: false,
+    notContainsEmail: true,
+  };
+
+  passwordVisible = false;
+
+  @ViewChild('captchaElem') captchaElem!: ReCaptcha2Component;
+
+  constructor(
+    @Inject(ChangeDetectorRef) private cdr: ChangeDetectorRef,
+    private registerService: RegisterService,
+    private userService: UserService,
+    private router: Router
+  ) {}
 
   ngOnInit() {
     this.userSubscription = this.userService.user$.subscribe((user) => {
@@ -48,19 +82,30 @@ export class ConfirmEmailComponent implements OnInit, OnDestroy {
   }
 
   onCaptchaConfirmChange(token: string) {
+    this.validatePassword();
+
+    if (this.passwordError || !this.password) {
+      this.captchaPassed = false;
+      this.captchaToken = null;
+      this.captchaElem.resetCaptcha();
+      this.message = 'AUTH.RECOVERY.INVALID_PASSWORD';
+      return;
+    }
+
     this.captchaPassed = true;
     this.captchaToken = token;
-    this.confirmEmail();
+    this.passwordRecovery();
   }
 
-  private confirmEmail() {
+  private passwordRecovery() {
     const token = this.route.snapshot.queryParamMap.get('token');
     if (!token || !this.captchaToken) return;
 
     this.message = 'AUTH.EMAIL.CONFIRM.PROCESSING';
 
     this.http
-      .post(`${this.api}/api/user/confirm`, {
+      .patch(`${this.api}/api/user/recovery`, {
+        password: this.password,
         token,
         captchaToken: this.captchaToken,
       })
@@ -106,5 +151,16 @@ export class ConfirmEmailComponent implements OnInit, OnDestroy {
         this.router.navigateByUrl('/');
       }
     }, 1000);
+  }
+
+  validatePassword() {
+    const { error, strength } = this.registerService.validatePassword(
+      this.password,
+      '_',
+      '_'
+    );
+    this.passwordError = error;
+    this.passwordStrength = strength;
+    this.cdr.detectChanges();
   }
 }

@@ -5,7 +5,8 @@ import { SettingsComponent } from './settings/settings.component';
 import { AdminComponent } from './admin/admin.component';
 import { AdminGuard } from './guards/admin.guard';
 import { ConfirmEmailComponent } from './confirm-email/confirm-email.component';
-import { confirmEmailGuard } from './guards/confirm-email.guard';
+import { emailTokenGuard } from './guards/email-token.guard';
+import { PasswordRecoveryComponent } from './password-recovery/password-recovery.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -19,7 +20,12 @@ export const routes: Routes = [
   {
     path: 'confirm',
     component: ConfirmEmailComponent,
-    canActivate: [confirmEmailGuard],
+    canActivate: [emailTokenGuard],
+  },
+  {
+    path: 'recover',
+    component: PasswordRecoveryComponent,
+    canActivate: [emailTokenGuard],
   },
   { path: '**', redirectTo: '' },
 ];
