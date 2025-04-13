@@ -435,6 +435,22 @@
         "TIMER": "将在以下时间内重定向到主页：",
         "CAPTCHA_REQUIRED": "请完成验证码以继续。"
       }
+    },
+    "RECOVERY": {
+      "TITLE": "密码重置",
+      "CAPTCHA_REQUIRED": "请完成验证码以继续。",
+      "INVALID_PASSWORD": "您输入的密码无效。",
+      "PROCESSING": "正在处理密码找回...",
+      "MESSAGE": {
+        "SUCCESS": "您的密码已成功更改！",
+        "FAIL": "密码更改失败，请重试。",
+        "USER_NOT_FOUND": "未找到具有此恢复令牌的用户。",
+        "INVALID_TOKEN": "恢复令牌无效。",
+        "USED_TOKEN": "该恢复链接已被使用。",
+        "EXPIRED_TOKEN": "恢复令牌已过期。",
+        "ERROR": "密码恢复过程中发生意外错误。"
+      },
+      "TIMER": "将在以下时间内重定向到主页："
     }
   }
 }

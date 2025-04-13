@@ -435,6 +435,22 @@
         "TIMER": "Redirecting to the homepage in:",
         "CAPTCHA_REQUIRED": "Please complete the CAPTCHA to proceed."
       }
+    },
+    "RECOVERY": {
+      "TITLE": "Password Recovery",
+      "CAPTCHA_REQUIRED": "Please complete the CAPTCHA to continue.",
+      "INVALID_PASSWORD": "The password you entered is invalid.",
+      "PROCESSING": "Processing password recovery...",
+      "MESSAGE": {
+        "SUCCESS": "Your password has been successfully changed!",
+        "FAIL": "Failed to change the password. Please try again.",
+        "USER_NOT_FOUND": "User with this recovery token was not found.",
+        "INVALID_TOKEN": "The recovery token is invalid.",
+        "USED_TOKEN": "This recovery link has already been used.",
+        "EXPIRED_TOKEN": "The recovery token has expired.",
+        "ERROR": "An unexpected error occurred during password recovery."
+      },
+      "TIMER": "Redirecting to the homepage in:"
     }
   }
 }

@@ -101,17 +101,17 @@ export class PasswordRecoveryComponent implements OnInit, OnDestroy {
     const token = this.route.snapshot.queryParamMap.get('token');
     if (!token || !this.captchaToken) return;
 
-    this.message = 'AUTH.EMAIL.CONFIRM.PROCESSING';
+    this.message = 'AUTH.RECOVERY.PROCESSING';
 
     this.http
-      .patch(`${this.api}/api/user/recovery`, {
+      .patch(`${this.api}/api/user/password`, {
         password: this.password,
-        token,
+        recoveryToken: token,
         captchaToken: this.captchaToken,
       })
       .subscribe({
         next: () => {
-          this.message = 'AUTH.EMAIL.CONFIRM.SUCCESS';
+          this.message = 'AUTH.RECOVERY.MESSAGE.SUCCESS';
           this.startCountdown();
         },
         error: (error) => {
@@ -119,22 +119,27 @@ export class PasswordRecoveryComponent implements OnInit, OnDestroy {
             const message = error.error?.message;
 
             switch (message) {
-              case 'Invalid confirmation token.':
-                this.message = 'AUTH.EMAIL.CONFIRM.INVALID';
+              case 'Failed to change user password.':
+                this.message = 'AUTH.RECOVERY.MESSAGE.FAIL';
                 break;
-              case 'This confirmation link has already been used.':
-                this.message = 'AUTH.EMAIL.CONFIRM.ALREADY_USED';
+              case 'User not found.':
+                this.message = 'AUTH.RECOVERY.MESSAGE.USER_NOT_FOUND';
                 break;
-              case 'Token expired. A new confirmation link has been sent to your email.':
-                this.message = 'AUTH.EMAIL.CONFIRM.NEW_LINK_SENT';
+              case 'Invalid recovery token.':
+                this.message = 'AUTH.RECOVERY.MESSAGE.INVALID_TOKEN';
                 break;
-              case 'Invalid CAPTCHA token.':
+              case 'This link has already been used.':
+                this.message = 'AUTH.RECOVERY.MESSAGE.USED_TOKEN';
+                break;
+              case 'Token expired.':
+                this.message = 'AUTH.RECOVERY.MESSAGE.EXPIRED_TOKEN';
+                break;
               default:
-                this.message = 'AUTH.EMAIL.CONFIRM.ERROR';
+                this.message = 'AUTH.RECOVERY.MESSAGE.ERROR';
                 break;
             }
           } else {
-            this.message = 'AUTH.EMAIL.CONFIRM.ERROR';
+            this.message = 'AUTH.RECOVERY.MESSAGE.ERROR';
           }
 
           this.startCountdown();

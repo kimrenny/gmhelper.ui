@@ -435,6 +435,22 @@
         "TIMER": "Redirection vers la page d'accueil dans:",
         "CAPTCHA_REQUIRED": "Veuillez compléter le CAPTCHA pour continuer."
       }
+    },
+    "RECOVERY": {
+      "TITLE": "Récupération du mot de passe",
+      "CAPTCHA_REQUIRED": "Veuillez compléter le CAPTCHA pour continuer.",
+      "INVALID_PASSWORD": "Le mot de passe que vous avez saisi est invalide.",
+      "PROCESSING": "Récupération du mot de passe en cours...",
+      "MESSAGE": {
+        "SUCCESS": "Votre mot de passe a été modifié avec succès !",
+        "FAIL": "Échec du changement de mot de passe. Veuillez réessayer.",
+        "USER_NOT_FOUND": "Utilisateur avec ce jeton de récupération introuvable.",
+        "INVALID_TOKEN": "Le jeton de récupération est invalide.",
+        "USED_TOKEN": "Ce lien de récupération a déjà été utilisé.",
+        "EXPIRED_TOKEN": "Le jeton de récupération a expiré.",
+        "ERROR": "Une erreur inattendue s'est produite lors de la récupération du mot de passe."
+      },
+      "TIMER": "Redirection vers la page d'accueil dans:"
     }
   }
 }

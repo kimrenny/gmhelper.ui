@@ -435,6 +435,22 @@
         "TIMER": "Weiterleitung zur Startseite in:",
         "CAPTCHA_REQUIRED": "Bitte vervollständigen Sie die CAPTCHA, um fortzufahren."
       }
+    },
+    "RECOVERY": {
+      "TITLE": "Passwort-Wiederherstellung",
+      "CAPTCHA_REQUIRED": "Bitte lösen Sie das CAPTCHA, um fortzufahren.",
+      "INVALID_PASSWORD": "Das eingegebene Passwort ist ungültig.",
+      "PROCESSING": "Passwort-Wiederherstellung wird verarbeitet...",
+      "MESSAGE": {
+        "SUCCESS": "Ihr Passwort wurde erfolgreich geändert!",
+        "FAIL": "Das Passwort konnte nicht geändert werden. Bitte versuchen Sie es erneut.",
+        "USER_NOT_FOUND": "Benutzer mit diesem Wiederherstellungs-Token wurde nicht gefunden.",
+        "INVALID_TOKEN": "Der Wiederherstellungs-Token ist ungültig.",
+        "USED_TOKEN": "Dieser Wiederherstellungslink wurde bereits verwendet.",
+        "EXPIRED_TOKEN": "Der Wiederherstellungs-Token ist abgelaufen.",
+        "ERROR": "Während der Passwort-Wiederherstellung ist ein unerwarteter Fehler aufgetreten."
+      },
+      "TIMER": "Weiterleitung zur Startseite in:"
     }
   }
 }

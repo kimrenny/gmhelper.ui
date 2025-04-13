@@ -435,6 +435,22 @@
         "TIMER": "홈페이지로 리디렉션 중:",
         "CAPTCHA_REQUIRED": "계속하려면 CAPTCHA를 완료하세요."
       }
+    },
+    "RECOVERY": {
+      "TITLE": "비밀번호 재설정",
+      "CAPTCHA_REQUIRED": "계속하려면 CAPTCHA를 완료하세요.",
+      "INVALID_PASSWORD": "입력한 비밀번호가 유효하지 않습니다.",
+      "PROCESSING": "비밀번호 복구 중...",
+      "MESSAGE": {
+        "SUCCESS": "비밀번호가 성공적으로 변경되었습니다!",
+        "FAIL": "비밀번호 변경에 실패했습니다. 다시 시도해 주세요.",
+        "USER_NOT_FOUND": "이 복구 토큰에 해당하는 사용자를 찾을 수 없습니다.",
+        "INVALID_TOKEN": "복구 토큰이 유효하지 않습니다.",
+        "USED_TOKEN": "이 복구 링크는 이미 사용되었습니다.",
+        "EXPIRED_TOKEN": "복구 토큰이 만료되었습니다.",
+        "ERROR": "비밀번호 복구 중 예기치 않은 오류가 발생했습니다."
+      },
+      "TIMER": "홈페이지로 리디렉션 중:"
     }
   }
 }
