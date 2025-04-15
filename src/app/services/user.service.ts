@@ -175,6 +175,16 @@ export class UserService {
   }
 
   checkAuthentication(callback?: () => void): void {
+    const currentUser = this.userSubject.getValue();
+    const isDefaultUser =
+      currentUser.avatar === null &&
+      currentUser.nickname === 'Guest' &&
+      currentUser.language === 'en';
+
+    if (!isDefaultUser) {
+      return;
+    }
+
     const authToken = this.tokenService.getTokenFromStorage('authToken');
     const refreshToken = this.tokenService.getTokenFromStorage('refreshToken');
 
