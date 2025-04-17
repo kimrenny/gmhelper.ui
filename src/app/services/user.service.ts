@@ -45,6 +45,9 @@ export class UserService {
   private isServerAvailableSubject = new BehaviorSubject<boolean>(false);
   isServerAvailable$ = this.isServerAvailableSubject.asObservable();
 
+  private isUserLoadingSubject = new BehaviorSubject<boolean>(false);
+  isUserLoading$ = this.isUserLoadingSubject.asObservable();
+
   private readonly criticalErrors = new Set<string>(
     Object.values(CriticalErrors)
   );
@@ -96,6 +99,8 @@ export class UserService {
   }
 
   loadUserDetails(token: string, attempts = 0): Observable<UserDetails> {
+    this.isUserLoadingSubject.next(true);
+
     return this.http
       .get<ApiResponse<UserDetails>>(`${this.api}/user/details`, {
         headers: this.tokenService.createAuthHeaders(token),
@@ -130,8 +135,12 @@ export class UserService {
           this.userSubject.next(userDetails);
           this.isAuthorizedSubject.next(true);
           this.isServerAvailableSubject.next(true);
+          this.isUserLoadingSubject.next(false);
         }),
-        catchError((error) => this.handleLoadUserError(error, token, attempts))
+        catchError((error) => {
+          this.isUserLoadingSubject.next(false);
+          return this.handleLoadUserError(error, token, attempts);
+        })
       );
   }
 

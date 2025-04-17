@@ -29,6 +29,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   userNickname = 'Guest';
   userRole: string | null = 'Guest';
   showUserMenu = false;
+  isUserLoading = false;
 
   private subscriptions = new Subscription();
 
@@ -67,10 +68,18 @@ export class HeaderComponent implements OnInit, OnDestroy {
       this.cdr.detectChanges();
     });
 
+    const loadingSub = this.userService.isUserLoading$.subscribe(
+      (isLoading) => {
+        this.isUserLoading = isLoading;
+        this.cdr.detectChanges();
+      }
+    );
+
     this.subscriptions.add(authSub);
     this.subscriptions.add(userSub);
     this.subscriptions.add(routerSub);
     this.subscriptions.add(roleSub);
+    this.subscriptions.add(loadingSub);
   }
 
   ngOnDestroy() {
