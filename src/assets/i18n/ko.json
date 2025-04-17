@@ -40,7 +40,8 @@
         "MATH": "수학",
         "GEOMETRY": "기하학"
       }
-    }
+    },
+    "FEATURE_DISABLED": "이 기능은 현재 버전의 제품에서 지원되지 않습니다."
   },
   "REGISTER": {
     "REGISTER": {

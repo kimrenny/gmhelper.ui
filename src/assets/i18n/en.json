@@ -40,7 +40,8 @@
         "MATH": "Math",
         "GEOMETRY": "Geometry"
       }
-    }
+    },
+    "FEATURE_DISABLED": "This functionality is not supported in the current version of the product."
   },
   "REGISTER": {
     "REGISTER": {

@@ -40,7 +40,8 @@
         "MATH": "数学",
         "GEOMETRY": "几何"
       }
-    }
+    },
+    "FEATURE_DISABLED": "当前版本的产品不支持此功能。"
   },
   "REGISTER": {
     "REGISTER": {

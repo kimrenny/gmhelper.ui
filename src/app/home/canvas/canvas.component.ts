@@ -1,7 +1,7 @@
 import { Component, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { DrawingTool } from './drawing-tools/drawing-tool.interface';
 import { Pencil } from './drawing-tools/pencil.tool';
 import { Ellipse } from './drawing-tools/ellipse.tool';
@@ -11,6 +11,7 @@ import { Triangle } from './drawing-tools/triangle.tool';
 import { Quad } from './drawing-tools/quad.tool';
 import { Trapezoid } from './drawing-tools/trapezoid.tool';
 import { Rhombus } from './drawing-tools/rhombus.tool';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-canvas',
@@ -77,6 +78,11 @@ export class CanvasComponent implements AfterViewInit {
 
   isColorPaletteVisible = false;
   shapeToolsVisible = false;
+
+  constructor(
+    private toastr: ToastrService,
+    private translate: TranslateService
+  ) {}
 
   ngAfterViewInit(): void {
     this.updateCanvasSize();
@@ -257,13 +263,15 @@ export class CanvasComponent implements AfterViewInit {
     this.shapeToolsVisible = !this.shapeToolsVisible;
   }
 
-  selectSubject(subject: string | Event): void {
-    if (typeof subject === 'string') {
-      this.selectedSubject = subject;
-    } else {
-      const target = subject.target as HTMLSelectElement;
-      this.selectedSubject = target.value;
+  selectSubject(subject: 'Math' | 'Geo'): void {
+    if (subject === 'Math') {
+      this.toastr.error(
+        this.translate.instant('CANVAS.FEATURE_DISABLED'),
+        this.translate.instant('ADMIN.ERRORS.ERROR')
+      );
+      return;
     }
+    this.selectedSubject = subject;
     this.clearCanvas();
   }
 

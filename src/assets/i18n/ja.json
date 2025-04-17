@@ -40,7 +40,8 @@
         "MATH": "数学",
         "GEOMETRY": "幾何学"
       }
-    }
+    },
+    "FEATURE_DISABLED": "この機能は現在のバージョンの製品ではサポートされていません。"
   },
   "REGISTER": {
     "REGISTER": {
