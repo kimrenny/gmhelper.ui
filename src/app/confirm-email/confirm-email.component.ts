@@ -60,7 +60,7 @@ export class ConfirmEmailComponent implements OnInit, OnDestroy {
     this.message = 'AUTH.EMAIL.CONFIRM.PROCESSING';
 
     this.http
-      .post(`${this.api}/api/user/confirm`, {
+      .post(`${this.api}/api/auth/confirm`, {
         token,
         captchaToken: this.captchaToken,
       })

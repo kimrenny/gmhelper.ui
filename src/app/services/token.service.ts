@@ -91,7 +91,7 @@ export class TokenService {
 
     return this.http
       .post<{ accessToken: string; refreshToken: string }>(
-        'https://localhost:7057/api/user/refresh-token',
+        'https://localhost:7057/api/auth/refresh-token',
         JSON.stringify({ refreshToken }),
         { headers }
       )

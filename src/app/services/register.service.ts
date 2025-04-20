@@ -119,7 +119,7 @@ export class RegisterService {
     };
 
     return this.http.post<ApiResponse<any>>(
-      'https://localhost:7057/api/user/register',
+      'https://localhost:7057/api/auth/register',
       body,
       {
         headers,
@@ -151,7 +151,7 @@ export class RegisterService {
       remember: rememberMe,
     };
     return this.http.post<ApiResponse<any>>(
-      'https://localhost:7057/api/user/login',
+      'https://localhost:7057/api/auth/login',
       body,
       {
         headers,
@@ -167,13 +167,13 @@ export class RegisterService {
     };
 
     console.log('Password Recovery Request:', {
-      url: 'https://localhost:7057/api/user/password-recovery',
+      url: 'https://localhost:7057/api/mail/password-recovery',
       headers,
       body,
     });
 
     return this.http.post(
-      'https://localhost:7057/api/user/password-recovery',
+      'https://localhost:7057/api/mail/password-recovery',
       body,
       {
         headers,

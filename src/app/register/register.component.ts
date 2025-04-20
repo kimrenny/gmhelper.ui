@@ -171,6 +171,9 @@ export class RegisterComponent {
         this.registerFeedbackMessage =
           'REGISTER.ERRORS.REGISTRATION.FAIL.BANNED';
         break;
+      case 'The account awaits confirmation. Follow the link in the email.':
+        this.registerFeedbackMessage = 'REGISTER.ERRORS.LOGIN.FAIL.NOTACTIVE';
+        break;
       default:
         this.registerFeedbackMessage =
           'REGISTER.ERRORS.REGISTRATION.FAIL.UNKNOWN';

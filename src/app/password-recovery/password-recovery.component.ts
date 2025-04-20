@@ -104,7 +104,7 @@ export class PasswordRecoveryComponent implements OnInit, OnDestroy {
     this.message = 'AUTH.RECOVERY.PROCESSING';
 
     this.http
-      .patch(`${this.api}/api/user/password`, {
+      .patch(`${this.api}/api/auth/password`, {
         password: this.password,
         recoveryToken: token,
         captchaToken: this.captchaToken,
