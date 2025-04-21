@@ -12,6 +12,9 @@ import { Quad } from './drawing-tools/quad.tool';
 import { Trapezoid } from './drawing-tools/trapezoid.tool';
 import { Rhombus } from './drawing-tools/rhombus.tool';
 import { ToastrService } from 'ngx-toastr';
+import { COLORS } from './utils/colors';
+import { getMousePos } from './utils/mouse.utils';
+import { ToolSelector } from './tools/tool-selector';
 
 @Component({
   selector: 'app-canvas',
@@ -28,50 +31,25 @@ export class CanvasComponent implements AfterViewInit {
   selectedSubject: string = '';
   selectedColor: string = '#000000';
   subjects: string[] = ['Math', 'Geo'];
+  colors = COLORS;
 
-  private pencilTool: Pencil = new Pencil();
-  private ellipseTool: Ellipse = new Ellipse();
-  private lineTool: Line = new Line();
-  private polygonTool: Polygon = new Polygon();
-  private triangleTool: Triangle = new Triangle();
-  private quadTool: Quad = new Quad();
-  private trapezoidTool: Trapezoid = new Trapezoid();
-  private rhombusTool: Rhombus = new Rhombus();
+  private pencilTool = new Pencil();
+  private ellipseTool = new Ellipse();
+  private lineTool = new Line();
+  private polygonTool = new Polygon();
+  private triangleTool = new Triangle();
+  private quadTool = new Quad();
+  private trapezoidTool = new Trapezoid();
+  private rhombusTool = new Rhombus();
 
   private currentTool: DrawingTool | null = null;
+  private toolSelector!: ToolSelector;
+
   private drawing = false;
   private paths: {
     tool: DrawingTool;
     path: { x: number; y: number; color: string }[];
   }[] = [];
-
-  colors: string[] = [
-    '#000000',
-    '#808080',
-    '#C0C0C0',
-    '#FFFFFF',
-    '#FF0000',
-    '#FF4500',
-    '#FF6347',
-    '#8B0000',
-    '#FF1493',
-    '#FFC0CB',
-    '#FFA500',
-    '#FFD700',
-    '#FFFF00',
-    '#008000',
-    '#32CD32',
-    '#00FA9A',
-    '#006400',
-    '#0000FF',
-    '#4682B4',
-    '#00CED1',
-    '#00008B',
-    '#4B0082',
-    '#EE82EE',
-    '#9400D3',
-    '#A52A2A',
-  ];
 
   @ViewChild('drawingCanvas') canvasRef!: ElementRef<HTMLCanvasElement>;
   private ctx!: CanvasRenderingContext2D;
@@ -87,6 +65,16 @@ export class CanvasComponent implements AfterViewInit {
   ngAfterViewInit(): void {
     this.updateCanvasSize();
     this.setupCanvasEvents();
+    this.toolSelector = new ToolSelector({
+      pencil: this.pencilTool,
+      ellipse: this.ellipseTool,
+      line: this.lineTool,
+      polygon: this.polygonTool,
+      triangle: this.triangleTool,
+      quad: this.quadTool,
+      trapezoid: this.trapezoidTool,
+      rhombus: this.rhombusTool,
+    });
     this.currentTool = this.pencilTool;
   }
 
@@ -101,9 +89,9 @@ export class CanvasComponent implements AfterViewInit {
     const canvas = this.canvasRef.nativeElement;
 
     canvas.addEventListener('mousedown', (event) => {
-      const mousePos = this.getMousePos(event);
+      const mousePos = getMousePos(event, canvas, this.scale);
       if (mousePos && this.currentTool instanceof Triangle) {
-        const triangleTool = this.currentTool as Triangle;
+        const triangleTool = this.currentTool;
         triangleTool.addPoint(mousePos);
 
         if (
@@ -124,7 +112,11 @@ export class CanvasComponent implements AfterViewInit {
   }
 
   handleMouseMove(event: MouseEvent): void {
-    const mousePos = this.getMousePos(event);
+    const mousePos = getMousePos(
+      event,
+      this.canvasRef.nativeElement,
+      this.scale
+    );
 
     if (!mousePos) {
       this.setCursor('not-allowed');
@@ -149,7 +141,11 @@ export class CanvasComponent implements AfterViewInit {
   }
 
   startDrawing(event: MouseEvent): void {
-    const mousePos = this.getMousePos(event);
+    const mousePos = getMousePos(
+      event,
+      this.canvasRef.nativeElement,
+      this.scale
+    );
 
     if (!mousePos) {
       return;
@@ -172,24 +168,6 @@ export class CanvasComponent implements AfterViewInit {
   stopDrawing(): void {
     this.drawing = false;
     this.redraw();
-  }
-
-  getMousePos(event: MouseEvent): { x: number; y: number } | null {
-    const canvas = this.canvasRef.nativeElement;
-    const rect = canvas.getBoundingClientRect();
-    const scaleFactor = this.scale / 100;
-
-    const x = (event.clientX - rect.left) / scaleFactor;
-    const y = (event.clientY - rect.top) / scaleFactor;
-
-    if (x < 0 || x > canvas.width || y < 0 || y > canvas.height) {
-      return null;
-    }
-
-    return {
-      x: Math.max(0, Math.min(x, canvas.width)),
-      y: Math.max(0, Math.min(y, canvas.height)),
-    };
   }
 
   setCursor(cursorStyle: string): void {
@@ -223,35 +201,7 @@ export class CanvasComponent implements AfterViewInit {
   }
 
   selectTool(tool: string): void {
-    switch (tool) {
-      case 'pencil':
-        this.currentTool = this.pencilTool;
-        break;
-      case 'ellipse':
-        this.currentTool = this.ellipseTool;
-        break;
-      case 'line':
-        this.currentTool = this.lineTool;
-        break;
-      case 'polygon':
-        this.currentTool = this.polygonTool;
-        break;
-      case 'triangle':
-        this.currentTool = this.triangleTool;
-        break;
-      case 'quad':
-        this.currentTool = this.quadTool;
-        break;
-      case 'trapezoid':
-        this.currentTool = this.trapezoidTool;
-        break;
-      case 'rhombus':
-        this.currentTool = this.rhombusTool;
-        break;
-      default:
-        this.currentTool = null;
-        break;
-    }
+    this.currentTool = this.toolSelector.select(tool);
     this.shapeToolsVisible = false;
   }
 
