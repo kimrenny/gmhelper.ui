@@ -1,8 +1,14 @@
-import { Component, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  ViewChild,
+  AfterViewInit,
+  OnInit,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { DrawingTool } from './drawing-tools/drawing-tool.interface';
+import { DrawingTool } from './interfaces/drawing-tool.interface';
 import { Pencil } from './drawing-tools/pencil.tool';
 import { Ellipse } from './drawing-tools/ellipse.tool';
 import { Line } from './drawing-tools/line.tool';
@@ -15,6 +21,7 @@ import { ToastrService } from 'ngx-toastr';
 import { COLORS } from './utils/colors';
 import { getMousePos } from './utils/mouse.utils';
 import { ToolSelector } from './tools/tool-selector';
+import { ToolContext } from './interfaces/tool-context.interface';
 
 @Component({
   selector: 'app-canvas',
@@ -23,7 +30,7 @@ import { ToolSelector } from './tools/tool-selector';
   templateUrl: './canvas.component.html',
   styleUrls: ['./canvas.component.scss'],
 })
-export class CanvasComponent implements AfterViewInit {
+export class CanvasComponent implements OnInit, AfterViewInit {
   scale = 100;
   minScale = 50;
   maxScale = 200;
@@ -52,7 +59,9 @@ export class CanvasComponent implements AfterViewInit {
   }[] = [];
 
   @ViewChild('drawingCanvas') canvasRef!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('previewCanvas') previewCanvasRef!: ElementRef<HTMLCanvasElement>;
   private ctx!: CanvasRenderingContext2D;
+  private previewCtx!: CanvasRenderingContext2D;
 
   isColorPaletteVisible = false;
   shapeToolsVisible = false;
@@ -62,9 +71,7 @@ export class CanvasComponent implements AfterViewInit {
     private translate: TranslateService
   ) {}
 
-  ngAfterViewInit(): void {
-    this.updateCanvasSize();
-    this.setupCanvasEvents();
+  ngOnInit(): void {
     this.toolSelector = new ToolSelector({
       pencil: this.pencilTool,
       ellipse: this.ellipseTool,
@@ -75,99 +82,70 @@ export class CanvasComponent implements AfterViewInit {
       trapezoid: this.trapezoidTool,
       rhombus: this.rhombusTool,
     });
-    this.currentTool = this.pencilTool;
+    this.selectTool('pencil');
+  }
+
+  ngAfterViewInit(): void {
+    this.updateCanvasSize();
+    this.setupCanvasEvents();
   }
 
   updateCanvasSize(): void {
     const canvas = this.canvasRef.nativeElement;
+    const previewCanvas = this.previewCanvasRef.nativeElement;
     canvas.width = canvas.clientWidth;
     canvas.height = canvas.clientHeight;
-    this.ctx = canvas.getContext('2d')!;
+    previewCanvas.width = previewCanvas.clientWidth;
+    previewCanvas.height = previewCanvas.clientHeight;
+
+    const ctx = canvas.getContext('2d');
+    if (ctx) {
+      this.ctx = ctx;
+    }
+
+    const previewCtx = previewCanvas.getContext('2d');
+    if (previewCtx) {
+      this.previewCtx = previewCtx;
+    }
   }
 
   setupCanvasEvents(): void {
     const canvas = this.canvasRef.nativeElement;
+    const previewCanvas = this.previewCanvasRef.nativeElement;
+
+    const toolContext: ToolContext = {
+      canvas,
+      previewCanvas,
+      scale: this.scale,
+      paths: this.paths,
+      selectedColor: this.selectedColor,
+      redraw: this.redraw.bind(this),
+    };
 
     canvas.addEventListener('mousedown', (event) => {
-      const mousePos = getMousePos(event, canvas, this.scale);
-      if (mousePos && this.currentTool instanceof Triangle) {
-        const triangleTool = this.currentTool;
-        triangleTool.addPoint(mousePos);
-
-        if (
-          triangleTool.points.length === 2 ||
-          triangleTool.points.length === 0
-        ) {
-          this.redraw();
-        }
+      if (this.currentTool?.onMouseDown) {
+        this.currentTool?.onMouseDown(event, toolContext);
       }
-      this.startDrawing(event);
     });
 
-    canvas.addEventListener('mousemove', (event) =>
-      this.handleMouseMove(event)
-    );
-    canvas.addEventListener('mouseup', () => this.stopDrawing());
-    canvas.addEventListener('mouseleave', () => this.stopDrawing());
-  }
-
-  handleMouseMove(event: MouseEvent): void {
-    const mousePos = getMousePos(
-      event,
-      this.canvasRef.nativeElement,
-      this.scale
-    );
-
-    if (!mousePos) {
-      this.setCursor('not-allowed');
-      return;
-    }
-
-    this.setCursor('crosshair');
-
-    if (this.drawing && this.currentTool) {
-      const currentPath = this.paths[this.paths.length - 1].path;
-      currentPath.push({
-        x: mousePos.x,
-        y: mousePos.y,
-        color: this.selectedColor,
-      });
-      this.redraw();
-    } else if (this.currentTool instanceof Triangle) {
-      const triangleTool = this.currentTool as Triangle;
-      triangleTool.setPreviewPoint(mousePos);
-      this.redraw();
-    }
-  }
-
-  startDrawing(event: MouseEvent): void {
-    const mousePos = getMousePos(
-      event,
-      this.canvasRef.nativeElement,
-      this.scale
-    );
-
-    if (!mousePos) {
-      return;
-    }
-
-    this.drawing = true;
-
-    this.paths.push({
-      tool: this.currentTool!,
-      path: [
-        {
-          x: mousePos.x,
-          y: mousePos.y,
-          color: this.selectedColor,
-        },
-      ],
+    canvas.addEventListener('mousemove', (event) => {
+      if (this.currentTool?.onMouseMove) {
+        this.currentTool?.onMouseMove(event, toolContext);
+      }
     });
-  }
 
-  stopDrawing(): void {
-    this.drawing = false;
-    this.redraw();
+    canvas.addEventListener('mouseup', (event) => {
+      if (this.currentTool?.onMouseUp) {
+        this.currentTool?.onMouseUp(event, toolContext);
+        console.log('Paths after drawing:', this.paths);
+      }
+    });
+
+    canvas.addEventListener('mouseleave', (event) => {
+      if (this.currentTool?.onMouseLeave) {
+        this.currentTool?.onMouseLeave?.(event, toolContext);
+      }
+    });
   }
 
   setCursor(cursorStyle: string): void {
@@ -186,13 +164,17 @@ export class CanvasComponent implements AfterViewInit {
   redraw(): void {
     const canvas = this.canvasRef.nativeElement;
     this.ctx.clearRect(0, 0, canvas.width, canvas.height);
-    this.updateCanvasTransform();
+    this.ctx.setTransform(this.scale / 100, 0, 0, this.scale / 100, 0, 0);
 
-    this.paths.forEach((pathData) => {
-      if (pathData.path.length > 0) {
-        pathData.tool.draw(this.ctx, pathData.path, pathData.path[0].color);
+    for (const { tool, path } of this.paths) {
+      if (path.length > 0) {
+        tool.draw(
+          this.ctx,
+          path.map((p) => ({ x: p.x, y: p.y })),
+          path[0].color
+        );
       }
-    });
+    }
   }
 
   updateCanvasTransform(): void {
@@ -232,7 +214,6 @@ export class CanvasComponent implements AfterViewInit {
 
   clearCanvas(): void {
     this.paths = [];
-    this.triangleTool.clear();
     this.redraw();
   }
 }

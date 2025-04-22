@@ -5,6 +5,12 @@
     class="canvas"
   ></canvas>
 
+  <canvas
+    #previewCanvas
+    [class.blurred]="!selectedSubject"
+    class="canvas preview-canvas"
+  ></canvas>
+
   <div *ngIf="!selectedSubject" class="subject-controls">
     <button (click)="selectSubject('Math')">
       {{ "CANVAS.SETTINGS.SELECT.MATH" | translate }}

@@ -1,4 +1,4 @@
-import { DrawingTool } from './drawing-tool.interface';
+import { DrawingTool } from '../interfaces/drawing-tool.interface';
 
 export class Triangle implements DrawingTool {
   public points: { x: number; y: number }[] = [];

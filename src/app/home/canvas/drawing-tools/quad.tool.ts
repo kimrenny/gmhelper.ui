@@ -1,4 +1,4 @@
-import { DrawingTool } from './drawing-tool.interface';
+import { DrawingTool } from '../interfaces/drawing-tool.interface';
 
 export class Quad implements DrawingTool {
   private points: { x: number; y: number }[] = [];

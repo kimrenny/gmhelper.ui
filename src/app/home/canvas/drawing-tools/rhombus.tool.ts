@@ -1,4 +1,4 @@
-import { DrawingTool } from './drawing-tool.interface';
+import { DrawingTool } from '../interfaces/drawing-tool.interface';
 
 export class Rhombus implements DrawingTool {
   draw(

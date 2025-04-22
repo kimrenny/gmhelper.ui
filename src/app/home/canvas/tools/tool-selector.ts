@@ -1,4 +1,4 @@
-import { DrawingTool } from '../drawing-tools/drawing-tool.interface';
+import { DrawingTool } from '../interfaces/drawing-tool.interface';
 
 export class ToolSelector {
   constructor(private tools: Record<string, DrawingTool>) {}

@@ -43,6 +43,15 @@
       background-color: rgba(255, 255, 255, 0.8);
       pointer-events: none;
     }
+
+    &.preview-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 35;
+      pointer-events: none;
+      background: transparent;
+    }
   }
 
   .subject-controls {
