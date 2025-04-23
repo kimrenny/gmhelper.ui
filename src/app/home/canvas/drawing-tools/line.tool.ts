@@ -44,33 +44,31 @@ export class Line implements DrawingTool {
     ctx.closePath();
   }
 
-  onMouseDown(event: MouseEvent, data: ToolContext): void {
+  onMouseDown(pos: { x: number; y: number }, data: ToolContext): void {
     if (this.isDrawing) return;
 
     this.isDrawing = true;
     this.previewEnd = null;
-    this.path = [
-      { x: event.offsetX, y: event.offsetY, color: data.selectedColor },
-    ];
+    this.path = [{ x: pos.x, y: pos.y, color: data.selectedColor }];
   }
 
-  onMouseMove(event: MouseEvent, data: ToolContext): void {
+  onMouseMove(pos: { x: number; y: number }, data: ToolContext): void {
     if (!this.isDrawing) return;
 
     this.previewEnd = {
-      x: event.offsetX,
-      y: event.offsetY,
+      x: pos.x,
+      y: pos.y,
     };
 
     this.renderPreview(data);
   }
 
-  onMouseUp(event: MouseEvent, data: ToolContext): void {
+  onMouseUp(pos: { x: number; y: number }, data: ToolContext): any {
     if (!this.isDrawing) return;
 
     this.path.push({
-      x: event.offsetX,
-      y: event.offsetY,
+      x: pos.x,
+      y: pos.y,
       color: data.selectedColor,
     });
 
@@ -91,18 +89,21 @@ export class Line implements DrawingTool {
 
     this.isDrawing = false;
     if (this.path.length > 1) {
-      data.paths.push({ tool: this, path: this.path });
+      this.previewEnd = null;
+      const savePath = [...this.path];
+      this.path = [];
+      return { tool: this, path: savePath };
     }
     this.path = [];
     this.previewEnd = null;
   }
 
-  onMouseLeave(event: MouseEvent, data: ToolContext): void {
+  onMouseLeave(pos: { x: number; y: number }, data: ToolContext): any {
     if (!this.isDrawing) return;
 
     this.path.push({
-      x: event.offsetX,
-      y: event.offsetY,
+      x: pos.x,
+      y: pos.y,
       color: data.selectedColor,
     });
 
@@ -123,7 +124,10 @@ export class Line implements DrawingTool {
 
     this.isDrawing = false;
     if (this.path.length > 1) {
-      data.paths.push({ tool: this, path: this.path });
+      this.previewEnd = null;
+      const finalPath = [...this.path];
+      this.path = [];
+      return { tool: this, path: finalPath };
     }
     this.path = [];
     this.previewEnd = null;

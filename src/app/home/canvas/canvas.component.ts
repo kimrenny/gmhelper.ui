@@ -36,7 +36,6 @@ export class CanvasComponent implements OnInit, AfterViewInit {
   maxScale = 200;
   currentScaleFactor = 1;
   selectedSubject: string = '';
-  selectedColor: string = '#000000';
   subjects: string[] = ['Math', 'Geo'];
   colors = COLORS;
 
@@ -51,8 +50,8 @@ export class CanvasComponent implements OnInit, AfterViewInit {
 
   private currentTool: DrawingTool | null = null;
   private toolSelector!: ToolSelector;
+  toolContext!: ToolContext;
 
-  private drawing = false;
   private paths: {
     tool: DrawingTool;
     path: { x: number; y: number; color: string }[];
@@ -113,38 +112,45 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     const canvas = this.canvasRef.nativeElement;
     const previewCanvas = this.previewCanvasRef.nativeElement;
 
-    const toolContext: ToolContext = {
+    this.toolContext = {
       canvas,
       previewCanvas,
       scale: this.scale,
       paths: this.paths,
-      selectedColor: this.selectedColor,
+      selectedColor: '#000000',
       redraw: this.redraw.bind(this),
+      getMousePos: (event: MouseEvent) =>
+        getMousePos(event, canvas, this.scale),
     };
 
     canvas.addEventListener('mousedown', (event) => {
-      if (this.currentTool?.onMouseDown) {
-        this.currentTool?.onMouseDown(event, toolContext);
-      }
+      const pos = this.toolContext.getMousePos(event);
+      if (!pos) return;
+      this.currentTool?.onMouseDown?.(pos, this.toolContext);
     });
 
     canvas.addEventListener('mousemove', (event) => {
-      if (this.currentTool?.onMouseMove) {
-        this.currentTool?.onMouseMove(event, toolContext);
-      }
+      const pos = this.toolContext.getMousePos(event);
+      if (!pos) return;
+      this.currentTool?.onMouseMove?.(pos, this.toolContext);
     });
 
     canvas.addEventListener('mouseup', (event) => {
+      const pos = this.toolContext.getMousePos(event);
+      if (!pos) return;
       if (this.currentTool?.onMouseUp) {
-        this.currentTool?.onMouseUp(event, toolContext);
+        const newPath = this.currentTool.onMouseUp(pos, this.toolContext);
+        if (newPath) {
+          this.paths.push(newPath);
+        }
         console.log('Paths after drawing:', this.paths);
       }
     });
 
     canvas.addEventListener('mouseleave', (event) => {
-      if (this.currentTool?.onMouseLeave) {
-        this.currentTool?.onMouseLeave?.(event, toolContext);
-      }
+      const pos = this.toolContext.getMousePos(event);
+      if (!pos) return;
+      this.currentTool?.onMouseLeave?.(pos, this.toolContext);
     });
   }
 

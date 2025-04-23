@@ -23,35 +23,35 @@ export class Pencil implements DrawingTool {
     ctx.closePath();
   }
 
-  onMouseDown(event: MouseEvent, data: ToolContext): void {
+  onMouseDown(pos: { x: number; y: number }, data: ToolContext): void {
     this.isDrawing = true;
-    this.path = [
-      { x: event.offsetX, y: event.offsetY, color: data.selectedColor },
-    ];
+    this.path = [{ x: pos.x, y: pos.y, color: data.selectedColor }];
   }
 
-  onMouseMove(event: MouseEvent, data: ToolContext): void {
+  onMouseMove(pos: { x: number; y: number }, data: ToolContext): void {
     if (!this.isDrawing) return;
 
     this.path.push({
-      x: event.offsetX,
-      y: event.offsetY,
+      x: pos.x,
+      y: pos.y,
       color: data.selectedColor,
     });
     this.draw(data.canvas.getContext('2d')!, this.path, data.selectedColor);
   }
 
-  onMouseUp(event: MouseEvent, data: ToolContext): void {
+  onMouseUp(pos: { x: number; y: number }, data: ToolContext): any {
     if (!this.isDrawing) return;
     this.isDrawing = false;
-    data.paths.push({ tool: this, path: this.path });
+    const finalPath = [...this.path];
     this.path = [];
+    return { tool: this, path: finalPath };
   }
 
-  onMouseLeave(event: MouseEvent, data: ToolContext): void {
+  onMouseLeave(pos: { x: number; y: number }, data: ToolContext): any {
     if (!this.isDrawing) return;
     this.isDrawing = false;
-    data.paths.push({ tool: this, path: this.path });
+    const finalPath = [...this.path];
     this.path = [];
+    return { tool: this, path: finalPath };
   }
 }

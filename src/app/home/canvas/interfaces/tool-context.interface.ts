@@ -10,4 +10,6 @@ export interface ToolContext {
   }[];
   selectedColor: string;
   redraw: () => void;
+
+  getMousePos: (event: MouseEvent) => { x: number; y: number } | null;
 }
