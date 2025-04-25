@@ -1,17 +1,19 @@
 import { DrawingTool } from '../interfaces/drawing-tool.interface';
 import { ToolContext } from '../interfaces/tool-context.interface';
+import { toTransparentColor } from '../utils/preview-color';
 
 export class Triangle implements DrawingTool {
   private path: { x: number; y: number }[] = [];
   private isDrawing: boolean = false;
   private end: { x: number; y: number } | null = null;
 
-  draw(ctx: CanvasRenderingContext2D): void {
-    if (this.path.length === 3) {
+  draw(ctx: CanvasRenderingContext2D, path?: { x: number; y: number }[]): void {
+    const drawPath = path ?? this.path;
+    if (drawPath.length === 3) {
       ctx.beginPath();
-      ctx.moveTo(this.path[0].x, this.path[0].y);
-      ctx.lineTo(this.path[1].x, this.path[1].y);
-      ctx.lineTo(this.path[2].x, this.path[2].y);
+      ctx.moveTo(drawPath[0].x, drawPath[0].y);
+      ctx.lineTo(drawPath[1].x, drawPath[1].y);
+      ctx.lineTo(drawPath[2].x, drawPath[2].y);
       ctx.closePath();
       ctx.stroke();
     }
@@ -43,6 +45,18 @@ export class Triangle implements DrawingTool {
       this.isDrawing = false;
       this.end = null;
 
+      const ctx = data.canvas?.getContext('2d');
+      if (ctx) this.draw(ctx, savePath);
+
+      const previewCtx = data.previewCanvas?.getContext('2d');
+      if (previewCtx)
+        previewCtx.clearRect(
+          0,
+          0,
+          data.previewCanvas.width,
+          data.previewCanvas.height
+        );
+
       return { tool: this, path: savePath };
     }
   }
@@ -54,6 +68,9 @@ export class Triangle implements DrawingTool {
     if (!ctx) return;
 
     ctx.clearRect(0, 0, data.previewCanvas.width, data.previewCanvas.height);
+
+    ctx.strokeStyle = toTransparentColor(data.selectedColor);
+    ctx.lineWidth = 2;
 
     if (this.path.length === 1) {
       ctx.beginPath();

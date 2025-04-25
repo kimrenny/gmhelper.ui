@@ -1,5 +1,6 @@
 import { DrawingTool } from '../interfaces/drawing-tool.interface';
 import { ToolContext } from '../interfaces/tool-context.interface';
+import { toTransparentColor } from '../utils/preview-color';
 
 export class Line implements DrawingTool {
   private isDrawing: boolean = false;
@@ -34,7 +35,7 @@ export class Line implements DrawingTool {
     const start = this.path[0];
     const end = this.previewEnd;
 
-    ctx.strokeStyle = this.toTransparentColor(start.color);
+    ctx.strokeStyle = toTransparentColor(start.color);
     ctx.lineWidth = 2;
 
     ctx.beginPath();
@@ -131,18 +132,5 @@ export class Line implements DrawingTool {
     }
     this.path = [];
     this.previewEnd = null;
-  }
-
-  private toTransparentColor(color: string): string {
-    if (color.startsWith('#')) {
-      const r = parseInt(color.slice(1, 3), 16);
-      const g = parseInt(color.slice(3, 5), 16);
-      const b = parseInt(color.slice(5, 7), 16);
-      return `rgba(${r},${g},${b},0.4)`;
-    }
-    if (color.startsWith('rgb(')) {
-      return color.replace('rgb(', 'rgba(').replace(')', ',0.4)');
-    }
-    return color;
   }
 }

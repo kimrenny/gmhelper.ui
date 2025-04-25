@@ -55,10 +55,10 @@
       [style.display]="shapeToolsVisible ? 'flex' : 'none'"
       class="shape-tools"
     >
+      <button (click)="selectTool('triangle')" class="triangle-btn"></button>
+      <button (click)="selectTool('rectangle')" class="quad-btn"></button>
       <button (click)="selectTool('ellipse')" class="ellipse-btn"></button>
       <button (click)="selectTool('polygon')" class="polygon-btn"></button>
-      <button (click)="selectTool('triangle')" class="triangle-btn"></button>
-      <button (click)="selectTool('quad')" class="quad-btn"></button>
       <button (click)="selectTool('trapezoid')" class="trapezoid-btn"></button>
       <button (click)="selectTool('rhombus')" class="rhombus-btn"></button>
     </div>

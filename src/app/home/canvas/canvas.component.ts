@@ -14,7 +14,7 @@ import { Ellipse } from './drawing-tools/ellipse.tool';
 import { Line } from './drawing-tools/line.tool';
 import { Polygon } from './drawing-tools/polygon.tool';
 import { Triangle } from './drawing-tools/triangle.tool';
-import { Quad } from './drawing-tools/quad.tool';
+import { Rectangle } from './drawing-tools/rectangle.tool';
 import { Trapezoid } from './drawing-tools/trapezoid.tool';
 import { Rhombus } from './drawing-tools/rhombus.tool';
 import { ToastrService } from 'ngx-toastr';
@@ -44,7 +44,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
   private lineTool = new Line();
   private polygonTool = new Polygon();
   private triangleTool = new Triangle();
-  private quadTool = new Quad();
+  private rectangleTool = new Rectangle();
   private trapezoidTool = new Trapezoid();
   private rhombusTool = new Rhombus();
 
@@ -77,7 +77,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
       line: this.lineTool,
       polygon: this.polygonTool,
       triangle: this.triangleTool,
-      quad: this.quadTool,
+      rectangle: this.rectangleTool,
       trapezoid: this.trapezoidTool,
       rhombus: this.rhombusTool,
     });
@@ -172,13 +172,12 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     this.ctx.clearRect(0, 0, canvas.width, canvas.height);
     this.ctx.setTransform(this.scale / 100, 0, 0, this.scale / 100, 0, 0);
 
-    for (const { tool, path } of this.paths) {
-      if (path.length > 0) {
-        tool.draw(
-          this.ctx,
-          path.map((p) => ({ x: p.x, y: p.y })),
-          path[0].color
-        );
+    for (const p of this.paths) {
+      const color = p.path[0]?.color || '#000000';
+      this.ctx.strokeStyle = color;
+
+      if (p.tool.draw) {
+        p.tool.draw(this.ctx, p.path, color);
       }
     }
   }
