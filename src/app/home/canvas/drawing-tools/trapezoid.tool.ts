@@ -1,24 +1,126 @@
 import { DrawingTool } from '../interfaces/drawing-tool.interface';
+import { ToolContext } from '../interfaces/tool-context.interface';
+import { toTransparentColor } from '../utils/preview-color';
 
 export class Trapezoid implements DrawingTool {
-  draw(
-    ctx: CanvasRenderingContext2D,
-    path: { x: number; y: number }[],
-    color: string
-  ): void {
-    if (path.length < 4) return;
+  private path: { x: number; y: number }[] = [];
+  private isDrawing: boolean = false;
+  private end: { x: number; y: number } | null = null;
 
-    ctx.strokeStyle = color;
+  draw(ctx: CanvasRenderingContext2D, path?: { x: number; y: number }[]): void {
+    const drawPath = path ?? this.path;
+    if (drawPath.length === 4) {
+      ctx.beginPath();
+      ctx.moveTo(drawPath[0].x, drawPath[0].y);
+      ctx.lineTo(drawPath[1].x, drawPath[1].y);
+      ctx.lineTo(drawPath[2].x, drawPath[2].y);
+      ctx.lineTo(drawPath[3].x, drawPath[3].y);
+      ctx.closePath();
+      ctx.stroke();
+    }
+  }
+
+  onMouseDown(pos: { x: number; y: number }, data: ToolContext): void {
+    if (this.path.length < 4) {
+      this.path.push({ x: pos.x, y: pos.y });
+      this.isDrawing = true;
+      this.renderPreview(data);
+    }
+  }
+
+  onMouseMove(pos: { x: number; y: number }, data: ToolContext): void {
+    if (this.isDrawing) {
+      this.end = { x: pos.x, y: pos.y };
+      this.renderPreview(data);
+    }
+  }
+
+  onMouseUp(pos: { x: number; y: number }, data: ToolContext): any {
+    if (!this.isDrawing) return;
+
+    if (this.path.length < 4) {
+      this.renderPreview(data);
+    } else if (this.path.length === 4) {
+      const yOffset = this.path[2].y - this.path[3].y;
+      const correctedFourthPoint = {
+        x: this.path[3].x,
+        y: this.path[3].y + yOffset,
+      };
+
+      this.path[3] = correctedFourthPoint;
+
+      const savePath = [...this.path];
+      this.path = [];
+      this.isDrawing = false;
+      this.end = null;
+
+      const ctx = data.canvas?.getContext('2d');
+      if (ctx) this.draw(ctx, savePath);
+
+      const previewCtx = data.previewCanvas?.getContext('2d');
+      if (previewCtx)
+        previewCtx.clearRect(
+          0,
+          0,
+          data.previewCanvas.width,
+          data.previewCanvas.height
+        );
+
+      return { tool: this, path: savePath };
+    }
+  }
+
+  private renderPreview(data: ToolContext): void {
+    if (!this.isDrawing || !this.end || this.path.length === 0) return;
+
+    const ctx = data.previewCanvas?.getContext('2d');
+    if (!ctx) return;
+
+    ctx.clearRect(0, 0, data.previewCanvas.width, data.previewCanvas.height);
+
+    ctx.strokeStyle = toTransparentColor(data.selectedColor);
     ctx.lineWidth = 2;
-    ctx.beginPath();
 
-    ctx.moveTo(path[0].x, path[0].y);
-    ctx.lineTo(path[1].x, path[1].y);
-    ctx.lineTo(path[2].x, path[2].y);
-    ctx.lineTo(path[3].x, path[3].y);
-    ctx.lineTo(path[0].x, path[0].y);
+    if (this.path.length === 1) {
+      ctx.beginPath();
+      ctx.moveTo(this.path[0].x, this.path[0].y);
+      ctx.lineTo(this.end.x, this.end.y);
+      ctx.stroke();
+      ctx.closePath();
+    }
 
-    ctx.stroke();
-    ctx.closePath();
+    if (this.path.length === 2) {
+      ctx.beginPath();
+      ctx.moveTo(this.path[0].x, this.path[0].y);
+      ctx.lineTo(this.path[1].x, this.path[1].y);
+      ctx.lineTo(this.end.x, this.end.y);
+      ctx.closePath();
+      ctx.stroke();
+    }
+
+    if (this.path.length === 3) {
+      const fourthPoint = {
+        x: this.path[2].x,
+        y: this.end.y,
+      };
+
+      ctx.beginPath();
+      ctx.moveTo(this.path[0].x, this.path[0].y);
+      ctx.lineTo(this.path[1].x, this.path[1].y);
+      ctx.lineTo(fourthPoint.x, fourthPoint.y);
+      ctx.lineTo(this.end.x, this.end.y);
+      ctx.closePath();
+      ctx.stroke();
+    }
+
+    if (this.path.length === 4) {
+      ctx.beginPath();
+      ctx.moveTo(this.path[0].x, this.path[0].y);
+      ctx.lineTo(this.path[1].x, this.path[1].y);
+      ctx.lineTo(this.path[2].x, this.path[2].y);
+      ctx.lineTo(this.path[3].x, this.path[3].y);
+      ctx.closePath();
+      ctx.stroke();
+    }
   }
 }
