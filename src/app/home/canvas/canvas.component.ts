@@ -11,6 +11,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { DrawingTool } from './interfaces/drawing-tool.interface';
 import { Pencil } from './drawing-tools/pencil.tool';
 import { Ellipse } from './drawing-tools/ellipse.tool';
+import { Parallelogram } from './drawing-tools/parallelogram.tool';
 import { Line } from './drawing-tools/line.tool';
 import { Polygon } from './drawing-tools/polygon.tool';
 import { Triangle } from './drawing-tools/triangle.tool';
@@ -41,8 +42,9 @@ export class CanvasComponent implements OnInit, AfterViewInit {
 
   private pencilTool = new Pencil();
   private ellipseTool = new Ellipse();
+  private parallelogramTool = new Parallelogram();
   private lineTool = new Line();
-  private polygonTool = new Polygon();
+  private polygonTool!: Polygon;
   private triangleTool = new Triangle();
   private rectangleTool = new Rectangle();
   private trapezoidTool = new Trapezoid();
@@ -64,6 +66,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
 
   isColorPaletteVisible = false;
   shapeToolsVisible = false;
+  showPolygonInput = false;
 
   constructor(
     private toastr: ToastrService,
@@ -74,6 +77,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     this.toolSelector = new ToolSelector({
       pencil: this.pencilTool,
       ellipse: this.ellipseTool,
+      parallelogram: this.parallelogramTool,
       line: this.lineTool,
       polygon: this.polygonTool,
       triangle: this.triangleTool,
@@ -188,7 +192,11 @@ export class CanvasComponent implements OnInit, AfterViewInit {
   }
 
   selectTool(tool: string): void {
-    this.currentTool = this.toolSelector.select(tool);
+    if (tool === 'polygon') {
+      this.openPolygonInput();
+    } else {
+      this.currentTool = this.toolSelector.select(tool);
+    }
     this.shapeToolsVisible = false;
   }
 
@@ -210,6 +218,54 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     }
     this.selectedSubject = subject;
     this.clearCanvas();
+  }
+
+  selectColor(color: string): void {
+    this.toolContext.selectedColor = color;
+    this.isColorPaletteVisible = !this.isColorPaletteVisible;
+  }
+
+  openPolygonInput() {
+    this.showPolygonInput = true;
+  }
+
+  closePolygonInput() {
+    this.showPolygonInput = false;
+  }
+
+  confirmPolygonSides(value: string) {
+    const sides = parseInt(value, 10);
+    if (sides >= 3) {
+      if (isNaN(sides)) {
+        this.toastr.error(
+          this.translate.instant('CANVAS.INVALID_SIDES_NUMBER') ||
+            'Invalid number of sides',
+          this.translate.instant('ADMIN.ERRORS.ERROR')
+        );
+        return;
+      }
+      this.polygonTool = new Polygon(sides);
+      this.toolSelector = new ToolSelector({
+        pencil: this.pencilTool,
+        ellipse: this.ellipseTool,
+        parallelogram: this.parallelogramTool,
+        line: this.lineTool,
+        polygon: this.polygonTool,
+        triangle: this.triangleTool,
+        rectangle: this.rectangleTool,
+        trapezoid: this.trapezoidTool,
+        rhombus: this.rhombusTool,
+      });
+      this.currentTool = this.toolSelector.select('polygon');
+      this.closePolygonInput();
+    } else {
+      this.closePolygonInput();
+      this.toastr.error(
+        this.translate.instant('CANVAS.INVALID_SIDES_NUMBER') ||
+          'Invalid number of sides',
+        this.translate.instant('ADMIN.ERRORS.ERROR')
+      );
+    }
   }
 
   onClearCanvas(): void {

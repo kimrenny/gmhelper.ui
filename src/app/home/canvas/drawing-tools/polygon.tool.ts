@@ -1,98 +1,129 @@
 import { DrawingTool } from '../interfaces/drawing-tool.interface';
+import { ToolContext } from '../interfaces/tool-context.interface';
+import { toTransparentColor } from '../utils/preview-color';
 
 export class Polygon implements DrawingTool {
-  private vertices: { x: number; y: number }[] = [];
-  private polygons: { x: number; y: number }[][] = [];
-  private previewPoint: { x: number; y: number } | null = null;
-  private vertexCount: number = 0;
+  private center: { x: number; y: number } | null = null;
+  private radius: number = 0;
+  private sides: number;
+  private isDrawing: boolean = false;
+  private path: { x: number; y: number }[] = [];
 
-  isSetupComplete(): boolean {
-    return this.vertexCount > 0;
-  }
-
-  setVertexCount(): void {
-    const userInput = prompt(
-      'Введите количество углов многоугольника (от 3 до 8):'
-    );
-    const count = parseInt(userInput || '', 10);
-
-    if (isNaN(count) || count < 3 || count > 8) {
-      alert('Некорректное значение. Введите число от 3 до 8.');
-      this.setVertexCount();
-    } else {
-      this.vertexCount = count;
-      this.reset();
+  constructor(sides: number) {
+    if (sides < 3) {
+      throw new Error('Polygon must have at least 3 sides.');
     }
+    this.sides = sides;
   }
 
-  addPoint(point: { x: number; y: number }): void {
-    if (this.vertices.length < this.vertexCount) {
-      this.vertices.push(point);
-    }
-
-    if (this.vertices.length === this.vertexCount) {
-      this.polygons.push([...this.vertices]);
-      this.reset();
-    }
-  }
-
-  setPreviewPoint(point: { x: number; y: number } | null): void {
-    this.previewPoint = point;
-  }
-
-  draw(
-    ctx: CanvasRenderingContext2D,
-    path: { x: number; y: number }[],
-    color: string
-  ): void {
-    this.polygons.forEach((polygon) => {
-      ctx.save();
-      ctx.strokeStyle = color;
-      ctx.lineWidth = 2;
-
+  draw(ctx: CanvasRenderingContext2D, path?: { x: number; y: number }[]): void {
+    const drawPath = path ?? this.path;
+    if (drawPath.length >= 3) {
       ctx.beginPath();
-      ctx.moveTo(polygon[0].x, polygon[0].y);
-
-      polygon.forEach((point) => {
-        ctx.lineTo(point.x, point.y);
-      });
-
-      ctx.lineTo(polygon[0].x, polygon[0].y);
-      ctx.stroke();
+      ctx.moveTo(drawPath[0].x, drawPath[0].y);
+      for (let i = 1; i < drawPath.length; i++) {
+        ctx.lineTo(drawPath[i].x, drawPath[i].y);
+      }
       ctx.closePath();
-      ctx.restore();
-    });
-
-    if (this.vertices.length > 0) {
-      ctx.save();
-      ctx.strokeStyle = color;
-      ctx.lineWidth = 2;
-
-      ctx.beginPath();
-      ctx.moveTo(this.vertices[0].x, this.vertices[0].y);
-
-      for (let i = 1; i < this.vertices.length; i++) {
-        ctx.lineTo(this.vertices[i].x, this.vertices[i].y);
-      }
-
-      if (this.previewPoint) {
-        ctx.lineTo(this.previewPoint.x, this.previewPoint.y);
-      }
-
       ctx.stroke();
-      ctx.restore();
     }
   }
 
-  reset(): void {
-    this.vertices = [];
-    this.previewPoint = null;
+  onMouseDown(pos: { x: number; y: number }, data: ToolContext): void {
+    this.center = { x: pos.x, y: pos.y };
+    this.isDrawing = true;
+    this.renderPreview(data);
   }
 
-  clear(): void {
-    this.polygons = [];
-    this.vertices = [];
-    this.previewPoint = null;
-    this.vertexCount = 0;
+  onMouseMove(pos: { x: number; y: number }, data: ToolContext): void {
+    if (!this.isDrawing || !this.center) return;
+
+    const dx = pos.x - this.center.x;
+    const dy = pos.y - this.center.y;
+    const distanceX = Math.abs(dx);
+    const distanceY = Math.abs(dy);
+    const minDistance = Math.min(distanceX, distanceY);
+
+    this.radius = minDistance;
+
+    this.path = this.calculatePolygonPoints(
+      this.center.x,
+      this.center.y,
+      this.radius,
+      this.sides
+    );
+
+    this.renderPreview(data);
+  }
+
+  onMouseUp(pos: { x: number; y: number }, data: ToolContext): any {
+    if (!this.isDrawing) return;
+
+    const ctx = data.canvas?.getContext('2d');
+    if (ctx) this.draw(ctx, this.path);
+
+    const previewCtx = data.previewCanvas?.getContext('2d');
+    if (previewCtx)
+      previewCtx.clearRect(
+        0,
+        0,
+        data.previewCanvas.width,
+        data.previewCanvas.height
+      );
+
+    const savePath = [...this.path];
+
+    this.center = null;
+    this.radius = 0;
+    this.isDrawing = false;
+    this.path = [];
+
+    return { tool: this, path: savePath };
+  }
+
+  private renderPreview(data: ToolContext): void {
+    if (!this.isDrawing || !this.center || this.radius <= 0) return;
+
+    const ctx = data.previewCanvas?.getContext('2d');
+    if (!ctx) return;
+
+    ctx.clearRect(0, 0, data.previewCanvas.width, data.previewCanvas.height);
+
+    ctx.strokeStyle = toTransparentColor(data.selectedColor);
+    ctx.lineWidth = 2;
+
+    const previewPath = this.calculatePolygonPoints(
+      this.center.x,
+      this.center.y,
+      this.radius,
+      this.sides
+    );
+
+    ctx.beginPath();
+    ctx.moveTo(previewPath[0].x, previewPath[0].y);
+    for (let i = 1; i < previewPath.length; i++) {
+      ctx.lineTo(previewPath[i].x, previewPath[i].y);
+    }
+    ctx.closePath();
+    ctx.stroke();
+  }
+
+  private calculatePolygonPoints(
+    cx: number,
+    cy: number,
+    radius: number,
+    sides: number
+  ): { x: number; y: number }[] {
+    const points: { x: number; y: number }[] = [];
+    const angleStep = (2 * Math.PI) / sides;
+
+    for (let i = 0; i < sides; i++) {
+      const angle = i * angleStep - Math.PI / 2;
+      const x = cx + radius * Math.cos(angle);
+      const y = cy + radius * Math.sin(angle);
+      points.push({ x, y });
+    }
+
+    return points;
   }
 }

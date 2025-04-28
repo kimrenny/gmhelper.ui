@@ -58,6 +58,10 @@
       <button (click)="selectTool('triangle')" class="triangle-btn"></button>
       <button (click)="selectTool('rectangle')" class="quad-btn"></button>
       <button (click)="selectTool('ellipse')" class="ellipse-btn"></button>
+      <button
+        (click)="selectTool('parallelogram')"
+        class="parallelogram-btn"
+      ></button>
       <button (click)="selectTool('polygon')" class="polygon-btn"></button>
       <button (click)="selectTool('trapezoid')" class="trapezoid-btn"></button>
       <button (click)="selectTool('rhombus')" class="rhombus-btn"></button>
@@ -72,8 +76,28 @@
         class="color-option"
         *ngFor="let color of colors"
         [style.background-color]="color"
-        (click)="this.toolContext.selectedColor = color"
+        (click)="selectColor(color)"
       ></div>
+    </div>
+  </div>
+
+  <div *ngIf="showPolygonInput" class="polygon-input-overlay">
+    <div class="polygon-input-box">
+      <h3>{{ "CANVAS.POLYGON.HINT" | translate }}</h3>
+      <input
+        type="number"
+        #polygonInput
+        (keydown.enter)="confirmPolygonSides(polygonInput.value)"
+        min="3"
+      />
+      <div class="button-group">
+        <button (click)="confirmPolygonSides(polygonInput.value)">
+          {{ "CANVAS.POLYGON.CONFIRM" | translate }}
+        </button>
+        <button (click)="closePolygonInput()">
+          {{ "CANVAS.POLYGON.CANCEL" | translate }}
+        </button>
+      </div>
     </div>
   </div>
 </div>
