@@ -219,6 +219,78 @@
     }
   }
 
+  .canvas-controls {
+    position: absolute;
+    top: 80px;
+    left: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 120px;
+    height: 50px;
+    z-index: 40;
+
+    &.disabled {
+      display: none;
+    }
+
+    button {
+      width: 40px;
+      height: 40px;
+      padding: 8px;
+      cursor: pointer;
+      background-color: rgba(255, 255, 255, 0.15);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      transition: background-color 0.3s, transform 0.2s, box-shadow 0.2s;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: 70% 70%;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+
+      &:hover:not(.disabled) {
+        background-color: rgba(255, 255, 255, 0.25);
+        transform: scale(1.05);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      }
+    }
+
+    .undo-btn {
+      background-image: url(../../../assets/icons/undo-btn.png);
+
+      &:hover:not(.disabled) {
+        background-image: url(../../../assets/icons/undo-btn-hover.png);
+      }
+
+      &.disabled {
+        background-image: url(../../../assets/icons/undo-btn-disabled.png);
+        cursor: not-allowed;
+        pointer-events: none;
+        opacity: 0.6;
+        transform: none;
+        box-shadow: none;
+      }
+    }
+
+    .redo-btn {
+      background-image: url(../../../assets/icons/redo-btn.png);
+
+      &:hover:not(.disabled) {
+        background-image: url(../../../assets/icons/redo-btn-hover.png);
+      }
+
+      &.disabled {
+        background-image: url(../../../assets/icons/redo-btn-disabled.png);
+        cursor: not-allowed;
+        pointer-events: none;
+        opacity: 0.6;
+        transform: none;
+        box-shadow: none;
+      }
+    }
+  }
+
   .shape-tools {
     position: absolute;
     left: 50px;

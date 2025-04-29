@@ -59,6 +59,16 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     path: { x: number; y: number; color: string }[];
   }[] = [];
 
+  private undoStack: {
+    tool: DrawingTool;
+    path: { x: number; y: number; color: string }[];
+  }[] = [];
+
+  private redoStack: {
+    tool: DrawingTool;
+    path: { x: number; y: number; color: string }[];
+  }[] = [];
+
   @ViewChild('drawingCanvas') canvasRef!: ElementRef<HTMLCanvasElement>;
   @ViewChild('previewCanvas') previewCanvasRef!: ElementRef<HTMLCanvasElement>;
   private ctx!: CanvasRenderingContext2D;
@@ -146,8 +156,9 @@ export class CanvasComponent implements OnInit, AfterViewInit {
         const newPath = this.currentTool.onMouseUp(pos, this.toolContext);
         if (newPath) {
           this.paths.push(newPath);
+          this.undoStack.push(newPath);
+          this.redoStack = [];
         }
-        console.log('Paths after drawing:', this.paths);
       }
     });
 
@@ -156,6 +167,14 @@ export class CanvasComponent implements OnInit, AfterViewInit {
       if (!pos) return;
       this.currentTool?.onMouseLeave?.(pos, this.toolContext);
     });
+  }
+
+  get canUndo(): boolean {
+    return this.paths.length > 0;
+  }
+
+  get canRedo(): boolean {
+    return this.redoStack.length > 0;
   }
 
   setCursor(cursorStyle: string): void {
@@ -265,6 +284,22 @@ export class CanvasComponent implements OnInit, AfterViewInit {
           'Invalid number of sides',
         this.translate.instant('ADMIN.ERRORS.ERROR')
       );
+    }
+  }
+
+  undo(): void {
+    const lastPath = this.paths.pop();
+    if (lastPath) {
+      this.redoStack.push(lastPath);
+      this.redraw();
+    }
+  }
+
+  redo(): void {
+    const restoredPath = this.redoStack.pop();
+    if (restoredPath) {
+      this.paths.push(restoredPath);
+      this.redraw();
     }
   }
 

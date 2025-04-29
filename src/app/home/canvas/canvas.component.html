@@ -40,6 +40,19 @@
     </select>
   </div>
 
+  <div class="canvas-controls" [class.disabled]="!selectedSubject">
+    <button
+      class="undo-btn"
+      (click)="undo()"
+      [class.disabled]="!canUndo"
+    ></button>
+    <button
+      class="redo-btn"
+      (click)="redo()"
+      [class.disabled]="!canRedo"
+    ></button>
+  </div>
+
   <div
     class="tool-buttons"
     [class.disabled]="!selectedSubject"
