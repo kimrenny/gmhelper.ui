@@ -3,13 +3,19 @@ import { ToolContext } from '../interfaces/tool-context.interface';
 import { toTransparentColor } from '../utils/preview-color';
 
 export class Trapezoid implements DrawingTool {
-  private path: { x: number; y: number }[] = [];
+  private path: { x: number; y: number; color: string }[] = [];
   private isDrawing: boolean = false;
-  private end: { x: number; y: number } | null = null;
+  private end: { x: number; y: number; color: string } | null = null;
 
-  draw(ctx: CanvasRenderingContext2D, path?: { x: number; y: number }[]): void {
+  draw(
+    ctx: CanvasRenderingContext2D,
+    path: { x: number; y: number; color: string }[]
+  ): void {
     const drawPath = path ?? this.path;
     if (drawPath.length === 4) {
+      ctx.strokeStyle = path[0].color;
+      ctx.lineWidth = 2;
+
       ctx.beginPath();
       ctx.moveTo(drawPath[0].x, drawPath[0].y);
       ctx.lineTo(drawPath[1].x, drawPath[1].y);
@@ -22,7 +28,7 @@ export class Trapezoid implements DrawingTool {
 
   onMouseDown(pos: { x: number; y: number }, data: ToolContext): void {
     if (this.path.length < 4) {
-      this.path.push({ x: pos.x, y: pos.y });
+      this.path.push({ x: pos.x, y: pos.y, color: data.selectedColor });
       this.isDrawing = true;
       this.renderPreview(data);
     }
@@ -30,7 +36,7 @@ export class Trapezoid implements DrawingTool {
 
   onMouseMove(pos: { x: number; y: number }, data: ToolContext): void {
     if (this.isDrawing) {
-      this.end = { x: pos.x, y: pos.y };
+      this.end = { x: pos.x, y: pos.y, color: data.selectedColor };
       this.renderPreview(data);
     }
   }
@@ -41,11 +47,28 @@ export class Trapezoid implements DrawingTool {
     if (this.path.length < 4) {
       this.renderPreview(data);
     } else if (this.path.length === 4) {
-      const yOffset = this.path[2].y - this.path[3].y;
-      const correctedFourthPoint = {
-        x: this.path[3].x,
-        y: this.path[3].y + yOffset,
-      };
+      const [p1, p2, p3, p4] = this.path;
+      const dx = p2.x - p1.x;
+      const dy = p2.y - p1.y;
+
+      let correctedFourthPoint;
+
+      if (dx === 0) {
+        correctedFourthPoint = {
+          x: p4.x,
+          y: p3.y + dy,
+          color: data.selectedColor,
+        };
+      } else {
+        const slope = dy / dx;
+        const dx4 = p4.x - p3.x;
+        const dy4 = slope * dx4;
+        correctedFourthPoint = {
+          x: p4.x,
+          y: p3.y + dy4,
+          color: data.selectedColor,
+        };
+      }
 
       this.path[3] = correctedFourthPoint;
 
@@ -99,16 +122,26 @@ export class Trapezoid implements DrawingTool {
     }
 
     if (this.path.length === 3) {
-      const fourthPoint = {
-        x: this.path[2].x,
-        y: this.end.y,
-      };
+      const [p1, p2, p3] = this.path;
+      const dx = p2.x - p1.x;
+      const dy = p2.y - p1.y;
+
+      let fourthPoint;
+
+      if (dx === 0) {
+        fourthPoint = { x: this.end.x, y: p3.y + dy };
+      } else {
+        const slope = dy / dx;
+        const dx4 = this.end.x - p3.x;
+        const dy4 = slope * dx4;
+        fourthPoint = { x: this.end.x, y: p3.y + dy4 };
+      }
 
       ctx.beginPath();
-      ctx.moveTo(this.path[0].x, this.path[0].y);
-      ctx.lineTo(this.path[1].x, this.path[1].y);
+      ctx.moveTo(p1.x, p1.y);
+      ctx.lineTo(p2.x, p2.y);
+      ctx.lineTo(p3.x, p3.y);
       ctx.lineTo(fourthPoint.x, fourthPoint.y);
-      ctx.lineTo(this.end.x, this.end.y);
       ctx.closePath();
       ctx.stroke();
     }
