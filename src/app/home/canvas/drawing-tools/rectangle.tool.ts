@@ -3,18 +3,17 @@ import { ToolContext } from '../interfaces/tool-context.interface';
 import { toTransparentColor } from '../utils/preview-color';
 
 export class Rectangle implements DrawingTool {
-  private start: { x: number; y: number } | null = null;
-  private end: { x: number; y: number } | null = null;
+  private start: { x: number; y: number; color: string } | null = null;
+  private end: { x: number; y: number; color: string } | null = null;
   private isDrawing: boolean = false;
 
   draw(
     ctx: CanvasRenderingContext2D,
-    path: { x: number; y: number }[],
-    color: string
+    path: { x: number; y: number; color: string }[]
   ): void {
     if (path.length !== 4) return;
 
-    ctx.strokeStyle = color;
+    ctx.strokeStyle = path[0].color;
     ctx.lineWidth = 2;
 
     ctx.beginPath();
@@ -27,7 +26,7 @@ export class Rectangle implements DrawingTool {
   }
 
   onMouseDown(pos: { x: number; y: number }, data: ToolContext): void {
-    this.start = pos;
+    this.start = { x: pos.x, y: pos.y, color: data.selectedColor };
     this.end = null;
     this.isDrawing = true;
   }
@@ -35,17 +34,21 @@ export class Rectangle implements DrawingTool {
   onMouseMove(pos: { x: number; y: number }, data: ToolContext): void {
     if (!this.isDrawing || !this.start) return;
 
-    this.end = pos;
+    this.end = { x: pos.x, y: pos.y, color: data.selectedColor };
     this.renderPreview(data);
   }
 
   onMouseUp(pos: { x: number; y: number }, data: ToolContext): any {
     if (!this.isDrawing || !this.start) return;
 
-    this.end = pos;
-    const path = this.calculateRectPath(this.start, this.end);
+    this.end = { x: pos.x, y: pos.y, color: data.selectedColor };
+    const path = this.calculateRectPath(
+      this.start,
+      this.end,
+      data.selectedColor
+    );
     const ctx = data.canvas?.getContext('2d');
-    if (ctx) this.draw(ctx, path, data.selectedColor);
+    if (ctx) this.draw(ctx, path);
 
     const previewCtx = data.previewCanvas?.getContext('2d');
     if (previewCtx)
@@ -75,7 +78,11 @@ export class Rectangle implements DrawingTool {
     const ctx = data.previewCanvas?.getContext('2d');
     if (!ctx) return;
 
-    const path = this.calculateRectPath(this.start, this.end);
+    const path = this.calculateRectPath(
+      this.start,
+      this.end,
+      data.selectedColor
+    );
 
     ctx.clearRect(0, 0, data.previewCanvas.width, data.previewCanvas.height);
 
@@ -92,14 +99,15 @@ export class Rectangle implements DrawingTool {
   }
 
   private calculateRectPath(
-    start: { x: number; y: number },
-    end: { x: number; y: number }
+    start: { x: number; y: number; color: string },
+    end: { x: number; y: number; color: string },
+    color: string
   ) {
     return [
-      { x: start.x, y: start.y },
-      { x: end.x, y: start.y },
-      { x: end.x, y: end.y },
-      { x: start.x, y: end.y },
+      { x: start.x, y: start.y, color: color },
+      { x: end.x, y: start.y, color: color },
+      { x: end.x, y: end.y, color: color },
+      { x: start.x, y: end.y, color: color },
     ];
   }
 }

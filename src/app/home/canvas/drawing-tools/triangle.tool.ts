@@ -3,13 +3,19 @@ import { ToolContext } from '../interfaces/tool-context.interface';
 import { toTransparentColor } from '../utils/preview-color';
 
 export class Triangle implements DrawingTool {
-  private path: { x: number; y: number }[] = [];
+  private path: { x: number; y: number; color: string }[] = [];
   private isDrawing: boolean = false;
   private end: { x: number; y: number } | null = null;
 
-  draw(ctx: CanvasRenderingContext2D, path?: { x: number; y: number }[]): void {
+  draw(
+    ctx: CanvasRenderingContext2D,
+    path: { x: number; y: number; color: string }[]
+  ): void {
     const drawPath = path ?? this.path;
     if (drawPath.length === 3) {
+      ctx.strokeStyle = path[0].color;
+      ctx.lineWidth = 2;
+
       ctx.beginPath();
       ctx.moveTo(drawPath[0].x, drawPath[0].y);
       ctx.lineTo(drawPath[1].x, drawPath[1].y);
@@ -21,7 +27,7 @@ export class Triangle implements DrawingTool {
 
   onMouseDown(pos: { x: number; y: number }, data: ToolContext): void {
     if (this.path.length < 3) {
-      this.path.push({ x: pos.x, y: pos.y });
+      this.path.push({ x: pos.x, y: pos.y, color: data.selectedColor });
       this.isDrawing = true;
       this.renderPreview(data);
     }

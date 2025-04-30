@@ -7,9 +7,16 @@ export class Parallelogram implements DrawingTool {
   private isDrawing: boolean = false;
   private end: { x: number; y: number } | null = null;
 
-  draw(ctx: CanvasRenderingContext2D, path?: { x: number; y: number }[]): void {
+  draw(
+    ctx: CanvasRenderingContext2D,
+    path: { x: number; y: number }[],
+    color: string
+  ): void {
     const drawPath = path ?? this.path;
     if (drawPath.length === 4) {
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2;
+
       ctx.beginPath();
       ctx.moveTo(drawPath[0].x, drawPath[0].y);
       ctx.lineTo(drawPath[1].x, drawPath[1].y);
@@ -53,7 +60,7 @@ export class Parallelogram implements DrawingTool {
       this.end = null;
 
       const ctx = data.canvas?.getContext('2d');
-      if (ctx) this.draw(ctx, savePath);
+      if (ctx) this.draw(ctx, savePath, data.selectedColor);
 
       const previewCtx = data.previewCanvas?.getContext('2d');
       if (previewCtx)

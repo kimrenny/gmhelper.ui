@@ -3,18 +3,17 @@ import { ToolContext } from '../interfaces/tool-context.interface';
 import { toTransparentColor } from '../utils/preview-color';
 
 export class Rhombus implements DrawingTool {
-  private start: { x: number; y: number } | null = null;
-  private end: { x: number; y: number } | null = null;
+  private start: { x: number; y: number; color: string } | null = null;
+  private end: { x: number; y: number; color: string } | null = null;
   private isDrawing: boolean = false;
 
   draw(
     ctx: CanvasRenderingContext2D,
-    path: { x: number; y: number }[],
-    color: string
+    path: { x: number; y: number; color: string }[]
   ): void {
     if (path.length !== 4) return;
 
-    ctx.strokeStyle = color;
+    ctx.strokeStyle = path[0].color;
     ctx.lineWidth = 2;
 
     ctx.beginPath();
@@ -27,7 +26,7 @@ export class Rhombus implements DrawingTool {
   }
 
   onMouseDown(pos: { x: number; y: number }, data: ToolContext): void {
-    this.start = pos;
+    this.start = { x: pos.x, y: pos.y, color: data.selectedColor };
     this.end = null;
     this.isDrawing = true;
   }
@@ -35,17 +34,17 @@ export class Rhombus implements DrawingTool {
   onMouseMove(pos: { x: number; y: number }, data: ToolContext): void {
     if (!this.isDrawing || !this.start) return;
 
-    this.end = pos;
+    this.end = { x: pos.x, y: pos.y, color: data.selectedColor };
     this.renderPreview(data);
   }
 
   onMouseUp(pos: { x: number; y: number }, data: ToolContext): any {
     if (!this.isDrawing || !this.start) return;
 
-    this.end = pos;
+    this.end = { x: pos.x, y: pos.y, color: data.selectedColor };
     const path = this.calculateRhombusPath(this.start, this.end);
     const ctx = data.canvas?.getContext('2d');
-    if (ctx) this.draw(ctx, path, data.selectedColor);
+    if (ctx) this.draw(ctx, path);
 
     const previewCtx = data.previewCanvas?.getContext('2d');
     if (previewCtx)
@@ -91,17 +90,17 @@ export class Rhombus implements DrawingTool {
   }
 
   private calculateRhombusPath(
-    start: { x: number; y: number },
-    end: { x: number; y: number }
+    start: { x: number; y: number; color: string },
+    end: { x: number; y: number; color: string }
   ) {
     const centerX = (start.x + end.x) / 2;
     const centerY = (start.y + end.y) / 2;
 
     return [
-      { x: centerX, y: start.y }, // Верх
-      { x: end.x, y: centerY }, // Право
-      { x: centerX, y: end.y }, // Низ
-      { x: start.x, y: centerY }, // Лево
+      { x: centerX, y: start.y, color: start.color },
+      { x: end.x, y: centerY, color: start.color },
+      { x: centerX, y: end.y, color: start.color },
+      { x: start.x, y: centerY, color: start.color },
     ];
   }
 }

@@ -7,7 +7,7 @@ export class Polygon implements DrawingTool {
   private radius: number = 0;
   private sides: number;
   private isDrawing: boolean = false;
-  private path: { x: number; y: number }[] = [];
+  private path: { x: number; y: number; color: string }[] = [];
 
   constructor(sides: number) {
     if (sides < 3) {
@@ -16,9 +16,16 @@ export class Polygon implements DrawingTool {
     this.sides = sides;
   }
 
-  draw(ctx: CanvasRenderingContext2D, path?: { x: number; y: number }[]): void {
+  draw(
+    ctx: CanvasRenderingContext2D,
+    path: { x: number; y: number }[],
+    color: string
+  ): void {
     const drawPath = path ?? this.path;
     if (drawPath.length >= 3) {
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2;
+
       ctx.beginPath();
       ctx.moveTo(drawPath[0].x, drawPath[0].y);
       for (let i = 1; i < drawPath.length; i++) {
@@ -50,7 +57,8 @@ export class Polygon implements DrawingTool {
       this.center.x,
       this.center.y,
       this.radius,
-      this.sides
+      this.sides,
+      data.selectedColor
     );
 
     this.renderPreview(data);
@@ -60,7 +68,7 @@ export class Polygon implements DrawingTool {
     if (!this.isDrawing) return;
 
     const ctx = data.canvas?.getContext('2d');
-    if (ctx) this.draw(ctx, this.path);
+    if (ctx) this.draw(ctx, this.path, data.selectedColor);
 
     const previewCtx = data.previewCanvas?.getContext('2d');
     if (previewCtx)
@@ -96,7 +104,8 @@ export class Polygon implements DrawingTool {
       this.center.x,
       this.center.y,
       this.radius,
-      this.sides
+      this.sides,
+      data.selectedColor
     );
 
     ctx.beginPath();
@@ -112,16 +121,17 @@ export class Polygon implements DrawingTool {
     cx: number,
     cy: number,
     radius: number,
-    sides: number
-  ): { x: number; y: number }[] {
-    const points: { x: number; y: number }[] = [];
+    sides: number,
+    color: string
+  ): { x: number; y: number; color: string }[] {
+    const points: { x: number; y: number; color: string }[] = [];
     const angleStep = (2 * Math.PI) / sides;
 
     for (let i = 0; i < sides; i++) {
       const angle = i * angleStep - Math.PI / 2;
       const x = cx + radius * Math.cos(angle);
       const y = cy + radius * Math.sin(angle);
-      points.push({ x, y });
+      points.push({ x, y, color: color });
     }
 
     return points;
