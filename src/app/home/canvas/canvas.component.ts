@@ -194,6 +194,14 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     const canvas = this.canvasRef.nativeElement;
     this.ctx.clearRect(0, 0, canvas.width, canvas.height);
     this.ctx.setTransform(this.scale / 100, 0, 0, this.scale / 100, 0, 0);
+    this.previewCtx.setTransform(
+      this.scale / 100,
+      0,
+      0,
+      this.scale / 100,
+      0,
+      0
+    );
 
     for (const p of this.paths) {
       const color = p.path[0]?.color || '#000000';
@@ -208,6 +216,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
   updateCanvasTransform(): void {
     const scaleFactor = this.scale / 100;
     this.ctx.setTransform(scaleFactor, 0, 0, scaleFactor, 0, 0);
+    this.previewCtx.setTransform(scaleFactor, 0, 0, scaleFactor, 0, 0);
   }
 
   selectTool(tool: string): void {
