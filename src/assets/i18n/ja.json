@@ -41,7 +41,12 @@
         "GEOMETRY": "幾何学"
       }
     },
-    "FEATURE_DISABLED": "この機能は現在のバージョンの製品ではサポートされていません。"
+    "FEATURE_DISABLED": "この機能は現在のバージョンの製品ではサポートされていません。",
+    "POLYGON": {
+      "HINT": "辺の数を入力してください：",
+      "CONFIRM": "確認",
+      "CANCEL": "キャンセル"
+    }
   },
   "REGISTER": {
     "REGISTER": {

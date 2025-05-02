@@ -41,7 +41,12 @@
         "GEOMETRY": "기하학"
       }
     },
-    "FEATURE_DISABLED": "이 기능은 현재 버전의 제품에서 지원되지 않습니다."
+    "FEATURE_DISABLED": "이 기능은 현재 버전의 제품에서 지원되지 않습니다.",
+    "POLYGON": {
+      "HINT": "변의 수를 입력하세요:",
+      "CONFIRM": "확인",
+      "CANCEL": "취소"
+    }
   },
   "REGISTER": {
     "REGISTER": {

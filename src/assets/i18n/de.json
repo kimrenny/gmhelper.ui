@@ -41,7 +41,12 @@
         "GEOMETRY": "Geometrie"
       }
     },
-    "FEATURE_DISABLED": "Diese Funktionalität wird in der aktuellen Version des Produkts nicht unterstützt."
+    "FEATURE_DISABLED": "Diese Funktionalität wird in der aktuellen Version des Produkts nicht unterstützt.",
+    "POLYGON": {
+      "HINT": "Geben Sie die Anzahl der Seiten ein:",
+      "CONFIRM": "Bestätigen",
+      "CANCEL": "Abbrechen"
+    }
   },
   "REGISTER": {
     "REGISTER": {

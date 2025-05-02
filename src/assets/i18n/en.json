@@ -41,7 +41,12 @@
         "GEOMETRY": "Geometry"
       }
     },
-    "FEATURE_DISABLED": "This functionality is not supported in the current version of the product."
+    "FEATURE_DISABLED": "This functionality is not supported in the current version of the product.",
+    "POLYGON": {
+      "HINT": "Enter the number of sides:",
+      "CONFIRM": "Confirm",
+      "CANCEL": "Cancel"
+    }
   },
   "REGISTER": {
     "REGISTER": {

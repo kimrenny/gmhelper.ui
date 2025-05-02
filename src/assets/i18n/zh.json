@@ -41,7 +41,12 @@
         "GEOMETRY": "几何"
       }
     },
-    "FEATURE_DISABLED": "当前版本的产品不支持此功能。"
+    "FEATURE_DISABLED": "当前版本的产品不支持此功能。",
+    "POLYGON": {
+      "HINT": "请输入边的数量：",
+      "CONFIRM": "确认",
+      "CANCEL": "取消"
+    }
   },
   "REGISTER": {
     "REGISTER": {

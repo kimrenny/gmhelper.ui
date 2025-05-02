@@ -41,7 +41,12 @@
         "GEOMETRY": "Géométrie"
       }
     },
-    "FEATURE_DISABLED": "Cette fonctionnalité n'est pas prise en charge dans la version actuelle du produit."
+    "FEATURE_DISABLED": "Cette fonctionnalité n'est pas prise en charge dans la version actuelle du produit.",
+    "POLYGON": {
+      "HINT": "Entrez le nombre de côtés :",
+      "CONFIRM": "Confirmer",
+      "CANCEL": "Annuler"
+    }
   },
   "REGISTER": {
     "REGISTER": {
