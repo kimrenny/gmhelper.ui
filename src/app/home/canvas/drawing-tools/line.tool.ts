@@ -1,11 +1,18 @@
 import { DrawingTool } from '../interfaces/drawing-tool.interface';
 import { ToolContext } from '../interfaces/tool-context.interface';
+import { CanvasService } from '../services/canvas.service';
+import { CounterService } from '../services/counter.service';
 import { toTransparentColor } from '../utils/preview-color';
 
 export class Line implements DrawingTool {
   private isDrawing: boolean = false;
   private path: { x: number; y: number; color: string }[] = [];
   private previewEnd: { x: number; y: number } | null = null;
+
+  constructor(
+    private canvasService: CanvasService,
+    private counterService: CounterService
+  ) {}
 
   draw(
     ctx: CanvasRenderingContext2D,
@@ -22,6 +29,14 @@ export class Line implements DrawingTool {
     ctx.lineTo(path[1].x, path[1].y);
     ctx.stroke();
     ctx.closePath();
+
+    ctx.fillStyle = color;
+    for (const point of [path[0], path[1]]) {
+      ctx.beginPath();
+      ctx.arc(point.x, point.y, 3, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.closePath();
+    }
   }
 
   renderPreview(data: ToolContext): void {
@@ -90,6 +105,7 @@ export class Line implements DrawingTool {
 
     this.isDrawing = false;
     if (this.path.length > 1) {
+      this.addPointsToCanvasService();
       this.previewEnd = null;
       const savePath = [...this.path];
       this.path = [];
@@ -132,5 +148,12 @@ export class Line implements DrawingTool {
     }
     this.path = [];
     this.previewEnd = null;
+  }
+
+  private addPointsToCanvasService(): void {
+    const figureName = this.counterService.getNextFigureName('Line');
+    this.path.forEach((point, index) => {
+      this.canvasService.addPoint(point.x, point.y, figureName, index);
+    });
   }
 }

@@ -1,11 +1,21 @@
 import { DrawingTool } from '../interfaces/drawing-tool.interface';
 import { ToolContext } from '../interfaces/tool-context.interface';
+import { CanvasService } from '../services/canvas.service';
+import { CounterService } from '../services/counter.service';
 import { toTransparentColor } from '../utils/preview-color';
 
 export class Triangle implements DrawingTool {
   private path: { x: number; y: number; color: string }[] = [];
   private isDrawing: boolean = false;
   private end: { x: number; y: number } | null = null;
+
+  private canvasService: CanvasService;
+  private counterService: CounterService;
+
+  constructor(canvasService: CanvasService, counterService: CounterService) {
+    this.canvasService = canvasService;
+    this.counterService = counterService;
+  }
 
   draw(
     ctx: CanvasRenderingContext2D,
@@ -22,6 +32,13 @@ export class Triangle implements DrawingTool {
       ctx.lineTo(drawPath[2].x, drawPath[2].y);
       ctx.closePath();
       ctx.stroke();
+
+      ctx.fillStyle = path[0].color;
+      for (const point of drawPath) {
+        ctx.beginPath();
+        ctx.arc(point.x, point.y, 4, 0, 2 * Math.PI);
+        ctx.fill();
+      }
     }
   }
 
@@ -47,6 +64,9 @@ export class Triangle implements DrawingTool {
       this.renderPreview(data);
     } else if (this.isDrawing && this.path.length === 3) {
       const savePath = [...this.path];
+
+      this.addPointsToCanvasService();
+
       this.path = [];
       this.isDrawing = false;
       this.end = null;
@@ -125,5 +145,12 @@ export class Triangle implements DrawingTool {
       ctx.stroke();
       ctx.closePath();
     }
+  }
+
+  private addPointsToCanvasService(): void {
+    const figureName = this.counterService.getNextFigureName('Triangle');
+    this.path.forEach((point, index) => {
+      this.canvasService.addPoint(point.x, point.y, figureName, index);
+    });
   }
 }

@@ -1,6 +1,8 @@
 import { DrawingTool } from '../interfaces/drawing-tool.interface';
 import { ToolContext } from '../interfaces/tool-context.interface';
 import { toTransparentColor } from '../utils/preview-color';
+import { CanvasService } from '../services/canvas.service';
+import { CounterService } from '../services/counter.service';
 
 export class Polygon implements DrawingTool {
   private center: { x: number; y: number } | null = null;
@@ -9,11 +11,21 @@ export class Polygon implements DrawingTool {
   private isDrawing: boolean = false;
   private path: { x: number; y: number; color: string }[] = [];
 
-  constructor(sides: number) {
+  private canvasService: CanvasService;
+  private counterService: CounterService;
+
+  constructor(
+    sides: number,
+    canvasService: CanvasService,
+    counterService: CounterService
+  ) {
     if (sides < 3) {
       throw new Error('Polygon must have at least 3 sides.');
     }
     this.sides = sides;
+
+    this.canvasService = canvasService;
+    this.counterService = counterService;
   }
 
   draw(
@@ -33,6 +45,14 @@ export class Polygon implements DrawingTool {
       }
       ctx.closePath();
       ctx.stroke();
+
+      ctx.fillStyle = color;
+      for (const point of drawPath) {
+        ctx.beginPath();
+        ctx.arc(point.x, point.y, 3, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.closePath();
+      }
     }
   }
 
@@ -80,6 +100,8 @@ export class Polygon implements DrawingTool {
       );
 
     const savePath = [...this.path];
+
+    this.addPointsToCanvasService();
 
     this.center = null;
     this.radius = 0;
@@ -135,5 +157,12 @@ export class Polygon implements DrawingTool {
     }
 
     return points;
+  }
+
+  private addPointsToCanvasService(): void {
+    const figureName = this.counterService.getNextFigureName('Polygon');
+    this.path.forEach((point, index) => {
+      this.canvasService.addPoint(point.x, point.y, figureName, index);
+    });
   }
 }

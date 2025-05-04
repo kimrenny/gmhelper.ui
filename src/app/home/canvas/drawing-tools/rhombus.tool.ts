@@ -1,11 +1,21 @@
 import { DrawingTool } from '../interfaces/drawing-tool.interface';
 import { ToolContext } from '../interfaces/tool-context.interface';
+import { CanvasService } from '../services/canvas.service';
+import { CounterService } from '../services/counter.service';
 import { toTransparentColor } from '../utils/preview-color';
 
 export class Rhombus implements DrawingTool {
   private start: { x: number; y: number; color: string } | null = null;
   private end: { x: number; y: number; color: string } | null = null;
   private isDrawing: boolean = false;
+
+  private canvasService: CanvasService;
+  private counterService: CounterService;
+
+  constructor(canvasService: CanvasService, counterService: CounterService) {
+    this.canvasService = canvasService;
+    this.counterService = counterService;
+  }
 
   draw(
     ctx: CanvasRenderingContext2D,
@@ -23,6 +33,13 @@ export class Rhombus implements DrawingTool {
     }
     ctx.closePath();
     ctx.stroke();
+
+    ctx.fillStyle = path[0].color;
+    for (const point of path) {
+      ctx.beginPath();
+      ctx.arc(point.x, point.y, 4, 0, 2 * Math.PI);
+      ctx.fill();
+    }
   }
 
   onMouseDown(pos: { x: number; y: number }, data: ToolContext): void {
@@ -45,6 +62,8 @@ export class Rhombus implements DrawingTool {
     const path = this.calculateRhombusPath(this.start, this.end);
     const ctx = data.canvas?.getContext('2d');
     if (ctx) this.draw(ctx, path);
+
+    this.addPointsToCanvasService(path);
 
     const previewCtx = data.previewCanvas?.getContext('2d');
     if (previewCtx)
@@ -102,5 +121,14 @@ export class Rhombus implements DrawingTool {
       { x: centerX, y: end.y, color: start.color },
       { x: start.x, y: centerY, color: start.color },
     ];
+  }
+
+  private addPointsToCanvasService(
+    path: { x: number; y: number; color: string }[]
+  ): void {
+    const figureName = this.counterService.getNextFigureName('Rhombus');
+    path.forEach((point, index) => {
+      this.canvasService.addPoint(point.x, point.y, figureName, index);
+    });
   }
 }

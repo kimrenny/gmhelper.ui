@@ -9,20 +9,15 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { DrawingTool } from './interfaces/drawing-tool.interface';
-import { Pencil } from './drawing-tools/pencil.tool';
-import { Ellipse } from './drawing-tools/ellipse.tool';
-import { Parallelogram } from './drawing-tools/parallelogram.tool';
-import { Line } from './drawing-tools/line.tool';
 import { Polygon } from './drawing-tools/polygon.tool';
-import { Triangle } from './drawing-tools/triangle.tool';
-import { Rectangle } from './drawing-tools/rectangle.tool';
-import { Trapezoid } from './drawing-tools/trapezoid.tool';
-import { Rhombus } from './drawing-tools/rhombus.tool';
 import { ToastrService } from 'ngx-toastr';
 import { COLORS } from './utils/colors';
 import { getMousePos } from './utils/mouse.utils';
 import { ToolSelector } from './tools/tool-selector';
 import { ToolContext } from './interfaces/tool-context.interface';
+import { getDefaultTools } from './utils/tool-config';
+import { CanvasService } from './services/canvas.service';
+import { CounterService } from './services/counter.service';
 
 @Component({
   selector: 'app-canvas',
@@ -40,15 +35,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
   subjects: string[] = ['Math', 'Geo'];
   colors = COLORS;
 
-  private pencilTool = new Pencil();
-  private ellipseTool = new Ellipse();
-  private parallelogramTool = new Parallelogram();
-  private lineTool = new Line();
   private polygonTool!: Polygon;
-  private triangleTool = new Triangle();
-  private rectangleTool = new Rectangle();
-  private trapezoidTool = new Trapezoid();
-  private rhombusTool = new Rhombus();
 
   private currentTool: DrawingTool | null = null;
   private toolSelector!: ToolSelector;
@@ -79,22 +66,16 @@ export class CanvasComponent implements OnInit, AfterViewInit {
   showPolygonInput = false;
 
   constructor(
+    private canvasService: CanvasService,
+    private counterService: CounterService,
     private toastr: ToastrService,
     private translate: TranslateService
   ) {}
 
   ngOnInit(): void {
-    this.toolSelector = new ToolSelector({
-      pencil: this.pencilTool,
-      ellipse: this.ellipseTool,
-      parallelogram: this.parallelogramTool,
-      line: this.lineTool,
-      polygon: this.polygonTool,
-      triangle: this.triangleTool,
-      rectangle: this.rectangleTool,
-      trapezoid: this.trapezoidTool,
-      rhombus: this.rhombusTool,
-    });
+    this.toolSelector = new ToolSelector(
+      getDefaultTools(this.polygonTool, this.canvasService, this.counterService)
+    );
     this.selectTool('pencil');
   }
 
@@ -272,18 +253,18 @@ export class CanvasComponent implements OnInit, AfterViewInit {
         );
         return;
       }
-      this.polygonTool = new Polygon(sides);
-      this.toolSelector = new ToolSelector({
-        pencil: this.pencilTool,
-        ellipse: this.ellipseTool,
-        parallelogram: this.parallelogramTool,
-        line: this.lineTool,
-        polygon: this.polygonTool,
-        triangle: this.triangleTool,
-        rectangle: this.rectangleTool,
-        trapezoid: this.trapezoidTool,
-        rhombus: this.rhombusTool,
-      });
+      this.polygonTool = new Polygon(
+        sides,
+        this.canvasService,
+        this.counterService
+      );
+      this.toolSelector = new ToolSelector(
+        getDefaultTools(
+          this.polygonTool,
+          this.canvasService,
+          this.counterService
+        )
+      );
       this.currentTool = this.toolSelector.select('polygon');
       this.closePolygonInput();
     } else {
@@ -320,5 +301,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
   clearCanvas(): void {
     this.paths = [];
     this.redraw();
+    this.canvasService.resetPoints();
+    this.counterService.resetCounter();
   }
 }

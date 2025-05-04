@@ -1,11 +1,21 @@
 import { DrawingTool } from '../interfaces/drawing-tool.interface';
 import { ToolContext } from '../interfaces/tool-context.interface';
+import { CanvasService } from '../services/canvas.service';
+import { CounterService } from '../services/counter.service';
 import { toTransparentColor } from '../utils/preview-color';
 
 export class Trapezoid implements DrawingTool {
   private path: { x: number; y: number; color: string }[] = [];
   private isDrawing: boolean = false;
   private end: { x: number; y: number; color: string } | null = null;
+
+  private canvasService: CanvasService;
+  private counterService: CounterService;
+
+  constructor(canvasService: CanvasService, counterService: CounterService) {
+    this.canvasService = canvasService;
+    this.counterService = counterService;
+  }
 
   draw(
     ctx: CanvasRenderingContext2D,
@@ -23,6 +33,13 @@ export class Trapezoid implements DrawingTool {
       ctx.lineTo(drawPath[3].x, drawPath[3].y);
       ctx.closePath();
       ctx.stroke();
+    }
+
+    ctx.fillStyle = path[0].color;
+    for (const point of path) {
+      ctx.beginPath();
+      ctx.arc(point.x, point.y, 4, 0, 2 * Math.PI);
+      ctx.fill();
     }
   }
 
@@ -73,6 +90,9 @@ export class Trapezoid implements DrawingTool {
       this.path[3] = correctedFourthPoint;
 
       const savePath = [...this.path];
+
+      this.addPointsToCanvasService();
+
       this.path = [];
       this.isDrawing = false;
       this.end = null;
@@ -155,5 +175,12 @@ export class Trapezoid implements DrawingTool {
       ctx.closePath();
       ctx.stroke();
     }
+  }
+
+  private addPointsToCanvasService(): void {
+    const figureName = this.counterService.getNextFigureName('Trapezoid');
+    this.path.forEach((point, index) => {
+      this.canvasService.addPoint(point.x, point.y, figureName, index);
+    });
   }
 }

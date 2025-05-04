@@ -1,11 +1,21 @@
 import { DrawingTool } from '../interfaces/drawing-tool.interface';
 import { ToolContext } from '../interfaces/tool-context.interface';
+import { CanvasService } from '../services/canvas.service';
+import { CounterService } from '../services/counter.service';
 import { toTransparentColor } from '../utils/preview-color';
 
 export class Parallelogram implements DrawingTool {
   private path: { x: number; y: number }[] = [];
   private isDrawing: boolean = false;
   private end: { x: number; y: number } | null = null;
+
+  private canvasService: CanvasService;
+  private counterService: CounterService;
+
+  constructor(canvasService: CanvasService, counterService: CounterService) {
+    this.canvasService = canvasService;
+    this.counterService = counterService;
+  }
 
   draw(
     ctx: CanvasRenderingContext2D,
@@ -24,6 +34,13 @@ export class Parallelogram implements DrawingTool {
       ctx.lineTo(drawPath[3].x, drawPath[3].y);
       ctx.closePath();
       ctx.stroke();
+
+      ctx.fillStyle = color;
+      for (const point of drawPath) {
+        ctx.beginPath();
+        ctx.arc(point.x, point.y, 4, 0, 2 * Math.PI);
+        ctx.fill();
+      }
     }
   }
 
@@ -55,6 +72,9 @@ export class Parallelogram implements DrawingTool {
       this.path.push(fourthPoint);
 
       const savePath = [...this.path];
+
+      this.addPointsToCanvasService();
+
       this.path = [];
       this.isDrawing = false;
       this.end = null;
@@ -123,5 +143,12 @@ export class Parallelogram implements DrawingTool {
       ctx.closePath();
       ctx.stroke();
     }
+  }
+
+  private addPointsToCanvasService(): void {
+    const figureName = this.counterService.getNextFigureName('Parallelogram');
+    this.path.forEach((point, index) => {
+      this.canvasService.addPoint(point.x, point.y, figureName, index);
+    });
   }
 }
