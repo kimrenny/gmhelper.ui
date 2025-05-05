@@ -101,7 +101,7 @@ export class Polygon implements DrawingTool {
 
     const savePath = [...this.path];
 
-    this.addPointsToCanvasService();
+    if (ctx) this.addPointsToCanvasService(ctx);
 
     this.center = null;
     this.radius = 0;
@@ -159,10 +159,19 @@ export class Polygon implements DrawingTool {
     return points;
   }
 
-  private addPointsToCanvasService(): void {
+  private addPointsToCanvasService(ctx: CanvasRenderingContext2D): void {
     const figureName = this.counterService.getNextFigureName('Polygon');
     this.path.forEach((point, index) => {
-      this.canvasService.addPoint(point.x, point.y, figureName, index);
+      const label = this.canvasService.addPoint(
+        point.x,
+        point.y,
+        figureName,
+        index
+      );
+
+      ctx.font = '16px Arial';
+      ctx.fillStyle = 'black';
+      ctx.fillText(label, point.x + 10, point.y - 10);
     });
   }
 }

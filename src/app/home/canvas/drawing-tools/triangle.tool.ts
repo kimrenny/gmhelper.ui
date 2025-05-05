@@ -65,13 +65,13 @@ export class Triangle implements DrawingTool {
     } else if (this.isDrawing && this.path.length === 3) {
       const savePath = [...this.path];
 
-      this.addPointsToCanvasService();
+      const ctx = data.canvas?.getContext('2d');
+      if (ctx) this.addPointsToCanvasService(ctx);
 
       this.path = [];
       this.isDrawing = false;
       this.end = null;
 
-      const ctx = data.canvas?.getContext('2d');
       if (ctx) this.draw(ctx, savePath);
 
       const previewCtx = data.previewCanvas?.getContext('2d');
@@ -147,10 +147,19 @@ export class Triangle implements DrawingTool {
     }
   }
 
-  private addPointsToCanvasService(): void {
+  private addPointsToCanvasService(ctx: CanvasRenderingContext2D): void {
     const figureName = this.counterService.getNextFigureName('Triangle');
     this.path.forEach((point, index) => {
-      this.canvasService.addPoint(point.x, point.y, figureName, index);
+      const label = this.canvasService.addPoint(
+        point.x,
+        point.y,
+        figureName,
+        index
+      );
+
+      ctx.font = '16px Arial';
+      ctx.fillStyle = 'black';
+      ctx.fillText(label, point.x + 10, point.y - 10);
     });
   }
 }

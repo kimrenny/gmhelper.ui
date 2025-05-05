@@ -15,7 +15,7 @@ export class CanvasService {
     y: number,
     attachedToFigure: string,
     attachedToPoint: number
-  ): void {
+  ): string {
     const pointId = this.pointCounter++;
     const pointLabel = this.getPointLabel(pointId);
 
@@ -29,6 +29,8 @@ export class CanvasService {
 
     console.log('Added point: ', point);
     this.points.push(point);
+
+    return pointLabel;
   }
 
   private getPointLabel(index: number): string {

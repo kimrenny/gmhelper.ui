@@ -105,7 +105,7 @@ export class Line implements DrawingTool {
 
     this.isDrawing = false;
     if (this.path.length > 1) {
-      this.addPointsToCanvasService();
+      if (ctx) this.addPointsToCanvasService(ctx);
       this.previewEnd = null;
       const savePath = [...this.path];
       this.path = [];
@@ -150,10 +150,19 @@ export class Line implements DrawingTool {
     this.previewEnd = null;
   }
 
-  private addPointsToCanvasService(): void {
+  private addPointsToCanvasService(ctx: CanvasRenderingContext2D): void {
     const figureName = this.counterService.getNextFigureName('Line');
     this.path.forEach((point, index) => {
-      this.canvasService.addPoint(point.x, point.y, figureName, index);
+      const label = this.canvasService.addPoint(
+        point.x,
+        point.y,
+        figureName,
+        index
+      );
+
+      ctx.font = '16px Arial';
+      ctx.fillStyle = 'black';
+      ctx.fillText(label, point.x + 10, point.y - 10);
     });
   }
 }

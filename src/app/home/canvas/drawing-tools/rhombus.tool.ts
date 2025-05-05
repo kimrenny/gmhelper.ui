@@ -63,7 +63,7 @@ export class Rhombus implements DrawingTool {
     const ctx = data.canvas?.getContext('2d');
     if (ctx) this.draw(ctx, path);
 
-    this.addPointsToCanvasService(path);
+    if (ctx) this.addPointsToCanvasService(path, ctx);
 
     const previewCtx = data.previewCanvas?.getContext('2d');
     if (previewCtx)
@@ -124,11 +124,21 @@ export class Rhombus implements DrawingTool {
   }
 
   private addPointsToCanvasService(
-    path: { x: number; y: number; color: string }[]
+    path: { x: number; y: number; color: string }[],
+    ctx: CanvasRenderingContext2D
   ): void {
     const figureName = this.counterService.getNextFigureName('Rhombus');
     path.forEach((point, index) => {
-      this.canvasService.addPoint(point.x, point.y, figureName, index);
+      const label = this.canvasService.addPoint(
+        point.x,
+        point.y,
+        figureName,
+        index
+      );
+
+      ctx.font = '16px Arial';
+      ctx.fillStyle = 'black';
+      ctx.fillText(label, point.x + 10, point.y - 10);
     });
   }
 }
