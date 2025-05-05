@@ -3,6 +3,8 @@ import { ToolContext } from '../interfaces/tool-context.interface';
 import { toTransparentColor } from '../utils/preview-color';
 import { CanvasService } from '../services/canvas.service';
 import { CounterService } from '../services/counter.service';
+import { drawLabel } from '../tools/draw-point-label';
+import { clearPreviewCanvas } from '../tools/clear-preview';
 
 export class Polygon implements DrawingTool {
   private center: { x: number; y: number } | null = null;
@@ -31,7 +33,8 @@ export class Polygon implements DrawingTool {
   draw(
     ctx: CanvasRenderingContext2D,
     path: { x: number; y: number }[],
-    color: string
+    color: string,
+    redraw: boolean = false
   ): void {
     const drawPath = path ?? this.path;
     if (drawPath.length >= 3) {
@@ -53,6 +56,17 @@ export class Polygon implements DrawingTool {
         ctx.fill();
         ctx.closePath();
       }
+    }
+
+    if (redraw) {
+      const [label1, label2, label3, label4] = this.addPointsToCanvasService(
+        ctx,
+        path
+      );
+      this.canvasService.createLine(label1, label2);
+      this.canvasService.createLine(label2, label3);
+      this.canvasService.createLine(label3, label4);
+      this.canvasService.createLine(label1, label4);
     }
   }
 
@@ -87,6 +101,14 @@ export class Polygon implements DrawingTool {
   onMouseUp(pos: { x: number; y: number }, data: ToolContext): any {
     if (!this.isDrawing) return;
 
+    if (this.radius < 10) {
+      this.isDrawing = false;
+      this.path = [];
+      clearPreviewCanvas(data);
+
+      return;
+    }
+
     const ctx = data.canvas?.getContext('2d');
     if (ctx) this.draw(ctx, this.path, data.selectedColor);
 
@@ -101,7 +123,21 @@ export class Polygon implements DrawingTool {
 
     const savePath = [...this.path];
 
-    if (ctx) this.addPointsToCanvasService(ctx);
+    if (ctx) {
+      const labels = this.addPointsToCanvasService(ctx);
+
+      for (let i = 0; i < labels.length - 1; i++) {
+        const from = labels[i];
+        const to = labels[(i + 1) % labels.length];
+        this.canvasService.createLine(from, to);
+      }
+
+      if (labels.length > 1) {
+        const from = labels[0];
+        const to = labels[labels.length - 1];
+        this.canvasService.createLine(from, to);
+      }
+    }
 
     this.center = null;
     this.radius = 0;
@@ -159,8 +195,13 @@ export class Polygon implements DrawingTool {
     return points;
   }
 
-  private addPointsToCanvasService(ctx: CanvasRenderingContext2D): void {
+  private addPointsToCanvasService(
+    ctx: CanvasRenderingContext2D,
+    path?: { x: number; y: number }[]
+  ): string[] {
     const figureName = this.counterService.getNextFigureName('Polygon');
+    const labels: string[] = [];
+
     this.path.forEach((point, index) => {
       const label = this.canvasService.addPoint(
         point.x,
@@ -169,9 +210,15 @@ export class Polygon implements DrawingTool {
         index
       );
 
-      ctx.font = '16px Arial';
-      ctx.fillStyle = 'black';
-      ctx.fillText(label, point.x + 10, point.y - 10);
+      drawLabel(ctx, label, point.x, point.y);
+
+      labels.push(label);
     });
+
+    return labels;
+  }
+
+  private setLineLengthToService(a: string, b: string, length: number | null) {
+    this.canvasService.setLineLength(a, b, length);
   }
 }

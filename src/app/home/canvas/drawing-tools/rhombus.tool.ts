@@ -2,7 +2,9 @@ import { DrawingTool } from '../interfaces/drawing-tool.interface';
 import { ToolContext } from '../interfaces/tool-context.interface';
 import { CanvasService } from '../services/canvas.service';
 import { CounterService } from '../services/counter.service';
+import { clearPreviewCanvas } from '../tools/clear-preview';
 import { toTransparentColor } from '../utils/preview-color';
+import { drawLabel } from '../tools/draw-point-label';
 
 export class Rhombus implements DrawingTool {
   private start: { x: number; y: number; color: string } | null = null;
@@ -19,11 +21,13 @@ export class Rhombus implements DrawingTool {
 
   draw(
     ctx: CanvasRenderingContext2D,
-    path: { x: number; y: number; color: string }[]
+    path: { x: number; y: number; color: string }[],
+    color: string,
+    redraw: boolean = false
   ): void {
     if (path.length !== 4) return;
 
-    ctx.strokeStyle = path[0].color;
+    ctx.strokeStyle = color;
     ctx.lineWidth = 2;
 
     ctx.beginPath();
@@ -34,11 +38,22 @@ export class Rhombus implements DrawingTool {
     ctx.closePath();
     ctx.stroke();
 
-    ctx.fillStyle = path[0].color;
+    ctx.fillStyle = color;
     for (const point of path) {
       ctx.beginPath();
       ctx.arc(point.x, point.y, 4, 0, 2 * Math.PI);
       ctx.fill();
+    }
+
+    if (redraw) {
+      const [label1, label2, label3, label4] = this.addPointsToCanvasService(
+        ctx,
+        path
+      );
+      this.canvasService.createLine(label1, label2);
+      this.canvasService.createLine(label2, label3);
+      this.canvasService.createLine(label3, label4);
+      this.canvasService.createLine(label1, label4);
     }
   }
 
@@ -58,21 +73,34 @@ export class Rhombus implements DrawingTool {
   onMouseUp(pos: { x: number; y: number }, data: ToolContext): any {
     if (!this.isDrawing || !this.start) return;
 
+    const dx = Math.abs(pos.x - this.start.x);
+    const dy = Math.abs(pos.y - this.start.y);
+
+    if (dx <= 25 && dy <= 25) {
+      this.isDrawing = false;
+      this.start = null;
+      this.end = null;
+      clearPreviewCanvas(data);
+      return;
+    }
+
     this.end = { x: pos.x, y: pos.y, color: data.selectedColor };
     const path = this.calculateRhombusPath(this.start, this.end);
     const ctx = data.canvas?.getContext('2d');
-    if (ctx) this.draw(ctx, path);
+    if (ctx) this.draw(ctx, path, data.selectedColor);
 
-    if (ctx) this.addPointsToCanvasService(path, ctx);
-
-    const previewCtx = data.previewCanvas?.getContext('2d');
-    if (previewCtx)
-      previewCtx.clearRect(
-        0,
-        0,
-        data.previewCanvas.width,
-        data.previewCanvas.height
+    if (ctx) {
+      const [label1, label2, label3, label4] = this.addPointsToCanvasService(
+        ctx,
+        path
       );
+      this.canvasService.createLine(label1, label2);
+      this.canvasService.createLine(label2, label3);
+      this.canvasService.createLine(label3, label4);
+      this.canvasService.createLine(label1, label4);
+    }
+
+    clearPreviewCanvas(data);
 
     this.start = null;
     this.end = null;
@@ -124,10 +152,12 @@ export class Rhombus implements DrawingTool {
   }
 
   private addPointsToCanvasService(
-    path: { x: number; y: number; color: string }[],
-    ctx: CanvasRenderingContext2D
-  ): void {
+    ctx: CanvasRenderingContext2D,
+    path: { x: number; y: number; color: string }[]
+  ): [string, string, string, string] {
     const figureName = this.counterService.getNextFigureName('Rhombus');
+    const labels: string[] = [];
+
     path.forEach((point, index) => {
       const label = this.canvasService.addPoint(
         point.x,
@@ -136,9 +166,15 @@ export class Rhombus implements DrawingTool {
         index
       );
 
-      ctx.font = '16px Arial';
-      ctx.fillStyle = 'black';
-      ctx.fillText(label, point.x + 10, point.y - 10);
+      drawLabel(ctx, label, point.x, point.y);
+
+      labels.push(label);
     });
+
+    return [labels[0], labels[1], labels[2], labels[3]];
+  }
+
+  private setLineLengthToService(a: string, b: string, length: number | null) {
+    this.canvasService.setLineLength(a, b, length);
   }
 }

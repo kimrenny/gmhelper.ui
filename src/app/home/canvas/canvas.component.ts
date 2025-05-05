@@ -183,13 +183,15 @@ export class CanvasComponent implements OnInit, AfterViewInit {
       0,
       0
     );
+    this.canvasService.resetPoints();
+    this.counterService.resetCounter();
 
     for (const p of this.paths) {
       const color = p.path[0]?.color || '#000000';
       this.ctx.strokeStyle = color;
 
       if (p.tool.draw) {
-        p.tool.draw(this.ctx, p.path, color);
+        p.tool.draw(this.ctx, p.path, color, true);
       }
     }
   }

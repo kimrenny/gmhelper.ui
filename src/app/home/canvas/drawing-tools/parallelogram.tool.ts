@@ -3,6 +3,7 @@ import { ToolContext } from '../interfaces/tool-context.interface';
 import { CanvasService } from '../services/canvas.service';
 import { CounterService } from '../services/counter.service';
 import { toTransparentColor } from '../utils/preview-color';
+import { drawLabel } from '../tools/draw-point-label';
 
 export class Parallelogram implements DrawingTool {
   private path: { x: number; y: number }[] = [];
@@ -20,7 +21,8 @@ export class Parallelogram implements DrawingTool {
   draw(
     ctx: CanvasRenderingContext2D,
     path: { x: number; y: number }[],
-    color: string
+    color: string,
+    redraw: boolean = false
   ): void {
     const drawPath = path ?? this.path;
     if (drawPath.length === 4) {
@@ -41,6 +43,17 @@ export class Parallelogram implements DrawingTool {
         ctx.arc(point.x, point.y, 4, 0, 2 * Math.PI);
         ctx.fill();
       }
+    }
+
+    if (redraw) {
+      const [label1, label2, label3, label4] = this.addPointsToCanvasService(
+        ctx,
+        path
+      );
+      this.canvasService.createLine(label1, label2);
+      this.canvasService.createLine(label2, label3);
+      this.canvasService.createLine(label3, label4);
+      this.canvasService.createLine(label1, label4);
     }
   }
 
@@ -74,7 +87,14 @@ export class Parallelogram implements DrawingTool {
       const savePath = [...this.path];
 
       const ctx = data.canvas?.getContext('2d');
-      if (ctx) this.addPointsToCanvasService(ctx);
+      if (ctx) {
+        const [label1, label2, label3, label4] =
+          this.addPointsToCanvasService(ctx);
+        this.canvasService.createLine(label1, label2);
+        this.canvasService.createLine(label2, label3);
+        this.canvasService.createLine(label3, label4);
+        this.canvasService.createLine(label1, label4);
+      }
 
       this.path = [];
       this.isDrawing = false;
@@ -145,9 +165,31 @@ export class Parallelogram implements DrawingTool {
     }
   }
 
-  private addPointsToCanvasService(ctx: CanvasRenderingContext2D): void {
+  private addPointsToCanvasService(
+    ctx: CanvasRenderingContext2D,
+    path?: { x: number; y: number }[]
+  ): [string, string, string, string] {
     const figureName = this.counterService.getNextFigureName('Parallelogram');
-    this.path.forEach((point, index) => {
+    const labels: string[] = [];
+
+    if (!path) {
+      this.path.forEach((point, index) => {
+        const label = this.canvasService.addPoint(
+          point.x,
+          point.y,
+          figureName,
+          index
+        );
+
+        drawLabel(ctx, label, point.x, point.y);
+
+        labels.push(label);
+      });
+
+      return [labels[0], labels[1], labels[2], labels[3]];
+    }
+
+    path.forEach((point, index) => {
       const label = this.canvasService.addPoint(
         point.x,
         point.y,
@@ -155,9 +197,15 @@ export class Parallelogram implements DrawingTool {
         index
       );
 
-      ctx.font = '16px Arial';
-      ctx.fillStyle = 'black';
-      ctx.fillText(label, point.x + 10, point.y - 10);
+      drawLabel(ctx, label, point.x, point.y);
+
+      labels.push(label);
     });
+
+    return [labels[0], labels[1], labels[2], labels[3]];
+  }
+
+  private setLineLengthToService(a: string, b: string, length: number | null) {
+    this.canvasService.setLineLength(a, b, length);
   }
 }

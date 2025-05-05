@@ -3,6 +3,7 @@ import { ToolContext } from '../interfaces/tool-context.interface';
 import { CanvasService } from '../services/canvas.service';
 import { CounterService } from '../services/counter.service';
 import { toTransparentColor } from '../utils/preview-color';
+import { drawLabel } from '../tools/draw-point-label';
 
 export class Triangle implements DrawingTool {
   private path: { x: number; y: number; color: string }[] = [];
@@ -19,11 +20,13 @@ export class Triangle implements DrawingTool {
 
   draw(
     ctx: CanvasRenderingContext2D,
-    path: { x: number; y: number; color: string }[]
+    path: { x: number; y: number; color: string }[],
+    color: string,
+    redraw: boolean = false
   ): void {
     const drawPath = path ?? this.path;
     if (drawPath.length === 3) {
-      ctx.strokeStyle = path[0].color;
+      ctx.strokeStyle = color;
       ctx.lineWidth = 2;
 
       ctx.beginPath();
@@ -33,12 +36,19 @@ export class Triangle implements DrawingTool {
       ctx.closePath();
       ctx.stroke();
 
-      ctx.fillStyle = path[0].color;
+      ctx.fillStyle = color;
       for (const point of drawPath) {
         ctx.beginPath();
         ctx.arc(point.x, point.y, 4, 0, 2 * Math.PI);
         ctx.fill();
       }
+    }
+
+    if (redraw) {
+      const [label1, label2, label3] = this.addPointsToCanvasService(ctx, path);
+      this.canvasService.createLine(label1, label2);
+      this.canvasService.createLine(label2, label3);
+      this.canvasService.createLine(label1, label3);
     }
   }
 
@@ -66,13 +76,18 @@ export class Triangle implements DrawingTool {
       const savePath = [...this.path];
 
       const ctx = data.canvas?.getContext('2d');
-      if (ctx) this.addPointsToCanvasService(ctx);
+      if (ctx) {
+        const [label1, label2, label3] = this.addPointsToCanvasService(ctx);
+        this.canvasService.createLine(label1, label2);
+        this.canvasService.createLine(label2, label3);
+        this.canvasService.createLine(label1, label3);
+      }
 
       this.path = [];
       this.isDrawing = false;
       this.end = null;
 
-      if (ctx) this.draw(ctx, savePath);
+      if (ctx) this.draw(ctx, savePath, data.selectedColor);
 
       const previewCtx = data.previewCanvas?.getContext('2d');
       if (previewCtx)
@@ -147,9 +162,30 @@ export class Triangle implements DrawingTool {
     }
   }
 
-  private addPointsToCanvasService(ctx: CanvasRenderingContext2D): void {
-    const figureName = this.counterService.getNextFigureName('Triangle');
-    this.path.forEach((point, index) => {
+  private addPointsToCanvasService(
+    ctx: CanvasRenderingContext2D,
+    path?: { x: number; y: number }[]
+  ): [string, string, string] {
+    const figureName = this.counterService.getNextFigureName('Trapezoid');
+    const labels: string[] = [];
+
+    if (!path) {
+      this.path.forEach((point, index) => {
+        const label = this.canvasService.addPoint(
+          point.x,
+          point.y,
+          figureName,
+          index
+        );
+
+        drawLabel(ctx, label, point.x, point.y);
+
+        labels.push(label);
+      });
+
+      return [labels[0], labels[1], labels[2]];
+    }
+    path.forEach((point, index) => {
       const label = this.canvasService.addPoint(
         point.x,
         point.y,
@@ -157,9 +193,15 @@ export class Triangle implements DrawingTool {
         index
       );
 
-      ctx.font = '16px Arial';
-      ctx.fillStyle = 'black';
-      ctx.fillText(label, point.x + 10, point.y - 10);
+      drawLabel(ctx, label, point.x, point.y);
+
+      labels.push(label);
     });
+
+    return [labels[0], labels[1], labels[2]];
+  }
+
+  private setLineLengthToService(a: string, b: string, length: number | null) {
+    this.canvasService.setLineLength(a, b, length);
   }
 }

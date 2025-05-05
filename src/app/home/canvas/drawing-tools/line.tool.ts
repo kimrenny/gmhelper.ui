@@ -3,6 +3,7 @@ import { ToolContext } from '../interfaces/tool-context.interface';
 import { CanvasService } from '../services/canvas.service';
 import { CounterService } from '../services/counter.service';
 import { toTransparentColor } from '../utils/preview-color';
+import { drawLabel } from '../tools/draw-point-label';
 
 export class Line implements DrawingTool {
   private isDrawing: boolean = false;
@@ -17,7 +18,8 @@ export class Line implements DrawingTool {
   draw(
     ctx: CanvasRenderingContext2D,
     path: { x: number; y: number }[],
-    color: string
+    color: string,
+    redraw: boolean = false
   ): void {
     if (path.length < 2) return;
 
@@ -36,6 +38,11 @@ export class Line implements DrawingTool {
       ctx.arc(point.x, point.y, 3, 0, Math.PI * 2);
       ctx.fill();
       ctx.closePath();
+    }
+
+    if (redraw) {
+      const [label1, label2] = this.addPointsToCanvasService(ctx, path);
+      this.canvasService.createLine(label1, label2);
     }
   }
 
@@ -82,6 +89,16 @@ export class Line implements DrawingTool {
   onMouseUp(pos: { x: number; y: number }, data: ToolContext): any {
     if (!this.isDrawing) return;
 
+    const dx = Math.abs(pos.x - this.path[0].x);
+    const dy = Math.abs(pos.y - this.path[0].y);
+
+    if (dx <= 5 && dy <= 5) {
+      this.isDrawing = false;
+      this.path = [];
+      this.previewEnd = null;
+      return;
+    }
+
     this.path.push({
       x: pos.x,
       y: pos.y,
@@ -105,7 +122,10 @@ export class Line implements DrawingTool {
 
     this.isDrawing = false;
     if (this.path.length > 1) {
-      if (ctx) this.addPointsToCanvasService(ctx);
+      if (ctx) {
+        const [label1, label2] = this.addPointsToCanvasService(ctx);
+        this.canvasService.createLine(label1, label2);
+      }
       this.previewEnd = null;
       const savePath = [...this.path];
       this.path = [];
@@ -127,6 +147,9 @@ export class Line implements DrawingTool {
     const ctx = data.canvas.getContext('2d');
     if (ctx) {
       this.draw(ctx, this.path, data.selectedColor);
+
+      const [label1, label2] = this.addPointsToCanvasService(ctx);
+      this.canvasService.createLine(label1, label2);
     }
 
     if (data.previewCanvas) {
@@ -150,9 +173,31 @@ export class Line implements DrawingTool {
     this.previewEnd = null;
   }
 
-  private addPointsToCanvasService(ctx: CanvasRenderingContext2D): void {
+  private addPointsToCanvasService(
+    ctx: CanvasRenderingContext2D,
+    path?: { x: number; y: number }[]
+  ): [string, string] {
     const figureName = this.counterService.getNextFigureName('Line');
-    this.path.forEach((point, index) => {
+    const labels: string[] = [];
+
+    if (!path) {
+      this.path.forEach((point, index) => {
+        const label = this.canvasService.addPoint(
+          point.x,
+          point.y,
+          figureName,
+          index
+        );
+
+        drawLabel(ctx, label, point.x, point.y);
+
+        labels.push(label);
+      });
+
+      return [labels[0], labels[1]];
+    }
+
+    path.forEach((point, index) => {
       const label = this.canvasService.addPoint(
         point.x,
         point.y,
@@ -160,9 +205,15 @@ export class Line implements DrawingTool {
         index
       );
 
-      ctx.font = '16px Arial';
-      ctx.fillStyle = 'black';
-      ctx.fillText(label, point.x + 10, point.y - 10);
+      drawLabel(ctx, label, point.x, point.y);
+
+      labels.push(label);
     });
+
+    return [labels[0], labels[1]];
+  }
+
+  private setLineLengthToService(a: string, b: string, length: number | null) {
+    this.canvasService.setLineLength(a, b, length);
   }
 }

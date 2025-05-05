@@ -1,7 +1,12 @@
 import { ToolContext } from './tool-context.interface';
 
 export interface DrawingTool {
-  draw(ctx: CanvasRenderingContext2D, path: any, color: string): void;
+  draw(
+    ctx: CanvasRenderingContext2D,
+    path: any,
+    color: string,
+    redraw: boolean
+  ): void;
 
   onMouseDown?(pos: { x: number; y: number }, data: ToolContext): void;
   onMouseMove?(pos: { x: number; y: number }, data: ToolContext): void;

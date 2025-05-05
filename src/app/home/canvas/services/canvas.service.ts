@@ -7,6 +7,7 @@ import { Point } from '../utils/point';
 export class CanvasService {
   private points: Point[] = [];
   private pointCounter: number = 0;
+  private lines: Record<string, number | null> = {};
 
   constructor() {}
 
@@ -27,10 +28,27 @@ export class CanvasService {
       pointLabel
     );
 
-    console.log('Added point: ', point);
     this.points.push(point);
 
     return pointLabel;
+  }
+
+  createLine(point1: string, point2: string): void {
+    const lineName = point1 + point2;
+    if (!(lineName in this.lines)) {
+      this.lines[lineName] = null;
+      console.log(`Created line ${lineName}: null`);
+    }
+  }
+
+  setLineLength(point1: string, point2: string, length: number | null): void {
+    const lineName = point1 + point2;
+    if (lineName in this.lines) {
+      this.lines[lineName] = length;
+      console.log(`Updated line ${lineName}: ${length}`);
+    } else {
+      console.warn(`Line ${lineName} does not exist.`);
+    }
   }
 
   private getPointLabel(index: number): string {
