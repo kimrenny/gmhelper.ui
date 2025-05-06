@@ -4,6 +4,7 @@ import { CanvasService } from '../services/canvas.service';
 import { CounterService } from '../services/counter.service';
 import { toTransparentColor } from '../utils/preview-color';
 import { drawLabel } from '../tools/draw-point-label';
+import { drawTextAboveLine } from '../tools/draw-text-above-line';
 
 export class Line implements DrawingTool {
   private isDrawing: boolean = false;
@@ -43,6 +44,7 @@ export class Line implements DrawingTool {
     if (redraw) {
       const [label1, label2] = this.addPointsToCanvasService(ctx, path);
       this.canvasService.createLine(label1, label2);
+      this.setLineLengthToService(ctx, label1, label2, '?');
     }
   }
 
@@ -125,6 +127,7 @@ export class Line implements DrawingTool {
       if (ctx) {
         const [label1, label2] = this.addPointsToCanvasService(ctx);
         this.canvasService.createLine(label1, label2);
+        this.setLineLengthToService(ctx, label1, label2, '?');
       }
       this.previewEnd = null;
       const savePath = [...this.path];
@@ -213,7 +216,21 @@ export class Line implements DrawingTool {
     return [labels[0], labels[1]];
   }
 
-  private setLineLengthToService(a: string, b: string, length: number | null) {
+  private setLineLengthToService(
+    ctx: CanvasRenderingContext2D,
+    a: string,
+    b: string,
+    length: number | null | 'x' | 'y' | '?'
+  ) {
     this.canvasService.setLineLength(a, b, length);
+
+    const pointA = this.canvasService.getPointByLabel(a);
+    const pointB = this.canvasService.getPointByLabel(b);
+
+    if (!pointA || !pointB) return;
+
+    if (!ctx) return;
+
+    drawTextAboveLine(ctx, pointA, pointB, length);
   }
 }

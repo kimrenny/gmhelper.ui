@@ -4,6 +4,7 @@ import { CanvasService } from '../services/canvas.service';
 import { CounterService } from '../services/counter.service';
 import { toTransparentColor } from '../utils/preview-color';
 import { drawLabel } from '../tools/draw-point-label';
+import { drawTextAboveLine } from '../tools/draw-text-above-line';
 
 export class Triangle implements DrawingTool {
   private path: { x: number; y: number; color: string }[] = [];
@@ -49,6 +50,9 @@ export class Triangle implements DrawingTool {
       this.canvasService.createLine(label1, label2);
       this.canvasService.createLine(label2, label3);
       this.canvasService.createLine(label1, label3);
+      this.setLineLengthToService(ctx, label1, label2, '?');
+      this.setLineLengthToService(ctx, label2, label3, '?');
+      this.setLineLengthToService(ctx, label1, label3, '?');
     }
   }
 
@@ -81,6 +85,9 @@ export class Triangle implements DrawingTool {
         this.canvasService.createLine(label1, label2);
         this.canvasService.createLine(label2, label3);
         this.canvasService.createLine(label1, label3);
+        this.setLineLengthToService(ctx, label1, label2, '?');
+        this.setLineLengthToService(ctx, label2, label3, '?');
+        this.setLineLengthToService(ctx, label1, label3, '?');
       }
 
       this.path = [];
@@ -201,7 +208,34 @@ export class Triangle implements DrawingTool {
     return [labels[0], labels[1], labels[2]];
   }
 
-  private setLineLengthToService(a: string, b: string, length: number | null) {
+  private setLineLengthToService(
+    ctx: CanvasRenderingContext2D,
+    a: string,
+    b: string,
+    length: number | null | 'x' | 'y' | '?',
+    offsetX: number = 0,
+    offsetY: number = -10,
+    fontsize: number = 14,
+    color: string = 'black'
+  ) {
     this.canvasService.setLineLength(a, b, length);
+
+    const pointA = this.canvasService.getPointByLabel(a);
+    const pointB = this.canvasService.getPointByLabel(b);
+
+    if (!pointA || !pointB) return;
+
+    if (!ctx) return;
+
+    drawTextAboveLine(
+      ctx,
+      pointA,
+      pointB,
+      length,
+      offsetX,
+      offsetY,
+      fontsize,
+      color
+    );
   }
 }

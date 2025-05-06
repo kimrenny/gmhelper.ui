@@ -7,7 +7,7 @@ import { Point } from '../utils/point';
 export class CanvasService {
   private points: Point[] = [];
   private pointCounter: number = 0;
-  private lines: Record<string, number | null> = {};
+  private lines: Record<string, number | 'x' | 'y' | '?' | null> = {};
 
   constructor() {}
 
@@ -41,7 +41,11 @@ export class CanvasService {
     }
   }
 
-  setLineLength(point1: string, point2: string, length: number | null): void {
+  setLineLength(
+    point1: string,
+    point2: string,
+    length: number | null | 'x' | 'y' | '?'
+  ): void {
     const lineName = point1 + point2;
     if (lineName in this.lines) {
       this.lines[lineName] = length;
@@ -69,6 +73,10 @@ export class CanvasService {
 
   getAllPoints(): Point[] {
     return this.points;
+  }
+
+  getPointByLabel(label: string): Point | undefined {
+    return this.points.find((p) => p.label === label);
   }
 
   bindPointToFigure(
