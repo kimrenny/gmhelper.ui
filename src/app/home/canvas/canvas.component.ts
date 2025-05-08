@@ -121,6 +121,24 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     canvas.addEventListener('mousedown', (event) => {
       const pos = this.toolContext.getMousePos(event);
       if (!pos) return;
+
+      const lineData = this.canvasService.findLineByPoint(pos);
+      if (lineData) {
+        const toolName = lineData.attachedToFigure.split('_')[0];
+        const tool = this.toolSelector.select('line');
+
+        console.log(lineData);
+
+        if (tool && tool.onSelectLine) {
+          tool?.onSelectLine(
+            lineData.point1,
+            lineData.point2,
+            this.toolContext.previewCanvas
+          );
+        }
+
+        return;
+      }
       this.currentTool?.onMouseDown?.(pos, this.toolContext);
     });
 

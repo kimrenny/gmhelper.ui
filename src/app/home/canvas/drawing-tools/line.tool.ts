@@ -176,6 +176,34 @@ export class Line implements DrawingTool {
     this.previewEnd = null;
   }
 
+  public onSelectLine(
+    start: { x: number; y: number },
+    end: { x: number; y: number },
+    previewCanvas: HTMLCanvasElement
+  ): void {
+    const ctx = previewCanvas.getContext('2d');
+    if (!ctx) return;
+
+    ctx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
+
+    ctx.strokeStyle = '#ffcc00';
+    ctx.lineWidth = 2;
+
+    ctx.beginPath();
+    ctx.moveTo(start.x, start.y);
+    ctx.lineTo(end.x, end.y);
+    ctx.stroke();
+    ctx.closePath();
+
+    ctx.fillStyle = '#ffcc00';
+    for (const point of [start, end]) {
+      ctx.beginPath();
+      ctx.arc(point.x, point.y, 3, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.closePath();
+    }
+  }
+
   private addPointsToCanvasService(
     ctx: CanvasRenderingContext2D,
     path?: { x: number; y: number }[]

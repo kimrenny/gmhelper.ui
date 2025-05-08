@@ -14,4 +14,9 @@ export interface DrawingTool {
   onMouseLeave?(pos: { x: number; y: number }, data: ToolContext): any;
 
   onPointClick?(pos: { x: number; y: number }, data: ToolContext): void;
+  onSelectLine?(
+    start: { x: number; y: number },
+    end: { x: number; y: number },
+    previewCanvas: HTMLCanvasElement
+  ): void;
 }
