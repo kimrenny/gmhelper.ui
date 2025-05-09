@@ -13,6 +13,7 @@ export class Polygon implements DrawingTool {
   private sides: number;
   private isDrawing: boolean = false;
   private path: { x: number; y: number; color: string }[] = [];
+  private figureName: string = '';
 
   private canvasService: CanvasService;
   private counterService: CounterService;
@@ -132,6 +133,7 @@ export class Polygon implements DrawingTool {
     const savePath = [...this.path];
 
     if (ctx) {
+      this.figureName = '';
       const labels = this.addPointsToCanvasService(ctx);
 
       for (let i = 0; i < labels.length - 1; i++) {
@@ -154,7 +156,7 @@ export class Polygon implements DrawingTool {
     this.isDrawing = false;
     this.path = [];
 
-    return { tool: this, path: savePath };
+    return { tool: this, path: savePath, figureName: this.figureName };
   }
 
   private renderPreview(data: ToolContext): void {
@@ -209,14 +211,16 @@ export class Polygon implements DrawingTool {
     ctx: CanvasRenderingContext2D,
     path?: { x: number; y: number }[]
   ): string[] {
-    const figureName = this.counterService.getNextFigureName('Polygon');
+    if (!(this.figureName.length > 1)) {
+      this.figureName = this.counterService.getNextFigureName('Polygon');
+    }
     const labels: string[] = [];
 
     this.path.forEach((point, index) => {
       const label = this.canvasService.addPoint(
         point.x,
         point.y,
-        figureName,
+        this.figureName,
         index
       );
 

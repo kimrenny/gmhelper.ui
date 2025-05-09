@@ -44,16 +44,19 @@ export class CanvasComponent implements OnInit, AfterViewInit {
   private paths: {
     tool: DrawingTool;
     path: { x: number; y: number; color: string }[];
+    figureName?: string;
   }[] = [];
 
   private undoStack: {
     tool: DrawingTool;
     path: { x: number; y: number; color: string }[];
+    figureName?: string;
   }[] = [];
 
   private redoStack: {
     tool: DrawingTool;
     path: { x: number; y: number; color: string }[];
+    figureName?: string;
   }[] = [];
 
   @ViewChild('drawingCanvas') canvasRef!: ElementRef<HTMLCanvasElement>;
@@ -157,6 +160,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
           this.paths.push(newPath);
           this.undoStack.push(newPath);
           this.redoStack = [];
+          console.log(newPath);
         }
       }
     });

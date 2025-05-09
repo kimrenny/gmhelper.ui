@@ -17,7 +17,7 @@ export function getDefaultTools(
 ) {
   return {
     pencil: new Pencil(),
-    ellipse: new Ellipse(),
+    ellipse: new Ellipse(canvasService, counterService),
     parallelogram: new Parallelogram(canvasService, counterService),
     line: new Line(canvasService, counterService),
     polygon: polygonTool,

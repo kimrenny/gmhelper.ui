@@ -1,11 +1,19 @@
 import { DrawingTool } from '../interfaces/drawing-tool.interface';
 import { ToolContext } from '../interfaces/tool-context.interface';
+import { CanvasService } from '../services/canvas.service';
+import { CounterService } from '../services/counter.service';
 import { toTransparentColor } from '../utils/preview-color';
 
 export class Ellipse implements DrawingTool {
   private start: { x: number; y: number; color: string } | null = null;
   private end: { x: number; y: number; color: string } | null = null;
   private isDrawing: boolean = false;
+  private figureName: string = '';
+
+  constructor(
+    private canvasService: CanvasService,
+    private counterService: CounterService
+  ) {}
 
   draw(
     ctx: CanvasRenderingContext2D,
@@ -51,6 +59,8 @@ export class Ellipse implements DrawingTool {
   onMouseUp(pos: { x: number; y: number }, data: ToolContext): any {
     if (!this.isDrawing || !this.start) return;
 
+    this.figureName = '';
+
     this.end = {
       x: pos.x,
       y: pos.y,
@@ -69,11 +79,15 @@ export class Ellipse implements DrawingTool {
         data.previewCanvas.height
       );
 
+    if (!(this.figureName.length > 1)) {
+      this.figureName = this.counterService.getNextFigureName('Ellipse');
+    }
+
     this.start = null;
     this.end = null;
     this.isDrawing = false;
 
-    return { tool: this, path };
+    return { tool: this, path, figureName: this.figureName };
   }
 
   onMouseLeave(pos: { x: number; y: number }, data: ToolContext): any {

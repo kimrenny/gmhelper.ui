@@ -11,6 +11,7 @@ export class Rhombus implements DrawingTool {
   private start: { x: number; y: number; color: string } | null = null;
   private end: { x: number; y: number; color: string } | null = null;
   private isDrawing: boolean = false;
+  private figureName: string = '';
 
   private canvasService: CanvasService;
   private counterService: CounterService;
@@ -95,6 +96,7 @@ export class Rhombus implements DrawingTool {
     if (ctx) this.draw(ctx, path, data.selectedColor);
 
     if (ctx) {
+      this.figureName = '';
       const [label1, label2, label3, label4] = this.addPointsToCanvasService(
         ctx,
         path
@@ -115,7 +117,7 @@ export class Rhombus implements DrawingTool {
     this.end = null;
     this.isDrawing = false;
 
-    return { tool: this, path };
+    return { tool: this, path, figureName: this.figureName };
   }
 
   onMouseLeave(pos: { x: number; y: number }, data: ToolContext): any {
@@ -164,14 +166,17 @@ export class Rhombus implements DrawingTool {
     ctx: CanvasRenderingContext2D,
     path: { x: number; y: number; color: string }[]
   ): [string, string, string, string] {
-    const figureName = this.counterService.getNextFigureName('Rhombus');
+    if (!(this.figureName.length > 1)) {
+      this.figureName = this.counterService.getNextFigureName('Rhombus');
+    }
+
     const labels: string[] = [];
 
     path.forEach((point, index) => {
       const label = this.canvasService.addPoint(
         point.x,
         point.y,
-        figureName,
+        this.figureName,
         index
       );
 

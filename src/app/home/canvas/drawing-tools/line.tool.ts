@@ -10,6 +10,7 @@ export class Line implements DrawingTool {
   private isDrawing: boolean = false;
   private path: { x: number; y: number; color: string }[] = [];
   private previewEnd: { x: number; y: number } | null = null;
+  private figureName: string = '';
 
   constructor(
     private canvasService: CanvasService,
@@ -125,6 +126,7 @@ export class Line implements DrawingTool {
     this.isDrawing = false;
     if (this.path.length > 1) {
       if (ctx) {
+        this.figureName = '';
         const [label1, label2] = this.addPointsToCanvasService(ctx);
         this.canvasService.createLine(label1, label2);
         this.setLineLengthToService(ctx, label1, label2, '?');
@@ -132,7 +134,7 @@ export class Line implements DrawingTool {
       this.previewEnd = null;
       const savePath = [...this.path];
       this.path = [];
-      return { tool: this, path: savePath };
+      return { tool: this, path: savePath, figureName: this.figureName };
     }
     this.path = [];
     this.previewEnd = null;
@@ -208,7 +210,9 @@ export class Line implements DrawingTool {
     ctx: CanvasRenderingContext2D,
     path?: { x: number; y: number }[]
   ): [string, string] {
-    const figureName = this.counterService.getNextFigureName('Line');
+    if (!(this.figureName.length > 1)) {
+      this.figureName = this.counterService.getNextFigureName('Line');
+    }
     const labels: string[] = [];
 
     if (!path) {
@@ -216,7 +220,7 @@ export class Line implements DrawingTool {
         const label = this.canvasService.addPoint(
           point.x,
           point.y,
-          figureName,
+          this.figureName,
           index
         );
 
@@ -228,11 +232,14 @@ export class Line implements DrawingTool {
       return [labels[0], labels[1]];
     }
 
+    if (!(this.figureName.length > 1)) {
+      this.figureName = this.counterService.getNextFigureName('Line');
+    }
     path.forEach((point, index) => {
       const label = this.canvasService.addPoint(
         point.x,
         point.y,
-        figureName,
+        this.figureName,
         index
       );
 

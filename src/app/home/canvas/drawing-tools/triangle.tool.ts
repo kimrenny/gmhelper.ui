@@ -10,6 +10,7 @@ export class Triangle implements DrawingTool {
   private path: { x: number; y: number; color: string }[] = [];
   private isDrawing: boolean = false;
   private end: { x: number; y: number } | null = null;
+  private figureName: string = '';
 
   private canvasService: CanvasService;
   private counterService: CounterService;
@@ -81,6 +82,7 @@ export class Triangle implements DrawingTool {
 
       const ctx = data.canvas?.getContext('2d');
       if (ctx) {
+        this.figureName = '';
         const [label1, label2, label3] = this.addPointsToCanvasService(ctx);
         this.canvasService.createLine(label1, label2);
         this.canvasService.createLine(label2, label3);
@@ -105,7 +107,7 @@ export class Triangle implements DrawingTool {
           data.previewCanvas.height
         );
 
-      return { tool: this, path: savePath };
+      return { tool: this, path: savePath, figureName: this.figureName };
     }
   }
 
@@ -173,7 +175,9 @@ export class Triangle implements DrawingTool {
     ctx: CanvasRenderingContext2D,
     path?: { x: number; y: number }[]
   ): [string, string, string] {
-    const figureName = this.counterService.getNextFigureName('Trapezoid');
+    if (!(this.figureName.length > 1)) {
+      this.figureName = this.counterService.getNextFigureName('Trapezoid');
+    }
     const labels: string[] = [];
 
     if (!path) {
@@ -181,7 +185,7 @@ export class Triangle implements DrawingTool {
         const label = this.canvasService.addPoint(
           point.x,
           point.y,
-          figureName,
+          this.figureName,
           index
         );
 
@@ -192,11 +196,15 @@ export class Triangle implements DrawingTool {
 
       return [labels[0], labels[1], labels[2]];
     }
+    if (!(this.figureName.length > 1)) {
+      this.figureName = this.counterService.getNextFigureName('Trapezoid');
+    }
+
     path.forEach((point, index) => {
       const label = this.canvasService.addPoint(
         point.x,
         point.y,
-        figureName,
+        this.figureName,
         index
       );
 
