@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Point } from '../utils/point';
+import { stackInfo } from '../drawing-tools/types/stack-info.type';
+import { LineLength } from '../drawing-tools/types/line-length.type';
 
 @Injectable({
   providedIn: 'root',
@@ -7,7 +9,10 @@ import { Point } from '../utils/point';
 export class CanvasService {
   private points: Point[] = [];
   private pointCounter: number = 0;
-  private lines: Record<string, number | 'x' | 'y' | '?' | null> = {};
+  private lines: Record<string, LineLength> = {};
+
+  private undoStack: stackInfo[] = [];
+  private redoStack: stackInfo[] = [];
 
   constructor() {}
 
@@ -41,11 +46,7 @@ export class CanvasService {
     }
   }
 
-  setLineLength(
-    point1: string,
-    point2: string,
-    length: number | null | 'x' | 'y' | '?'
-  ): void {
+  setLineLength(point1: string, point2: string, length: LineLength): void {
     const lineName = point1 + point2;
     if (lineName in this.lines) {
       this.lines[lineName] = length;
@@ -79,10 +80,7 @@ export class CanvasService {
     return this.points.find((p) => p.label === label);
   }
 
-  findLineByPoint(pos: {
-    x: number;
-    y: number;
-  }): {
+  findLineByPoint(pos: { x: number; y: number }): {
     point1: { x: number; y: number };
     point2: { x: number; y: number };
     attachedToFigure: string;
@@ -161,6 +159,44 @@ export class CanvasService {
   ): void {
     point.attachedToFigure = figureName;
     point.attachedToPoint = pointIndex;
+  }
+
+  pushStack(path: stackInfo | null, isUndo: boolean) {
+    if (path) {
+      if (isUndo) {
+        this.undoStack.push(path);
+        return;
+      }
+      this.redoStack.push(path);
+    }
+  }
+
+  popStack(isUndo: boolean): stackInfo | undefined {
+    if (isUndo) {
+      if (this.undoStack.length > 0) {
+        return this.undoStack.pop();
+      }
+    }
+    if (!isUndo) {
+      if (this.redoStack.length > 0) {
+        return this.redoStack.pop();
+      }
+    }
+
+    return undefined;
+  }
+
+  resetStack(param: 'undo' | 'redo') {
+    if (param === 'undo') {
+      this.undoStack = [];
+      return;
+    }
+    this.redoStack = [];
+    return;
+  }
+
+  get canRedo(): boolean {
+    return this.redoStack.length > 0;
   }
 
   resetPoints(): void {

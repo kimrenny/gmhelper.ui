@@ -6,6 +6,7 @@ import { clearPreviewCanvas } from '../tools/clear-preview';
 import { toTransparentColor } from '../utils/preview-color';
 import { drawLabel } from '../tools/draw-point-label';
 import { drawTextAboveLine } from '../tools/draw-text-above-line';
+import { LineLength } from './types/line-length.type';
 
 export class Rhombus implements DrawingTool {
   private start: { x: number; y: number; color: string } | null = null;
@@ -192,7 +193,7 @@ export class Rhombus implements DrawingTool {
     ctx: CanvasRenderingContext2D,
     a: string,
     b: string,
-    length: number | null | 'x' | 'y' | '?',
+    length: LineLength,
     offsetX: number = 0,
     offsetY: number = -10,
     fontsize: number = 14,

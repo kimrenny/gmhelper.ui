@@ -47,18 +47,6 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     figureName?: string;
   }[] = [];
 
-  private undoStack: {
-    tool: DrawingTool;
-    path: { x: number; y: number; color: string }[];
-    figureName?: string;
-  }[] = [];
-
-  private redoStack: {
-    tool: DrawingTool;
-    path: { x: number; y: number; color: string }[];
-    figureName?: string;
-  }[] = [];
-
   @ViewChild('drawingCanvas') canvasRef!: ElementRef<HTMLCanvasElement>;
   @ViewChild('previewCanvas') previewCanvasRef!: ElementRef<HTMLCanvasElement>;
   private ctx!: CanvasRenderingContext2D;
@@ -158,8 +146,8 @@ export class CanvasComponent implements OnInit, AfterViewInit {
         const newPath = this.currentTool.onMouseUp(pos, this.toolContext);
         if (newPath) {
           this.paths.push(newPath);
-          this.undoStack.push(newPath);
-          this.redoStack = [];
+          this.canvasService.pushStack(newPath, true);
+          this.canvasService.resetStack('redo');
           console.log(newPath);
         }
       }
@@ -177,7 +165,23 @@ export class CanvasComponent implements OnInit, AfterViewInit {
   }
 
   get canRedo(): boolean {
-    return this.redoStack.length > 0;
+    return this.canvasService.canRedo;
+  }
+
+  undo(): void {
+    const lastPath = this.paths.pop();
+    if (lastPath) {
+      this.canvasService.pushStack(lastPath, false);
+      this.redraw();
+    }
+  }
+
+  redo(): void {
+    const restoredPath = this.canvasService.popStack(true);
+    if (restoredPath) {
+      this.paths.push(restoredPath);
+      this.redraw();
+    }
   }
 
   setCursor(cursorStyle: string): void {
@@ -298,22 +302,6 @@ export class CanvasComponent implements OnInit, AfterViewInit {
           'Invalid number of sides',
         this.translate.instant('ADMIN.ERRORS.ERROR')
       );
-    }
-  }
-
-  undo(): void {
-    const lastPath = this.paths.pop();
-    if (lastPath) {
-      this.redoStack.push(lastPath);
-      this.redraw();
-    }
-  }
-
-  redo(): void {
-    const restoredPath = this.redoStack.pop();
-    if (restoredPath) {
-      this.paths.push(restoredPath);
-      this.redraw();
     }
   }
 

@@ -6,6 +6,7 @@ import { CounterService } from '../services/counter.service';
 import { drawLabel } from '../tools/draw-point-label';
 import { clearPreviewCanvas } from '../tools/clear-preview';
 import { drawTextAboveLine } from '../tools/draw-text-above-line';
+import { LineLength } from './types/line-length.type';
 
 export class Polygon implements DrawingTool {
   private center: { x: number; y: number } | null = null;
@@ -236,7 +237,7 @@ export class Polygon implements DrawingTool {
     ctx: CanvasRenderingContext2D,
     a: string,
     b: string,
-    length: number | null | 'x' | 'y' | '?',
+    length: LineLength,
     offsetX: number = 0,
     offsetY: number = -10,
     fontsize: number = 14,

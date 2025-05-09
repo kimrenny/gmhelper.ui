@@ -5,6 +5,7 @@ import { CounterService } from '../services/counter.service';
 import { toTransparentColor } from '../utils/preview-color';
 import { drawLabel } from '../tools/draw-point-label';
 import { drawTextAboveLine } from '../tools/draw-text-above-line';
+import { LineLength } from './types/line-length.type';
 
 export class Line implements DrawingTool {
   private isDrawing: boolean = false;
@@ -95,7 +96,7 @@ export class Line implements DrawingTool {
     const dx = Math.abs(pos.x - this.path[0].x);
     const dy = Math.abs(pos.y - this.path[0].y);
 
-    if (dx <= 5 && dy <= 5) {
+    if (dx <= 30 && dy <= 30) {
       this.isDrawing = false;
       this.path = [];
       this.previewEnd = null;
@@ -255,7 +256,7 @@ export class Line implements DrawingTool {
     ctx: CanvasRenderingContext2D,
     a: string,
     b: string,
-    length: number | null | 'x' | 'y' | '?'
+    length: LineLength
   ) {
     this.canvasService.setLineLength(a, b, length);
 
