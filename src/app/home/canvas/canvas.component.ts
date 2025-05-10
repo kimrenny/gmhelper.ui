@@ -41,12 +41,6 @@ export class CanvasComponent implements OnInit, AfterViewInit {
   private toolSelector!: ToolSelector;
   toolContext!: ToolContext;
 
-  private paths: {
-    tool: DrawingTool;
-    path: { x: number; y: number; color: string }[];
-    figureName?: string;
-  }[] = [];
-
   @ViewChild('drawingCanvas') canvasRef!: ElementRef<HTMLCanvasElement>;
   @ViewChild('previewCanvas') previewCanvasRef!: ElementRef<HTMLCanvasElement>;
   private ctx!: CanvasRenderingContext2D;
@@ -102,7 +96,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
       canvas,
       previewCanvas,
       scale: this.scale,
-      paths: this.paths,
+      paths: this.canvasService.getPaths(),
       selectedColor: '#000000',
       redraw: this.redraw.bind(this),
       getMousePos: (event: MouseEvent) =>
@@ -117,8 +111,6 @@ export class CanvasComponent implements OnInit, AfterViewInit {
       if (lineData) {
         const toolName = lineData.attachedToFigure.split('_')[0];
         const tool = this.toolSelector.select('line');
-
-        console.log(lineData);
 
         if (tool && tool.onSelectLine) {
           tool?.onSelectLine(
@@ -145,10 +137,8 @@ export class CanvasComponent implements OnInit, AfterViewInit {
       if (this.currentTool?.onMouseUp) {
         const newPath = this.currentTool.onMouseUp(pos, this.toolContext);
         if (newPath) {
-          this.paths.push(newPath);
-          this.canvasService.pushStack(newPath, true);
+          this.canvasService.pushStack(newPath, 'paths');
           this.canvasService.resetStack('redo');
-          console.log(newPath);
         }
       }
     });
@@ -161,7 +151,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
   }
 
   get canUndo(): boolean {
-    return this.paths.length > 0;
+    return this.canvasService.canUndo;
   }
 
   get canRedo(): boolean {
@@ -169,17 +159,17 @@ export class CanvasComponent implements OnInit, AfterViewInit {
   }
 
   undo(): void {
-    const lastPath = this.paths.pop();
+    const lastPath = this.canvasService.popStack('paths');
     if (lastPath) {
-      this.canvasService.pushStack(lastPath, false);
+      this.canvasService.pushStack(lastPath, 'redo');
       this.redraw();
     }
   }
 
   redo(): void {
-    const restoredPath = this.canvasService.popStack(true);
+    const restoredPath = this.canvasService.popStack('redo');
     if (restoredPath) {
-      this.paths.push(restoredPath);
+      this.canvasService.pushStack(restoredPath, 'paths');
       this.redraw();
     }
   }
@@ -212,7 +202,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     this.canvasService.resetPoints();
     this.counterService.resetCounter();
 
-    for (const p of this.paths) {
+    for (const p of this.canvasService.getPaths()) {
       const color = p.path[0]?.color || '#000000';
       this.ctx.strokeStyle = color;
 
@@ -311,7 +301,8 @@ export class CanvasComponent implements OnInit, AfterViewInit {
   }
 
   clearCanvas(): void {
-    this.paths = [];
+    this.canvasService.resetStack('paths');
+    this.canvasService.resetStack('redo');
     this.redraw();
     this.canvasService.resetPoints();
     this.counterService.resetCounter();

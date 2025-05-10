@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Point } from '../utils/point';
 import { stackInfo } from '../drawing-tools/types/stack-info.type';
 import { LineLength } from '../drawing-tools/types/line-length.type';
+import { StackType } from '../drawing-tools/types/stack.type';
 
 @Injectable({
   providedIn: 'root',
@@ -11,7 +12,7 @@ export class CanvasService {
   private pointCounter: number = 0;
   private lines: Record<string, LineLength> = {};
 
-  private undoStack: stackInfo[] = [];
+  private paths: stackInfo[] = [];
   private redoStack: stackInfo[] = [];
 
   constructor() {}
@@ -42,7 +43,6 @@ export class CanvasService {
     const lineName = point1 + point2;
     if (!(lineName in this.lines)) {
       this.lines[lineName] = null;
-      console.log(`Created line ${lineName}: null`);
     }
   }
 
@@ -50,9 +50,6 @@ export class CanvasService {
     const lineName = point1 + point2;
     if (lineName in this.lines) {
       this.lines[lineName] = length;
-      console.log(`Updated line ${lineName}: ${length}`);
-    } else {
-      console.warn(`Line ${lineName} does not exist.`);
     }
   }
 
@@ -66,6 +63,10 @@ export class CanvasService {
     }
     label = alphabet[i] + label;
     return label;
+  }
+
+  getPaths(): stackInfo[] {
+    return this.paths;
   }
 
   getPointsByFigure(figureName: string): Point[] {
@@ -161,38 +162,52 @@ export class CanvasService {
     point.attachedToPoint = pointIndex;
   }
 
-  pushStack(path: stackInfo | null, isUndo: boolean) {
+  pushStack(path: stackInfo | null, stack: StackType) {
     if (path) {
-      if (isUndo) {
-        this.undoStack.push(path);
+      switch (stack) {
+        case 'redo': {
+          this.redoStack.push(path);
+          return;
+        }
+        case 'paths': {
+          this.paths.push(path);
+        }
+      }
+    }
+  }
+
+  popStack(stack: StackType): stackInfo | undefined {
+    switch (stack) {
+      case 'redo': {
+        if (this.redoStack.length > 0) {
+          return this.redoStack.pop();
+        }
+        return undefined;
+      }
+      case 'paths': {
+        if (this.paths.length > 0) {
+          return this.paths.pop();
+        }
+        return undefined;
+      }
+    }
+  }
+
+  resetStack(stack: StackType) {
+    switch (stack) {
+      case 'redo': {
+        this.redoStack = [];
         return;
       }
-      this.redoStack.push(path);
+      case 'paths': {
+        this.paths = [];
+        return;
+      }
     }
   }
 
-  popStack(isUndo: boolean): stackInfo | undefined {
-    if (isUndo) {
-      if (this.undoStack.length > 0) {
-        return this.undoStack.pop();
-      }
-    }
-    if (!isUndo) {
-      if (this.redoStack.length > 0) {
-        return this.redoStack.pop();
-      }
-    }
-
-    return undefined;
-  }
-
-  resetStack(param: 'undo' | 'redo') {
-    if (param === 'undo') {
-      this.undoStack = [];
-      return;
-    }
-    this.redoStack = [];
-    return;
+  get canUndo(): boolean {
+    return this.paths.length > 0;
   }
 
   get canRedo(): boolean {
