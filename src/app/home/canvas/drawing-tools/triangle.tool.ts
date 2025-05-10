@@ -177,7 +177,7 @@ export class Triangle implements DrawingTool {
     path?: { x: number; y: number }[]
   ): [string, string, string] {
     if (!(this.figureName.length > 1)) {
-      this.figureName = this.counterService.getNextFigureName('Trapezoid');
+      this.figureName = this.counterService.getNextFigureName('Triangle');
     }
     const labels: string[] = [];
 
@@ -198,7 +198,7 @@ export class Triangle implements DrawingTool {
       return [labels[0], labels[1], labels[2]];
     }
     if (!(this.figureName.length > 1)) {
-      this.figureName = this.counterService.getNextFigureName('Trapezoid');
+      this.figureName = this.counterService.getNextFigureName('Triangle');
     }
 
     path.forEach((point, index) => {
