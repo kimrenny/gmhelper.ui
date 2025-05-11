@@ -50,6 +50,8 @@ export class CanvasComponent implements OnInit, AfterViewInit {
   shapeToolsVisible = false;
   showPolygonInput = false;
 
+  isFigureColorPaletteVisible = false;
+
   constructor(
     private canvasService: CanvasService,
     private counterService: CounterService,
@@ -107,6 +109,8 @@ export class CanvasComponent implements OnInit, AfterViewInit {
       const pos = this.toolContext.getMousePos(event);
       if (!pos) return;
 
+      this.canvasService.resetSelectedLine();
+
       const lineData = this.canvasService.findLineByPoint(pos);
       if (lineData) {
         const toolName = lineData.attachedToFigure.split('_')[0];
@@ -118,6 +122,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
             lineData.point2,
             this.toolContext.previewCanvas
           );
+          this.canvasService.setSelectedLine(lineData.point1, lineData.point2);
         }
 
         return;
@@ -156,6 +161,19 @@ export class CanvasComponent implements OnInit, AfterViewInit {
 
   get canRedo(): boolean {
     return this.canvasService.canRedo;
+  }
+
+  get isLineSelected(): boolean {
+    return this.canvasService.isLineSelected;
+  }
+
+  get isFigureSelected(): boolean {
+    return this.canvasService.isFigureSelected;
+  }
+
+  changeFigureColor(color: string) {
+    this.isFigureColorPaletteVisible = false;
+    this.canvasService.changeFigureColor(color);
   }
 
   undo(): void {
@@ -229,6 +247,10 @@ export class CanvasComponent implements OnInit, AfterViewInit {
 
   toggleColorPalette(): void {
     this.isColorPaletteVisible = !this.isColorPaletteVisible;
+  }
+
+  toggleFigureColorPalette(): void {
+    this.isFigureColorPaletteVisible = !this.isFigureColorPaletteVisible;
   }
 
   toggleShapeTools(): void {

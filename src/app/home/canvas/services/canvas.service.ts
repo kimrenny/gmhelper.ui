@@ -3,6 +3,7 @@ import { Point } from '../utils/point';
 import { stackInfo } from '../drawing-tools/types/stack-info.type';
 import { LineLength } from '../drawing-tools/types/line-length.type';
 import { StackType } from '../drawing-tools/types/stack.type';
+import { Coords2d } from '../drawing-tools/types/coords.type';
 
 @Injectable({
   providedIn: 'root',
@@ -11,6 +12,8 @@ export class CanvasService {
   private points: Point[] = [];
   private pointCounter: number = 0;
   private lines: Record<string, LineLength> = {};
+  private selectedLine: { a: Coords2d; b: Coords2d } | null = null;
+  private selectedFigure: { name: string } | null = null;
 
   private paths: stackInfo[] = [];
   private redoStack: stackInfo[] = [];
@@ -212,6 +215,39 @@ export class CanvasService {
 
   get canRedo(): boolean {
     return this.redoStack.length > 0;
+  }
+
+  setSelectedLine(a: Coords2d, b: Coords2d) {
+    this.selectedLine = { a, b };
+  }
+
+  resetSelectedLine() {
+    this.selectedLine = null;
+  }
+
+  get isLineSelected(): boolean {
+    return !!this.selectedLine;
+  }
+
+  setSelectedFigure(name: string | null) {
+    this.selectedFigure = name ? { name: name } : null;
+  }
+
+  get isFigureSelected(): boolean {
+    return !!this.selectedFigure?.name;
+  }
+
+  changeFigureColor(color: string): void {
+    if (!this.selectedFigure?.name) return;
+
+    const figure = this.paths.find(
+      (p) => p.figureName === this.selectedFigure!.name
+    );
+    if (!figure) return;
+
+    for (const point of figure.path) {
+      point.color = color;
+    }
   }
 
   resetPoints(): void {

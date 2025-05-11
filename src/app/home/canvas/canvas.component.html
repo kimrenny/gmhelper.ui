@@ -94,6 +94,39 @@
     </div>
   </div>
 
+  <div
+    class="figure-tool-buttons"
+    [class.not-visible]="!selectedSubject || !canUndo"
+    [class.show-palette]="isFigureColorPaletteVisible"
+  >
+    <button
+      [class.disabled]="!isLineSelected"
+      (click)="selectTool('line')"
+      class="set-length-btn"
+    ></button>
+    <button class="select-figure-btn"></button>
+    <button
+      [class.disabled]="!isFigureSelected"
+      (click)="toggleFigureColorPalette()"
+      class="color-btn"
+      #lineColorBtn
+    ></button>
+
+    <div
+      class="line-color-palette"
+      [class.disabled]="!isFigureSelected"
+      [style.display]="isFigureColorPaletteVisible ? 'grid' : 'none'"
+      #lineColorPalette
+    >
+      <div
+        class="color-option"
+        *ngFor="let color of colors"
+        [style.background-color]="color"
+        (click)="changeFigureColor(color)"
+      ></div>
+    </div>
+  </div>
+
   <div *ngIf="showPolygonInput" class="polygon-input-overlay">
     <div class="polygon-input-box">
       <h3>{{ "CANVAS.POLYGON.HINT" | translate }}</h3>

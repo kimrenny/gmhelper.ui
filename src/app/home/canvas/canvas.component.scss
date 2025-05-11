@@ -447,23 +447,136 @@
     padding: 10px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
     z-index: 40;
+
+    .color-option {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 1px solid transparent;
+      opacity: 0.7;
+      transition: opacity 0.3s ease;
+      z-index: 40;
+
+      &:hover {
+        border-color: #444;
+        opacity: 1;
+        scale: (1.2);
+      }
+    }
   }
 
-  .color-option {
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    cursor: pointer;
-    border: 1px solid transparent;
-    opacity: 0.7;
-    transition: opacity 0.3s ease;
+  .figure-tool-buttons {
+    position: absolute;
+    width: 40px;
+    right: 10px;
+    bottom: 10%;
+    background-color: rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
     z-index: 40;
+
+    button {
+      width: 30px;
+      height: 30px;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+      background-color: transparent;
+      padding: 0;
+      margin: 5px;
+
+      &.disabled {
+        cursor: not-allowed;
+        pointer-events: auto;
+
+        &::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          background: transparent;
+          pointer-events: all;
+        }
+      }
+
+      &.img {
+        object-fit: cover;
+      }
+
+      &.set-length-btn {
+        background-image: url("../../../assets/icons/set-length-btn.png");
+
+        &:hover {
+          background-image: url("../../../assets/icons/set-length-btn-hover.png");
+        }
+      }
+
+      &.select-figure-btn {
+        background-image: url("../../../assets/icons/figure-click.png");
+
+        &:hover {
+          background-image: url("../../../assets/icons/figure-click-hover.png");
+        }
+      }
+
+      &.color-btn {
+        background-image: url("../../../assets/icons/color-palette.png");
+
+        &:hover {
+          background-image: url("../../../assets/icons/color-palette-hover.png");
+        }
+      }
+
+      &.line-btn {
+        background-image: url("../../../assets/icons/line-btn.png");
+
+        &:hover {
+          background-image: url("../../../assets/icons/line-btn-hover.png");
+        }
+      }
+    }
+
+    &.not-visible {
+      display: none;
+    }
   }
 
-  .color-option:hover {
-    border-color: #444;
-    opacity: 1;
-    scale: (1.2);
+  .line-color-palette {
+    position: absolute;
+    top: 50%;
+    right: 50px;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    width: 160px;
+    transform: translateY(-50%);
+    background-color: rgba(240, 240, 240, 0.9);
+    border: 2px solid #444;
+    border-radius: 10px;
+    padding: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    z-index: 40;
+
+    .color-option {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 1px solid transparent;
+      opacity: 0.7;
+      transition: opacity 0.3s ease;
+      z-index: 40;
+
+      &:hover {
+        border-color: #444;
+        opacity: 1;
+        scale: (1.2);
+      }
+    }
   }
 
   @media (max-width: 768px) {
