@@ -18,6 +18,8 @@ import { ToolContext } from './interfaces/tool-context.interface';
 import { getDefaultTools } from './utils/tool-config';
 import { CanvasService } from './services/canvas.service';
 import { CounterService } from './services/counter.service';
+import { LineLength } from './drawing-tools/types/line-length.type';
+import { Coords2d } from './drawing-tools/types/coords.type';
 
 @Component({
   selector: 'app-canvas',
@@ -51,6 +53,11 @@ export class CanvasComponent implements OnInit, AfterViewInit {
   showPolygonInput = false;
 
   isFigureColorPaletteVisible = false;
+
+  isLineLengthChanging = false;
+  lineLength: LineLength = null;
+
+  lineInputPosition: Coords2d | null = null;
 
   constructor(
     private canvasService: CanvasService,
@@ -207,7 +214,11 @@ export class CanvasComponent implements OnInit, AfterViewInit {
 
   redraw(): void {
     const canvas = this.canvasRef.nativeElement;
+    const previewCanvas = this.previewCanvasRef.nativeElement;
+
     this.ctx.clearRect(0, 0, canvas.width, canvas.height);
+    this.previewCtx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
+
     this.ctx.setTransform(this.scale / 100, 0, 0, this.scale / 100, 0, 0);
     this.previewCtx.setTransform(
       this.scale / 100,
@@ -272,6 +283,38 @@ export class CanvasComponent implements OnInit, AfterViewInit {
   selectColor(color: string): void {
     this.toolContext.selectedColor = color;
     this.isColorPaletteVisible = !this.isColorPaletteVisible;
+  }
+
+  onChangeLineLengthClick(): void {
+    const selectedLine = this.canvasService.getSelectedLine();
+    console.log('Called, selected line:', selectedLine);
+    if (selectedLine) {
+      const a = this.canvasService.getPointLabelByCoords(selectedLine.a);
+      const b = this.canvasService.getPointLabelByCoords(selectedLine.b);
+      if (!a || !b) return;
+
+      const centerX = (selectedLine.a.x + selectedLine.b.x) / 2;
+      const centerY = (selectedLine.a.y + selectedLine.b.y) / 2;
+
+      this.lineLength = this.canvasService.getLineLength(a, b);
+      this.lineInputPosition = { x: centerX, y: centerY };
+      this.isLineLengthChanging = true;
+    }
+  }
+
+  onLineLengthConfirm(): void {
+    if (this.lineLength != null) {
+      const selectedLine = this.canvasService.getSelectedLine();
+      if (selectedLine) {
+        const a = this.canvasService.getPointLabelByCoords(selectedLine.a);
+        const b = this.canvasService.getPointLabelByCoords(selectedLine.b);
+        if (!a || !b) return;
+        this.canvasService.setLineLength(a, b, this.lineLength);
+        this.isLineLengthChanging = false;
+        this.lineLength = null;
+        this.redraw();
+      }
+    }
   }
 
   openPolygonInput() {

@@ -57,10 +57,10 @@ export class Rhombus implements DrawingTool {
       this.canvasService.createLine(label2, label3);
       this.canvasService.createLine(label3, label4);
       this.canvasService.createLine(label1, label4);
-      this.setLineLengthToService(ctx, label1, label2, '?');
-      this.setLineLengthToService(ctx, label2, label3, '?');
-      this.setLineLengthToService(ctx, label3, label4, '?');
-      this.setLineLengthToService(ctx, label1, label4, '?');
+      this.restoreLineLengthToService(ctx, label1, label2);
+      this.restoreLineLengthToService(ctx, label2, label3);
+      this.restoreLineLengthToService(ctx, label3, label4);
+      this.restoreLineLengthToService(ctx, label1, label4);
     }
   }
 
@@ -200,6 +200,36 @@ export class Rhombus implements DrawingTool {
     color: string = 'black'
   ) {
     this.canvasService.setLineLength(a, b, length);
+
+    const pointA = this.canvasService.getPointByLabel(a);
+    const pointB = this.canvasService.getPointByLabel(b);
+
+    if (!pointA || !pointB) return;
+
+    if (!ctx) return;
+
+    drawTextAboveLine(
+      ctx,
+      pointA,
+      pointB,
+      length,
+      offsetX,
+      offsetY,
+      fontsize,
+      color
+    );
+  }
+
+  private restoreLineLengthToService(
+    ctx: CanvasRenderingContext2D,
+    a: string,
+    b: string,
+    offsetX: number = 0,
+    offsetY: number = -10,
+    fontsize: number = 14,
+    color: string = 'black'
+  ) {
+    const length = this.canvasService.getLineLength(a, b);
 
     const pointA = this.canvasService.getPointByLabel(a);
     const pointB = this.canvasService.getPointByLabel(b);

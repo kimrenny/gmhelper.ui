@@ -62,20 +62,20 @@ export class Polygon implements DrawingTool {
     }
 
     if (redraw) {
-      const labels = this.addPointsToCanvasService(ctx);
+      const labels = this.addPointsToCanvasService(ctx, path);
 
       for (let i = 0; i < labels.length - 1; i++) {
         const from = labels[i];
         const to = labels[(i + 1) % labels.length];
         this.canvasService.createLine(from, to);
-        this.setLineLengthToService(ctx, from, to, '?');
+        this.restoreLineLengthToService(ctx, from, to);
       }
 
       if (labels.length > 1) {
         const from = labels[0];
         const to = labels[labels.length - 1];
         this.canvasService.createLine(from, to);
-        this.setLineLengthToService(ctx, from, to, '?');
+        this.restoreLineLengthToService(ctx, from, to);
       }
     }
   }
@@ -215,9 +215,16 @@ export class Polygon implements DrawingTool {
     if (!(this.figureName.length > 1)) {
       this.figureName = this.counterService.getNextFigureName('Polygon');
     }
-    const labels: string[] = [];
 
-    this.path.forEach((point, index) => {
+    const labels: string[] = [];
+    const pointsToProcess = path && path.length > 0 ? path : this.path;
+
+    if (!pointsToProcess || pointsToProcess.length === 0) {
+      console.warn('Path is empty. No points to add.');
+      return labels;
+    }
+
+    pointsToProcess.forEach((point, index) => {
       const label = this.canvasService.addPoint(
         point.x,
         point.y,
@@ -225,8 +232,11 @@ export class Polygon implements DrawingTool {
         index
       );
 
-      drawLabel(ctx, label, point.x, point.y);
+      if (!label) {
+        console.error(`Label was not returned for point at index ${index}`);
+      }
 
+      drawLabel(ctx, label, point.x, point.y);
       labels.push(label);
     });
 
@@ -244,6 +254,36 @@ export class Polygon implements DrawingTool {
     color: string = 'black'
   ) {
     this.canvasService.setLineLength(a, b, length);
+
+    const pointA = this.canvasService.getPointByLabel(a);
+    const pointB = this.canvasService.getPointByLabel(b);
+
+    if (!pointA || !pointB) return;
+
+    if (!ctx) return;
+
+    drawTextAboveLine(
+      ctx,
+      pointA,
+      pointB,
+      length,
+      offsetX,
+      offsetY,
+      fontsize,
+      color
+    );
+  }
+
+  private restoreLineLengthToService(
+    ctx: CanvasRenderingContext2D,
+    a: string,
+    b: string,
+    offsetX: number = 0,
+    offsetY: number = -10,
+    fontsize: number = 14,
+    color: string = 'black'
+  ) {
+    const length = this.canvasService.getLineLength(a, b);
 
     const pointA = this.canvasService.getPointByLabel(a);
     const pointB = this.canvasService.getPointByLabel(b);

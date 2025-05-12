@@ -493,14 +493,6 @@
       &.disabled {
         cursor: not-allowed;
         pointer-events: auto;
-
-        &::before {
-          content: "";
-          position: absolute;
-          inset: 0;
-          background: transparent;
-          pointer-events: all;
-        }
       }
 
       &.img {
@@ -576,6 +568,21 @@
         opacity: 1;
         scale: (1.2);
       }
+    }
+  }
+
+  .line-length-input {
+    position: absolute;
+    z-index: 40;
+
+    .line-length-input-field {
+      position: absolute;
+      width: 50px;
+      height: 25px;
+      text-align: center;
+      background-color: white;
+      border: 1px solid #ccc;
+      border-radius: 3px;
     }
   }
 

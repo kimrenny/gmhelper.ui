@@ -46,7 +46,7 @@ export class Line implements DrawingTool {
     if (redraw) {
       const [label1, label2] = this.addPointsToCanvasService(ctx, path);
       this.canvasService.createLine(label1, label2);
-      this.setLineLengthToService(ctx, label1, label2, '?');
+      this.restoreLineLengthToService(ctx, label1, label2);
     }
   }
 
@@ -259,6 +259,23 @@ export class Line implements DrawingTool {
     length: LineLength
   ) {
     this.canvasService.setLineLength(a, b, length);
+
+    const pointA = this.canvasService.getPointByLabel(a);
+    const pointB = this.canvasService.getPointByLabel(b);
+
+    if (!pointA || !pointB) return;
+
+    if (!ctx) return;
+
+    drawTextAboveLine(ctx, pointA, pointB, length);
+  }
+
+  private restoreLineLengthToService(
+    ctx: CanvasRenderingContext2D,
+    a: string,
+    b: string
+  ) {
+    const length = this.canvasService.getLineLength(a, b);
 
     const pointA = this.canvasService.getPointByLabel(a);
     const pointB = this.canvasService.getPointByLabel(b);

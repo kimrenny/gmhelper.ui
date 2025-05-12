@@ -50,10 +50,41 @@ export class CanvasService {
   }
 
   setLineLength(point1: string, point2: string, length: LineLength): void {
-    const lineName = point1 + point2;
-    if (lineName in this.lines) {
-      this.lines[lineName] = length;
+    const p1 = this.getPointByLabel(point1);
+    const p2 = this.getPointByLabel(point2);
+
+    if (!p1 || !p2) return;
+
+    const isPolygon =
+      p1.attachedToFigure &&
+      p1.attachedToFigure === p2.attachedToFigure &&
+      p1.attachedToFigure.toLowerCase().includes('polygon');
+
+    if (isPolygon) {
+      const polygonPoints = this.getPointsByFigure(p1.attachedToFigure);
+
+      for (let i = 0; i < polygonPoints.length; i++) {
+        for (let j = i + 1; j < polygonPoints.length; j++) {
+          const labelA = polygonPoints[i].label;
+          const labelB = polygonPoints[j].label;
+          const lineName1 = labelA + labelB;
+          const lineName2 = labelB + labelA;
+
+          if (this.lines[lineName1] !== undefined) {
+            this.lines[lineName1] = length;
+          } else if (this.lines[lineName2] !== undefined) {
+            this.lines[lineName2] = length;
+          }
+        }
+      }
+    } else {
+      const lineName = point1 + point2;
+      if (lineName in this.lines) {
+        this.lines[lineName] = length;
+      }
     }
+
+    console.log(this.lines);
   }
 
   private getPointLabel(index: number): string {
@@ -82,6 +113,19 @@ export class CanvasService {
 
   getPointByLabel(label: string): Point | undefined {
     return this.points.find((p) => p.label === label);
+  }
+
+  getPointLabelByCoords(coords: Coords2d): string | null {
+    for (const point of this.points) {
+      if (point.x === coords.x && point.y === coords.y) {
+        return point.label;
+      }
+    }
+    return null;
+  }
+
+  getLineLength(a: string, b: string): LineLength {
+    return this.lines[`${a}${b}`] ?? this.lines[`${b}${a}`];
   }
 
   findLineByPoint(pos: { x: number; y: number }): {
@@ -219,6 +263,10 @@ export class CanvasService {
 
   setSelectedLine(a: Coords2d, b: Coords2d) {
     this.selectedLine = { a, b };
+  }
+
+  getSelectedLine(): { a: Coords2d; b: Coords2d } | null {
+    return this.selectedLine;
   }
 
   resetSelectedLine() {

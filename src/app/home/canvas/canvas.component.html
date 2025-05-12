@@ -101,7 +101,7 @@
   >
     <button
       [class.disabled]="!isLineSelected"
-      (click)="selectTool('line')"
+      (click)="onChangeLineLengthClick()"
       class="set-length-btn"
     ></button>
     <button class="select-figure-btn"></button>
@@ -114,7 +114,6 @@
 
     <div
       class="line-color-palette"
-      [class.disabled]="!isFigureSelected"
       [style.display]="isFigureColorPaletteVisible ? 'grid' : 'none'"
       #lineColorPalette
     >
@@ -125,6 +124,17 @@
         (click)="changeFigureColor(color)"
       ></div>
     </div>
+  </div>
+
+  <div *ngIf="isLineLengthChanging" class="line-length-input">
+    <input
+      [(ngModel)]="lineLength"
+      (keydown.enter)="onLineLengthConfirm()"
+      [style.left.px]="lineInputPosition!.x"
+      [style.top.px]="lineInputPosition!.y"
+      min="1"
+      class="line-length-input-field"
+    />
   </div>
 
   <div *ngIf="showPolygonInput" class="polygon-input-overlay">
