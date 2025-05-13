@@ -59,6 +59,8 @@ export class CanvasComponent implements OnInit, AfterViewInit {
 
   lineInputPosition: Coords2d | null = null;
 
+  isFigureSelection: boolean = false;
+
   constructor(
     private canvasService: CanvasService,
     private counterService: CounterService,
@@ -117,21 +119,15 @@ export class CanvasComponent implements OnInit, AfterViewInit {
       if (!pos) return;
 
       this.canvasService.resetSelectedLine();
+      this.canvasService.setSelectedFigure(null);
 
       const lineData = this.canvasService.findLineByPoint(pos);
       if (lineData) {
-        const toolName = lineData.attachedToFigure.split('_')[0];
-        const tool = this.toolSelector.select('line');
-
-        if (tool && tool.onSelectLine) {
-          tool?.onSelectLine(
-            lineData.point1,
-            lineData.point2,
-            this.toolContext.previewCanvas
-          );
-          this.canvasService.setSelectedLine(lineData.point1, lineData.point2);
+        if (this.isFigureSelection) {
+          this.selectFigure(lineData);
+          return;
         }
-
+        this.selectLine(lineData);
         return;
       }
       this.currentTool?.onMouseDown?.(pos, this.toolContext);
@@ -162,6 +158,49 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     });
   }
 
+  private selectLine(lineData: {
+    point1: { x: number; y: number };
+    point2: { x: number; y: number };
+    attachedToFigure: string;
+  }): void {
+    const tool = this.toolSelector.select('line');
+
+    if (tool && tool.onSelectLine) {
+      tool?.onSelectLine(
+        lineData.point1,
+        lineData.point2,
+        this.toolContext.previewCanvas
+      );
+      this.canvasService.setSelectedLine(lineData.point1, lineData.point2);
+    }
+
+    return;
+  }
+
+  private selectFigure(lineData: {
+    point1: { x: number; y: number };
+    point2: { x: number; y: number };
+    attachedToFigure: string;
+  }): void {
+    const figureName = lineData.attachedToFigure;
+
+    const toolName = figureName.split('_')[0].toLowerCase();
+
+    const tool = this.toolSelector.select(toolName);
+
+    const points = this.canvasService
+      .getPointsByFigure(figureName)
+      .map((p) => ({ x: p.x, y: p.y }));
+
+    this.canvasService.setSelectedFigure(figureName);
+
+    if (tool) {
+      if (tool.onSelectFigure) {
+        tool.onSelectFigure(points, this.toolContext.previewCanvas);
+      }
+    }
+  }
+
   get canUndo(): boolean {
     return this.canvasService.canUndo;
   }
@@ -181,6 +220,10 @@ export class CanvasComponent implements OnInit, AfterViewInit {
   changeFigureColor(color: string) {
     this.isFigureColorPaletteVisible = false;
     this.canvasService.changeFigureColor(color);
+    this.redraw();
+    this.clearPreviewCanvas();
+    this.isFigureSelection = false;
+    this.toolSelector.select('pencil');
   }
 
   undo(): void {
@@ -260,8 +303,31 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     this.isColorPaletteVisible = !this.isColorPaletteVisible;
   }
 
-  toggleFigureColorPalette(): void {
-    this.isFigureColorPaletteVisible = !this.isFigureColorPaletteVisible;
+  toggleFigureColorPalette(manual?: boolean): void {
+    if (!this.isFigureSelected) return;
+    if (manual) {
+      this.isFigureColorPaletteVisible = manual;
+    } else {
+      this.isFigureColorPaletteVisible = !this.isFigureColorPaletteVisible;
+    }
+  }
+
+  toggleFigureSelection(
+    manual: boolean = false,
+    changeTo: boolean = false
+  ): void {
+    if (manual) {
+      this.isFigureSelection = changeTo;
+      if (!this.isFigureSelection) {
+        this.canvasService.setSelectedFigure(null);
+      }
+      return;
+    }
+
+    this.isFigureSelection = !this.isFigureSelection;
+    if (!this.isFigureSelection) {
+      this.canvasService.setSelectedFigure(null);
+    }
   }
 
   toggleShapeTools(): void {
@@ -287,7 +353,6 @@ export class CanvasComponent implements OnInit, AfterViewInit {
 
   onChangeLineLengthClick(): void {
     const selectedLine = this.canvasService.getSelectedLine();
-    console.log('Called, selected line:', selectedLine);
     if (selectedLine) {
       const a = this.canvasService.getPointLabelByCoords(selectedLine.a);
       const b = this.canvasService.getPointLabelByCoords(selectedLine.b);
@@ -358,6 +423,12 @@ export class CanvasComponent implements OnInit, AfterViewInit {
         this.translate.instant('ADMIN.ERRORS.ERROR')
       );
     }
+  }
+
+  clearPreviewCanvas(): void {
+    const previewCanvas = this.previewCanvasRef.nativeElement;
+
+    this.previewCtx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
   }
 
   onClearCanvas(): void {

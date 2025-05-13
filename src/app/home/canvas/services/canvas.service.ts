@@ -61,30 +61,32 @@ export class CanvasService {
       p1.attachedToFigure.toLowerCase().includes('polygon');
 
     if (isPolygon) {
-      const polygonPoints = this.getPointsByFigure(p1.attachedToFigure);
-
-      for (let i = 0; i < polygonPoints.length; i++) {
-        for (let j = i + 1; j < polygonPoints.length; j++) {
-          const labelA = polygonPoints[i].label;
-          const labelB = polygonPoints[j].label;
-          const lineName1 = labelA + labelB;
-          const lineName2 = labelB + labelA;
-
-          if (this.lines[lineName1] !== undefined) {
-            this.lines[lineName1] = length;
-          } else if (this.lines[lineName2] !== undefined) {
-            this.lines[lineName2] = length;
-          }
-        }
-      }
+      this.setPolygonLinesLength(p1, length);
     } else {
       const lineName = point1 + point2;
       if (lineName in this.lines) {
         this.lines[lineName] = length;
       }
     }
+  }
 
-    console.log(this.lines);
+  setPolygonLinesLength(point: Point, length: LineLength): void {
+    const polygonPoints = this.getPointsByFigure(point.attachedToFigure);
+
+    for (let i = 0; i < polygonPoints.length; i++) {
+      for (let j = i + 1; j < polygonPoints.length; j++) {
+        const labelA = polygonPoints[i].label;
+        const labelB = polygonPoints[j].label;
+        const lineName1 = labelA + labelB;
+        const lineName2 = labelB + labelA;
+
+        if (this.lines[lineName1] !== undefined) {
+          this.lines[lineName1] = length;
+        } else if (this.lines[lineName2] !== undefined) {
+          this.lines[lineName2] = length;
+        }
+      }
+    }
   }
 
   private getPointLabel(index: number): string {

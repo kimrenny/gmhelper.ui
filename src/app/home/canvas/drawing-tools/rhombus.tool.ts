@@ -127,6 +127,36 @@ export class Rhombus implements DrawingTool {
     this.onMouseUp(pos, data);
   }
 
+  onSelectFigure(
+    path: { x: number; y: number }[],
+    previewCanvas: HTMLCanvasElement
+  ): void {
+    const ctx = previewCanvas.getContext('2d');
+    if (!ctx) {
+      return;
+    }
+
+    if (path.length !== 4) return;
+
+    ctx.strokeStyle = '#ffcc00';
+    ctx.lineWidth = 2;
+
+    ctx.beginPath();
+    ctx.moveTo(path[0].x, path[0].y);
+    for (let i = 1; i < path.length; i++) {
+      ctx.lineTo(path[i].x, path[i].y);
+    }
+    ctx.closePath();
+    ctx.stroke();
+
+    ctx.fillStyle = '#ffcc00';
+    for (const point of path) {
+      ctx.beginPath();
+      ctx.arc(point.x, point.y, 4, 0, 2 * Math.PI);
+      ctx.fill();
+    }
+  }
+
   private renderPreview(data: ToolContext): void {
     if (!this.start || !this.end) return;
 

@@ -160,6 +160,38 @@ export class Polygon implements DrawingTool {
     return { tool: this, path: savePath, figureName: this.figureName };
   }
 
+  onSelectFigure(
+    path: { x: number; y: number }[],
+    previewCanvas: HTMLCanvasElement
+  ): void {
+    const ctx = previewCanvas.getContext('2d');
+    if (!ctx) {
+      return;
+    }
+
+    const drawPath = path ?? this.path;
+    if (drawPath.length >= 3) {
+      ctx.strokeStyle = '#ffcc00';
+      ctx.lineWidth = 2;
+
+      ctx.beginPath();
+      ctx.moveTo(drawPath[0].x, drawPath[0].y);
+      for (let i = 1; i < drawPath.length; i++) {
+        ctx.lineTo(drawPath[i].x, drawPath[i].y);
+      }
+      ctx.closePath();
+      ctx.stroke();
+
+      ctx.fillStyle = '#ffcc00';
+      for (const point of drawPath) {
+        ctx.beginPath();
+        ctx.arc(point.x, point.y, 3, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.closePath();
+      }
+    }
+  }
+
   private renderPreview(data: ToolContext): void {
     if (!this.isDrawing || !this.center || this.radius <= 0) return;
 

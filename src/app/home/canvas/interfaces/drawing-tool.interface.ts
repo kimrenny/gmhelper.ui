@@ -19,4 +19,8 @@ export interface DrawingTool {
     end: { x: number; y: number },
     previewCanvas: HTMLCanvasElement
   ): void;
+  onSelectFigure?(
+    path: { x: number; y: number }[],
+    previewCanvas: HTMLCanvasElement
+  ): void;
 }

@@ -127,6 +127,37 @@ export class Parallelogram implements DrawingTool {
     }
   }
 
+  onSelectFigure(
+    path: { x: number; y: number }[],
+    previewCanvas: HTMLCanvasElement
+  ) {
+    const ctx = previewCanvas.getContext('2d');
+    if (!ctx) {
+      return;
+    }
+
+    if (path.length === 4) {
+      ctx.strokeStyle = '#ffcc00';
+      ctx.lineWidth = 2;
+
+      ctx.beginPath();
+      ctx.moveTo(path[0].x, path[0].y);
+      ctx.lineTo(path[1].x, path[1].y);
+      ctx.lineTo(path[2].x, path[2].y);
+      ctx.lineTo(path[3].x, path[3].y);
+      ctx.closePath();
+      ctx.stroke();
+
+      ctx.fillStyle = '#ffcc00';
+      for (const point of path) {
+        ctx.beginPath();
+        ctx.arc(point.x, point.y, 4, 0, 2 * Math.PI);
+        ctx.fill();
+        ctx.closePath();
+      }
+    }
+  }
+
   private renderPreview(data: ToolContext): void {
     if (!this.isDrawing || !this.end || this.path.length === 0) return;
 

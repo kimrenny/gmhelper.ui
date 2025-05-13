@@ -510,6 +510,7 @@
       &.select-figure-btn {
         background-image: url("../../../assets/icons/figure-click.png");
 
+        &.active,
         &:hover {
           background-image: url("../../../assets/icons/figure-click-hover.png");
         }

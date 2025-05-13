@@ -112,6 +112,36 @@ export class Triangle implements DrawingTool {
     }
   }
 
+  onSelectFigure(
+    path: { x: number; y: number }[],
+    previewCanvas: HTMLCanvasElement
+  ): void {
+    const ctx = previewCanvas.getContext('2d');
+    if (!ctx) {
+      return;
+    }
+
+    const drawPath = path ?? this.path;
+    if (drawPath.length === 3) {
+      ctx.strokeStyle = '#ffcc00';
+      ctx.lineWidth = 2;
+
+      ctx.beginPath();
+      ctx.moveTo(drawPath[0].x, drawPath[0].y);
+      ctx.lineTo(drawPath[1].x, drawPath[1].y);
+      ctx.lineTo(drawPath[2].x, drawPath[2].y);
+      ctx.closePath();
+      ctx.stroke();
+
+      ctx.fillStyle = '#ffcc00';
+      for (const point of drawPath) {
+        ctx.beginPath();
+        ctx.arc(point.x, point.y, 4, 0, 2 * Math.PI);
+        ctx.fill();
+      }
+    }
+  }
+
   private renderPreview(data: ToolContext): void {
     if (!this.isDrawing || !this.end || this.path.length === 0) return;
 

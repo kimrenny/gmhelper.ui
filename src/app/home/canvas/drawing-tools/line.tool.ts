@@ -207,6 +207,13 @@ export class Line implements DrawingTool {
     }
   }
 
+  public onSelectFigure(
+    path: { x: number; y: number }[],
+    previewCanvas: HTMLCanvasElement
+  ): void {
+    this.onSelectLine(path[0], path[1], previewCanvas);
+  }
+
   private addPointsToCanvasService(
     ctx: CanvasRenderingContext2D,
     path?: { x: number; y: number }[]

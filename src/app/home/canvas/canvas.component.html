@@ -104,7 +104,11 @@
       (click)="onChangeLineLengthClick()"
       class="set-length-btn"
     ></button>
-    <button class="select-figure-btn"></button>
+    <button
+      class="select-figure-btn"
+      [class.active]="isFigureSelection"
+      (click)="toggleFigureSelection()"
+    ></button>
     <button
       [class.disabled]="!isFigureSelected"
       (click)="toggleFigureColorPalette()"
