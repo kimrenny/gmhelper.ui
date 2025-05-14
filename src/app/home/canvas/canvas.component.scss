@@ -466,6 +466,32 @@
     }
   }
 
+  .figure-action-panel {
+    position: absolute;
+    width: 40px;
+    right: 10px;
+    top: 15%;
+    background-color: rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 40;
+
+    button {
+      width: 30px;
+      height: 30px;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+      background-color: transparent;
+      padding: 0;
+      margin: 5px;
+    }
+  }
+
   .figure-tool-buttons {
     position: absolute;
     width: 40px;

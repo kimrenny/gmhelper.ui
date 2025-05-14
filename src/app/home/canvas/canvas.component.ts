@@ -34,6 +34,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
   maxScale = 200;
   currentScaleFactor = 1;
   selectedSubject: string = '';
+  selectedFigure: string | null = null;
   subjects: string[] = ['Math', 'Geo'];
   colors = COLORS;
 
@@ -60,6 +61,131 @@ export class CanvasComponent implements OnInit, AfterViewInit {
   lineInputPosition: Coords2d | null = null;
 
   isFigureSelection: boolean = false;
+
+  figureToolMap: Record<
+    string,
+    { name: string; icon: string; action: () => void }[]
+  > = {
+    triangle: [
+      {
+        name: 'drawHeight',
+        icon: 'height-icon.svg',
+        action: () => this.handleFigureAction('triangle', 'drawHeight'),
+      },
+      {
+        name: 'drawMedian',
+        icon: 'median-icon.svg',
+        action: () => this.handleFigureAction('triangle', 'drawMedian'),
+      },
+      {
+        name: 'markAngles',
+        icon: 'angle-icon.svg',
+        action: () => this.handleFigureAction('triangle', 'markAngles'),
+      },
+    ],
+    ellipse: [
+      {
+        name: 'drawRadius',
+        icon: 'radius-icon.svg',
+        action: () => this.handleFigureAction('ellipse', 'drawRadius'),
+      },
+      {
+        name: 'drawDiameter',
+        icon: 'diameter-icon.svg',
+        action: () => this.handleFigureAction('ellipse', 'drawDiameter'),
+      },
+      {
+        name: 'makeCircle',
+        icon: 'circle-icon.svg',
+        action: () => this.handleFigureAction('ellipse', 'makeCircle'),
+      },
+    ],
+    rectangle: [
+      {
+        name: 'func1',
+        icon: 'func-icon.svg',
+        action: () => this.handleFigureAction('rectangle', 'func1'),
+      },
+      {
+        name: 'func2',
+        icon: 'func-icon.svg',
+        action: () => this.handleFigureAction('rectangle', 'func2'),
+      },
+      {
+        name: 'func3',
+        icon: 'func-icon.svg',
+        action: () => this.handleFigureAction('rectangle', 'func3'),
+      },
+    ],
+    rhombus: [
+      {
+        name: 'func1',
+        icon: 'func-icon.svg',
+        action: () => this.handleFigureAction('rhombus', 'func1'),
+      },
+      {
+        name: 'func2',
+        icon: 'func-icon.svg',
+        action: () => this.handleFigureAction('rhombus', 'func2'),
+      },
+      {
+        name: 'func3',
+        icon: 'func-icon.svg',
+        action: () => this.handleFigureAction('rhombus', 'func3'),
+      },
+    ],
+    trapezoid: [
+      {
+        name: 'func1',
+        icon: 'func-icon.svg',
+        action: () => this.handleFigureAction('trapezoid', 'func1'),
+      },
+      {
+        name: 'func2',
+        icon: 'func-icon.svg',
+        action: () => this.handleFigureAction('trapezoid', 'func2'),
+      },
+      {
+        name: 'func3',
+        icon: 'func-icon.svg',
+        action: () => this.handleFigureAction('trapezoid', 'func3'),
+      },
+    ],
+    parallelogram: [
+      {
+        name: 'func1',
+        icon: 'func-icon.svg',
+        action: () => this.handleFigureAction('parallelogram', 'func1'),
+      },
+      {
+        name: 'func2',
+        icon: 'func-icon.svg',
+        action: () => this.handleFigureAction('parallelogram', 'func2'),
+      },
+      {
+        name: 'func3',
+        icon: 'func-icon.svg',
+        action: () => this.handleFigureAction('parallelogram', 'func3'),
+      },
+    ],
+    polygon: [
+      {
+        name: 'func1',
+        icon: 'func-icon.svg',
+        action: () => this.handleFigureAction('polygon', 'func1'),
+      },
+      {
+        name: 'func2',
+        icon: 'func-icon.svg',
+        action: () => this.handleFigureAction('polygon', 'func2'),
+      },
+      {
+        name: 'func3',
+        icon: 'func-icon.svg',
+        action: () => this.handleFigureAction('polygon', 'func3'),
+      },
+    ],
+  };
 
   constructor(
     private canvasService: CanvasService,
@@ -193,6 +319,8 @@ export class CanvasComponent implements OnInit, AfterViewInit {
       .map((p) => ({ x: p.x, y: p.y }));
 
     this.canvasService.setSelectedFigure(figureName);
+
+    this.selectedFigure = figureName;
 
     if (tool) {
       if (tool.onSelectFigure) {
@@ -422,6 +550,151 @@ export class CanvasComponent implements OnInit, AfterViewInit {
           'Invalid number of sides',
         this.translate.instant('ADMIN.ERRORS.ERROR')
       );
+    }
+  }
+
+  handleFigureAction(figure: string, action: string) {
+    switch (figure.split('_')[0].toLowerCase()) {
+      case 'triangle':
+        this.handleTriangleAction(action);
+        break;
+      case 'ellipse':
+        this.handleEllipseAction(action);
+        break;
+      case 'rectangle':
+        this.handleRectangleAction(action);
+        break;
+      case 'rhombus':
+        this.handleRhombusAction(action);
+        break;
+      case 'trapezoid':
+        this.handleTrapezoidAction(action);
+        break;
+      case 'parallelogram':
+        this.handleParallelogramAction(action);
+        break;
+      case 'polygon':
+        this.handlePolygonAction(action);
+        break;
+    }
+  }
+
+  handleTriangleAction(action: string) {
+    switch (action) {
+      case 'drawHeight': {
+        // todo: implement logic
+        break;
+      }
+      case 'drawMedian': {
+        // todo: implement logic
+        break;
+      }
+      case 'markAngles': {
+        // todo: implement logic
+        break;
+      }
+    }
+  }
+
+  handleEllipseAction(action: string) {
+    switch (action) {
+      case 'drawRadius': {
+        // todo: implement logic
+        break;
+      }
+      case 'drawDiameter': {
+        // todo: implement logic
+        break;
+      }
+      case 'makeCircle': {
+        // todo: implement logic
+        break;
+      }
+    }
+  }
+
+  handleRectangleAction(action: string) {
+    switch (action) {
+      case 'func1': {
+        // todo: implement logic
+        break;
+      }
+      case 'func2': {
+        // todo: implement logic
+        break;
+      }
+      case 'func3': {
+        // todo: implement logic
+        break;
+      }
+    }
+  }
+
+  handleRhombusAction(action: string) {
+    switch (action) {
+      case 'func1': {
+        // todo: implement logic
+        break;
+      }
+      case 'func2': {
+        // todo: implement logic
+        break;
+      }
+      case 'func3': {
+        // todo: implement logic
+        break;
+      }
+    }
+  }
+
+  handleTrapezoidAction(action: string) {
+    switch (action) {
+      case 'func1': {
+        // todo: implement logic
+        break;
+      }
+      case 'func2': {
+        // todo: implement logic
+        break;
+      }
+      case 'func3': {
+        // todo: implement logic
+        break;
+      }
+    }
+  }
+
+  handleParallelogramAction(action: string) {
+    switch (action) {
+      case 'func1': {
+        // todo: implement logic
+        break;
+      }
+      case 'func2': {
+        // todo: implement logic
+        break;
+      }
+      case 'func3': {
+        // todo: implement logic
+        break;
+      }
+    }
+  }
+
+  handlePolygonAction(action: string) {
+    switch (action) {
+      case 'func1': {
+        // todo: implement logic
+        break;
+      }
+      case 'func2': {
+        // todo: implement logic
+        break;
+      }
+      case 'func3': {
+        // todo: implement logic
+        break;
+      }
     }
   }
 

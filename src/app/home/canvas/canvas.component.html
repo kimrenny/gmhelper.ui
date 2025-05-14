@@ -95,6 +95,23 @@
   </div>
 
   <div
+    class="figure-action-panel"
+    *ngIf="
+      selectedFigure &&
+      figureToolMap[selectedFigure.split('_')[0].toLowerCase()]
+    "
+  >
+    <button
+      *ngFor="
+        let tool of figureToolMap[selectedFigure.split('_')[0].toLowerCase()]
+      "
+      class="figure-action-btn"
+      [ngStyle]="{ 'background-image': 'url(assets/icons/' + tool.icon + ')' }"
+      (click)="tool.action()"
+    ></button>
+  </div>
+
+  <div
     class="figure-tool-buttons"
     [class.not-visible]="!selectedSubject || !canUndo"
     [class.show-palette]="isFigureColorPaletteVisible"
