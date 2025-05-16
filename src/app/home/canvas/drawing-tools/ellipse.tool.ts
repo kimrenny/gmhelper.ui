@@ -122,6 +122,45 @@ export class Ellipse implements DrawingTool {
     ctx.stroke();
   }
 
+  handleAction(action: string, data: ToolContext, figureName: string): void {
+    const ctx = data.canvas?.getContext('2d');
+    if (!ctx) return;
+
+    const path = this.canvasService
+      .getPointsByFigure(figureName)
+      .map((p) => ({ x: p.x, y: p.y }));
+
+    switch (action) {
+      case 'drawRadius': {
+        this.drawRadius(ctx, path);
+        break;
+      }
+      case 'drawDiameter': {
+        this.drawDiameter(ctx, path);
+        break;
+      }
+      case 'makeCircle': {
+        this.makeCircle(ctx, path);
+        break;
+      }
+    }
+  }
+
+  drawRadius(
+    ctx: CanvasRenderingContext2D,
+    path: { x: number; y: number }[]
+  ): void {}
+
+  drawDiameter(
+    ctx: CanvasRenderingContext2D,
+    path: { x: number; y: number }[]
+  ): void {}
+
+  makeCircle(
+    ctx: CanvasRenderingContext2D,
+    path: { x: number; y: number }[]
+  ): void {}
+
   private renderPreview(data: ToolContext): void {
     if (!this.start || !this.end) return;
 

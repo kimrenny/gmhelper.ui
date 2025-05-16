@@ -142,6 +142,45 @@ export class Triangle implements DrawingTool {
     }
   }
 
+  handleAction(action: string, data: ToolContext, figureName: string): void {
+    const ctx = data.canvas?.getContext('2d');
+    if (!ctx) return;
+
+    const path = this.canvasService
+      .getPointsByFigure(figureName)
+      .map((p) => ({ x: p.x, y: p.y }));
+
+    switch (action) {
+      case 'drawHeight': {
+        this.drawHeight(ctx, path);
+        break;
+      }
+      case 'drawMedian': {
+        this.drawMedian(ctx, path);
+        break;
+      }
+      case 'markAngles': {
+        this.markAngles(ctx, path);
+        break;
+      }
+    }
+  }
+
+  drawHeight(
+    ctx: CanvasRenderingContext2D,
+    path: { x: number; y: number }[]
+  ): void {}
+
+  drawMedian(
+    ctx: CanvasRenderingContext2D,
+    path: { x: number; y: number }[]
+  ): void {}
+
+  markAngles(
+    ctx: CanvasRenderingContext2D,
+    path: { x: number; y: number }[]
+  ): void {}
+
   private renderPreview(data: ToolContext): void {
     if (!this.isDrawing || !this.end || this.path.length === 0) return;
 

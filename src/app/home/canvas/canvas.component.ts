@@ -70,119 +70,203 @@ export class CanvasComponent implements OnInit, AfterViewInit {
       {
         name: 'drawHeight',
         icon: 'height-icon.svg',
-        action: () => this.handleFigureAction('triangle', 'drawHeight'),
+        action: () =>
+          this.handleFigureAction(
+            this.selectedFigure ? this.selectedFigure : 'triangle',
+            'drawHeight'
+          ),
       },
       {
         name: 'drawMedian',
         icon: 'median-icon.svg',
-        action: () => this.handleFigureAction('triangle', 'drawMedian'),
+        action: () =>
+          this.handleFigureAction(
+            this.selectedFigure ? this.selectedFigure : 'triangle',
+            'drawMedian'
+          ),
       },
       {
         name: 'markAngles',
         icon: 'angle-icon.svg',
-        action: () => this.handleFigureAction('triangle', 'markAngles'),
+        action: () =>
+          this.handleFigureAction(
+            this.selectedFigure ? this.selectedFigure : 'triangle',
+            'markAngles'
+          ),
       },
     ],
     ellipse: [
       {
         name: 'drawRadius',
         icon: 'radius-icon.svg',
-        action: () => this.handleFigureAction('ellipse', 'drawRadius'),
+        action: () =>
+          this.handleFigureAction(
+            this.selectedFigure ? this.selectedFigure : 'ellipse',
+            'drawRadius'
+          ),
       },
       {
         name: 'drawDiameter',
         icon: 'diameter-icon.svg',
-        action: () => this.handleFigureAction('ellipse', 'drawDiameter'),
+        action: () =>
+          this.handleFigureAction(
+            this.selectedFigure ? this.selectedFigure : 'ellipse',
+            'drawDiameter'
+          ),
       },
       {
         name: 'makeCircle',
         icon: 'circle-icon.svg',
-        action: () => this.handleFigureAction('ellipse', 'makeCircle'),
+        action: () =>
+          this.handleFigureAction(
+            this.selectedFigure ? this.selectedFigure : 'ellipse',
+            'makeCircle'
+          ),
       },
     ],
     rectangle: [
       {
         name: 'func1',
         icon: 'func-icon.svg',
-        action: () => this.handleFigureAction('rectangle', 'func1'),
+        action: () =>
+          this.handleFigureAction(
+            this.selectedFigure ? this.selectedFigure : 'rectangle',
+            'func1'
+          ),
       },
       {
         name: 'func2',
         icon: 'func-icon.svg',
-        action: () => this.handleFigureAction('rectangle', 'func2'),
+        action: () =>
+          this.handleFigureAction(
+            this.selectedFigure ? this.selectedFigure : 'rectangle',
+            'func2'
+          ),
       },
       {
         name: 'func3',
         icon: 'func-icon.svg',
-        action: () => this.handleFigureAction('rectangle', 'func3'),
+        action: () =>
+          this.handleFigureAction(
+            this.selectedFigure ? this.selectedFigure : 'rectangle',
+            'func3'
+          ),
       },
     ],
     rhombus: [
       {
         name: 'func1',
         icon: 'func-icon.svg',
-        action: () => this.handleFigureAction('rhombus', 'func1'),
+        action: () =>
+          this.handleFigureAction(
+            this.selectedFigure ? this.selectedFigure : 'rhombus',
+            'func1'
+          ),
       },
       {
         name: 'func2',
         icon: 'func-icon.svg',
-        action: () => this.handleFigureAction('rhombus', 'func2'),
+        action: () =>
+          this.handleFigureAction(
+            this.selectedFigure ? this.selectedFigure : 'rhombus',
+            'func2'
+          ),
       },
       {
         name: 'func3',
         icon: 'func-icon.svg',
-        action: () => this.handleFigureAction('rhombus', 'func3'),
+        action: () =>
+          this.handleFigureAction(
+            this.selectedFigure ? this.selectedFigure : 'rhombus',
+            'func3'
+          ),
       },
     ],
     trapezoid: [
       {
         name: 'func1',
         icon: 'func-icon.svg',
-        action: () => this.handleFigureAction('trapezoid', 'func1'),
+        action: () =>
+          this.handleFigureAction(
+            this.selectedFigure ? this.selectedFigure : 'trapezoid',
+            'func1'
+          ),
       },
       {
         name: 'func2',
         icon: 'func-icon.svg',
-        action: () => this.handleFigureAction('trapezoid', 'func2'),
+        action: () =>
+          this.handleFigureAction(
+            this.selectedFigure ? this.selectedFigure : 'trapezoid',
+            'func2'
+          ),
       },
       {
         name: 'func3',
         icon: 'func-icon.svg',
-        action: () => this.handleFigureAction('trapezoid', 'func3'),
+        action: () =>
+          this.handleFigureAction(
+            this.selectedFigure ? this.selectedFigure : 'trapezoid',
+            'func3'
+          ),
       },
     ],
     parallelogram: [
       {
         name: 'func1',
         icon: 'func-icon.svg',
-        action: () => this.handleFigureAction('parallelogram', 'func1'),
+        action: () =>
+          this.handleFigureAction(
+            this.selectedFigure ? this.selectedFigure : 'parallelogram',
+            'func1'
+          ),
       },
       {
         name: 'func2',
         icon: 'func-icon.svg',
-        action: () => this.handleFigureAction('parallelogram', 'func2'),
+        action: () =>
+          this.handleFigureAction(
+            this.selectedFigure ? this.selectedFigure : 'parallelogram',
+            'func2'
+          ),
       },
       {
         name: 'func3',
         icon: 'func-icon.svg',
-        action: () => this.handleFigureAction('parallelogram', 'func3'),
+        action: () =>
+          this.handleFigureAction(
+            this.selectedFigure ? this.selectedFigure : 'parallelogram',
+            'func3'
+          ),
       },
     ],
     polygon: [
       {
         name: 'func1',
         icon: 'func-icon.svg',
-        action: () => this.handleFigureAction('polygon', 'func1'),
+        action: () =>
+          this.handleFigureAction(
+            this.selectedFigure ? this.selectedFigure : 'polygon',
+            'func1'
+          ),
       },
       {
         name: 'func2',
         icon: 'func-icon.svg',
-        action: () => this.handleFigureAction('polygon', 'func2'),
+        action: () =>
+          this.handleFigureAction(
+            this.selectedFigure ? this.selectedFigure : 'polygon',
+            'func2'
+          ),
       },
       {
         name: 'func3',
         icon: 'func-icon.svg',
-        action: () => this.handleFigureAction('polygon', 'func3'),
+        action: () =>
+          this.handleFigureAction(
+            this.selectedFigure ? this.selectedFigure : 'polygon',
+            'func3'
+          ),
       },
     ],
   };
@@ -554,153 +638,19 @@ export class CanvasComponent implements OnInit, AfterViewInit {
   }
 
   handleFigureAction(figure: string, action: string) {
-    switch (figure.split('_')[0].toLowerCase()) {
-      case 'triangle':
-        this.handleTriangleAction(action);
-        break;
-      case 'ellipse':
-        this.handleEllipseAction(action);
-        break;
-      case 'rectangle':
-        this.handleRectangleAction(action);
-        break;
-      case 'rhombus':
-        this.handleRhombusAction(action);
-        break;
-      case 'trapezoid':
-        this.handleTrapezoidAction(action);
-        break;
-      case 'parallelogram':
-        this.handleParallelogramAction(action);
-        break;
-      case 'polygon':
-        this.handlePolygonAction(action);
-        break;
-    }
-  }
+    const toolName = figure.split('_')[0].toLowerCase();
+    const tool = this.toolSelector.select(toolName);
 
-  handleTriangleAction(action: string) {
-    switch (action) {
-      case 'drawHeight': {
-        // todo: implement logic
-        break;
-      }
-      case 'drawMedian': {
-        // todo: implement logic
-        break;
-      }
-      case 'markAngles': {
-        // todo: implement logic
-        break;
-      }
-    }
-  }
+    tool?.handleAction?.(action, this.toolContext, figure);
 
-  handleEllipseAction(action: string) {
-    switch (action) {
-      case 'drawRadius': {
-        // todo: implement logic
-        break;
-      }
-      case 'drawDiameter': {
-        // todo: implement logic
-        break;
-      }
-      case 'makeCircle': {
-        // todo: implement logic
-        break;
-      }
-    }
-  }
-
-  handleRectangleAction(action: string) {
-    switch (action) {
-      case 'func1': {
-        // todo: implement logic
-        break;
-      }
-      case 'func2': {
-        // todo: implement logic
-        break;
-      }
-      case 'func3': {
-        // todo: implement logic
-        break;
-      }
-    }
-  }
-
-  handleRhombusAction(action: string) {
-    switch (action) {
-      case 'func1': {
-        // todo: implement logic
-        break;
-      }
-      case 'func2': {
-        // todo: implement logic
-        break;
-      }
-      case 'func3': {
-        // todo: implement logic
-        break;
-      }
-    }
-  }
-
-  handleTrapezoidAction(action: string) {
-    switch (action) {
-      case 'func1': {
-        // todo: implement logic
-        break;
-      }
-      case 'func2': {
-        // todo: implement logic
-        break;
-      }
-      case 'func3': {
-        // todo: implement logic
-        break;
-      }
-    }
-  }
-
-  handleParallelogramAction(action: string) {
-    switch (action) {
-      case 'func1': {
-        // todo: implement logic
-        break;
-      }
-      case 'func2': {
-        // todo: implement logic
-        break;
-      }
-      case 'func3': {
-        // todo: implement logic
-        break;
-      }
-    }
-  }
-
-  handlePolygonAction(action: string) {
-    switch (action) {
-      case 'func1': {
-        // todo: implement logic
-        break;
-      }
-      case 'func2': {
-        // todo: implement logic
-        break;
-      }
-      case 'func3': {
-        // todo: implement logic
-        break;
-      }
-    }
+    this.canvasService.setSelectedFigure(null);
+    this.selectedFigure = null;
+    this.clearPreviewCanvas();
+    this.isFigureSelection = false;
   }
 
   clearPreviewCanvas(): void {
     const previewCanvas = this.previewCanvasRef.nativeElement;
-
     this.previewCtx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
   }
 

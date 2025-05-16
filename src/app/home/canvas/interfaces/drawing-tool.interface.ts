@@ -23,4 +23,10 @@ export interface DrawingTool {
     path: { x: number; y: number }[],
     previewCanvas: HTMLCanvasElement
   ): void;
+
+  handleAction?(
+    action: string,
+    data: ToolContext,
+    figureName?: string | null
+  ): void;
 }

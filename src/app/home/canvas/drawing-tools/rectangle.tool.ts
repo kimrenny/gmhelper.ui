@@ -163,6 +163,45 @@ export class Rectangle implements DrawingTool {
     }
   }
 
+  handleAction(action: string, data: ToolContext, figureName: string): void {
+    const ctx = data.canvas?.getContext('2d');
+    if (!ctx) return;
+
+    const path = this.canvasService
+      .getPointsByFigure(figureName)
+      .map((p) => ({ x: p.x, y: p.y }));
+
+    switch (action) {
+      case 'func1': {
+        this.firstAction(ctx, path);
+        break;
+      }
+      case 'func2': {
+        this.secondAction(ctx, path);
+        break;
+      }
+      case 'func3': {
+        this.thirdAction(ctx, path);
+        break;
+      }
+    }
+  }
+
+  firstAction(
+    ctx: CanvasRenderingContext2D,
+    path: { x: number; y: number }[]
+  ): void {}
+
+  secondAction(
+    ctx: CanvasRenderingContext2D,
+    path: { x: number; y: number }[]
+  ): void {}
+
+  thirdAction(
+    ctx: CanvasRenderingContext2D,
+    path: { x: number; y: number }[]
+  ): void {}
+
   private renderPreview(data: ToolContext): void {
     if (!this.start || !this.end) return;
 
