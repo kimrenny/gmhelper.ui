@@ -130,17 +130,19 @@ export class Ellipse implements DrawingTool {
       .getPointsByFigure(figureName)
       .map((p) => ({ x: p.x, y: p.y }));
 
+    const color = this.canvasService.getFigureColorByName(this.figureName);
+
     switch (action) {
       case 'drawRadius': {
-        this.drawRadius(ctx, path);
+        this.drawRadius(ctx, path, color);
         break;
       }
       case 'drawDiameter': {
-        this.drawDiameter(ctx, path);
+        this.drawDiameter(ctx, path, color);
         break;
       }
       case 'makeCircle': {
-        this.makeCircle(ctx, path);
+        this.makeCircle(ctx, path, color);
         break;
       }
     }
@@ -148,18 +150,48 @@ export class Ellipse implements DrawingTool {
 
   drawRadius(
     ctx: CanvasRenderingContext2D,
-    path: { x: number; y: number }[]
+    path: { x: number; y: number }[],
+    color: string
   ): void {}
 
   drawDiameter(
     ctx: CanvasRenderingContext2D,
-    path: { x: number; y: number }[]
+    path: { x: number; y: number }[],
+    color: string
   ): void {}
 
   makeCircle(
     ctx: CanvasRenderingContext2D,
-    path: { x: number; y: number }[]
-  ): void {}
+    path: { x: number; y: number }[],
+    color: string
+  ): void {
+    if (path.length !== 2) return;
+
+    const [start, end] = path;
+
+    const centerX = (start.x + end.x) / 2;
+    const centerY = (start.y + end.y) / 2;
+    const radiusX = Math.abs(end.x - start.x) / 2;
+    const radiusY = Math.abs(end.y - start.y) / 2;
+    const radius = Math.min(radiusX, radiusY);
+
+    const newStart = {
+      x: centerX - radius,
+      y: centerY - radius,
+      color: color ?? '#000000',
+    };
+
+    const newEnd = {
+      x: centerX + radius,
+      y: centerY + radius,
+      color: color ?? '#000000',
+    };
+
+    const figureName = this.figureName;
+    if (figureName) {
+      this.canvasService.updateFigurePath(figureName, [newStart, newEnd]);
+    }
+  }
 
   private renderPreview(data: ToolContext): void {
     if (!this.start || !this.end) return;

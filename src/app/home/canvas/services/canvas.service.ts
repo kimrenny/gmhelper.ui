@@ -70,6 +70,16 @@ export class CanvasService {
     }
   }
 
+  updateFigurePath(
+    name: string,
+    newPath: { x: number; y: number; color: string }[]
+  ): void {
+    const figure = this.paths.find((p) => p.figureName === name);
+    if (figure) {
+      figure.path = newPath;
+    }
+  }
+
   setPolygonLinesLength(point: Point, length: LineLength): void {
     const polygonPoints = this.getPointsByFigure(point.attachedToFigure);
 
@@ -128,6 +138,13 @@ export class CanvasService {
 
   getLineLength(a: string, b: string): LineLength {
     return this.lines[`${a}${b}`] ?? this.lines[`${b}${a}`];
+  }
+
+  getFigureColorByName(name: string): string {
+    return (
+      this.paths.find((f) => f.figureName === name)?.path?.[0].color ??
+      '#000000'
+    );
   }
 
   findLineByPoint(pos: { x: number; y: number }): {
