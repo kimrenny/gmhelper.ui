@@ -11,6 +11,7 @@ import { Coords2d } from '../drawing-tools/types/coords.type';
 export class CanvasService {
   private points: Point[] = [];
   private pointCounter: number = 0;
+  private ellipsePointCounter: number = 0;
   private lines: Record<string, LineLength> = {};
   private selectedLine: { a: Coords2d; b: Coords2d } | null = null;
   private selectedFigure: { name: string } | null = null;
@@ -24,10 +25,14 @@ export class CanvasService {
     x: number,
     y: number,
     attachedToFigure: string,
-    attachedToPoint: number
+    attachedToPoint: number,
+    isEllipse?: boolean
   ): string {
-    const pointId = this.pointCounter++;
-    const pointLabel = this.getPointLabel(pointId);
+    const pointId = isEllipse
+      ? this.ellipsePointCounter++
+      : this.pointCounter++;
+
+    const pointLabel = isEllipse ? `O${pointId}` : this.getPointLabel(pointId);
 
     const point = new Point(
       x,
@@ -123,6 +128,16 @@ export class CanvasService {
     return this.points;
   }
 
+  getAllFigures(): string[] {
+    return [
+      ...new Set(
+        this.paths
+          .map((p) => p.figureName)
+          .filter((name): name is string => typeof name === 'string')
+      ),
+    ];
+  }
+
   getPointByLabel(label: string): Point | undefined {
     return this.points.find((p) => p.label === label);
   }
@@ -177,6 +192,50 @@ export class CanvasService {
           attachedToFigure:
             point1.attachedToFigure || point2.attachedToFigure || '',
         };
+      }
+    }
+
+    return null;
+  }
+
+  findFigureByPoint(pos: { x: number; y: number }): {
+    point1: { x: number; y: number };
+    point2: { x: number; y: number };
+    attachedToFigure: string;
+  } | null {
+    const figures = this.getAllFigures();
+
+    for (const figure of figures) {
+      if (figure.split('_')[0].toLowerCase() === 'ellipse') {
+        const points = this.getPointsByFigure(figure);
+        if (points.length !== 2 && points) continue;
+
+        const startX = points[0].x;
+        const startY = points[0].y;
+        const endX = points[1].x;
+        const endY = points[1].y;
+
+        const centerX = (startX + endX) / 2;
+        const centerY = (startY + endY) / 2;
+        const radiusX = Math.abs(endX - startX) / 2;
+        const radiusY = Math.abs(endY - startY) / 2;
+
+        const dx = pos.x - centerX;
+        const dy = pos.y - centerY;
+
+        const value =
+          (dx * dx) / (radiusX * radiusX) + (dy * dy) / (radiusY * radiusY);
+        const threshold = 0.1;
+        const isOnEllipse = Math.abs(value - 1) <= threshold;
+
+        if (isOnEllipse) {
+          return {
+            point1: { x: points[0].x, y: points[0].y },
+            point2: { x: points[1].x, y: points[1].y },
+            attachedToFigure:
+              points[0].attachedToFigure || points[1].attachedToFigure || '',
+          };
+        }
       }
     }
 

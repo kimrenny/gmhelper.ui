@@ -2,6 +2,7 @@ import { DrawingTool } from '../interfaces/drawing-tool.interface';
 import { ToolContext } from '../interfaces/tool-context.interface';
 import { CanvasService } from '../services/canvas.service';
 import { CounterService } from '../services/counter.service';
+import { clearPreviewCanvas } from '../tools/clear-preview';
 import { toTransparentColor } from '../utils/preview-color';
 
 export class Ellipse implements DrawingTool {
@@ -59,6 +60,19 @@ export class Ellipse implements DrawingTool {
   onMouseUp(pos: { x: number; y: number }, data: ToolContext): any {
     if (!this.isDrawing || !this.start) return;
 
+    const dx = Math.abs(pos.x - this.start.x);
+    const dy = Math.abs(pos.y - this.start.y);
+
+    if (dx <= 25 || dy <= 25) {
+      this.isDrawing = false;
+      this.start = null;
+      this.end = null;
+
+      clearPreviewCanvas(data);
+
+      return;
+    }
+
     this.figureName = '';
 
     this.end = {
@@ -70,6 +84,12 @@ export class Ellipse implements DrawingTool {
     const ctx = data.canvas?.getContext('2d');
     if (ctx) this.draw(ctx, path);
 
+    if (!(this.figureName.length > 1)) {
+      this.figureName = this.counterService.getNextFigureName('Ellipse');
+    }
+
+    this.addPointsToCanvasService(path);
+
     const previewCtx = data.previewCanvas?.getContext('2d');
     if (previewCtx)
       previewCtx.clearRect(
@@ -78,10 +98,6 @@ export class Ellipse implements DrawingTool {
         data.previewCanvas.width,
         data.previewCanvas.height
       );
-
-    if (!(this.figureName.length > 1)) {
-      this.figureName = this.counterService.getNextFigureName('Ellipse');
-    }
 
     this.start = null;
     this.end = null;
@@ -96,11 +112,31 @@ export class Ellipse implements DrawingTool {
     this.onMouseUp(pos, data);
   }
 
+  private addPointsToCanvasService(
+    path: { x: number; y: number; color: string }[]
+  ): void {
+    if (!(this.figureName.length > 1)) {
+      this.figureName = this.counterService.getNextFigureName('Ellipse');
+    }
+    const labels: string[] = [];
+
+    path.forEach((point, index) => {
+      const label = this.canvasService.addPoint(
+        point.x,
+        point.y,
+        this.figureName,
+        index,
+        true
+      );
+    });
+  }
+
   // temporarily does not work because there are no points in the ellipse for storage in the service
   onSelectFigure(
     path: { x: number; y: number }[],
     previewCanvas: HTMLCanvasElement
   ): void {
+    console.log('Ellipse selected!');
     const ctx = previewCanvas.getContext('2d');
     if (!ctx) {
       return;

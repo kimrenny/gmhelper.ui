@@ -116,7 +116,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
       },
       {
         name: 'makeCircle',
-        icon: 'circle-icon.svg',
+        icon: 'ellipse-to-circle-icon.svg',
         action: () =>
           this.handleFigureAction(
             this.selectedFigure ? this.selectedFigure : 'ellipse',
@@ -332,6 +332,9 @@ export class CanvasComponent implements OnInit, AfterViewInit {
       this.canvasService.setSelectedFigure(null);
 
       const lineData = this.canvasService.findLineByPoint(pos);
+      const figureData = this.canvasService.findFigureByPoint(pos);
+      console.log(this.canvasService.getAllPoints());
+      console.log(lineData, figureData);
       if (lineData) {
         if (this.isFigureSelection) {
           this.selectFigure(lineData);
@@ -339,6 +342,11 @@ export class CanvasComponent implements OnInit, AfterViewInit {
         }
         this.selectLine(lineData);
         return;
+      } else if (figureData) {
+        if (this.isFigureSelection) {
+          this.selectFigure(figureData);
+          return;
+        }
       }
       this.currentTool?.onMouseDown?.(pos, this.toolContext);
     });
@@ -401,6 +409,8 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     const points = this.canvasService
       .getPointsByFigure(figureName)
       .map((p) => ({ x: p.x, y: p.y }));
+
+    console.log(figureName, points);
 
     this.canvasService.setSelectedFigure(figureName);
 
@@ -647,6 +657,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     this.selectedFigure = null;
     this.clearPreviewCanvas();
     this.isFigureSelection = false;
+    this.redraw();
   }
 
   clearPreviewCanvas(): void {
