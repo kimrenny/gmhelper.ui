@@ -151,6 +151,54 @@ export class CanvasService {
     return null;
   }
 
+  getFigureNameByCoords(coords: Coords2d): string | null {
+    console.log('getFigureNameByCoords called with coords:', coords);
+    console.log('points:', this.points);
+    for (const point of this.points) {
+      console.log('Checking point:', point);
+      if (point.x === coords.x && point.y === coords.y) {
+        console.log('Match found, attachedToFigure:', point.attachedToFigure);
+        return point.attachedToFigure ?? null;
+      }
+    }
+    console.warn('No matching point found for coords:', coords);
+    return null;
+  }
+
+  getLinesByFigureName(
+    figureName: string
+  ): { name: string; a: Coords2d; b: Coords2d }[] {
+    const figurePoints = this.points.filter(
+      (p) => p.attachedToFigure === figureName
+    );
+
+    const nameToCoord = new Map<string, Coords2d>();
+    for (const p of figurePoints) {
+      if (p.label) {
+        nameToCoord.set(p.label, { x: p.x, y: p.y });
+      }
+    }
+
+    const labels = Array.from(nameToCoord.keys());
+
+    const result: { name: string; a: Coords2d; b: Coords2d }[] = [];
+
+    for (const lineName in this.lines) {
+      const [l1, l2] = lineName.split('');
+
+      if (labels.includes(l1) && labels.includes(l2)) {
+        const a = nameToCoord.get(l1);
+        const b = nameToCoord.get(l2);
+
+        if (a && b) {
+          result.push({ name: lineName, a, b });
+        }
+      }
+    }
+
+    return result;
+  }
+
   getLineLength(a: string, b: string): LineLength {
     return this.lines[`${a}${b}`] ?? this.lines[`${b}${a}`];
   }

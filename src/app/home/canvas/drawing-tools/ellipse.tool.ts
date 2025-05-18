@@ -3,6 +3,7 @@ import { ToolContext } from '../interfaces/tool-context.interface';
 import { CanvasService } from '../services/canvas.service';
 import { CounterService } from '../services/counter.service';
 import { clearPreviewCanvas } from '../tools/clear-preview';
+import { drawLabel } from '../tools/draw-point-label';
 import { toTransparentColor } from '../utils/preview-color';
 
 export class Ellipse implements DrawingTool {
@@ -18,7 +19,9 @@ export class Ellipse implements DrawingTool {
 
   draw(
     ctx: CanvasRenderingContext2D,
-    path: { x: number; y: number; color: string }[]
+    path: { x: number; y: number; color: string }[],
+    color?: string,
+    redraw?: boolean
   ): void {
     if (path.length !== 2) return;
 
@@ -28,12 +31,64 @@ export class Ellipse implements DrawingTool {
     const radiusX = Math.abs(end.x - start.x) / 2;
     const radiusY = Math.abs(end.y - start.y) / 2;
 
-    ctx.strokeStyle = path[0].color;
+    ctx.strokeStyle = color ?? path[0].color;
     ctx.lineWidth = 2;
 
     ctx.beginPath();
     ctx.ellipse(centerX, centerY, radiusX, radiusY, 0, 0, Math.PI * 2);
     ctx.stroke();
+
+    if (redraw) {
+      console.log('[Ellipse::draw] redraw path:', path);
+
+      this.addPointsToCanvasService(path);
+      const figureName = this.canvasService.getFigureNameByCoords({
+        x: path[0].x,
+        y: path[0].y,
+      });
+
+      console.log('[Ellipse::draw] resolved figureName:', figureName);
+
+      if (figureName) {
+        this.drawLinesFromFigureData(ctx, figureName);
+      } else {
+        console.warn('[Ellipse::draw] No figure name found for coords:', path);
+      }
+    }
+  }
+
+  private drawLinesFromFigureData(
+    ctx: CanvasRenderingContext2D,
+    figureName: string
+  ): void {
+    const allPaths = this.canvasService.getPaths();
+
+    const relevantLines = allPaths.filter(
+      (point) => point.figureName === figureName && point.path.length == 2
+    );
+
+    console.log('[Ellipse::drawLinesFromFigureData] allPaths:', allPaths);
+    console.log(
+      '[Ellipse::drawLinesFromFigureData] relevantLines for',
+      figureName,
+      ':',
+      relevantLines
+    );
+
+    for (let i = 0; i < relevantLines.length; i++) {
+      const line = relevantLines[i];
+      console.log(
+        `[Ellipse::drawLinesFromFigureData] drawing line ${i}:`,
+        line.path
+      );
+
+      ctx.beginPath();
+      ctx.moveTo(line.path[0].x, line.path[0].y);
+      ctx.lineTo(line.path[1].x, line.path[1].y);
+      ctx.strokeStyle = line.path[0].color || '#000';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    }
   }
 
   onMouseDown(pos: { x: number; y: number }, data: ToolContext): void {
@@ -131,12 +186,10 @@ export class Ellipse implements DrawingTool {
     });
   }
 
-  // temporarily does not work because there are no points in the ellipse for storage in the service
   onSelectFigure(
     path: { x: number; y: number }[],
     previewCanvas: HTMLCanvasElement
   ): void {
-    console.log('Ellipse selected!');
     const ctx = previewCanvas.getContext('2d');
     if (!ctx) {
       return;
@@ -170,11 +223,11 @@ export class Ellipse implements DrawingTool {
 
     switch (action) {
       case 'drawRadius': {
-        this.drawRadius(ctx, path, color);
+        this.drawRadius(ctx, path, color, figureName);
         break;
       }
       case 'drawDiameter': {
-        this.drawDiameter(ctx, path, color);
+        this.drawDiameter(ctx, path, color, figureName);
         break;
       }
       case 'makeCircle': {
@@ -187,20 +240,82 @@ export class Ellipse implements DrawingTool {
   drawRadius(
     ctx: CanvasRenderingContext2D,
     path: { x: number; y: number }[],
-    color: string
+    color: string,
+    figureName: string
   ): void {}
 
   drawDiameter(
     ctx: CanvasRenderingContext2D,
     path: { x: number; y: number }[],
-    color: string
-  ): void {}
+    color: string,
+    figureName: string
+  ): void {
+    if (path.length !== 2) return;
+
+    const radiusX = Math.abs(path[0].x - path[1].x) / 2;
+    const radiusY = Math.abs(path[0].y - path[1].y) / 2;
+
+    console.log('[drawDiameter] original path:', path);
+
+    if (radiusX !== radiusY) {
+      console.log('[drawDiameter] not a circle — calling makeCircle');
+
+      const adjustedPath = this.makeCircle(ctx, path, color);
+      if (adjustedPath) {
+        path = adjustedPath;
+      }
+    }
+
+    console.log('[drawDiameter] final start and end:', path);
+
+    const firstPoint = {
+      x: path[0].x,
+      y: (path[0].y + path[1].y) / 2,
+    };
+
+    const secondPoint = {
+      x: path[1].x,
+      y: (path[0].y + path[1].y) / 2,
+    };
+
+    console.log(
+      '[drawDiameter] firstPoint:',
+      firstPoint,
+      'secondPoint:',
+      secondPoint
+    );
+
+    ctx.strokeStyle = color ?? '#000000';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(firstPoint.x, firstPoint.y);
+    ctx.lineTo(secondPoint.x, secondPoint.y);
+    ctx.stroke();
+
+    const labelA = this.canvasService.addPoint(
+      firstPoint.x,
+      firstPoint.y,
+      figureName,
+      0
+    );
+    drawLabel(ctx, labelA, firstPoint.x, firstPoint.y);
+
+    const labelB = this.canvasService.addPoint(
+      secondPoint.x,
+      secondPoint.y,
+      figureName,
+      1
+    );
+    drawLabel(ctx, labelB, secondPoint.x, secondPoint.y);
+
+    this.canvasService.createLine(labelA, labelB);
+  }
 
   makeCircle(
     ctx: CanvasRenderingContext2D,
     path: { x: number; y: number }[],
     color: string
-  ): void {
+  ): { x: number; y: number }[] | void {
     if (path.length !== 2) return;
 
     const [start, end] = path;
@@ -227,6 +342,8 @@ export class Ellipse implements DrawingTool {
     if (figureName) {
       this.canvasService.updateFigurePath(figureName, [newStart, newEnd]);
     }
+
+    return [newStart, newEnd];
   }
 
   private renderPreview(data: ToolContext): void {

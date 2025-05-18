@@ -333,8 +333,6 @@ export class CanvasComponent implements OnInit, AfterViewInit {
 
       const lineData = this.canvasService.findLineByPoint(pos);
       const figureData = this.canvasService.findFigureByPoint(pos);
-      console.log(this.canvasService.getAllPoints());
-      console.log(lineData, figureData);
       if (lineData) {
         if (this.isFigureSelection) {
           this.selectFigure(lineData);
@@ -409,8 +407,6 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     const points = this.canvasService
       .getPointsByFigure(figureName)
       .map((p) => ({ x: p.x, y: p.y }));
-
-    console.log(figureName, points);
 
     this.canvasService.setSelectedFigure(figureName);
 

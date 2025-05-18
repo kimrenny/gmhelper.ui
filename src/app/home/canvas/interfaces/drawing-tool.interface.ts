@@ -5,7 +5,7 @@ export interface DrawingTool {
     ctx: CanvasRenderingContext2D,
     path: any,
     color: string,
-    redraw: boolean
+    redraw?: boolean
   ): void;
 
   onMouseDown?(pos: { x: number; y: number }, data: ToolContext): void;
