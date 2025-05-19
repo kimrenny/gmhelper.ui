@@ -50,16 +50,16 @@ export class Ellipse implements DrawingTool {
       console.log('[Ellipse::draw] resolved figureName:', figureName);
 
       if (figureName) {
-        this.drawLinesFromFigureData(ctx, figureName);
-      } else {
-        console.warn('[Ellipse::draw] No figure name found for coords:', path);
+        const radius = Math.min(radiusX, radiusY);
+        this.drawLinesFromFigureData(ctx, figureName, radius);
       }
     }
   }
 
   private drawLinesFromFigureData(
     ctx: CanvasRenderingContext2D,
-    figureName: string
+    figureName: string,
+    radius: number
   ): void {
     const allPaths = this.canvasService.getPaths();
 
@@ -67,27 +67,26 @@ export class Ellipse implements DrawingTool {
       (point) => point.figureName === figureName && point.path.length == 2
     );
 
-    console.log('[Ellipse::drawLinesFromFigureData] allPaths:', allPaths);
-    console.log(
-      '[Ellipse::drawLinesFromFigureData] relevantLines for',
-      figureName,
-      ':',
-      relevantLines
-    );
-
     for (let i = 0; i < relevantLines.length; i++) {
       const line = relevantLines[i];
-      console.log(
-        `[Ellipse::drawLinesFromFigureData] drawing line ${i}:`,
-        line.path
-      );
+      const [start, end] = line.path;
 
-      ctx.beginPath();
-      ctx.moveTo(line.path[0].x, line.path[0].y);
-      ctx.lineTo(line.path[1].x, line.path[1].y);
-      ctx.strokeStyle = line.path[0].color || '#000';
-      ctx.lineWidth = 2;
-      ctx.stroke();
+      const dx = end.x - start.x;
+      const dy = end.y - start.y;
+      const length = Math.sqrt(dx * dx + dy * dy);
+
+      if (length > radius * 1.8) {
+        this.drawDiameter(ctx, line.path, start.color, figureName);
+      } else if (length >= radius * 0.8 && length <= radius * 1.2) {
+        this.drawRadius(ctx, line.path, start.color, figureName);
+      } else {
+        ctx.beginPath();
+        ctx.moveTo(start.x, start.y);
+        ctx.lineTo(end.x, end.y);
+        ctx.strokeStyle = start.color || '#000';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      }
     }
   }
 
