@@ -19,6 +19,8 @@ export class CanvasService {
   private paths: stackInfo[] = [];
   private redoStack: stackInfo[] = [];
 
+  private figureElements: Record<string, Set<string>> = {};
+
   constructor() {}
 
   addPoint(
@@ -152,12 +154,8 @@ export class CanvasService {
   }
 
   getFigureNameByCoords(coords: Coords2d): string | null {
-    console.log('getFigureNameByCoords called with coords:', coords);
-    console.log('points:', this.points);
     for (const point of this.points) {
-      console.log('Checking point:', point);
       if (point.x === coords.x && point.y === coords.y) {
-        console.log('Match found, attachedToFigure:', point.attachedToFigure);
         return point.attachedToFigure ?? null;
       }
     }
@@ -244,6 +242,36 @@ export class CanvasService {
     }
 
     return null;
+  }
+
+  addFigureElement(figureName: string, elementType: string): void {
+    if (!this.figureElements[figureName]) {
+      this.figureElements[figureName] = new Set();
+    }
+    this.figureElements[figureName].add(elementType);
+  }
+
+  hasFigureElement(figureName: string, elementType: string): boolean {
+    return this.figureElements[figureName]?.has(elementType) ?? false;
+  }
+
+  removeFigureElement(figureName: string, elementType: string): void {
+    this.figureElements[figureName]?.delete(elementType);
+    if (this.figureElements[figureName]?.size === 0) {
+      delete this.figureElements[figureName];
+    }
+  }
+
+  clearfigureElements(figureName: string): void {
+    delete this.figureElements[figureName];
+  }
+
+  clearAllFigureElements(): void {
+    this.figureElements = {};
+  }
+
+  getFigureElements(figureName: string): string[] {
+    return Array.from(this.figureElements[figureName] ?? []);
   }
 
   findFigureByPoint(pos: { x: number; y: number }): {
@@ -427,5 +455,6 @@ export class CanvasService {
   resetPoints(): void {
     this.points = [];
     this.pointCounter = 0;
+    this.ellipsePointCounter = 0;
   }
 }

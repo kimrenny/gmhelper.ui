@@ -672,5 +672,6 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     this.redraw();
     this.canvasService.resetPoints();
     this.counterService.resetCounter();
+    this.canvasService.clearAllFigureElements();
   }
 }
