@@ -222,22 +222,74 @@ export class CanvasService {
       const point1 = this.getPointByLabel(label1);
       const point2 = this.getPointByLabel(label2);
 
-      if (!point1 || !point2) continue;
+      if (!point1 || !point2) {
+        console.warn(
+          `[findLineByPoint] point(s) not found for labels: ${label1}, ${label2}`
+        );
+        continue;
+      }
 
-      if (
-        this.isPointNearLine(
-          pos,
-          { x: point1.x, y: point1.y },
-          { x: point2.x, y: point2.y },
-          clickTolerance
-        )
-      ) {
+      const near = this.isPointNearLine(
+        pos,
+        { x: point1.x, y: point1.y },
+        { x: point2.x, y: point2.y },
+        clickTolerance
+      );
+
+      if (near) {
         return {
           point1: { x: point1.x, y: point1.y },
           point2: { x: point2.x, y: point2.y },
           attachedToFigure:
             point1.attachedToFigure || point2.attachedToFigure || '',
         };
+      }
+    }
+
+    return null;
+  }
+
+  findFigureByPoint(pos: { x: number; y: number }): {
+    point1: { x: number; y: number };
+    point2: { x: number; y: number };
+    attachedToFigure: string;
+  } | null {
+    const figures = this.getAllFigures();
+
+    for (const figure of figures) {
+      if (figure.split('_')[0].toLowerCase() === 'ellipse') {
+        const points = this.getPointsByFigure(figure);
+
+        if (!points || points.length < 2) {
+          continue;
+        }
+
+        const startX = points[0].x;
+        const startY = points[0].y;
+        const endX = points[1].x;
+        const endY = points[1].y;
+
+        const centerX = (startX + endX) / 2;
+        const centerY = (startY + endY) / 2;
+        const radiusX = Math.abs(endX - startX) / 2;
+        const radiusY = Math.abs(endY - startY) / 2;
+
+        const dx = pos.x - centerX;
+        const dy = pos.y - centerY;
+
+        const value =
+          (dx * dx) / (radiusX * radiusX) + (dy * dy) / (radiusY * radiusY);
+        const threshold = 0.1;
+        const isOnEllipse = Math.abs(value - 1) <= threshold;
+
+        if (isOnEllipse) {
+          return {
+            point1: { x: points[0].x, y: points[0].y },
+            point2: { x: points[1].x, y: points[1].y },
+            attachedToFigure:
+              points[0].attachedToFigure || points[1].attachedToFigure || '',
+          };
+        }
       }
     }
 
@@ -272,50 +324,6 @@ export class CanvasService {
 
   getFigureElements(figureName: string): string[] {
     return Array.from(this.figureElements[figureName] ?? []);
-  }
-
-  findFigureByPoint(pos: { x: number; y: number }): {
-    point1: { x: number; y: number };
-    point2: { x: number; y: number };
-    attachedToFigure: string;
-  } | null {
-    const figures = this.getAllFigures();
-
-    for (const figure of figures) {
-      if (figure.split('_')[0].toLowerCase() === 'ellipse') {
-        const points = this.getPointsByFigure(figure);
-        if (points.length !== 2 && points) continue;
-
-        const startX = points[0].x;
-        const startY = points[0].y;
-        const endX = points[1].x;
-        const endY = points[1].y;
-
-        const centerX = (startX + endX) / 2;
-        const centerY = (startY + endY) / 2;
-        const radiusX = Math.abs(endX - startX) / 2;
-        const radiusY = Math.abs(endY - startY) / 2;
-
-        const dx = pos.x - centerX;
-        const dy = pos.y - centerY;
-
-        const value =
-          (dx * dx) / (radiusX * radiusX) + (dy * dy) / (radiusY * radiusY);
-        const threshold = 0.1;
-        const isOnEllipse = Math.abs(value - 1) <= threshold;
-
-        if (isOnEllipse) {
-          return {
-            point1: { x: points[0].x, y: points[0].y },
-            point2: { x: points[1].x, y: points[1].y },
-            attachedToFigure:
-              points[0].attachedToFigure || points[1].attachedToFigure || '',
-          };
-        }
-      }
-    }
-
-    return null;
   }
 
   private isPointNearLine(

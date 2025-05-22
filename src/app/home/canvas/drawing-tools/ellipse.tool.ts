@@ -199,15 +199,6 @@ export class Ellipse implements DrawingTool {
       return;
     }
 
-    const figureLines = this.canvasService.getLinesByFigureName(figureName);
-
-    const hasDiameter = this.canvasService.hasFigureElement(
-      figureName,
-      'diameter'
-    );
-    const hasRadius = this.canvasService.hasFigureElement(figureName, 'radius');
-    const hasRadiusOrDiameter = hasDiameter || hasRadius;
-
     const paths = this.canvasService.getPaths();
     const matchingPaths = paths.filter(
       (p) => p.figureName === figureName && p.path.length === 2

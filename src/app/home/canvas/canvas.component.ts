@@ -333,6 +333,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
 
       const lineData = this.canvasService.findLineByPoint(pos);
       const figureData = this.canvasService.findFigureByPoint(pos);
+
       if (lineData) {
         if (this.isFigureSelection) {
           this.selectFigure(lineData);
@@ -340,7 +341,9 @@ export class CanvasComponent implements OnInit, AfterViewInit {
         }
         this.selectLine(lineData);
         return;
-      } else if (figureData) {
+      }
+
+      if (figureData) {
         if (this.isFigureSelection) {
           this.selectFigure(figureData);
           return;
@@ -379,6 +382,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     point2: { x: number; y: number };
     attachedToFigure: string;
   }): void {
+    this.clearPreviewCanvas();
     const tool = this.toolSelector.select('line');
 
     if (tool && tool.onSelectLine) {
@@ -398,6 +402,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     point2: { x: number; y: number };
     attachedToFigure: string;
   }): void {
+    this.clearPreviewCanvas();
     const figureName = lineData.attachedToFigure;
 
     const toolName = figureName.split('_')[0].toLowerCase();
