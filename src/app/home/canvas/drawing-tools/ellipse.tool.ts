@@ -41,7 +41,6 @@ export class Ellipse implements DrawingTool {
     if (redraw) {
       console.log('[Ellipse::draw] redraw path:', path);
 
-      this.addPointsToCanvasService(path);
       const figureName = this.canvasService.getFigureNameByCoords({
         x: path[0].x,
         y: path[0].y,
@@ -134,8 +133,6 @@ export class Ellipse implements DrawingTool {
       this.figureName = this.counterService.getNextFigureName('Ellipse');
     }
 
-    this.addPointsToCanvasService(path);
-
     const previewCtx = data.previewCanvas?.getContext('2d');
     if (previewCtx)
       previewCtx.clearRect(
@@ -171,8 +168,7 @@ export class Ellipse implements DrawingTool {
         point.x,
         point.y,
         this.figureName,
-        index,
-        true
+        index
       );
     });
   }
@@ -181,7 +177,6 @@ export class Ellipse implements DrawingTool {
     path: { x: number; y: number }[],
     previewCanvas: HTMLCanvasElement
   ): void {
-    console.log('[onSelectFigure] called with path:', path);
     const ctx = previewCanvas.getContext('2d');
     if (!ctx) {
       console.warn('[onSelectFigure] canvas context is null');
@@ -235,12 +230,18 @@ export class Ellipse implements DrawingTool {
   }
 
   handleAction(action: string, data: ToolContext, figureName: string): void {
+    console.log(
+      `[handleAction] Performing action "${action}" on figure: ${figureName}`
+    );
+
     const ctx = data.canvas?.getContext('2d');
     if (!ctx) return;
 
     const path = this.canvasService
       .getPointsByFigure(figureName)
       .map((p) => ({ x: p.x, y: p.y }));
+
+    console.log(`[handleAction] Points for figure "${figureName}":`, path);
 
     const color = this.canvasService.getFigureColorByName(this.figureName);
 

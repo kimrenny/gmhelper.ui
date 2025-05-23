@@ -72,7 +72,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
         icon: 'height-icon.svg',
         action: () =>
           this.handleFigureAction(
-            this.selectedFigure ? this.selectedFigure : 'triangle',
+            this.selectedFigure ?? 'triangle',
             'drawHeight'
           ),
       },
@@ -81,7 +81,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
         icon: 'median-icon.svg',
         action: () =>
           this.handleFigureAction(
-            this.selectedFigure ? this.selectedFigure : 'triangle',
+            this.selectedFigure ?? 'triangle',
             'drawMedian'
           ),
       },
@@ -90,7 +90,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
         icon: 'angle-icon.svg',
         action: () =>
           this.handleFigureAction(
-            this.selectedFigure ? this.selectedFigure : 'triangle',
+            this.selectedFigure ?? 'triangle',
             'markAngles'
           ),
       },
@@ -101,7 +101,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
         icon: 'radius-icon.svg',
         action: () =>
           this.handleFigureAction(
-            this.selectedFigure ? this.selectedFigure : 'ellipse',
+            this.selectedFigure ?? 'ellipse',
             'drawRadius'
           ),
       },
@@ -110,7 +110,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
         icon: 'diameter-icon.svg',
         action: () =>
           this.handleFigureAction(
-            this.selectedFigure ? this.selectedFigure : 'ellipse',
+            this.selectedFigure ?? 'ellipse',
             'drawDiameter'
           ),
       },
@@ -119,7 +119,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
         icon: 'ellipse-to-circle-icon.svg',
         action: () =>
           this.handleFigureAction(
-            this.selectedFigure ? this.selectedFigure : 'ellipse',
+            this.selectedFigure ?? 'ellipse',
             'makeCircle'
           ),
       },
@@ -129,28 +129,19 @@ export class CanvasComponent implements OnInit, AfterViewInit {
         name: 'func1',
         icon: 'func-icon.svg',
         action: () =>
-          this.handleFigureAction(
-            this.selectedFigure ? this.selectedFigure : 'rectangle',
-            'func1'
-          ),
+          this.handleFigureAction(this.selectedFigure ?? 'rectangle', 'func1'),
       },
       {
         name: 'func2',
         icon: 'func-icon.svg',
         action: () =>
-          this.handleFigureAction(
-            this.selectedFigure ? this.selectedFigure : 'rectangle',
-            'func2'
-          ),
+          this.handleFigureAction(this.selectedFigure ?? 'rectangle', 'func2'),
       },
       {
         name: 'func3',
         icon: 'func-icon.svg',
         action: () =>
-          this.handleFigureAction(
-            this.selectedFigure ? this.selectedFigure : 'rectangle',
-            'func3'
-          ),
+          this.handleFigureAction(this.selectedFigure ?? 'rectangle', 'func3'),
       },
     ],
     rhombus: [
@@ -158,28 +149,19 @@ export class CanvasComponent implements OnInit, AfterViewInit {
         name: 'func1',
         icon: 'func-icon.svg',
         action: () =>
-          this.handleFigureAction(
-            this.selectedFigure ? this.selectedFigure : 'rhombus',
-            'func1'
-          ),
+          this.handleFigureAction(this.selectedFigure ?? 'rhombus', 'func1'),
       },
       {
         name: 'func2',
         icon: 'func-icon.svg',
         action: () =>
-          this.handleFigureAction(
-            this.selectedFigure ? this.selectedFigure : 'rhombus',
-            'func2'
-          ),
+          this.handleFigureAction(this.selectedFigure ?? 'rhombus', 'func2'),
       },
       {
         name: 'func3',
         icon: 'func-icon.svg',
         action: () =>
-          this.handleFigureAction(
-            this.selectedFigure ? this.selectedFigure : 'rhombus',
-            'func3'
-          ),
+          this.handleFigureAction(this.selectedFigure ?? 'rhombus', 'func3'),
       },
     ],
     trapezoid: [
@@ -187,28 +169,19 @@ export class CanvasComponent implements OnInit, AfterViewInit {
         name: 'func1',
         icon: 'func-icon.svg',
         action: () =>
-          this.handleFigureAction(
-            this.selectedFigure ? this.selectedFigure : 'trapezoid',
-            'func1'
-          ),
+          this.handleFigureAction(this.selectedFigure ?? 'trapezoid', 'func1'),
       },
       {
         name: 'func2',
         icon: 'func-icon.svg',
         action: () =>
-          this.handleFigureAction(
-            this.selectedFigure ? this.selectedFigure : 'trapezoid',
-            'func2'
-          ),
+          this.handleFigureAction(this.selectedFigure ?? 'trapezoid', 'func2'),
       },
       {
         name: 'func3',
         icon: 'func-icon.svg',
         action: () =>
-          this.handleFigureAction(
-            this.selectedFigure ? this.selectedFigure : 'trapezoid',
-            'func3'
-          ),
+          this.handleFigureAction(this.selectedFigure ?? 'trapezoid', 'func3'),
       },
     ],
     parallelogram: [
@@ -217,7 +190,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
         icon: 'func-icon.svg',
         action: () =>
           this.handleFigureAction(
-            this.selectedFigure ? this.selectedFigure : 'parallelogram',
+            this.selectedFigure ?? 'parallelogram',
             'func1'
           ),
       },
@@ -226,7 +199,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
         icon: 'func-icon.svg',
         action: () =>
           this.handleFigureAction(
-            this.selectedFigure ? this.selectedFigure : 'parallelogram',
+            this.selectedFigure ?? 'parallelogram',
             'func2'
           ),
       },
@@ -235,7 +208,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
         icon: 'func-icon.svg',
         action: () =>
           this.handleFigureAction(
-            this.selectedFigure ? this.selectedFigure : 'parallelogram',
+            this.selectedFigure ?? 'parallelogram',
             'func3'
           ),
       },
@@ -245,28 +218,19 @@ export class CanvasComponent implements OnInit, AfterViewInit {
         name: 'func1',
         icon: 'func-icon.svg',
         action: () =>
-          this.handleFigureAction(
-            this.selectedFigure ? this.selectedFigure : 'polygon',
-            'func1'
-          ),
+          this.handleFigureAction(this.selectedFigure ?? 'polygon', 'func1'),
       },
       {
         name: 'func2',
         icon: 'func-icon.svg',
         action: () =>
-          this.handleFigureAction(
-            this.selectedFigure ? this.selectedFigure : 'polygon',
-            'func2'
-          ),
+          this.handleFigureAction(this.selectedFigure ?? 'polygon', 'func2'),
       },
       {
         name: 'func3',
         icon: 'func-icon.svg',
         action: () =>
-          this.handleFigureAction(
-            this.selectedFigure ? this.selectedFigure : 'polygon',
-            'func3'
-          ),
+          this.handleFigureAction(this.selectedFigure ?? 'polygon', 'func3'),
       },
     ],
   };
@@ -350,6 +314,11 @@ export class CanvasComponent implements OnInit, AfterViewInit {
         }
       }
       this.currentTool?.onMouseDown?.(pos, this.toolContext);
+
+      console.log(
+        '[canvasComponent] onMouseDown paths:',
+        this.canvasService.getPaths()
+      );
     });
 
     canvas.addEventListener('mousemove', (event) => {
@@ -364,10 +333,15 @@ export class CanvasComponent implements OnInit, AfterViewInit {
       if (this.currentTool?.onMouseUp) {
         const newPath = this.currentTool.onMouseUp(pos, this.toolContext);
         if (newPath) {
+          console.log(newPath);
           this.canvasService.pushStack(newPath, 'paths');
           this.canvasService.resetStack('redo');
         }
       }
+      console.log(
+        '[canvasComponent] onMouseUp paths:',
+        this.canvasService.getPaths()
+      );
     });
 
     canvas.addEventListener('mouseleave', (event) => {
@@ -404,6 +378,8 @@ export class CanvasComponent implements OnInit, AfterViewInit {
   }): void {
     this.clearPreviewCanvas();
     const figureName = lineData.attachedToFigure;
+
+    console.log(`[selectFigure] Selected figure: ${figureName}`);
 
     const toolName = figureName.split('_')[0].toLowerCase();
 
@@ -649,6 +625,8 @@ export class CanvasComponent implements OnInit, AfterViewInit {
   }
 
   handleFigureAction(figure: string, action: string) {
+    console.log(`[handleFigureAction] Action "${action}" on figure: ${figure}`);
+
     const toolName = figure.split('_')[0].toLowerCase();
     const tool = this.toolSelector.select(toolName);
 

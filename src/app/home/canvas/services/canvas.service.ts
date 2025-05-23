@@ -27,14 +27,11 @@ export class CanvasService {
     x: number,
     y: number,
     attachedToFigure: string,
-    attachedToPoint: number,
-    isEllipse?: boolean
+    attachedToPoint: number
   ): string {
-    const pointId = isEllipse
-      ? this.ellipsePointCounter++
-      : this.pointCounter++;
+    const pointId = this.pointCounter++;
 
-    const pointLabel = isEllipse ? `O${pointId}` : this.getPointLabel(pointId);
+    const pointLabel = this.getPointLabel(pointId);
 
     const point = new Point(
       x,
@@ -45,6 +42,8 @@ export class CanvasService {
     );
 
     this.points.push(point);
+
+    console.log('addPoint, allPoints:', this.points);
 
     return pointLabel;
   }
@@ -123,7 +122,27 @@ export class CanvasService {
   }
 
   getPointsByFigure(figureName: string): Point[] {
-    return this.points.filter((point) => point.attachedToFigure === figureName);
+    const matchedPoints = this.points.filter(
+      (point) => point.attachedToFigure === figureName
+    );
+
+    if (matchedPoints.length > 0) {
+      return matchedPoints;
+    }
+
+    const pathEntry = this.paths.find((p) => p.figureName === figureName);
+
+    if (pathEntry && pathEntry.path.length >= 2) {
+      return pathEntry.path.map((p) => ({
+        x: p.x,
+        y: p.y,
+        attachedToFigure: figureName,
+        attachedToPoint: 0,
+        label: '',
+      }));
+    }
+
+    return [];
   }
 
   getAllPoints(): Point[] {
@@ -159,6 +178,15 @@ export class CanvasService {
         return point.attachedToFigure ?? null;
       }
     }
+
+    for (const path of this.paths) {
+      for (const point of path.path) {
+        if (point.x === coords.x && point.y === coords.y) {
+          return path.figureName ?? null;
+        }
+      }
+    }
+
     console.warn('No matching point found for coords:', coords);
     return null;
   }
@@ -256,12 +284,29 @@ export class CanvasService {
   } | null {
     const figures = this.getAllFigures();
 
+    console.log('[findFigureByPoint] Click position:', pos);
+    console.log('[findFigureByPoint] Total figures:', figures.length);
+
     for (const figure of figures) {
       if (figure.split('_')[0].toLowerCase() === 'ellipse') {
-        const points = this.getPointsByFigure(figure);
+        let points = this.getPointsByFigure(figure);
 
         if (!points || points.length < 2) {
-          continue;
+          const pathEntry = this.paths.find((p) => p.figureName === figure);
+          if (!pathEntry || pathEntry.path.length < 2) {
+            console.log(
+              `[findFigureByPoint] Skipping ${figure}: no valid path`
+            );
+            continue;
+          }
+
+          points = pathEntry.path.map((p) => ({
+            x: p.x,
+            y: p.y,
+            attachedToFigure: figure,
+            attachedToPoint: 0,
+            label: '',
+          }));
         }
 
         const startX = points[0].x;
@@ -282,17 +327,26 @@ export class CanvasService {
         const threshold = 0.1;
         const isOnEllipse = Math.abs(value - 1) <= threshold;
 
+        console.log(`[findFigureByPoint] Checking figure: ${figure}`);
+        console.log(`[findFigureByPoint] Points:`, points);
+        console.log(
+          `[findFigureByPoint] value: ${value.toFixed(
+            4
+          )}, isOnEllipse: ${isOnEllipse}`
+        );
+
         if (isOnEllipse) {
+          console.log(`[findFigureByPoint] MATCH FOUND for figure: ${figure}`);
           return {
             point1: { x: points[0].x, y: points[0].y },
             point2: { x: points[1].x, y: points[1].y },
-            attachedToFigure:
-              points[0].attachedToFigure || points[1].attachedToFigure || '',
+            attachedToFigure: figure,
           };
         }
       }
     }
 
+    console.log('[findFigureByPoint] No matching figure found');
     return null;
   }
 
