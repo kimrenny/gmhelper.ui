@@ -39,14 +39,10 @@ export class Ellipse implements DrawingTool {
     ctx.stroke();
 
     if (redraw) {
-      console.log('[Ellipse::draw] redraw path:', path);
-
       const figureName = this.canvasService.getFigureNameByCoords({
         x: path[0].x,
         y: path[0].y,
       });
-
-      console.log('[Ellipse::draw] resolved figureName:', figureName);
 
       if (figureName) {
         this.drawLinesFromFigureData(ctx, path, figureName);
@@ -217,7 +213,6 @@ export class Ellipse implements DrawingTool {
     ctx.beginPath();
     ctx.ellipse(centerX, centerY, radiusX, radiusY, 0, 0, Math.PI * 2);
     ctx.stroke();
-    console.log('[onSelectFigure] ellipse drawn');
 
     const color = '#ffcc00';
 
@@ -230,18 +225,12 @@ export class Ellipse implements DrawingTool {
   }
 
   handleAction(action: string, data: ToolContext, figureName: string): void {
-    console.log(
-      `[handleAction] Performing action "${action}" on figure: ${figureName}`
-    );
-
     const ctx = data.canvas?.getContext('2d');
     if (!ctx) return;
 
     const path = this.canvasService
       .getPointsByFigure(figureName)
       .map((p) => ({ x: p.x, y: p.y }));
-
-    console.log(`[handleAction] Points for figure "${figureName}":`, path);
 
     const color = this.canvasService.getFigureColorByName(this.figureName);
 
@@ -255,7 +244,7 @@ export class Ellipse implements DrawingTool {
         break;
       }
       case 'makeCircle': {
-        this.makeCircle(ctx, path, color);
+        this.makeCircle(ctx, path, color, figureName);
         break;
       }
     }
@@ -275,7 +264,7 @@ export class Ellipse implements DrawingTool {
     const radiusY = Math.abs(path[0].y - path[1].y) / 2;
 
     if (radiusX !== radiusY) {
-      const adjustedPath = this.makeCircle(ctx, path, color);
+      const adjustedPath = this.makeCircle(ctx, path, color, figureName);
       if (adjustedPath) {
         path = adjustedPath;
       }
@@ -310,8 +299,10 @@ export class Ellipse implements DrawingTool {
 
     this.canvasService.createLine(labelA, labelB);
 
+    const line = `${labelA}${labelB}`;
+
     if (!this.canvasService.hasFigureElement(figureName, 'radius')) {
-      this.canvasService.addFigureElement(figureName, 'radius');
+      this.canvasService.addFigureElement(figureName, 'radius', line);
     }
   }
 
@@ -328,7 +319,7 @@ export class Ellipse implements DrawingTool {
     const radiusY = Math.abs(path[0].y - path[1].y) / 2;
 
     if (radiusX !== radiusY) {
-      const adjustedPath = this.makeCircle(ctx, path, color);
+      const adjustedPath = this.makeCircle(ctx, path, color, figureName);
       if (adjustedPath) {
         path = adjustedPath;
       }
@@ -371,15 +362,18 @@ export class Ellipse implements DrawingTool {
 
     this.canvasService.createLine(labelA, labelB);
 
+    const line = `${labelA}${labelB}`;
+
     if (!this.canvasService.hasFigureElement(figureName, 'diameter')) {
-      this.canvasService.addFigureElement(figureName, 'diameter');
+      this.canvasService.addFigureElement(figureName, 'diameter', line);
     }
   }
 
   makeCircle(
     ctx: CanvasRenderingContext2D,
     path: { x: number; y: number }[],
-    color: string
+    color: string,
+    figureName: string
   ): { x: number; y: number }[] | void {
     if (path.length !== 2) return;
 
@@ -403,7 +397,6 @@ export class Ellipse implements DrawingTool {
       color: color ?? '#000000',
     };
 
-    const figureName = this.figureName;
     if (figureName) {
       this.canvasService.updateFigurePath(figureName, [newStart, newEnd]);
     }
