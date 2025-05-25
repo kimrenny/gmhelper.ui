@@ -246,7 +246,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     this.toolSelector = new ToolSelector(
       getDefaultTools(this.polygonTool, this.canvasService, this.counterService)
     );
-    this.selectTool('pencil');
+    //this.selectTool('pencil');
   }
 
   ngAfterViewInit(): void {
