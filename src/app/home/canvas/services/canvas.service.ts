@@ -11,7 +11,6 @@ import { Coords2d } from '../drawing-tools/types/coords.type';
 export class CanvasService {
   private points: Point[] = [];
   private pointCounter: number = 0;
-  private ellipsePointCounter: number = 0;
   private lines: Record<string, LineLength> = {};
   private selectedLine: { a: Coords2d; b: Coords2d } | null = null;
   private selectedFigure: { name: string } | null = null;
@@ -42,8 +41,6 @@ export class CanvasService {
     );
 
     this.points.push(point);
-
-    console.log('addPoint, allPoints:', this.points);
 
     return pointLabel;
   }
@@ -121,13 +118,15 @@ export class CanvasService {
     return this.paths;
   }
 
-  getPointsByFigure(figureName: string): Point[] {
-    const matchedPoints = this.points.filter(
-      (point) => point.attachedToFigure === figureName
-    );
+  getPointsByFigure(figureName: string, isEllipse: boolean = false): Point[] {
+    if (!isEllipse) {
+      const matchedPoints = this.points.filter(
+        (point) => point.attachedToFigure === figureName
+      );
 
-    if (matchedPoints.length > 0) {
-      return matchedPoints;
+      if (matchedPoints.length > 0) {
+        return matchedPoints;
+      }
     }
 
     const pathEntry = this.paths.find((p) => p.figureName === figureName);
@@ -137,7 +136,7 @@ export class CanvasService {
         x: p.x,
         y: p.y,
         attachedToFigure: figureName,
-        attachedToPoint: 0,
+        attachedToPoint: -1,
         label: '',
       }));
     }
@@ -289,7 +288,7 @@ export class CanvasService {
 
     for (const figure of figures) {
       if (figure.split('_')[0].toLowerCase() === 'ellipse') {
-        let points = this.getPointsByFigure(figure);
+        let points = this.getPointsByFigure(figure, true);
 
         if (!points || points.length < 2) {
           const pathEntry = this.paths.find((p) => p.figureName === figure);
@@ -304,7 +303,7 @@ export class CanvasService {
             x: p.x,
             y: p.y,
             attachedToFigure: figure,
-            attachedToPoint: 0,
+            attachedToPoint: -1,
             label: '',
           }));
         }
@@ -361,11 +360,21 @@ export class CanvasService {
     return this.figureElements[figureName]?.has(elementType) ?? false;
   }
 
-  removeFigureElement(figureName: string, elementType: string): void {
+  removeFigureElement(figureName: string, elementType: string | 'all'): void {
+    if (elementType === 'all') {
+      delete this.figureElements[figureName];
+    }
+
     this.figureElements[figureName]?.delete(elementType);
     if (this.figureElements[figureName]?.size === 0) {
       delete this.figureElements[figureName];
     }
+  }
+
+  removeFigureElementPoints(figureName: string) {
+    this.points = this.points.filter(
+      (p) => !(p.attachedToFigure === figureName && p.attachedToPoint < 0)
+    );
   }
 
   clearfigureElements(figureName: string): void {
@@ -449,7 +458,10 @@ export class CanvasService {
       }
       case 'paths': {
         if (this.paths.length > 0) {
-          return this.paths.pop();
+          const paths = this.paths.pop();
+          if (paths?.figureName)
+            this.removeFigureElement(paths?.figureName, 'all');
+          return paths;
         }
         return undefined;
       }
@@ -517,6 +529,5 @@ export class CanvasService {
   resetPoints(): void {
     this.points = [];
     this.pointCounter = 0;
-    this.ellipsePointCounter = 0;
   }
 }
