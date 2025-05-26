@@ -4,6 +4,7 @@ import { CanvasService } from '../services/canvas.service';
 import { CounterService } from '../services/counter.service';
 import { clearPreviewCanvas } from '../tools/clear-preview';
 import { drawLabel } from '../tools/draw-point-label';
+import { setLineLengthToService } from '../utils/line-length.utils';
 import { toTransparentColor } from '../utils/preview-color';
 
 export class Ellipse implements DrawingTool {
@@ -151,24 +152,6 @@ export class Ellipse implements DrawingTool {
     this.onMouseUp(pos, data);
   }
 
-  private addPointsToCanvasService(
-    path: { x: number; y: number; color: string }[]
-  ): void {
-    if (!(this.figureName.length > 1)) {
-      this.figureName = this.counterService.getNextFigureName('Ellipse');
-    }
-    const labels: string[] = [];
-
-    path.forEach((point, index) => {
-      const label = this.canvasService.addPoint(
-        point.x,
-        point.y,
-        this.figureName,
-        index
-      );
-    });
-  }
-
   onSelectFigure(
     path: { x: number; y: number }[],
     previewCanvas: HTMLCanvasElement
@@ -299,6 +282,8 @@ export class Ellipse implements DrawingTool {
 
     this.canvasService.createLine(labelA, labelB);
 
+    setLineLengthToService(this.canvasService, ctx, labelA, labelB, '?');
+
     const line = `${labelA}${labelB}`;
 
     if (!this.canvasService.hasFigureElement(figureName, 'radius')) {
@@ -361,6 +346,8 @@ export class Ellipse implements DrawingTool {
     drawLabel(ctx, labelB, secondPoint.x, secondPoint.y);
 
     this.canvasService.createLine(labelA, labelB);
+
+    setLineLengthToService(this.canvasService, ctx, labelA, labelB, '?');
 
     const line = `${labelA}${labelB}`;
 

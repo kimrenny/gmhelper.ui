@@ -7,6 +7,10 @@ import { toTransparentColor } from '../utils/preview-color';
 import { drawLabel } from '../tools/draw-point-label';
 import { drawTextAboveLine } from '../tools/draw-text-above-line';
 import { LineLength } from './types/line-length.type';
+import {
+  restoreLineLengthToService,
+  setLineLengthToService,
+} from '../utils/line-length.utils';
 
 export class Rectangle implements DrawingTool {
   private start: { x: number; y: number; color: string } | null = null;
@@ -57,10 +61,10 @@ export class Rectangle implements DrawingTool {
       this.canvasService.createLine(label2, label3);
       this.canvasService.createLine(label3, label4);
       this.canvasService.createLine(label1, label4);
-      this.restoreLineLengthToService(ctx, label1, label2);
-      this.restoreLineLengthToService(ctx, label2, label3);
-      this.restoreLineLengthToService(ctx, label3, label4);
-      this.restoreLineLengthToService(ctx, label1, label4);
+      restoreLineLengthToService(this.canvasService, ctx, label1, label2);
+      restoreLineLengthToService(this.canvasService, ctx, label2, label3);
+      restoreLineLengthToService(this.canvasService, ctx, label3, label4);
+      restoreLineLengthToService(this.canvasService, ctx, label1, label4);
     }
   }
 
@@ -113,10 +117,10 @@ export class Rectangle implements DrawingTool {
       this.canvasService.createLine(label2, label3);
       this.canvasService.createLine(label3, label4);
       this.canvasService.createLine(label1, label4);
-      this.setLineLengthToService(ctx, label1, label2, '?');
-      this.setLineLengthToService(ctx, label2, label3, '?', 10);
-      this.setLineLengthToService(ctx, label3, label4, '?');
-      this.setLineLengthToService(ctx, label1, label4, '?', -10);
+      setLineLengthToService(this.canvasService, ctx, label1, label2, '?');
+      setLineLengthToService(this.canvasService, ctx, label2, label3, '?', 10);
+      setLineLengthToService(this.canvasService, ctx, label3, label4, '?');
+      setLineLengthToService(this.canvasService, ctx, label1, label4, '?', -10);
     }
 
     this.start = null;
@@ -264,66 +268,5 @@ export class Rectangle implements DrawingTool {
     });
 
     return [labels[0], labels[1], labels[2], labels[3]];
-  }
-
-  private setLineLengthToService(
-    ctx: CanvasRenderingContext2D,
-    a: string,
-    b: string,
-    length: LineLength,
-    offsetX: number = 0,
-    offsetY: number = -10,
-    fontsize: number = 14,
-    color: string = 'black'
-  ) {
-    this.canvasService.setLineLength(a, b, length);
-
-    const pointA = this.canvasService.getPointByLabel(a);
-    const pointB = this.canvasService.getPointByLabel(b);
-
-    if (!pointA || !pointB) return;
-
-    if (!ctx) return;
-
-    drawTextAboveLine(
-      ctx,
-      pointA,
-      pointB,
-      length,
-      offsetX,
-      offsetY,
-      fontsize,
-      color
-    );
-  }
-
-  private restoreLineLengthToService(
-    ctx: CanvasRenderingContext2D,
-    a: string,
-    b: string,
-    offsetX: number = 0,
-    offsetY: number = -10,
-    fontsize: number = 14,
-    color: string = 'black'
-  ) {
-    const length = this.canvasService.getLineLength(a, b);
-
-    const pointA = this.canvasService.getPointByLabel(a);
-    const pointB = this.canvasService.getPointByLabel(b);
-
-    if (!pointA || !pointB) return;
-
-    if (!ctx) return;
-
-    drawTextAboveLine(
-      ctx,
-      pointA,
-      pointB,
-      length,
-      offsetX,
-      offsetY,
-      fontsize,
-      color
-    );
   }
 }

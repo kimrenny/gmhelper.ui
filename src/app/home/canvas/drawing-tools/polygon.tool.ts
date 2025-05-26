@@ -7,6 +7,10 @@ import { drawLabel } from '../tools/draw-point-label';
 import { clearPreviewCanvas } from '../tools/clear-preview';
 import { drawTextAboveLine } from '../tools/draw-text-above-line';
 import { LineLength } from './types/line-length.type';
+import {
+  restoreLineLengthToService,
+  setLineLengthToService,
+} from '../utils/line-length.utils';
 
 export class Polygon implements DrawingTool {
   private center: { x: number; y: number } | null = null;
@@ -68,14 +72,14 @@ export class Polygon implements DrawingTool {
         const from = labels[i];
         const to = labels[(i + 1) % labels.length];
         this.canvasService.createLine(from, to);
-        this.restoreLineLengthToService(ctx, from, to);
+        restoreLineLengthToService(this.canvasService, ctx, from, to);
       }
 
       if (labels.length > 1) {
         const from = labels[0];
         const to = labels[labels.length - 1];
         this.canvasService.createLine(from, to);
-        this.restoreLineLengthToService(ctx, from, to);
+        restoreLineLengthToService(this.canvasService, ctx, from, to);
       }
     }
   }
@@ -141,14 +145,14 @@ export class Polygon implements DrawingTool {
         const from = labels[i];
         const to = labels[(i + 1) % labels.length];
         this.canvasService.createLine(from, to);
-        this.setLineLengthToService(ctx, from, to, '?');
+        setLineLengthToService(this.canvasService, ctx, from, to, '?');
       }
 
       if (labels.length > 1) {
         const from = labels[0];
         const to = labels[labels.length - 1];
         this.canvasService.createLine(from, to);
-        this.setLineLengthToService(ctx, from, to, '?');
+        setLineLengthToService(this.canvasService, ctx, from, to, '?');
       }
     }
 
@@ -312,66 +316,5 @@ export class Polygon implements DrawingTool {
     });
 
     return labels;
-  }
-
-  private setLineLengthToService(
-    ctx: CanvasRenderingContext2D,
-    a: string,
-    b: string,
-    length: LineLength,
-    offsetX: number = 0,
-    offsetY: number = -10,
-    fontsize: number = 14,
-    color: string = 'black'
-  ) {
-    this.canvasService.setLineLength(a, b, length);
-
-    const pointA = this.canvasService.getPointByLabel(a);
-    const pointB = this.canvasService.getPointByLabel(b);
-
-    if (!pointA || !pointB) return;
-
-    if (!ctx) return;
-
-    drawTextAboveLine(
-      ctx,
-      pointA,
-      pointB,
-      length,
-      offsetX,
-      offsetY,
-      fontsize,
-      color
-    );
-  }
-
-  private restoreLineLengthToService(
-    ctx: CanvasRenderingContext2D,
-    a: string,
-    b: string,
-    offsetX: number = 0,
-    offsetY: number = -10,
-    fontsize: number = 14,
-    color: string = 'black'
-  ) {
-    const length = this.canvasService.getLineLength(a, b);
-
-    const pointA = this.canvasService.getPointByLabel(a);
-    const pointB = this.canvasService.getPointByLabel(b);
-
-    if (!pointA || !pointB) return;
-
-    if (!ctx) return;
-
-    drawTextAboveLine(
-      ctx,
-      pointA,
-      pointB,
-      length,
-      offsetX,
-      offsetY,
-      fontsize,
-      color
-    );
   }
 }
