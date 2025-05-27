@@ -18,7 +18,15 @@ export class CanvasService {
   private paths: stackInfo[] = [];
   private redoStack: stackInfo[] = [];
 
-  private figureElements: Record<string, Set<string>> = {};
+  private figureElements: Record<
+    string,
+    Set<{ type: string; label?: string }>
+  > = {};
+  private figureElementsRedo: Record<
+    string,
+    Set<{ type: string; label?: string }>
+  > = {};
+  private linesRedo: Record<string, LineLength>[] = [];
 
   constructor() {}
 
@@ -283,9 +291,6 @@ export class CanvasService {
   } | null {
     const figures = this.getAllFigures();
 
-    console.log('[findFigureByPoint] Click position:', pos);
-    console.log('[findFigureByPoint] Total figures:', figures.length);
-
     for (const figure of figures) {
       if (figure.split('_')[0].toLowerCase() === 'ellipse') {
         let points = this.getPointsByFigure(figure, true);
@@ -293,9 +298,6 @@ export class CanvasService {
         if (!points || points.length < 2) {
           const pathEntry = this.paths.find((p) => p.figureName === figure);
           if (!pathEntry || pathEntry.path.length < 2) {
-            console.log(
-              `[findFigureByPoint] Skipping ${figure}: no valid path`
-            );
             continue;
           }
 
@@ -326,16 +328,7 @@ export class CanvasService {
         const threshold = 0.1;
         const isOnEllipse = Math.abs(value - 1) <= threshold;
 
-        console.log(`[findFigureByPoint] Checking figure: ${figure}`);
-        console.log(`[findFigureByPoint] Points:`, points);
-        console.log(
-          `[findFigureByPoint] value: ${value.toFixed(
-            4
-          )}, isOnEllipse: ${isOnEllipse}`
-        );
-
         if (isOnEllipse) {
-          console.log(`[findFigureByPoint] MATCH FOUND for figure: ${figure}`);
           return {
             point1: { x: points[0].x, y: points[0].y },
             point2: { x: points[1].x, y: points[1].y },
@@ -345,28 +338,47 @@ export class CanvasService {
       }
     }
 
-    console.log('[findFigureByPoint] No matching figure found');
     return null;
   }
 
-  addFigureElement(figureName: string, elementType: string): void {
+  addFigureElement(
+    figureName: string,
+    elementType: string,
+    label?: string
+  ): void {
     if (!this.figureElements[figureName]) {
       this.figureElements[figureName] = new Set();
     }
-    this.figureElements[figureName].add(elementType);
+    const exists = Array.from(this.figureElements[figureName]).some(
+      (el) => el.type === elementType && el.label === label
+    );
+    if (!exists) {
+      this.figureElements[figureName].add({ type: elementType, label });
+    }
   }
 
   hasFigureElement(figureName: string, elementType: string): boolean {
-    return this.figureElements[figureName]?.has(elementType) ?? false;
+    if (!this.figureElements[figureName]) return false;
+    for (const el of this.figureElements[figureName]) {
+      if (el.type === elementType) return true;
+    }
+    return false;
   }
 
   removeFigureElement(figureName: string, elementType: string | 'all'): void {
     if (elementType === 'all') {
       delete this.figureElements[figureName];
+      return;
     }
+    if (!this.figureElements[figureName]) return;
 
-    this.figureElements[figureName]?.delete(elementType);
-    if (this.figureElements[figureName]?.size === 0) {
+    this.figureElements[figureName] = new Set(
+      Array.from(this.figureElements[figureName]).filter(
+        (el) => el.type !== elementType
+      )
+    );
+
+    if (this.figureElements[figureName].size === 0) {
       delete this.figureElements[figureName];
     }
   }
@@ -386,7 +398,8 @@ export class CanvasService {
   }
 
   getFigureElements(figureName: string): string[] {
-    return Array.from(this.figureElements[figureName] ?? []);
+    if (!this.figureElements[figureName]) return [];
+    return Array.from(this.figureElements[figureName]).map((el) => el.type);
   }
 
   private isPointNearLine(
@@ -435,15 +448,48 @@ export class CanvasService {
   }
 
   pushStack(path: stackInfo | null, stack: StackType) {
-    if (path) {
-      switch (stack) {
-        case 'redo': {
-          this.redoStack.push(path);
-          return;
+    if (!path) return;
+
+    switch (stack) {
+      case 'redo': {
+        this.redoStack.push(path);
+
+        if (path.figureName) {
+          if (this.figureElements[path.figureName]) {
+            this.figureElementsRedo[path.figureName] =
+              this.figureElements[path.figureName];
+            delete this.figureElements[path.figureName];
+          }
+
+          if (this.lines[path.figureName]) {
+            this.linesRedo.push({
+              [path.figureName]: this.lines[path.figureName],
+            });
+            delete this.lines[path.figureName];
+          }
         }
-        case 'paths': {
-          this.paths.push(path);
+        return;
+      }
+      case 'paths': {
+        this.paths.push(path);
+
+        if (path.figureName) {
+          if (this.figureElementsRedo[path.figureName]) {
+            this.figureElements[path.figureName] =
+              this.figureElementsRedo[path.figureName];
+            delete this.figureElementsRedo[path.figureName];
+          }
+
+          const lineIndex = this.linesRedo.findIndex(
+            (lineObj) => Object.keys(lineObj)[0] === path.figureName
+          );
+          if (lineIndex !== -1) {
+            this.lines[path.figureName] =
+              this.linesRedo[lineIndex][path.figureName];
+            this.linesRedo.splice(lineIndex, 1);
+          }
         }
+        break;
       }
     }
   }
@@ -451,19 +497,53 @@ export class CanvasService {
   popStack(stack: StackType): stackInfo | undefined {
     switch (stack) {
       case 'redo': {
-        if (this.redoStack.length > 0) {
-          return this.redoStack.pop();
+        if (this.redoStack.length === 0) return undefined;
+
+        const path = this.redoStack.pop();
+
+        if (path?.figureName) {
+          if (this.figureElementsRedo[path.figureName]) {
+            this.figureElements[path.figureName] =
+              this.figureElementsRedo[path.figureName];
+            delete this.figureElementsRedo[path.figureName];
+          }
+
+          const lineIndex = this.linesRedo.findIndex(
+            (lineObj) => Object.keys(lineObj)[0] === path.figureName
+          );
+          if (lineIndex !== -1) {
+            this.lines[path.figureName] =
+              this.linesRedo[lineIndex][path.figureName];
+            this.linesRedo.splice(lineIndex, 1);
+          }
         }
-        return undefined;
+
+        return path;
       }
+
       case 'paths': {
-        if (this.paths.length > 0) {
-          const paths = this.paths.pop();
-          if (paths?.figureName)
-            this.removeFigureElement(paths?.figureName, 'all');
-          return paths;
+        if (this.paths.length === 0) return undefined;
+
+        const path = this.paths.pop();
+
+        if (path?.figureName) {
+          if (this.figureElements[path.figureName]) {
+            this.figureElementsRedo[path.figureName] =
+              this.figureElements[path.figureName];
+            delete this.figureElements[path.figureName];
+          }
+
+          if (this.lines[path.figureName]) {
+            this.linesRedo.push({
+              [path.figureName]: this.lines[path.figureName],
+            });
+            delete this.lines[path.figureName];
+          }
+
+          this.removeFigureElement(path.figureName, 'all');
         }
-        return undefined;
+
+        return path;
       }
     }
   }
@@ -472,11 +552,15 @@ export class CanvasService {
     switch (stack) {
       case 'redo': {
         this.redoStack = [];
-        return;
+        this.figureElementsRedo = {};
+        this.linesRedo = [];
+        break;
       }
       case 'paths': {
         this.paths = [];
-        return;
+        this.figureElements = {};
+        this.lines = {};
+        break;
       }
     }
   }
