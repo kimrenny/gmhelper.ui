@@ -12,6 +12,14 @@ export class CounterService {
     return `${figure}_${figureNumber}`;
   }
 
+  incrementCounter(): void {
+    this.figureCounter++;
+  }
+
+  decrementCounter(): void {
+    this.figureCounter--;
+  }
+
   resetCounter(): void {
     this.figureCounter = 0;
   }
