@@ -258,9 +258,6 @@ export class CanvasService {
       const point2 = this.getPointByLabel(label2);
 
       if (!point1 || !point2) {
-        console.warn(
-          `[findLineByPoint] point(s) not found for labels: ${label1}, ${label2}`
-        );
         continue;
       }
 
