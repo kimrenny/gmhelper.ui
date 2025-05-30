@@ -250,7 +250,7 @@ export class Ellipse implements DrawingTool {
       .getPointsByFigure(figureName)
       .map((p) => ({ x: p.x, y: p.y }));
 
-    const color = this.canvasService.getFigureColorByName(this.figureName);
+    const color = this.canvasService.getFigureColorByName(figureName);
 
     switch (action) {
       case 'drawRadius': {
