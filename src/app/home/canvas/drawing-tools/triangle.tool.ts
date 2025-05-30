@@ -59,6 +59,39 @@ export class Triangle implements DrawingTool {
       restoreLineLengthToService(this.canvasService, ctx, label1, label2);
       restoreLineLengthToService(this.canvasService, ctx, label2, label3);
       restoreLineLengthToService(this.canvasService, ctx, label1, label3);
+
+      const figureName = this.canvasService.getFigureNameByCoords({
+        x: path[0].x,
+        y: path[0].y,
+      });
+
+      if (redraw && figureName) {
+        this.drawLinesFromFigureData(ctx, path, figureName, false);
+      }
+    }
+  }
+
+  private drawLinesFromFigureData(
+    ctx: CanvasRenderingContext2D,
+    path: { x: number; y: number; color: string }[],
+    figureName: string,
+    isPreview: boolean = false
+  ): void {
+    const hasHeight = this.canvasService.hasFigureElement(figureName, 'height');
+    const hasMedian = this.canvasService.hasFigureElement(figureName, 'median');
+
+    const color = path[0].color ?? '#000';
+    const paths = path.map((p) => ({
+      x: p.x,
+      y: p.y,
+    }));
+
+    if (hasHeight) {
+      this.drawHeight(ctx, paths, color, figureName, isPreview);
+    }
+
+    if (hasMedian) {
+      this.drawMedian(ctx, paths, color, figureName, hasHeight, isPreview);
     }
   }
 
@@ -154,13 +187,15 @@ export class Triangle implements DrawingTool {
       .getPointsByFigure(figureName)
       .map((p) => ({ x: p.x, y: p.y }));
 
+    const color = this.canvasService.getFigureColorByName(figureName);
+
     switch (action) {
       case 'drawHeight': {
-        this.drawHeight(ctx, path);
+        this.drawHeight(ctx, path, color, figureName);
         break;
       }
       case 'drawMedian': {
-        this.drawMedian(ctx, path);
+        this.drawMedian(ctx, path, color, figureName);
         break;
       }
       case 'markAngles': {
@@ -172,12 +207,69 @@ export class Triangle implements DrawingTool {
 
   drawHeight(
     ctx: CanvasRenderingContext2D,
-    path: { x: number; y: number }[]
-  ): void {}
+    path: { x: number; y: number }[],
+    color: string,
+    figureName: string,
+    isPreview: boolean = false
+  ): void {
+    if (path.length !== 3) return;
+
+    const topIndex = path.reduce(
+      (minIdx, p, i, arr) => (p.y < arr[minIdx].y ? i : minIdx),
+      0
+    );
+    const topPoint = path[topIndex];
+    const basePoints = path.filter((_, i) => i !== topIndex);
+    const [A, B] = basePoints;
+
+    const dx = B.x - A.x;
+    const dy = B.y - A.y;
+    const lengthSquared = dx * dx + dy * dy;
+
+    const t =
+      ((topPoint.x - A.x) * dx + (topPoint.y - A.y) * dy) / lengthSquared;
+    const clampedT = Math.max(0, Math.min(1, t));
+
+    const foot = {
+      x: A.x + clampedT * dx,
+      y: A.y + clampedT * dy,
+    };
+
+    ctx.strokeStyle = color ?? '#000000';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(topPoint.x, topPoint.y);
+    ctx.lineTo(foot.x, foot.y);
+    ctx.stroke();
+
+    if (isPreview) return;
+
+    const labelA = this.canvasService.getPointLabelByCoords(topPoint);
+    if (!labelA) return;
+
+    const labelB = this.canvasService.addPoint(foot.x, foot.y, figureName, 4);
+
+    drawLabel(ctx, labelB, foot.x, foot.y);
+
+    this.canvasService.createLine(labelA, labelB);
+    setLineLengthToService(this.canvasService, ctx, labelA, labelB, '?');
+
+    const line = `${labelA}${labelB}`;
+
+    console.log('[drawHeight] draw height: ', line);
+
+    if (!this.canvasService.hasFigureElement(figureName, 'height')) {
+      this.canvasService.addFigureElement(figureName, 'height', line);
+    }
+  }
 
   drawMedian(
     ctx: CanvasRenderingContext2D,
-    path: { x: number; y: number }[]
+    path: { x: number; y: number }[],
+    color: string,
+    figureName: string,
+    hasHeight: boolean = false,
+    isPreview: boolean = false
   ): void {}
 
   markAngles(
