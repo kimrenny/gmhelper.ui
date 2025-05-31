@@ -19,23 +19,14 @@
   align-items: center;
 }
 
-.logo {
-  font-size: 24px;
-  font-weight: bold;
-}
-
-.helper-text {
-  color: white;
-  text-decoration: none;
-}
-
-.gm-gradient {
-  background: linear-gradient(45deg, #ffffff, #c444ff, #ffffff);
-  background-size: 300%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: gradient-animation 10s infinite ease-in-out;
+.gm-logo {
+  display: block;
+  width: 150px;
+  height: 25px;
+  background-image: url(../../../assets/icons/gm-logo.svg);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
 }
 
 .auth-and-language {
@@ -208,18 +199,6 @@
         background-color: #9c33cc;
       }
     }
-  }
-}
-
-@keyframes gradient-animation {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
   }
 }
 
