@@ -160,7 +160,8 @@ export class Triangle implements DrawingTool {
 
     const drawPath = path ?? this.path;
     if (drawPath.length === 3) {
-      ctx.strokeStyle = '#ffcc00';
+      const color = '#ffcc00';
+      ctx.strokeStyle = color;
       ctx.lineWidth = 2;
 
       ctx.beginPath();
@@ -170,12 +171,19 @@ export class Triangle implements DrawingTool {
       ctx.closePath();
       ctx.stroke();
 
-      ctx.fillStyle = '#ffcc00';
+      ctx.fillStyle = color;
       for (const point of drawPath) {
         ctx.beginPath();
         ctx.arc(point.x, point.y, 4, 0, 2 * Math.PI);
         ctx.fill();
       }
+
+      this.drawLinesFromFigureData(
+        ctx,
+        path.map((p) => ({ ...p, color: color })),
+        this.figureName,
+        true
+      );
     }
   }
 
@@ -270,7 +278,61 @@ export class Triangle implements DrawingTool {
     figureName: string,
     hasHeight: boolean = false,
     isPreview: boolean = false
-  ): void {}
+  ): void {
+    if (path.length !== 3) {
+      return;
+    }
+
+    let vertexIndex = 0;
+    if (hasHeight) {
+      const topY = Math.min(...path.map((pt) => pt.y));
+      const topIndex = path.findIndex((p) => p.y === topY);
+      vertexIndex = (topIndex + 1) % 3;
+    }
+
+    const vertex = path[vertexIndex];
+    const basePoints = path.filter((_, i) => i !== vertexIndex);
+
+    const [A, B] = basePoints;
+    const midPoint = {
+      x: (A.x + B.x) / 2,
+      y: (A.y + B.y) / 2,
+    };
+
+    ctx.strokeStyle = color ?? '#000000';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(vertex.x, vertex.y);
+    ctx.lineTo(midPoint.x, midPoint.y);
+    ctx.stroke();
+
+    if (isPreview) {
+      return;
+    }
+
+    const labelA = this.canvasService.getPointLabelByCoords(vertex);
+    if (!labelA) {
+      return;
+    }
+
+    const labelB = this.canvasService.addPoint(
+      midPoint.x,
+      midPoint.y,
+      figureName,
+      4
+    );
+
+    drawLabel(ctx, labelB, midPoint.x, midPoint.y);
+
+    this.canvasService.createLine(labelA, labelB);
+    setLineLengthToService(this.canvasService, ctx, labelA, labelB, '?');
+
+    const line = `${labelA}${labelB}`;
+
+    if (!this.canvasService.hasFigureElement(figureName, 'median')) {
+      this.canvasService.addFigureElement(figureName, 'median', line);
+    }
+  }
 
   markAngles(
     ctx: CanvasRenderingContext2D,
