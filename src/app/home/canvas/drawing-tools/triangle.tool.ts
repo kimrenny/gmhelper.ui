@@ -66,7 +66,7 @@ export class Triangle implements DrawingTool {
       });
 
       if (redraw && figureName) {
-        this.drawLinesFromFigureData(ctx, path, figureName, false);
+        this.drawLinesFromFigureData(ctx, path, figureName, true);
       }
     }
   }
@@ -158,7 +158,7 @@ export class Triangle implements DrawingTool {
       return;
     }
 
-    const drawPath = path ?? this.path;
+    const drawPath = path;
     if (drawPath.length === 3) {
       const color = '#ffcc00';
       ctx.strokeStyle = color;
