@@ -80,6 +80,10 @@ export class Triangle implements DrawingTool {
     const hasHeight = this.canvasService.hasFigureElement(figureName, 'height');
     const hasMedian = this.canvasService.hasFigureElement(figureName, 'median');
 
+    const labelA = this.canvasService.getAngleLabelByCoords(path[0]);
+    const labelB = this.canvasService.getAngleLabelByCoords(path[1]);
+    const labelC = this.canvasService.getAngleLabelByCoords(path[2]);
+
     const color = path[0].color ?? '#000';
     const paths = path.map((p) => ({
       x: p.x,
@@ -92,6 +96,10 @@ export class Triangle implements DrawingTool {
 
     if (hasMedian) {
       this.drawMedian(ctx, paths, color, figureName, hasHeight, isPreview);
+    }
+
+    if (labelA && labelB && labelC) {
+      this.markAngles(ctx, paths, true);
     }
   }
 
@@ -158,6 +166,12 @@ export class Triangle implements DrawingTool {
       return;
     }
 
+    const figureName = this.canvasService.getFigureNameByCoords(path[0]);
+    if (!figureName) {
+      console.warn('[onSelectFigure] no figure name found for coords.');
+      return;
+    }
+
     const drawPath = path;
     if (drawPath.length === 3) {
       const color = '#ffcc00';
@@ -181,7 +195,7 @@ export class Triangle implements DrawingTool {
       this.drawLinesFromFigureData(
         ctx,
         path.map((p) => ({ ...p, color: color })),
-        this.figureName,
+        figureName,
         true
       );
     }
@@ -264,8 +278,6 @@ export class Triangle implements DrawingTool {
 
     const line = `${labelA}${labelB}`;
 
-    console.log('[drawHeight] draw height: ', line);
-
     if (!this.canvasService.hasFigureElement(figureName, 'height')) {
       this.canvasService.addFigureElement(figureName, 'height', line);
     }
@@ -336,8 +348,53 @@ export class Triangle implements DrawingTool {
 
   markAngles(
     ctx: CanvasRenderingContext2D,
-    path: { x: number; y: number }[]
-  ): void {}
+    path: { x: number; y: number }[],
+    isPreview: boolean = false
+  ): void {
+    if (path.length !== 3) {
+      return;
+    }
+
+    const angles: {
+      vertex: { x: number; y: number };
+      points: [{ x: number; y: number }, { x: number; y: number }];
+    }[] = [
+      { vertex: path[0], points: [path[1], path[2]] },
+      { vertex: path[1], points: [path[0], path[2]] },
+      { vertex: path[2], points: [path[0], path[1]] },
+    ];
+
+    ctx.strokeStyle = '#000000';
+    ctx.lineWidth = 1;
+
+    for (const angle of angles) {
+      const { vertex, points } = angle;
+      const [p1, p2] = points;
+
+      const v1 = { x: p1.x - vertex.x, y: p1.y - vertex.y };
+      const v2 = { x: p2.x - vertex.x, y: p2.y - vertex.y };
+
+      const angleStart = Math.atan2(v1.y, v1.x);
+      const angleEnd = Math.atan2(v2.y, v2.x);
+
+      let deltaAngle = angleEnd - angleStart;
+      if (deltaAngle < 0) {
+        deltaAngle += 2 * Math.PI;
+      }
+      const anticlockwise = deltaAngle > Math.PI;
+
+      ctx.beginPath();
+      ctx.arc(vertex.x, vertex.y, 15, angleStart, angleEnd, anticlockwise);
+      ctx.stroke();
+
+      if (isPreview) continue;
+
+      const label = this.canvasService.getPointLabelByCoords(vertex);
+      if (label) {
+        this.canvasService.setAngleValue(label, '?');
+      }
+    }
+  }
 
   private renderPreview(data: ToolContext): void {
     if (!this.isDrawing || !this.end || this.path.length === 0) return;

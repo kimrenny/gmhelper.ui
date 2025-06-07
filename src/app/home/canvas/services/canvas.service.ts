@@ -12,6 +12,8 @@ export class CanvasService {
   private points: Point[] = [];
   private pointCounter: number = 0;
   private lines: Record<string, LineLength> = {};
+  private angles: Record<string, LineLength> = {};
+
   private selectedLine: { a: Coords2d; b: Coords2d } | null = null;
   private selectedFigure: { name: string } | null = null;
 
@@ -234,6 +236,24 @@ export class CanvasService {
 
   getLineLength(a: string, b: string): LineLength {
     return this.lines[`${a}${b}`] ?? this.lines[`${b}${a}`];
+  }
+
+  getAngleLabelByCoords(coords: Coords2d): string | null {
+    const point = this.points.find((p) => p.x === coords.x && p.y === coords.y);
+    if (point && this.angles[point.label]) {
+      return point.label;
+    }
+    return null;
+  }
+
+  setAngleValue(label: string, value: LineLength): void {
+    this.angles[label] = value;
+
+    console.log('[setAngleValue] is called. Angles: ', this.angles);
+  }
+
+  getAngleValue(label: string): LineLength {
+    return this.angles[label];
   }
 
   getFigureColorByName(name: string): string {
