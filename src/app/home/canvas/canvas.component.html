@@ -127,6 +127,11 @@
       (click)="toggleFigureSelection()"
     ></button>
     <button
+      class="select-angle-btn"
+      [class.active]="isAngleSelection"
+      (click)="toggleAngleSelection()"
+    ></button>
+    <button
       [class.disabled]="!isFigureSelected"
       (click)="toggleFigureColorPalette()"
       class="color-btn"

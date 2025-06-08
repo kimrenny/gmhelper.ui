@@ -542,6 +542,15 @@
         }
       }
 
+      &.select-angle-btn {
+        background-image: url("../../../assets/icons/angle-click-icon.svg");
+
+        &.active,
+        &:hover {
+          background-image: url("../../../assets/icons/angle-click-icon-hover.svg");
+        }
+      }
+
       &.color-btn {
         background-image: url("../../../assets/icons/color-palette.png");
 

@@ -61,6 +61,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
   lineInputPosition: Coords2d | null = null;
 
   isFigureSelection: boolean = false;
+  isAngleSelection: boolean = false;
 
   figureToolMap: Record<
     string,
@@ -527,6 +528,17 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     if (!this.isFigureSelection) {
       this.canvasService.setSelectedFigure(null);
     }
+  }
+
+  toggleAngleSelection(): void {
+    this.isAngleSelection = !this.isAngleSelection;
+
+    this.clearAllSelections();
+  }
+
+  clearAllSelections(): void {
+    this.toggleFigureSelection(true, false);
+    this.canvasService.setSelectedFigure(null);
   }
 
   toggleShapeTools(): void {
