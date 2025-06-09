@@ -358,7 +358,8 @@ export class Triangle implements DrawingTool {
   markAngles(
     ctx: CanvasRenderingContext2D,
     path: { x: number; y: number }[],
-    isPreview: boolean = false
+    isPreview: boolean = false,
+    index?: number
   ): void {
     if (path.length !== 3) {
       return;
@@ -373,11 +374,10 @@ export class Triangle implements DrawingTool {
       { vertex: path[2], points: [path[0], path[1]] },
     ];
 
-    ctx.strokeStyle = '#000000';
     ctx.lineWidth = 1;
 
-    for (const angle of angles) {
-      const { vertex, points } = angle;
+    const drawAngle = (index: number) => {
+      const { vertex, points } = angles[index];
       const [p1, p2] = points;
 
       const v1 = { x: p1.x - vertex.x, y: p1.y - vertex.y };
@@ -396,11 +396,19 @@ export class Triangle implements DrawingTool {
       ctx.arc(vertex.x, vertex.y, 15, angleStart, angleEnd, anticlockwise);
       ctx.stroke();
 
-      if (isPreview) continue;
+      if (!isPreview) {
+        const label = this.canvasService.getPointLabelByCoords(vertex);
+        if (label) {
+          this.canvasService.setAngleValue(label, '?');
+        }
+      }
+    };
 
-      const label = this.canvasService.getPointLabelByCoords(vertex);
-      if (label) {
-        this.canvasService.setAngleValue(label, '?');
+    if (index !== undefined && index >= 0 && index < angles.length) {
+      drawAngle(index);
+    } else {
+      for (let i = 0; i < angles.length; i++) {
+        drawAngle(i);
       }
     }
   }
