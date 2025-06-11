@@ -20,6 +20,7 @@ import { CanvasService } from './services/canvas.service';
 import { CounterService } from './services/counter.service';
 import { LineLength } from './drawing-tools/types/line-length.type';
 import { Coords2d } from './drawing-tools/types/coords.type';
+import { AngleToolAction, angleToolMap } from './tools/angle-tools';
 
 @Component({
   selector: 'app-canvas',
@@ -35,6 +36,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
   currentScaleFactor = 1;
   selectedSubject: string = '';
   selectedFigure: string | null = null;
+  selectedAngle: string | null = null;
   subjects: string[] = ['Math', 'Geo'];
   colors = COLORS;
 
@@ -62,6 +64,8 @@ export class CanvasComponent implements OnInit, AfterViewInit {
 
   isFigureSelection: boolean = false;
   isAngleSelection: boolean = false;
+
+  angleTools: AngleToolAction[] = angleToolMap;
 
   figureToolMap: Record<
     string,
@@ -295,11 +299,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
 
       this.canvasService.resetSelectedLine();
       this.canvasService.setSelectedFigure(null);
-
-      console.log(
-        '[canvasComponent] angles:',
-        this.canvasService.getAllAngles()
-      );
+      this.selectedAngle = null;
 
       const angleData = this.canvasService.findAngleByPoint(pos);
 
@@ -327,11 +327,6 @@ export class CanvasComponent implements OnInit, AfterViewInit {
         }
       }
       this.currentTool?.onMouseDown?.(pos, this.toolContext);
-
-      console.log(
-        '[canvasComponent] onMouseDown paths:',
-        this.canvasService.getPaths()
-      );
     });
 
     canvas.addEventListener('mousemove', (event) => {
@@ -346,15 +341,10 @@ export class CanvasComponent implements OnInit, AfterViewInit {
       if (this.currentTool?.onMouseUp) {
         const newPath = this.currentTool.onMouseUp(pos, this.toolContext);
         if (newPath) {
-          console.log(newPath);
           this.canvasService.pushStack(newPath, 'paths');
           this.canvasService.resetStack('redo');
         }
       }
-      console.log(
-        '[canvasComponent] onMouseUp paths:',
-        this.canvasService.getPaths()
-      );
     });
 
     canvas.addEventListener('mouseleave', (event) => {
@@ -391,8 +381,6 @@ export class CanvasComponent implements OnInit, AfterViewInit {
   }): void {
     this.clearPreviewCanvas();
     const figureName = lineData.attachedToFigure;
-
-    console.log(`[selectFigure] Selected figure: ${figureName}`);
 
     const toolName = figureName.split('_')[0].toLowerCase();
 
@@ -438,6 +426,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
           angleData.attachedToFigure,
           angleData.attachedToPoint
         );
+        this.selectedAngle = angleData.label;
       }
     }
   }
@@ -681,8 +670,6 @@ export class CanvasComponent implements OnInit, AfterViewInit {
   }
 
   handleFigureAction(figure: string, action: string) {
-    console.log(`[handleFigureAction] Action "${action}" on figure: ${figure}`);
-
     const toolName = figure.split('_')[0].toLowerCase();
     const tool = this.toolSelector.select(toolName);
 
@@ -693,6 +680,10 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     this.clearPreviewCanvas();
     this.isFigureSelection = false;
     this.redraw();
+  }
+
+  handleAngleAction(actionName: string): void {
+    console.log(`${actionName} is called.`);
   }
 
   clearPreviewCanvas(): void {

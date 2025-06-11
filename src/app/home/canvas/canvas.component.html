@@ -111,6 +111,15 @@
     ></button>
   </div>
 
+  <div class="figure-action-panel" *ngIf="selectedAngle">
+    <button
+      *ngFor="let tool of angleTools"
+      class="figure-action-btn"
+      [ngStyle]="{ 'background-image': 'url(assets/icons/' + tool.icon + ')' }"
+      (click)="handleAngleAction(tool.name)"
+    ></button>
+  </div>
+
   <div
     class="figure-tool-buttons"
     [class.not-visible]="!selectedSubject || !canUndo"
