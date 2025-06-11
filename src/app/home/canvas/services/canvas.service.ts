@@ -238,6 +238,10 @@ export class CanvasService {
     return this.lines[`${a}${b}`] ?? this.lines[`${b}${a}`];
   }
 
+  getAllAngles(): Record<string, LineLength> {
+    return this.angles;
+  }
+
   getAngleLabelByCoords(coords: Coords2d): string | null {
     const point = this.points.find((p) => p.x === coords.x && p.y === coords.y);
     if (point && this.angles[point.label]) {
@@ -355,6 +359,26 @@ export class CanvasService {
       }
     }
 
+    return null;
+  }
+
+  findAngleByPoint(pos: { x: number; y: number }): {
+    label: string;
+    attachedToFigure: string;
+    attachedToPoint: number;
+  } | null {
+    for (const point of this.points) {
+      const dx = point.x - pos.x;
+      const dy = point.y - pos.y;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+      if (distance <= 10 && this.angles[point.label]) {
+        return {
+          label: point.label,
+          attachedToFigure: point.attachedToFigure,
+          attachedToPoint: point.attachedToPoint,
+        };
+      }
+    }
     return null;
   }
 

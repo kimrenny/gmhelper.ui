@@ -23,6 +23,13 @@ export interface DrawingTool {
     path: { x: number; y: number }[],
     previewCanvas: HTMLCanvasElement
   ): void;
+  onSelectAngle?(
+    previewCanvas: HTMLCanvasElement,
+    path: { x: number; y: number }[],
+    label: string,
+    attachedToFigure: string,
+    attachedToPoint: number
+  ): void;
 
   handleAction?(
     action: string,

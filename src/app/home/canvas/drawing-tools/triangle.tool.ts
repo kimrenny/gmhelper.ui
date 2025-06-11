@@ -210,6 +210,21 @@ export class Triangle implements DrawingTool {
     }
   }
 
+  onSelectAngle(
+    previewCanvas: HTMLCanvasElement,
+    path: { x: number; y: number }[],
+    label: string,
+    attachedToFigure: string,
+    attachedToPoint: number
+  ) {
+    const ctx = previewCanvas.getContext('2d');
+    if (!ctx) {
+      return;
+    }
+
+    this.markAngles(ctx, path, true, attachedToPoint);
+  }
+
   handleAction(action: string, data: ToolContext, figureName: string): void {
     const ctx = data.canvas?.getContext('2d');
     if (!ctx) return;

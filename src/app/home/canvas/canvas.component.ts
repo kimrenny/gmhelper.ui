@@ -296,6 +296,18 @@ export class CanvasComponent implements OnInit, AfterViewInit {
       this.canvasService.resetSelectedLine();
       this.canvasService.setSelectedFigure(null);
 
+      console.log(
+        '[canvasComponent] angles:',
+        this.canvasService.getAllAngles()
+      );
+
+      const angleData = this.canvasService.findAngleByPoint(pos);
+
+      if (this.isAngleSelection && angleData) {
+        this.selectAngle(angleData);
+        return;
+      }
+
       const lineData = this.canvasService.findLineByPoint(pos);
       const figureData = this.canvasService.findFigureByPoint(pos);
 
@@ -397,6 +409,35 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     if (tool) {
       if (tool.onSelectFigure) {
         tool.onSelectFigure(points, this.toolContext.previewCanvas);
+      }
+    }
+  }
+
+  private selectAngle(angleData: {
+    label: string;
+    attachedToFigure: string;
+    attachedToPoint: number;
+  }) {
+    this.clearPreviewCanvas();
+    const figureName = angleData.attachedToFigure;
+
+    const toolName = figureName.split('_')[0].toLowerCase();
+
+    const tool = this.toolSelector.select(toolName);
+
+    const points = this.canvasService
+      .getPointsByFigure(figureName)
+      .map((p) => ({ x: p.x, y: p.y }));
+
+    if (tool) {
+      if (tool.onSelectAngle) {
+        tool.onSelectAngle(
+          this.toolContext.previewCanvas,
+          points,
+          angleData.label,
+          angleData.attachedToFigure,
+          angleData.attachedToPoint
+        );
       }
     }
   }
@@ -518,27 +559,30 @@ export class CanvasComponent implements OnInit, AfterViewInit {
   ): void {
     if (manual) {
       this.isFigureSelection = changeTo;
-      if (!this.isFigureSelection) {
-        this.canvasService.setSelectedFigure(null);
-      }
-      return;
+    } else {
+      this.isFigureSelection = !this.isFigureSelection;
     }
 
-    this.isFigureSelection = !this.isFigureSelection;
-    if (!this.isFigureSelection) {
-      this.canvasService.setSelectedFigure(null);
+    if (this.isFigureSelection) {
+      this.isAngleSelection = false;
+    } else {
+      this.deselectFigure();
     }
   }
 
   toggleAngleSelection(): void {
     this.isAngleSelection = !this.isAngleSelection;
 
-    this.clearAllSelections();
+    if (this.isAngleSelection) {
+      this.isFigureSelection = false;
+      this.deselectFigure();
+    }
   }
 
-  clearAllSelections(): void {
-    this.toggleFigureSelection(true, false);
+  deselectFigure(): void {
     this.canvasService.setSelectedFigure(null);
+    this.selectedFigure = null;
+    this.clearPreviewCanvas();
   }
 
   toggleShapeTools(): void {
