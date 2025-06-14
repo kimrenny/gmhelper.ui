@@ -466,6 +466,14 @@
     }
   }
 
+  .angle-input {
+    position: absolute;
+    top: 20%;
+    right: 100px;
+    display: flex;
+    z-index: 45;
+  }
+
   .figure-action-panel {
     position: absolute;
     width: 40px;

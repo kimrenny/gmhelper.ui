@@ -120,6 +120,13 @@
     ></button>
   </div>
 
+  <angle-input
+    class="angle-input"
+    *ngIf="isAngleInputVisible"
+    [initialValue]="60"
+    (confirm)="onAngleConfirm($event)"
+  ></angle-input>
+
   <div
     class="figure-tool-buttons"
     [class.not-visible]="!selectedSubject || !canUndo"

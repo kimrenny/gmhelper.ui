@@ -21,11 +21,12 @@ import { CounterService } from './services/counter.service';
 import { LineLength } from './drawing-tools/types/line-length.type';
 import { Coords2d } from './drawing-tools/types/coords.type';
 import { AngleToolAction, angleToolMap } from './tools/angle-tools';
+import { AngleInputComponent } from './drawing-tools/angle-input/angle-input.component';
 
 @Component({
   selector: 'app-canvas',
   standalone: true,
-  imports: [CommonModule, FormsModule, TranslateModule],
+  imports: [CommonModule, FormsModule, TranslateModule, AngleInputComponent],
   templateUrl: './canvas.component.html',
   styleUrls: ['./canvas.component.scss'],
 })
@@ -64,6 +65,8 @@ export class CanvasComponent implements OnInit, AfterViewInit {
 
   isFigureSelection: boolean = false;
   isAngleSelection: boolean = false;
+
+  isAngleInputVisible = false;
 
   angleTools: AngleToolAction[] = angleToolMap;
 
@@ -323,8 +326,8 @@ export class CanvasComponent implements OnInit, AfterViewInit {
       if (figureData) {
         if (this.isFigureSelection) {
           this.selectFigure(figureData);
-          return;
         }
+        return;
       }
       this.currentTool?.onMouseDown?.(pos, this.toolContext);
     });
@@ -568,6 +571,12 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     }
   }
 
+  onAngleConfirm(value: number) {
+    if (!this.selectedAngle) return;
+    this.canvasService.setAngleValue(this.selectedAngle, value);
+    this.isAngleInputVisible = false;
+  }
+
   deselectFigure(): void {
     this.canvasService.setSelectedFigure(null);
     this.selectedFigure = null;
@@ -683,7 +692,18 @@ export class CanvasComponent implements OnInit, AfterViewInit {
   }
 
   handleAngleAction(actionName: string): void {
-    console.log(`${actionName} is called.`);
+    switch (actionName) {
+      case 'changeMeasurement': {
+        this.isAngleInputVisible = true;
+        break;
+      }
+      case 'func2': {
+        break;
+      }
+      case 'func3': {
+        break;
+      }
+    }
   }
 
   clearPreviewCanvas(): void {
