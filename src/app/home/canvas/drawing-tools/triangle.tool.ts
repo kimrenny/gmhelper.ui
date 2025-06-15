@@ -10,6 +10,7 @@ import {
   restoreLineLengthToService,
   setLineLengthToService,
 } from '../utils/line-length.utils';
+import { clearPreviewCanvas } from '../tools/clear-preview';
 
 export class Triangle implements DrawingTool {
   private path: { x: number; y: number; color: string }[] = [];
@@ -110,6 +111,12 @@ export class Triangle implements DrawingTool {
 
   onMouseDown(pos: { x: number; y: number }, data: ToolContext): void {
     if (this.path.length < 3) {
+      if (this.isNearExistingPoint(pos)) {
+        this.path = [];
+        clearPreviewCanvas(data);
+        return;
+      }
+
       this.path.push({ x: pos.x, y: pos.y, color: data.selectedColor });
       this.isDrawing = true;
       this.renderPreview(data);
@@ -129,6 +136,15 @@ export class Triangle implements DrawingTool {
     } else if (this.isDrawing && this.path.length === 2) {
       this.renderPreview(data);
     } else if (this.isDrawing && this.path.length === 3) {
+      if (
+        this.arePointsTooClose(this.path) ||
+        this.isAnyPointNearOppositeSide(this.path)
+      ) {
+        this.path = [];
+        clearPreviewCanvas(data);
+        return;
+      }
+
       const savePath = [...this.path];
       let figureName = '';
       const ctx = data.canvas?.getContext('2d');
@@ -162,8 +178,71 @@ export class Triangle implements DrawingTool {
           data.previewCanvas.height
         );
 
+      console.log('created figure:', figureName);
+
       return { tool: this, path: savePath, figureName: figureName };
     }
+  }
+
+  private isNearExistingPoint(pos: { x: number; y: number }): boolean {
+    return this.path.some(
+      (point) => Math.hypot(point.x - pos.x, point.y - pos.y) < 30
+    );
+  }
+
+  private arePointsTooClose(points: { x: number; y: number }[]): boolean {
+    const minDistance = 30;
+    for (let i = 0; i < points.length; i++) {
+      for (let j = i + 1; j < points.length; j++) {
+        const dist = Math.hypot(
+          points[i].x - points[j].x,
+          points[i].y - points[j].y
+        );
+        if (dist < minDistance) return true;
+      }
+    }
+    return false;
+  }
+
+  private isAnyPointNearOppositeSide(
+    points: { x: number; y: number }[]
+  ): boolean {
+    const minDistance = 30;
+
+    const getDistance = (p: any, a: any, b: any) => {
+      const A = p.x - a.x;
+      const B = p.y - a.y;
+      const C = b.x - a.x;
+      const D = b.y - a.y;
+
+      const dot = A * C + B * D;
+      const lenSq = C * C + D * D;
+      const param = lenSq !== 0 ? dot / lenSq : -1;
+
+      let xx, yy;
+
+      if (param < 0) {
+        xx = a.x;
+        yy = a.y;
+      } else if (param > 1) {
+        xx = b.x;
+        yy = b.y;
+      } else {
+        xx = a.x + param * C;
+        yy = a.y + param * D;
+      }
+
+      const dx = p.x - xx;
+      const dy = p.y - yy;
+      return Math.hypot(dx, dy);
+    };
+
+    const [A, B, C] = points;
+    return (
+      getDistance(A, B, C) < minDistance ||
+      getDistance(B, A, C) < minDistance ||
+      getDistance(C, A, B) < minDistance
+    );
   }
 
   onSelectFigure(
