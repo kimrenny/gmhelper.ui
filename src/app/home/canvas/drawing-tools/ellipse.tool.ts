@@ -11,7 +11,6 @@ export class Ellipse implements DrawingTool {
   private start: { x: number; y: number; color: string } | null = null;
   private end: { x: number; y: number; color: string } | null = null;
   private isDrawing: boolean = false;
-  private figureName: string = '';
 
   constructor(
     private canvasService: CanvasService,
@@ -153,7 +152,7 @@ export class Ellipse implements DrawingTool {
       return;
     }
 
-    this.figureName = this.counterService.getNextFigureName('Ellipse');
+    let figureName = this.counterService.getNextFigureName('Ellipse');
 
     this.end = {
       x: pos.x,
@@ -178,7 +177,7 @@ export class Ellipse implements DrawingTool {
     this.end = null;
     this.isDrawing = false;
 
-    return { tool: this, path, figureName: this.figureName };
+    return { tool: this, path, figureName: figureName };
   }
 
   onMouseLeave(pos: { x: number; y: number }, data: ToolContext): any {
@@ -225,14 +224,14 @@ export class Ellipse implements DrawingTool {
     const radiusX = Math.abs(end.x - start.x) / 2;
     const radiusY = Math.abs(end.y - start.y) / 2;
 
-    ctx.strokeStyle = '#ffcc00';
+    const color = '#ffcc00';
+
+    ctx.strokeStyle = color;
     ctx.lineWidth = 2;
 
     ctx.beginPath();
     ctx.ellipse(centerX, centerY, radiusX, radiusY, 0, 0, Math.PI * 2);
     ctx.stroke();
-
-    const color = '#ffcc00';
 
     this.drawLinesFromFigureData(
       ctx,
