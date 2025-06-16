@@ -465,6 +465,11 @@ export class CanvasComponent implements OnInit, AfterViewInit {
       this.canvasService.pushStack(lastPath, 'redo');
       this.redraw();
     }
+    if (!this.canUndo) {
+      this.isAngleSelection = false;
+      this.isAngleInputVisible = false;
+      if (this.selectedAngle) this.selectedAngle = null;
+    }
   }
 
   redo(): void {
@@ -574,6 +579,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
   onAngleConfirm(value: number) {
     if (!this.selectedAngle) return;
     this.canvasService.setAngleValue(this.selectedAngle, value);
+    this.redraw();
     this.isAngleInputVisible = false;
   }
 
@@ -723,5 +729,6 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     this.canvasService.resetPoints();
     this.counterService.resetCounter();
     this.canvasService.clearAllFigureElements();
+    this.canvasService.clearAllAngles();
   }
 }
