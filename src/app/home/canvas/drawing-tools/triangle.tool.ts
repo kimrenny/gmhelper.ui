@@ -11,6 +11,7 @@ import {
   setLineLengthToService,
 } from '../utils/line-length.utils';
 import { clearPreviewCanvas } from '../tools/clear-preview';
+import { drawFigureAngles } from '../utils/angle.utils';
 
 export class Triangle implements DrawingTool {
   private path: { x: number; y: number; color: string }[] = [];
@@ -106,6 +107,7 @@ export class Triangle implements DrawingTool {
 
     if (labelA && labelB && labelC) {
       this.markAngles(ctx, paths, true);
+      drawFigureAngles(ctx, this.canvasService, paths, 3);
     }
   }
 
@@ -177,8 +179,6 @@ export class Triangle implements DrawingTool {
           data.previewCanvas.width,
           data.previewCanvas.height
         );
-
-      console.log('created figure:', figureName);
 
       return { tool: this, path: savePath, figureName: figureName };
     }
