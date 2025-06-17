@@ -329,6 +329,9 @@ export class CanvasComponent implements OnInit, AfterViewInit {
         }
         return;
       }
+
+      if (this.isFigureSelection || this.isAngleSelection) return;
+
       this.currentTool?.onMouseDown?.(pos, this.toolContext);
     });
 
