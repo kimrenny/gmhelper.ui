@@ -32,6 +32,7 @@ export class CanvasService {
 
   constructor() {}
 
+  /* Points */
   addPoint(
     x: number,
     y: number,
@@ -55,63 +56,6 @@ export class CanvasService {
     return pointLabel;
   }
 
-  createLine(point1: string, point2: string): void {
-    const lineName = point1 + point2;
-    if (!(lineName in this.lines)) {
-      this.lines[lineName] = null;
-    }
-  }
-
-  setLineLength(point1: string, point2: string, length: LineLength): void {
-    const p1 = this.getPointByLabel(point1);
-    const p2 = this.getPointByLabel(point2);
-
-    if (!p1 || !p2) return;
-
-    const isPolygon =
-      p1.attachedToFigure &&
-      p1.attachedToFigure === p2.attachedToFigure &&
-      p1.attachedToFigure.toLowerCase().includes('polygon');
-
-    if (isPolygon) {
-      this.setPolygonLinesLength(p1, length);
-    } else {
-      const lineName = point1 + point2;
-      if (lineName in this.lines) {
-        this.lines[lineName] = length;
-      }
-    }
-  }
-
-  updateFigurePath(
-    name: string,
-    newPath: { x: number; y: number; color: string }[]
-  ): void {
-    const figure = this.paths.find((p) => p.figureName === name);
-    if (figure) {
-      figure.path = newPath;
-    }
-  }
-
-  setPolygonLinesLength(point: Point, length: LineLength): void {
-    const polygonPoints = this.getPointsByFigure(point.attachedToFigure);
-
-    for (let i = 0; i < polygonPoints.length; i++) {
-      for (let j = i + 1; j < polygonPoints.length; j++) {
-        const labelA = polygonPoints[i].label;
-        const labelB = polygonPoints[j].label;
-        const lineName1 = labelA + labelB;
-        const lineName2 = labelB + labelA;
-
-        if (this.lines[lineName1] !== undefined) {
-          this.lines[lineName1] = length;
-        } else if (this.lines[lineName2] !== undefined) {
-          this.lines[lineName2] = length;
-        }
-      }
-    }
-  }
-
   private getPointLabel(index: number): string {
     const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     let label = '';
@@ -124,8 +68,21 @@ export class CanvasService {
     return label;
   }
 
-  getPaths(): stackInfo[] {
-    return this.paths;
+  getAllPoints(): Point[] {
+    return this.points;
+  }
+
+  getPointByLabel(label: string): Point | undefined {
+    return this.points.find((p) => p.label === label);
+  }
+
+  getPointLabelByCoords(coords: Coords2d): string | null {
+    for (const point of this.points) {
+      if (point.x === coords.x && point.y === coords.y) {
+        return point.label;
+      }
+    }
+    return null;
   }
 
   getPointsByFigure(figureName: string, isEllipse: boolean = false): Point[] {
@@ -154,50 +111,66 @@ export class CanvasService {
     return [];
   }
 
-  getAllPoints(): Point[] {
-    return this.points;
+  bindPointToFigure(
+    point: Point,
+    figureName: string,
+    pointIndex: number
+  ): void {
+    point.attachedToFigure = figureName;
+    point.attachedToPoint = pointIndex;
   }
 
-  getAllFigures(): string[] {
-    return [
-      ...new Set(
-        this.paths
-          .map((p) => p.figureName)
-          .filter((name): name is string => typeof name === 'string')
-      ),
-    ];
+  resetPoints(): void {
+    this.points = [];
+    this.pointCounter = 0;
   }
 
-  getPointByLabel(label: string): Point | undefined {
-    return this.points.find((p) => p.label === label);
+  /* Lines */
+  createLine(point1: string, point2: string): void {
+    const lineName = point1 + point2;
+    if (!(lineName in this.lines)) {
+      this.lines[lineName] = null;
+    }
   }
 
-  getPointLabelByCoords(coords: Coords2d): string | null {
-    for (const point of this.points) {
-      if (point.x === coords.x && point.y === coords.y) {
-        return point.label;
+  setLineLength(point1: string, point2: string, length: LineLength): void {
+    const p1 = this.getPointByLabel(point1);
+    const p2 = this.getPointByLabel(point2);
+
+    if (!p1 || !p2) return;
+
+    const isPolygon =
+      p1.attachedToFigure &&
+      p1.attachedToFigure === p2.attachedToFigure &&
+      p1.attachedToFigure.toLowerCase().includes('polygon');
+
+    if (isPolygon) {
+      this.setPolygonLinesLength(p1, length);
+    } else {
+      const lineName = point1 + point2;
+      if (lineName in this.lines) {
+        this.lines[lineName] = length;
       }
     }
-    return null;
   }
 
-  getFigureNameByCoords(coords: Coords2d): string | null {
-    for (const point of this.points) {
-      if (point.x === coords.x && point.y === coords.y) {
-        return point.attachedToFigure ?? null;
-      }
-    }
+  setPolygonLinesLength(point: Point, length: LineLength): void {
+    const polygonPoints = this.getPointsByFigure(point.attachedToFigure);
 
-    for (const path of this.paths) {
-      for (const point of path.path) {
-        if (point.x === coords.x && point.y === coords.y) {
-          return path.figureName ?? null;
+    for (let i = 0; i < polygonPoints.length; i++) {
+      for (let j = i + 1; j < polygonPoints.length; j++) {
+        const labelA = polygonPoints[i].label;
+        const labelB = polygonPoints[j].label;
+        const lineName1 = labelA + labelB;
+        const lineName2 = labelB + labelA;
+
+        if (this.lines[lineName1] !== undefined) {
+          this.lines[lineName1] = length;
+        } else if (this.lines[lineName2] !== undefined) {
+          this.lines[lineName2] = length;
         }
       }
     }
-
-    console.warn('No matching point found for coords:', coords);
-    return null;
   }
 
   getLinesByFigureName(
@@ -238,33 +211,6 @@ export class CanvasService {
     return this.lines[`${a}${b}`] ?? this.lines[`${b}${a}`];
   }
 
-  getAllAngles(): Record<string, LineLength> {
-    return this.angles;
-  }
-
-  getAngleLabelByCoords(coords: Coords2d): string | null {
-    const point = this.points.find((p) => p.x === coords.x && p.y === coords.y);
-    if (point && this.angles[point.label]) {
-      return point.label;
-    }
-    return null;
-  }
-
-  setAngleValue(label: string, value: LineLength): void {
-    this.angles[label] = value;
-  }
-
-  getAngleValue(label: string): LineLength {
-    return this.angles[label];
-  }
-
-  getFigureColorByName(name: string): string {
-    return (
-      this.paths.find((f) => f.figureName === name)?.path?.[0].color ??
-      '#000000'
-    );
-  }
-
   findLineByPoint(pos: { x: number; y: number }): {
     point1: { x: number; y: number };
     point2: { x: number; y: number };
@@ -301,6 +247,137 @@ export class CanvasService {
     }
 
     return null;
+  }
+
+  private isPointNearLine(
+    p: { x: number; y: number },
+    a: { x: number; y: number },
+    b: { x: number; y: number },
+    tolerance: number
+  ): boolean {
+    const A = p.x - a.x;
+    const B = p.y - a.y;
+    const C = b.x - a.x;
+    const D = b.y - a.y;
+
+    const dot = A * C + B * D;
+    const len_sq = C * C + D * D;
+    let param = -1;
+
+    if (len_sq !== 0) param = dot / len_sq;
+
+    let xx, yy;
+
+    if (param < 0) {
+      xx = a.x;
+      yy = a.y;
+    } else if (param > 1) {
+      xx = b.x;
+      yy = b.y;
+    } else {
+      xx = a.x + param * C;
+      yy = a.y + param * D;
+    }
+
+    const dx = p.x - xx;
+    const dy = p.y - yy;
+
+    return Math.sqrt(dx * dx + dy * dy) <= tolerance;
+  }
+
+  /* Angles */
+  getAllAngles(): Record<string, LineLength> {
+    return this.angles;
+  }
+
+  getAngleLabelByCoords(coords: Coords2d): string | null {
+    const point = this.points.find((p) => p.x === coords.x && p.y === coords.y);
+    if (point && this.angles[point.label]) {
+      return point.label;
+    }
+    return null;
+  }
+
+  setAngleValue(label: string, value: LineLength): void {
+    this.angles[label] = value;
+  }
+
+  getAngleValue(label: string): LineLength {
+    return this.angles[label];
+  }
+
+  findAngleByPoint(pos: { x: number; y: number }): {
+    label: string;
+    attachedToFigure: string;
+    attachedToPoint: number;
+  } | null {
+    for (const point of this.points) {
+      const dx = point.x - pos.x;
+      const dy = point.y - pos.y;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+      if (distance <= 10 && this.angles[point.label]) {
+        return {
+          label: point.label,
+          attachedToFigure: point.attachedToFigure,
+          attachedToPoint: point.attachedToPoint,
+        };
+      }
+    }
+    return null;
+  }
+
+  clearAllAngles(): void {
+    this.angles = {};
+  }
+
+  /* Figures */
+  getAllFigures(): string[] {
+    return [
+      ...new Set(
+        this.paths
+          .map((p) => p.figureName)
+          .filter((name): name is string => typeof name === 'string')
+      ),
+    ];
+  }
+
+  getFigureNameByCoords(coords: Coords2d): string | null {
+    for (const point of this.points) {
+      if (point.x === coords.x && point.y === coords.y) {
+        return point.attachedToFigure ?? null;
+      }
+    }
+
+    for (const path of this.paths) {
+      for (const point of path.path) {
+        if (point.x === coords.x && point.y === coords.y) {
+          return path.figureName ?? null;
+        }
+      }
+    }
+
+    console.warn('No matching point found for coords:', coords);
+    return null;
+  }
+
+  getFigureColorByName(name: string): string {
+    return (
+      this.paths.find((f) => f.figureName === name)?.path?.[0].color ??
+      '#000000'
+    );
+  }
+
+  changeFigureColor(color: string): void {
+    if (!this.selectedFigure?.name) return;
+
+    const figure = this.paths.find(
+      (p) => p.figureName === this.selectedFigure!.name
+    );
+    if (!figure) return;
+
+    for (const point of figure.path) {
+      point.color = color;
+    }
   }
 
   findFigureByPoint(pos: { x: number; y: number }): {
@@ -360,26 +437,7 @@ export class CanvasService {
     return null;
   }
 
-  findAngleByPoint(pos: { x: number; y: number }): {
-    label: string;
-    attachedToFigure: string;
-    attachedToPoint: number;
-  } | null {
-    for (const point of this.points) {
-      const dx = point.x - pos.x;
-      const dy = point.y - pos.y;
-      const distance = Math.sqrt(dx * dx + dy * dy);
-      if (distance <= 10 && this.angles[point.label]) {
-        return {
-          label: point.label,
-          attachedToFigure: point.attachedToFigure,
-          attachedToPoint: point.attachedToPoint,
-        };
-      }
-    }
-    return null;
-  }
-
+  /* Figure elements */
   addFigureElement(
     figureName: string,
     elementType: string,
@@ -436,58 +494,14 @@ export class CanvasService {
     this.figureElements = {};
   }
 
-  clearAllAngles(): void {
-    this.angles = {};
-  }
-
   getFigureElements(figureName: string): string[] {
     if (!this.figureElements[figureName]) return [];
     return Array.from(this.figureElements[figureName]).map((el) => el.type);
   }
 
-  private isPointNearLine(
-    p: { x: number; y: number },
-    a: { x: number; y: number },
-    b: { x: number; y: number },
-    tolerance: number
-  ): boolean {
-    const A = p.x - a.x;
-    const B = p.y - a.y;
-    const C = b.x - a.x;
-    const D = b.y - a.y;
-
-    const dot = A * C + B * D;
-    const len_sq = C * C + D * D;
-    let param = -1;
-
-    if (len_sq !== 0) param = dot / len_sq;
-
-    let xx, yy;
-
-    if (param < 0) {
-      xx = a.x;
-      yy = a.y;
-    } else if (param > 1) {
-      xx = b.x;
-      yy = b.y;
-    } else {
-      xx = a.x + param * C;
-      yy = a.y + param * D;
-    }
-
-    const dx = p.x - xx;
-    const dy = p.y - yy;
-
-    return Math.sqrt(dx * dx + dy * dy) <= tolerance;
-  }
-
-  bindPointToFigure(
-    point: Point,
-    figureName: string,
-    pointIndex: number
-  ): void {
-    point.attachedToFigure = figureName;
-    point.attachedToPoint = pointIndex;
+  /* Stacks */
+  getPaths(): stackInfo[] {
+    return this.paths;
   }
 
   pushStack(path: stackInfo | null, stack: StackType) {
@@ -616,6 +630,17 @@ export class CanvasService {
     return this.redoStack.length > 0;
   }
 
+  updateFigurePath(
+    name: string,
+    newPath: { x: number; y: number; color: string }[]
+  ): void {
+    const figure = this.paths.find((p) => p.figureName === name);
+    if (figure) {
+      figure.path = newPath;
+    }
+  }
+
+  /* Selection */
   setSelectedLine(a: Coords2d, b: Coords2d) {
     this.selectedLine = { a, b };
   }
@@ -638,23 +663,5 @@ export class CanvasService {
 
   get isFigureSelected(): boolean {
     return !!this.selectedFigure?.name;
-  }
-
-  changeFigureColor(color: string): void {
-    if (!this.selectedFigure?.name) return;
-
-    const figure = this.paths.find(
-      (p) => p.figureName === this.selectedFigure!.name
-    );
-    if (!figure) return;
-
-    for (const point of figure.path) {
-      point.color = color;
-    }
-  }
-
-  resetPoints(): void {
-    this.points = [];
-    this.pointCounter = 0;
   }
 }
