@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Point } from '../utils/point';
+import { Point } from '../drawing-tools/types/point';
 import { stackInfo } from '../drawing-tools/types/stack-info.type';
 import { LineLength } from '../drawing-tools/types/line-length.type';
 import { StackType } from '../drawing-tools/types/stack.type';
@@ -252,8 +252,6 @@ export class CanvasService {
 
   setAngleValue(label: string, value: LineLength): void {
     this.angles[label] = value;
-
-    console.log('[setAngleValue] is called. Angles: ', this.angles);
   }
 
   getAngleValue(label: string): LineLength {
@@ -436,6 +434,10 @@ export class CanvasService {
 
   clearAllFigureElements(): void {
     this.figureElements = {};
+  }
+
+  clearAllAngles(): void {
+    this.angles = {};
   }
 
   getFigureElements(figureName: string): string[] {
