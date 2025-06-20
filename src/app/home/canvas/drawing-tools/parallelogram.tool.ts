@@ -10,6 +10,7 @@ import {
   restoreLineLengthToService,
   setLineLengthToService,
 } from '../utils/line-length.utils';
+import { PointsService } from '../services/points.service';
 
 export class Parallelogram implements DrawingTool {
   private path: { x: number; y: number }[] = [];
@@ -17,13 +18,11 @@ export class Parallelogram implements DrawingTool {
   private end: { x: number; y: number } | null = null;
   private figureName: string = '';
 
-  private canvasService: CanvasService;
-  private counterService: CounterService;
-
-  constructor(canvasService: CanvasService, counterService: CounterService) {
-    this.canvasService = canvasService;
-    this.counterService = counterService;
-  }
+  constructor(
+    private canvasService: CanvasService,
+    private pointsService: PointsService,
+    private counterService: CounterService
+  ) {}
 
   draw(
     ctx: CanvasRenderingContext2D,
@@ -61,10 +60,34 @@ export class Parallelogram implements DrawingTool {
       this.canvasService.createLine(label2, label3);
       this.canvasService.createLine(label3, label4);
       this.canvasService.createLine(label1, label4);
-      restoreLineLengthToService(this.canvasService, ctx, label1, label2);
-      restoreLineLengthToService(this.canvasService, ctx, label2, label3);
-      restoreLineLengthToService(this.canvasService, ctx, label3, label4);
-      restoreLineLengthToService(this.canvasService, ctx, label1, label4);
+      restoreLineLengthToService(
+        this.canvasService,
+        this.pointsService,
+        ctx,
+        label1,
+        label2
+      );
+      restoreLineLengthToService(
+        this.canvasService,
+        this.pointsService,
+        ctx,
+        label2,
+        label3
+      );
+      restoreLineLengthToService(
+        this.canvasService,
+        this.pointsService,
+        ctx,
+        label3,
+        label4
+      );
+      restoreLineLengthToService(
+        this.canvasService,
+        this.pointsService,
+        ctx,
+        label1,
+        label4
+      );
     }
   }
 
@@ -108,6 +131,7 @@ export class Parallelogram implements DrawingTool {
         this.canvasService.createLine(label1, label4);
         setLineLengthToService(
           this.canvasService,
+          this.pointsService,
           ctx,
           label1,
           label2,
@@ -115,9 +139,30 @@ export class Parallelogram implements DrawingTool {
           0,
           -10
         );
-        setLineLengthToService(this.canvasService, ctx, label2, label3, '?');
-        setLineLengthToService(this.canvasService, ctx, label3, label4, '?');
-        setLineLengthToService(this.canvasService, ctx, label1, label4, '?');
+        setLineLengthToService(
+          this.canvasService,
+          this.pointsService,
+          ctx,
+          label2,
+          label3,
+          '?'
+        );
+        setLineLengthToService(
+          this.canvasService,
+          this.pointsService,
+          ctx,
+          label3,
+          label4,
+          '?'
+        );
+        setLineLengthToService(
+          this.canvasService,
+          this.pointsService,
+          ctx,
+          label1,
+          label4,
+          '?'
+        );
       }
 
       this.path = [];
@@ -271,7 +316,7 @@ export class Parallelogram implements DrawingTool {
 
     if (!path) {
       this.path.forEach((point, index) => {
-        const label = this.canvasService.addPoint(
+        const label = this.pointsService.addPoint(
           point.x,
           point.y,
           this.figureName,
@@ -291,7 +336,7 @@ export class Parallelogram implements DrawingTool {
     }
 
     path.forEach((point, index) => {
-      const label = this.canvasService.addPoint(
+      const label = this.pointsService.addPoint(
         point.x,
         point.y,
         this.figureName,

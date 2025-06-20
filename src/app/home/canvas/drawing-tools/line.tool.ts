@@ -10,6 +10,7 @@ import {
   restoreLineLengthToService,
   setLineLengthToService,
 } from '../utils/line-length.utils';
+import { PointsService } from '../services/points.service';
 
 export class Line implements DrawingTool {
   private isDrawing: boolean = false;
@@ -19,6 +20,7 @@ export class Line implements DrawingTool {
 
   constructor(
     private canvasService: CanvasService,
+    private pointsService: PointsService,
     private counterService: CounterService
   ) {}
 
@@ -50,7 +52,13 @@ export class Line implements DrawingTool {
     if (redraw) {
       const [label1, label2] = this.addPointsToCanvasService(ctx, path);
       this.canvasService.createLine(label1, label2);
-      restoreLineLengthToService(this.canvasService, ctx, label1, label2);
+      restoreLineLengthToService(
+        this.canvasService,
+        this.pointsService,
+        ctx,
+        label1,
+        label2
+      );
     }
   }
 
@@ -134,7 +142,14 @@ export class Line implements DrawingTool {
         this.figureName = '';
         const [label1, label2] = this.addPointsToCanvasService(ctx);
         this.canvasService.createLine(label1, label2);
-        setLineLengthToService(this.canvasService, ctx, label1, label2, '?');
+        setLineLengthToService(
+          this.canvasService,
+          this.pointsService,
+          ctx,
+          label1,
+          label2,
+          '?'
+        );
       }
       this.previewEnd = null;
       const savePath = [...this.path];
@@ -229,7 +244,7 @@ export class Line implements DrawingTool {
 
     if (!path) {
       this.path.forEach((point, index) => {
-        const label = this.canvasService.addPoint(
+        const label = this.pointsService.addPoint(
           point.x,
           point.y,
           this.figureName,
@@ -248,7 +263,7 @@ export class Line implements DrawingTool {
       this.figureName = this.counterService.getNextFigureName('Line');
     }
     path.forEach((point, index) => {
-      const label = this.canvasService.addPoint(
+      const label = this.pointsService.addPoint(
         point.x,
         point.y,
         this.figureName,

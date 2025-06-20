@@ -12,19 +12,18 @@ import {
 } from '../utils/line-length.utils';
 import { clearPreviewCanvas } from '../tools/clear-preview';
 import { drawFigureAngles } from '../utils/angle.utils';
+import { PointsService } from '../services/points.service';
 
 export class Triangle implements DrawingTool {
   private path: { x: number; y: number; color: string }[] = [];
   private isDrawing: boolean = false;
   private end: { x: number; y: number } | null = null;
 
-  private canvasService: CanvasService;
-  private counterService: CounterService;
-
-  constructor(canvasService: CanvasService, counterService: CounterService) {
-    this.canvasService = canvasService;
-    this.counterService = counterService;
-  }
+  constructor(
+    private canvasService: CanvasService,
+    private pointsService: PointsService,
+    private counterService: CounterService
+  ) {}
 
   draw(
     ctx: CanvasRenderingContext2D,
@@ -68,9 +67,27 @@ export class Triangle implements DrawingTool {
       this.canvasService.createLine(label1, label2);
       this.canvasService.createLine(label2, label3);
       this.canvasService.createLine(label1, label3);
-      restoreLineLengthToService(this.canvasService, ctx, label1, label2);
-      restoreLineLengthToService(this.canvasService, ctx, label2, label3);
-      restoreLineLengthToService(this.canvasService, ctx, label1, label3);
+      restoreLineLengthToService(
+        this.canvasService,
+        this.pointsService,
+        ctx,
+        label1,
+        label2
+      );
+      restoreLineLengthToService(
+        this.canvasService,
+        this.pointsService,
+        ctx,
+        label2,
+        label3
+      );
+      restoreLineLengthToService(
+        this.canvasService,
+        this.pointsService,
+        ctx,
+        label1,
+        label3
+      );
 
       if (redraw && figureName) {
         this.drawLinesFromFigureData(ctx, path, figureName, true);
@@ -107,7 +124,7 @@ export class Triangle implements DrawingTool {
 
     if (labelA && labelB && labelC) {
       this.markAngles(ctx, paths, true);
-      drawFigureAngles(ctx, this.canvasService, paths, 3);
+      drawFigureAngles(ctx, this.canvasService, this.pointsService, paths, 3);
     }
   }
 
@@ -160,9 +177,30 @@ export class Triangle implements DrawingTool {
         this.canvasService.createLine(label1, label2);
         this.canvasService.createLine(label2, label3);
         this.canvasService.createLine(label1, label3);
-        setLineLengthToService(this.canvasService, ctx, label1, label2, '?');
-        setLineLengthToService(this.canvasService, ctx, label2, label3, '?');
-        setLineLengthToService(this.canvasService, ctx, label1, label3, '?');
+        setLineLengthToService(
+          this.canvasService,
+          this.pointsService,
+          ctx,
+          label1,
+          label2,
+          '?'
+        );
+        setLineLengthToService(
+          this.canvasService,
+          this.pointsService,
+          ctx,
+          label2,
+          label3,
+          '?'
+        );
+        setLineLengthToService(
+          this.canvasService,
+          this.pointsService,
+          ctx,
+          label1,
+          label3,
+          '?'
+        );
       }
 
       this.path = [];
@@ -369,15 +407,22 @@ export class Triangle implements DrawingTool {
 
     if (isPreview) return;
 
-    const labelA = this.canvasService.getPointLabelByCoords(topPoint);
+    const labelA = this.pointsService.getPointLabelByCoords(topPoint);
     if (!labelA) return;
 
-    const labelB = this.canvasService.addPoint(foot.x, foot.y, figureName, 4);
+    const labelB = this.pointsService.addPoint(foot.x, foot.y, figureName, 4);
 
     drawLabel(ctx, labelB, foot.x, foot.y);
 
     this.canvasService.createLine(labelA, labelB);
-    setLineLengthToService(this.canvasService, ctx, labelA, labelB, '?');
+    setLineLengthToService(
+      this.canvasService,
+      this.pointsService,
+      ctx,
+      labelA,
+      labelB,
+      '?'
+    );
 
     const line = `${labelA}${labelB}`;
 
@@ -425,12 +470,12 @@ export class Triangle implements DrawingTool {
       return;
     }
 
-    const labelA = this.canvasService.getPointLabelByCoords(vertex);
+    const labelA = this.pointsService.getPointLabelByCoords(vertex);
     if (!labelA) {
       return;
     }
 
-    const labelB = this.canvasService.addPoint(
+    const labelB = this.pointsService.addPoint(
       midPoint.x,
       midPoint.y,
       figureName,
@@ -440,7 +485,14 @@ export class Triangle implements DrawingTool {
     drawLabel(ctx, labelB, midPoint.x, midPoint.y);
 
     this.canvasService.createLine(labelA, labelB);
-    setLineLengthToService(this.canvasService, ctx, labelA, labelB, '?');
+    setLineLengthToService(
+      this.canvasService,
+      this.pointsService,
+      ctx,
+      labelA,
+      labelB,
+      '?'
+    );
 
     const line = `${labelA}${labelB}`;
 
@@ -491,7 +543,7 @@ export class Triangle implements DrawingTool {
       ctx.stroke();
 
       if (!isPreview) {
-        const label = this.canvasService.getPointLabelByCoords(vertex);
+        const label = this.pointsService.getPointLabelByCoords(vertex);
         if (label) {
           this.canvasService.setAngleValue(label, '?');
         }
@@ -579,7 +631,7 @@ export class Triangle implements DrawingTool {
 
     if (!path) {
       this.path.forEach((point, index) => {
-        const label = this.canvasService.addPoint(
+        const label = this.pointsService.addPoint(
           point.x,
           point.y,
           figureName,
@@ -598,7 +650,7 @@ export class Triangle implements DrawingTool {
     }
 
     path.forEach((point, index) => {
-      const label = this.canvasService.addPoint(
+      const label = this.pointsService.addPoint(
         point.x,
         point.y,
         figureName,

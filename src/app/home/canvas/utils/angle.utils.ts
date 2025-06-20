@@ -1,9 +1,11 @@
 import { LineLength } from '../drawing-tools/types/line-length.type';
 import { CanvasService } from '../services/canvas.service';
+import { PointsService } from '../services/points.service';
 
 export function drawFigureAngles(
   ctx: CanvasRenderingContext2D,
   canvasService: CanvasService,
+  pointsService: PointsService,
   path: { x: number; y: number }[],
   angleCount: number,
   fontsize: number = 14,
@@ -34,7 +36,7 @@ export function drawFigureAngles(
       y: center.y + dy * factor,
     };
 
-    const label = canvasService.getPointLabelByCoords(vertex);
+    const label = pointsService.getPointLabelByCoords(vertex);
     if (!label) continue;
 
     const angleValue = canvasService.getAngleValue(label);

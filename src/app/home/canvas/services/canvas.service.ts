@@ -4,13 +4,12 @@ import { stackInfo } from '../drawing-tools/types/stack-info.type';
 import { LineLength } from '../drawing-tools/types/line-length.type';
 import { StackType } from '../drawing-tools/types/stack.type';
 import { Coords2d } from '../drawing-tools/types/coords.type';
+import { PointsService } from './points.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CanvasService {
-  private points: Point[] = [];
-  private pointCounter: number = 0;
   private lines: Record<string, LineLength> = {};
   private angles: Record<string, LineLength> = {};
 
@@ -30,66 +29,13 @@ export class CanvasService {
   > = {};
   private linesRedo: Record<string, LineLength>[] = [];
 
-  constructor() {}
-
-  /* Points */
-  addPoint(
-    x: number,
-    y: number,
-    attachedToFigure: string,
-    attachedToPoint: number
-  ): string {
-    const pointId = this.pointCounter++;
-
-    const pointLabel = this.getPointLabel(pointId);
-
-    const point = new Point(
-      x,
-      y,
-      attachedToFigure,
-      attachedToPoint,
-      pointLabel
-    );
-
-    this.points.push(point);
-
-    return pointLabel;
-  }
-
-  private getPointLabel(index: number): string {
-    const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    let label = '';
-    let i = index;
-    while (i >= alphabet.length) {
-      label = alphabet[i % alphabet.length] + label;
-      i = Math.floor(i / alphabet.length) - 1;
-    }
-    label = alphabet[i] + label;
-    return label;
-  }
-
-  getAllPoints(): Point[] {
-    return this.points;
-  }
-
-  getPointByLabel(label: string): Point | undefined {
-    return this.points.find((p) => p.label === label);
-  }
-
-  getPointLabelByCoords(coords: Coords2d): string | null {
-    for (const point of this.points) {
-      if (point.x === coords.x && point.y === coords.y) {
-        return point.label;
-      }
-    }
-    return null;
-  }
+  constructor(private pointsService: PointsService) {}
 
   getPointsByFigure(figureName: string, isEllipse: boolean = false): Point[] {
     if (!isEllipse) {
-      const matchedPoints = this.points.filter(
-        (point) => point.attachedToFigure === figureName
-      );
+      const matchedPoints = this.pointsService
+        .getAllPoints()
+        .filter((point) => point.attachedToFigure === figureName);
 
       if (matchedPoints.length > 0) {
         return matchedPoints;
@@ -111,20 +57,6 @@ export class CanvasService {
     return [];
   }
 
-  bindPointToFigure(
-    point: Point,
-    figureName: string,
-    pointIndex: number
-  ): void {
-    point.attachedToFigure = figureName;
-    point.attachedToPoint = pointIndex;
-  }
-
-  resetPoints(): void {
-    this.points = [];
-    this.pointCounter = 0;
-  }
-
   /* Lines */
   createLine(point1: string, point2: string): void {
     const lineName = point1 + point2;
@@ -134,8 +66,8 @@ export class CanvasService {
   }
 
   setLineLength(point1: string, point2: string, length: LineLength): void {
-    const p1 = this.getPointByLabel(point1);
-    const p2 = this.getPointByLabel(point2);
+    const p1 = this.pointsService.getPointByLabel(point1);
+    const p2 = this.pointsService.getPointByLabel(point2);
 
     if (!p1 || !p2) return;
 
@@ -176,9 +108,9 @@ export class CanvasService {
   getLinesByFigureName(
     figureName: string
   ): { name: string; a: Coords2d; b: Coords2d }[] {
-    const figurePoints = this.points.filter(
-      (p) => p.attachedToFigure === figureName
-    );
+    const figurePoints = this.pointsService
+      .getAllPoints()
+      .filter((p) => p.attachedToFigure === figureName);
 
     const nameToCoord = new Map<string, Coords2d>();
     for (const p of figurePoints) {
@@ -222,8 +154,8 @@ export class CanvasService {
       const label1 = lineName[0];
       const label2 = lineName[1];
 
-      const point1 = this.getPointByLabel(label1);
-      const point2 = this.getPointByLabel(label2);
+      const point1 = this.pointsService.getPointByLabel(label1);
+      const point2 = this.pointsService.getPointByLabel(label2);
 
       if (!point1 || !point2) {
         continue;
@@ -291,7 +223,9 @@ export class CanvasService {
   }
 
   getAngleLabelByCoords(coords: Coords2d): string | null {
-    const point = this.points.find((p) => p.x === coords.x && p.y === coords.y);
+    const point = this.pointsService
+      .getAllPoints()
+      .find((p) => p.x === coords.x && p.y === coords.y);
     if (point && this.angles[point.label]) {
       return point.label;
     }
@@ -311,7 +245,7 @@ export class CanvasService {
     attachedToFigure: string;
     attachedToPoint: number;
   } | null {
-    for (const point of this.points) {
+    for (const point of this.pointsService.getAllPoints()) {
       const dx = point.x - pos.x;
       const dy = point.y - pos.y;
       const distance = Math.sqrt(dx * dx + dy * dy);
@@ -342,7 +276,7 @@ export class CanvasService {
   }
 
   getFigureNameByCoords(coords: Coords2d): string | null {
-    for (const point of this.points) {
+    for (const point of this.pointsService.getAllPoints()) {
       if (point.x === coords.x && point.y === coords.y) {
         return point.attachedToFigure ?? null;
       }
@@ -478,12 +412,6 @@ export class CanvasService {
     if (this.figureElements[figureName].size === 0) {
       delete this.figureElements[figureName];
     }
-  }
-
-  removeFigureElementPoints(figureName: string) {
-    this.points = this.points.filter(
-      (p) => !(p.attachedToFigure === figureName && p.attachedToPoint < 0)
-    );
   }
 
   clearfigureElements(figureName: string): void {

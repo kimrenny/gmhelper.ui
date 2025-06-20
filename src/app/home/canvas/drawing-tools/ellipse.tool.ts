@@ -2,6 +2,7 @@ import { DrawingTool } from '../interfaces/drawing-tool.interface';
 import { ToolContext } from '../interfaces/tool-context.interface';
 import { CanvasService } from '../services/canvas.service';
 import { CounterService } from '../services/counter.service';
+import { PointsService } from '../services/points.service';
 import { clearPreviewCanvas } from '../tools/clear-preview';
 import { drawLabel } from '../tools/draw-point-label';
 import { setLineLengthToService } from '../utils/line-length.utils';
@@ -14,6 +15,7 @@ export class Ellipse implements DrawingTool {
 
   constructor(
     private canvasService: CanvasService,
+    private pointsService: PointsService,
     private counterService: CounterService
   ) {}
 
@@ -309,7 +311,7 @@ export class Ellipse implements DrawingTool {
 
     if (isPreview) return;
 
-    const labelA = this.canvasService.addPoint(
+    const labelA = this.pointsService.addPoint(
       centerX,
       centerY,
       figureName,
@@ -317,7 +319,7 @@ export class Ellipse implements DrawingTool {
     );
     drawLabel(ctx, labelA, centerX, centerY);
 
-    const labelB = this.canvasService.addPoint(
+    const labelB = this.pointsService.addPoint(
       edgePoint.x,
       edgePoint.y,
       figureName,
@@ -327,7 +329,14 @@ export class Ellipse implements DrawingTool {
 
     this.canvasService.createLine(labelA, labelB);
 
-    setLineLengthToService(this.canvasService, ctx, labelA, labelB, '?');
+    setLineLengthToService(
+      this.canvasService,
+      this.pointsService,
+      ctx,
+      labelA,
+      labelB,
+      '?'
+    );
 
     const line = `${labelA}${labelB}`;
 
@@ -377,7 +386,7 @@ export class Ellipse implements DrawingTool {
 
     if (isPreview) return;
 
-    const labelA = this.canvasService.addPoint(
+    const labelA = this.pointsService.addPoint(
       firstPoint.x,
       firstPoint.y,
       figureName,
@@ -385,7 +394,7 @@ export class Ellipse implements DrawingTool {
     );
     drawLabel(ctx, labelA, firstPoint.x, firstPoint.y);
 
-    const labelB = this.canvasService.addPoint(
+    const labelB = this.pointsService.addPoint(
       secondPoint.x,
       secondPoint.y,
       figureName,
@@ -395,7 +404,14 @@ export class Ellipse implements DrawingTool {
 
     this.canvasService.createLine(labelA, labelB);
 
-    setLineLengthToService(this.canvasService, ctx, labelA, labelB, '?');
+    setLineLengthToService(
+      this.canvasService,
+      this.pointsService,
+      ctx,
+      labelA,
+      labelB,
+      '?'
+    );
 
     const line = `${labelA}${labelB}`;
 

@@ -22,6 +22,7 @@ import { LineLength } from './drawing-tools/types/line-length.type';
 import { Coords2d } from './drawing-tools/types/coords.type';
 import { AngleToolAction, angleToolMap } from './tools/angle-tools';
 import { AngleInputComponent } from './drawing-tools/angle-input/angle-input.component';
+import { PointsService } from './services/points.service';
 
 @Component({
   selector: 'app-canvas',
@@ -29,6 +30,7 @@ import { AngleInputComponent } from './drawing-tools/angle-input/angle-input.com
   imports: [CommonModule, FormsModule, TranslateModule, AngleInputComponent],
   templateUrl: './canvas.component.html',
   styleUrls: ['./canvas.component.scss'],
+  providers: [CanvasService, PointsService],
 })
 export class CanvasComponent implements OnInit, AfterViewInit {
   scale = 100;
@@ -245,6 +247,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
 
   constructor(
     private canvasService: CanvasService,
+    private pointsService: PointsService,
     private counterService: CounterService,
     private toastr: ToastrService,
     private translate: TranslateService
@@ -252,7 +255,12 @@ export class CanvasComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.toolSelector = new ToolSelector(
-      getDefaultTools(this.polygonTool, this.canvasService, this.counterService)
+      getDefaultTools(
+        this.polygonTool,
+        this.canvasService,
+        this.pointsService,
+        this.counterService
+      )
     );
     //this.selectTool('pencil');
   }
@@ -512,7 +520,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
       0,
       0
     );
-    this.canvasService.resetPoints();
+    this.pointsService.resetPoints();
     this.counterService.resetCounter();
 
     for (const p of this.canvasService.getPaths()) {
@@ -616,8 +624,8 @@ export class CanvasComponent implements OnInit, AfterViewInit {
   onChangeLineLengthClick(): void {
     const selectedLine = this.canvasService.getSelectedLine();
     if (selectedLine) {
-      const a = this.canvasService.getPointLabelByCoords(selectedLine.a);
-      const b = this.canvasService.getPointLabelByCoords(selectedLine.b);
+      const a = this.pointsService.getPointLabelByCoords(selectedLine.a);
+      const b = this.pointsService.getPointLabelByCoords(selectedLine.b);
       if (!a || !b) return;
 
       const centerX = (selectedLine.a.x + selectedLine.b.x) / 2;
@@ -633,8 +641,8 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     if (this.lineLength != null) {
       const selectedLine = this.canvasService.getSelectedLine();
       if (selectedLine) {
-        const a = this.canvasService.getPointLabelByCoords(selectedLine.a);
-        const b = this.canvasService.getPointLabelByCoords(selectedLine.b);
+        const a = this.pointsService.getPointLabelByCoords(selectedLine.a);
+        const b = this.pointsService.getPointLabelByCoords(selectedLine.b);
         if (!a || !b) return;
         this.canvasService.setLineLength(a, b, this.lineLength);
         this.isLineLengthChanging = false;
@@ -666,12 +674,14 @@ export class CanvasComponent implements OnInit, AfterViewInit {
       this.polygonTool = new Polygon(
         sides,
         this.canvasService,
+        this.pointsService,
         this.counterService
       );
       this.toolSelector = new ToolSelector(
         getDefaultTools(
           this.polygonTool,
           this.canvasService,
+          this.pointsService,
           this.counterService
         )
       );
@@ -729,7 +739,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     this.canvasService.resetStack('paths');
     this.canvasService.resetStack('redo');
     this.redraw();
-    this.canvasService.resetPoints();
+    this.pointsService.resetPoints();
     this.counterService.resetCounter();
     this.canvasService.clearAllFigureElements();
     this.canvasService.clearAllAngles();
