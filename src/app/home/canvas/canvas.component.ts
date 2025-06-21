@@ -23,6 +23,7 @@ import { Coords2d } from './drawing-tools/types/coords.type';
 import { AngleToolAction, angleToolMap } from './tools/angle-tools';
 import { AngleInputComponent } from './drawing-tools/angle-input/angle-input.component';
 import { PointsService } from './services/points.service';
+import { AnglesService } from './services/angles.service';
 
 @Component({
   selector: 'app-canvas',
@@ -30,7 +31,7 @@ import { PointsService } from './services/points.service';
   imports: [CommonModule, FormsModule, TranslateModule, AngleInputComponent],
   templateUrl: './canvas.component.html',
   styleUrls: ['./canvas.component.scss'],
-  providers: [CanvasService, PointsService],
+  providers: [CanvasService, PointsService, AnglesService],
 })
 export class CanvasComponent implements OnInit, AfterViewInit {
   scale = 100;
@@ -248,6 +249,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
   constructor(
     private canvasService: CanvasService,
     private pointsService: PointsService,
+    private anglesService: AnglesService,
     private counterService: CounterService,
     private toastr: ToastrService,
     private translate: TranslateService
@@ -259,6 +261,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
         this.polygonTool,
         this.canvasService,
         this.pointsService,
+        this.anglesService,
         this.counterService
       )
     );
@@ -312,7 +315,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
       this.canvasService.setSelectedFigure(null);
       this.selectedAngle = null;
 
-      const angleData = this.canvasService.findAngleByPoint(pos);
+      const angleData = this.anglesService.findAngleByPoint(pos);
 
       if (this.isAngleSelection && angleData) {
         this.selectAngle(angleData);
@@ -589,7 +592,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
 
   onAngleConfirm(value: number) {
     if (!this.selectedAngle) return;
-    this.canvasService.setAngleValue(this.selectedAngle, value);
+    this.anglesService.setAngleValue(this.selectedAngle, value);
     this.redraw();
     this.isAngleInputVisible = false;
   }
@@ -675,6 +678,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
         sides,
         this.canvasService,
         this.pointsService,
+        this.anglesService,
         this.counterService
       );
       this.toolSelector = new ToolSelector(
@@ -682,6 +686,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
           this.polygonTool,
           this.canvasService,
           this.pointsService,
+          this.anglesService,
           this.counterService
         )
       );
@@ -742,6 +747,6 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     this.pointsService.resetPoints();
     this.counterService.resetCounter();
     this.canvasService.clearAllFigureElements();
-    this.canvasService.clearAllAngles();
+    this.anglesService.clearAllAngles();
   }
 }

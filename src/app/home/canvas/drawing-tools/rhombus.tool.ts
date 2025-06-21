@@ -12,6 +12,7 @@ import {
   setLineLengthToService,
 } from '../utils/line-length.utils';
 import { PointsService } from '../services/points.service';
+import { AnglesService } from '../services/angles.service';
 
 export class Rhombus implements DrawingTool {
   private start: { x: number; y: number; color: string } | null = null;
@@ -22,6 +23,7 @@ export class Rhombus implements DrawingTool {
   constructor(
     private canvasService: CanvasService,
     private pointsService: PointsService,
+    private anglesService: AnglesService,
     private counterService: CounterService
   ) {}
 

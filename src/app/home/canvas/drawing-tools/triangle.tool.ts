@@ -13,6 +13,7 @@ import {
 import { clearPreviewCanvas } from '../tools/clear-preview';
 import { drawFigureAngles } from '../utils/angle.utils';
 import { PointsService } from '../services/points.service';
+import { AnglesService } from '../services/angles.service';
 
 export class Triangle implements DrawingTool {
   private path: { x: number; y: number; color: string }[] = [];
@@ -22,6 +23,7 @@ export class Triangle implements DrawingTool {
   constructor(
     private canvasService: CanvasService,
     private pointsService: PointsService,
+    private anglesService: AnglesService,
     private counterService: CounterService
   ) {}
 
@@ -104,9 +106,9 @@ export class Triangle implements DrawingTool {
     const hasHeight = this.canvasService.hasFigureElement(figureName, 'height');
     const hasMedian = this.canvasService.hasFigureElement(figureName, 'median');
 
-    const labelA = this.canvasService.getAngleLabelByCoords(path[0]);
-    const labelB = this.canvasService.getAngleLabelByCoords(path[1]);
-    const labelC = this.canvasService.getAngleLabelByCoords(path[2]);
+    const labelA = this.anglesService.getAngleLabelByCoords(path[0]);
+    const labelB = this.anglesService.getAngleLabelByCoords(path[1]);
+    const labelC = this.anglesService.getAngleLabelByCoords(path[2]);
 
     const color = path[0].color ?? '#000';
     const paths = path.map((p) => ({
@@ -124,7 +126,7 @@ export class Triangle implements DrawingTool {
 
     if (labelA && labelB && labelC) {
       this.markAngles(ctx, paths, true);
-      drawFigureAngles(ctx, this.canvasService, this.pointsService, paths, 3);
+      drawFigureAngles(ctx, this.anglesService, this.pointsService, paths, 3);
     }
   }
 
@@ -545,7 +547,7 @@ export class Triangle implements DrawingTool {
       if (!isPreview) {
         const label = this.pointsService.getPointLabelByCoords(vertex);
         if (label) {
-          this.canvasService.setAngleValue(label, '?');
+          this.anglesService.setAngleValue(label, '?');
         }
       }
     };

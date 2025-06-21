@@ -12,6 +12,7 @@ import {
   setLineLengthToService,
 } from '../utils/line-length.utils';
 import { PointsService } from '../services/points.service';
+import { AnglesService } from '../services/angles.service';
 
 export class Polygon implements DrawingTool {
   private center: { x: number; y: number } | null = null;
@@ -25,6 +26,7 @@ export class Polygon implements DrawingTool {
     sides: number,
     private canvasService: CanvasService,
     private pointsService: PointsService,
+    private anglesService: AnglesService,
     private counterService: CounterService
   ) {
     if (sides < 3) {

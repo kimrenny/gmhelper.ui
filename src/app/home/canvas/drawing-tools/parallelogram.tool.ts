@@ -11,6 +11,7 @@ import {
   setLineLengthToService,
 } from '../utils/line-length.utils';
 import { PointsService } from '../services/points.service';
+import { AnglesService } from '../services/angles.service';
 
 export class Parallelogram implements DrawingTool {
   private path: { x: number; y: number }[] = [];
@@ -21,6 +22,7 @@ export class Parallelogram implements DrawingTool {
   constructor(
     private canvasService: CanvasService,
     private pointsService: PointsService,
+    private anglesService: AnglesService,
     private counterService: CounterService
   ) {}
 

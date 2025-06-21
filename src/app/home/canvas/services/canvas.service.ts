@@ -11,7 +11,6 @@ import { PointsService } from './points.service';
 })
 export class CanvasService {
   private lines: Record<string, LineLength> = {};
-  private angles: Record<string, LineLength> = {};
 
   private selectedLine: { a: Coords2d; b: Coords2d } | null = null;
   private selectedFigure: { name: string } | null = null;
@@ -217,53 +216,6 @@ export class CanvasService {
     return Math.sqrt(dx * dx + dy * dy) <= tolerance;
   }
 
-  /* Angles */
-  getAllAngles(): Record<string, LineLength> {
-    return this.angles;
-  }
-
-  getAngleLabelByCoords(coords: Coords2d): string | null {
-    const point = this.pointsService
-      .getAllPoints()
-      .find((p) => p.x === coords.x && p.y === coords.y);
-    if (point && this.angles[point.label]) {
-      return point.label;
-    }
-    return null;
-  }
-
-  setAngleValue(label: string, value: LineLength): void {
-    this.angles[label] = value;
-  }
-
-  getAngleValue(label: string): LineLength {
-    return this.angles[label];
-  }
-
-  findAngleByPoint(pos: { x: number; y: number }): {
-    label: string;
-    attachedToFigure: string;
-    attachedToPoint: number;
-  } | null {
-    for (const point of this.pointsService.getAllPoints()) {
-      const dx = point.x - pos.x;
-      const dy = point.y - pos.y;
-      const distance = Math.sqrt(dx * dx + dy * dy);
-      if (distance <= 10 && this.angles[point.label]) {
-        return {
-          label: point.label,
-          attachedToFigure: point.attachedToFigure,
-          attachedToPoint: point.attachedToPoint,
-        };
-      }
-    }
-    return null;
-  }
-
-  clearAllAngles(): void {
-    this.angles = {};
-  }
-
   /* Figures */
   getAllFigures(): string[] {
     return [
@@ -446,15 +398,26 @@ export class CanvasService {
             delete this.figureElements[path.figureName];
           }
 
-          if (this.lines[path.figureName]) {
-            this.linesRedo.push({
-              [path.figureName]: this.lines[path.figureName],
-            });
-            delete this.lines[path.figureName];
+          const linesToRedo: Record<string, LineLength> = {};
+          const elements = this.figureElements[path.figureName];
+          elements?.forEach((el) => {
+            if (
+              el.type === 'line' &&
+              el.label &&
+              this.lines[el.label] !== undefined
+            ) {
+              linesToRedo[el.label] = this.lines[el.label];
+              delete this.lines[el.label];
+            }
+          });
+
+          if (Object.keys(linesToRedo).length > 0) {
+            this.linesRedo.push(linesToRedo);
           }
         }
         return;
       }
+
       case 'paths': {
         this.paths.push(path);
 
@@ -465,13 +428,25 @@ export class CanvasService {
             delete this.figureElementsRedo[path.figureName];
           }
 
-          const lineIndex = this.linesRedo.findIndex(
-            (lineObj) => Object.keys(lineObj)[0] === path.figureName
-          );
-          if (lineIndex !== -1) {
-            this.lines[path.figureName] =
-              this.linesRedo[lineIndex][path.figureName];
-            this.linesRedo.splice(lineIndex, 1);
+          const figureName = path.figureName;
+          if (!figureName) break;
+
+          const index = this.linesRedo.findIndex((obj) => {
+            const elementSet = this.figureElements[figureName];
+            if (!elementSet) return false;
+
+            return Object.keys(obj).some((label) =>
+              Array.from(
+                elementSet as Set<{ type: string; label?: string }>
+              ).some((e) => e.type === 'line' && e.label === label)
+            );
+          });
+
+          if (index !== -1) {
+            Object.entries(this.linesRedo[index]).forEach(([label, value]) => {
+              this.lines[label] = value;
+            });
+            this.linesRedo.splice(index, 1);
           }
         }
         break;
@@ -493,13 +468,25 @@ export class CanvasService {
             delete this.figureElementsRedo[path.figureName];
           }
 
-          const lineIndex = this.linesRedo.findIndex(
-            (lineObj) => Object.keys(lineObj)[0] === path.figureName
-          );
-          if (lineIndex !== -1) {
-            this.lines[path.figureName] =
-              this.linesRedo[lineIndex][path.figureName];
-            this.linesRedo.splice(lineIndex, 1);
+          const figureName = path.figureName;
+          if (!figureName) break;
+
+          const index = this.linesRedo.findIndex((obj) => {
+            const elementSet = this.figureElements[figureName];
+            if (!elementSet) return false;
+
+            return Object.keys(obj).some((label) =>
+              Array.from(
+                elementSet as Set<{ type: string; label?: string }>
+              ).some((e) => e.type === 'line' && e.label === label)
+            );
+          });
+
+          if (index !== -1) {
+            Object.entries(this.linesRedo[index]).forEach(([label, value]) => {
+              this.lines[label] = value;
+            });
+            this.linesRedo.splice(index, 1);
           }
         }
 
@@ -518,11 +505,21 @@ export class CanvasService {
             delete this.figureElements[path.figureName];
           }
 
-          if (this.lines[path.figureName]) {
-            this.linesRedo.push({
-              [path.figureName]: this.lines[path.figureName],
-            });
-            delete this.lines[path.figureName];
+          const linesToRedo: Record<string, LineLength> = {};
+          const elements = this.figureElements[path.figureName];
+          elements?.forEach((el) => {
+            if (
+              el.type === 'line' &&
+              el.label &&
+              this.lines[el.label] !== undefined
+            ) {
+              linesToRedo[el.label] = this.lines[el.label];
+              delete this.lines[el.label];
+            }
+          });
+
+          if (Object.keys(linesToRedo).length > 0) {
+            this.linesRedo.push(linesToRedo);
           }
 
           this.removeFigureElement(path.figureName, 'all');
@@ -531,6 +528,8 @@ export class CanvasService {
         return path;
       }
     }
+
+    return undefined;
   }
 
   resetStack(stack: StackType) {

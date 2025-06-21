@@ -10,11 +10,13 @@ import { DrawingTool } from '../interfaces/drawing-tool.interface';
 import { CanvasService } from '../services/canvas.service';
 import { CounterService } from '../services/counter.service';
 import { PointsService } from '../services/points.service';
+import { AnglesService } from '../services/angles.service';
 
 export function getDefaultTools(
   polygonTool: DrawingTool,
   canvasService: CanvasService,
   pointsService: PointsService,
+  anglesService: AnglesService,
   counterService: CounterService
 ) {
   return {
@@ -23,13 +25,34 @@ export function getDefaultTools(
     parallelogram: new Parallelogram(
       canvasService,
       pointsService,
+      anglesService,
       counterService
     ),
     line: new Line(canvasService, pointsService, counterService),
     polygon: polygonTool,
-    triangle: new Triangle(canvasService, pointsService, counterService),
-    rectangle: new Rectangle(canvasService, pointsService, counterService),
-    trapezoid: new Trapezoid(canvasService, pointsService, counterService),
-    rhombus: new Rhombus(canvasService, pointsService, counterService),
+    triangle: new Triangle(
+      canvasService,
+      pointsService,
+      anglesService,
+      counterService
+    ),
+    rectangle: new Rectangle(
+      canvasService,
+      pointsService,
+      anglesService,
+      counterService
+    ),
+    trapezoid: new Trapezoid(
+      canvasService,
+      pointsService,
+      anglesService,
+      counterService
+    ),
+    rhombus: new Rhombus(
+      canvasService,
+      pointsService,
+      anglesService,
+      counterService
+    ),
   };
 }
