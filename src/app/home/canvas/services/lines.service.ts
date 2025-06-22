@@ -9,6 +9,7 @@ import { Point } from '../drawing-tools/types/point';
 })
 export class LinesService {
   private lines: Record<string, LineLength> = {};
+  private linesRedo: Record<string, LineLength>[] = [];
 
   constructor(private pointsService: PointsService) {}
 
@@ -139,6 +140,38 @@ export class LinesService {
     }
 
     return null;
+  }
+
+  moveToRedo(labels: string[]): void {
+    const linesToRedo: Record<string, LineLength> = {};
+
+    for (const label of labels) {
+      if (this.hasLine(label)) {
+        linesToRedo[label] = this.getLineLength(label[0], label[1]);
+        this.deleteLine(label);
+      }
+    }
+
+    if (Object.keys(linesToRedo).length > 0) {
+      this.linesRedo.push(linesToRedo);
+    }
+  }
+
+  restoreFromRedo(labels: string[]): void {
+    const index = this.linesRedo.findIndex((obj) =>
+      Object.keys(obj).some((label) => labels.includes(label))
+    );
+
+    if (index !== -1) {
+      Object.entries(this.linesRedo[index]).forEach(([label, value]) => {
+        this.setLine(label, value);
+      });
+      this.linesRedo.splice(index, 1);
+    }
+  }
+
+  resetRedo(): void {
+    this.linesRedo = [];
   }
 
   private isPointNearLine(

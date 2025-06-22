@@ -11,7 +11,6 @@ import { StackType } from '../drawing-tools/types/stack.type';
 export class StackService {
   private paths: stackInfo[] = [];
   private redoStack: stackInfo[] = [];
-  private linesRedo: Record<string, LineLength>[] = [];
 
   private linesService!: LinesService;
 
@@ -43,27 +42,17 @@ export class StackService {
         if (path.figureName) {
           this.figureElementsService.moveToRedo(path.figureName);
 
-          const linesToRedo: Record<string, LineLength> = {};
           const elements = this.figureElementsService.getFigureElements(
             path.figureName
           );
-          elements?.forEach((el) => {
-            if (
-              el.type === 'line' &&
-              el.label &&
-              linesService.hasLine(el.label)
-            ) {
-              linesToRedo[el.label] = linesService.getLineLength(
-                el.label[0],
-                el.label[1]
-              );
-              linesService.deleteLine(el.label);
-            }
-          });
+          const labels = Array.from(elements ?? [])
+            .filter(
+              (el: { type: string; label?: string }) =>
+                el.type === 'line' && el.label
+            )
+            .map((el) => el.label!);
 
-          if (Object.keys(linesToRedo).length > 0) {
-            this.linesRedo.push(linesToRedo);
-          }
+          linesService.moveToRedo(labels);
         }
         return;
       }
@@ -77,22 +66,14 @@ export class StackService {
           const elements = this.figureElementsService.getFigureElements(
             path.figureName
           );
-          if (!elements) break;
-
-          const index = this.linesRedo.findIndex((obj) =>
-            Object.keys(obj).some((label) =>
-              Array.from(elements).some(
-                (e) => e.type === 'line' && e.label === label
-              )
+          const labels = Array.from(elements ?? [])
+            .filter(
+              (el: { type: string; label?: string }) =>
+                el.type === 'line' && el.label
             )
-          );
+            .map((el) => el.label!);
 
-          if (index !== -1) {
-            Object.entries(this.linesRedo[index]).forEach(([label, value]) => {
-              linesService.setLine(label, value);
-            });
-            this.linesRedo.splice(index, 1);
-          }
+          linesService.restoreFromRedo(labels);
         }
         break;
       }
@@ -113,22 +94,14 @@ export class StackService {
           const elements = this.figureElementsService.getFigureElements(
             path.figureName
           );
-          if (!elements) break;
-
-          const index = this.linesRedo.findIndex((obj) =>
-            Object.keys(obj).some((label) =>
-              Array.from(elements).some(
-                (e) => e.type === 'line' && e.label === label
-              )
+          const labels = Array.from(elements ?? [])
+            .filter(
+              (el: { type: string; label?: string }) =>
+                el.type === 'line' && el.label
             )
-          );
+            .map((el) => el.label!);
 
-          if (index !== -1) {
-            Object.entries(this.linesRedo[index]).forEach(([label, value]) => {
-              linesService.setLine(label, value);
-            });
-            this.linesRedo.splice(index, 1);
-          }
+          linesService.restoreFromRedo(labels);
         }
 
         return path;
@@ -141,27 +114,17 @@ export class StackService {
         if (path?.figureName) {
           this.figureElementsService.moveToRedo(path.figureName);
 
-          const linesToRedo: Record<string, LineLength> = {};
           const elements = this.figureElementsService.getFigureElements(
             path.figureName
           );
-          elements?.forEach((el) => {
-            if (
-              el.type === 'line' &&
-              el.label &&
-              linesService.hasLine(el.label)
-            ) {
-              linesToRedo[el.label] = linesService.getLineLength(
-                el.label[0],
-                el.label[1]
-              );
-              linesService.deleteLine(el.label);
-            }
-          });
+          const labels = Array.from(elements ?? [])
+            .filter(
+              (el: { type: string; label?: string }) =>
+                el.type === 'line' && el.label
+            )
+            .map((el) => el.label!);
 
-          if (Object.keys(linesToRedo).length > 0) {
-            this.linesRedo.push(linesToRedo);
-          }
+          linesService.moveToRedo(labels);
 
           this.figureElementsService.removeFigureElement(
             path.figureName,
@@ -183,7 +146,7 @@ export class StackService {
       case 'redo': {
         this.redoStack = [];
         this.figureElementsService.resetRedo();
-        this.linesRedo = [];
+        linesService.resetRedo();
         break;
       }
       case 'paths': {
