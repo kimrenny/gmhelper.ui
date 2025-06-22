@@ -1,6 +1,5 @@
 import { LineLength } from '../drawing-tools/types/line-length.type';
 import { AnglesService } from '../services/angles.service';
-import { CanvasService } from '../services/canvas.service';
 import { PointsService } from '../services/points.service';
 
 export function drawFigureAngles(

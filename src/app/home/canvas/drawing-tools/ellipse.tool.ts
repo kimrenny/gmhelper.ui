@@ -1,8 +1,12 @@
 import { DrawingTool } from '../interfaces/drawing-tool.interface';
 import { ToolContext } from '../interfaces/tool-context.interface';
+import { AnglesService } from '../services/angles.service';
 import { CanvasService } from '../services/canvas.service';
 import { CounterService } from '../services/counter.service';
+import { FigureElementsService } from '../services/figure-elements.service';
+import { LinesService } from '../services/lines.service';
 import { PointsService } from '../services/points.service';
+import { StackService } from '../services/stack.service';
 import { clearPreviewCanvas } from '../tools/clear-preview';
 import { drawLabel } from '../tools/draw-point-label';
 import { setLineLengthToService } from '../utils/line-length.utils';
@@ -16,6 +20,10 @@ export class Ellipse implements DrawingTool {
   constructor(
     private canvasService: CanvasService,
     private pointsService: PointsService,
+    private linesService: LinesService,
+    private anglesService: AnglesService,
+    private figureElementsService: FigureElementsService,
+    private stackService: StackService,
     private counterService: CounterService
   ) {}
 
@@ -39,11 +47,11 @@ export class Ellipse implements DrawingTool {
       this.counterService.incrementCounter();
 
       if (figureName) {
-        const hasRadius = this.canvasService.hasFigureElement(
+        const hasRadius = this.figureElementsService.hasFigureElement(
           figureName,
           'radius'
         );
-        const hasDiameter = this.canvasService.hasFigureElement(
+        const hasDiameter = this.figureElementsService.hasFigureElement(
           figureName,
           'diameter'
         );
@@ -88,11 +96,14 @@ export class Ellipse implements DrawingTool {
     figureName: string,
     isPreview: boolean = false
   ): void {
-    const hasDiameter = this.canvasService.hasFigureElement(
+    const hasDiameter = this.figureElementsService.hasFigureElement(
       figureName,
       'diameter'
     );
-    const hasRadius = this.canvasService.hasFigureElement(figureName, 'radius');
+    const hasRadius = this.figureElementsService.hasFigureElement(
+      figureName,
+      'radius'
+    );
 
     const color = path[0].color ?? '#000';
     const paths = path.map((p) => ({
@@ -209,7 +220,7 @@ export class Ellipse implements DrawingTool {
       return;
     }
 
-    const paths = this.canvasService.getPaths();
+    const paths = this.stackService.getPaths();
     const matchingPaths = paths.filter(
       (p) => p.figureName === figureName && p.path.length === 2
     );
@@ -247,7 +258,7 @@ export class Ellipse implements DrawingTool {
     const ctx = data.canvas?.getContext('2d');
     if (!ctx) return;
 
-    const path = this.canvasService
+    const path = this.pointsService
       .getPointsByFigure(figureName)
       .map((p) => ({ x: p.x, y: p.y }));
 
@@ -327,10 +338,10 @@ export class Ellipse implements DrawingTool {
     );
     drawLabel(ctx, labelB, edgePoint.x, edgePoint.y);
 
-    this.canvasService.createLine(labelA, labelB);
+    this.linesService.createLine(labelA, labelB);
 
     setLineLengthToService(
-      this.canvasService,
+      this.linesService,
       this.pointsService,
       ctx,
       labelA,
@@ -340,8 +351,8 @@ export class Ellipse implements DrawingTool {
 
     const line = `${labelA}${labelB}`;
 
-    if (!this.canvasService.hasFigureElement(figureName, 'radius')) {
-      this.canvasService.addFigureElement(figureName, 'radius', line);
+    if (!this.figureElementsService.hasFigureElement(figureName, 'radius')) {
+      this.figureElementsService.addFigureElement(figureName, 'radius', line);
     }
   }
 
@@ -402,10 +413,10 @@ export class Ellipse implements DrawingTool {
     );
     drawLabel(ctx, labelB, secondPoint.x, secondPoint.y);
 
-    this.canvasService.createLine(labelA, labelB);
+    this.linesService.createLine(labelA, labelB);
 
     setLineLengthToService(
-      this.canvasService,
+      this.linesService,
       this.pointsService,
       ctx,
       labelA,
@@ -415,8 +426,8 @@ export class Ellipse implements DrawingTool {
 
     const line = `${labelA}${labelB}`;
 
-    if (!this.canvasService.hasFigureElement(figureName, 'diameter')) {
-      this.canvasService.addFigureElement(figureName, 'diameter', line);
+    if (!this.figureElementsService.hasFigureElement(figureName, 'diameter')) {
+      this.figureElementsService.addFigureElement(figureName, 'diameter', line);
     }
   }
 
@@ -449,7 +460,7 @@ export class Ellipse implements DrawingTool {
     };
 
     if (figureName) {
-      this.canvasService.updateFigurePath(figureName, [newStart, newEnd]);
+      this.stackService.updateFigurePath(figureName, [newStart, newEnd]);
     }
 
     return [newStart, newEnd];

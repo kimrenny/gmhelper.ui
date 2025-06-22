@@ -14,6 +14,8 @@ import { clearPreviewCanvas } from '../tools/clear-preview';
 import { drawFigureAngles } from '../utils/angle.utils';
 import { PointsService } from '../services/points.service';
 import { AnglesService } from '../services/angles.service';
+import { LinesService } from '../services/lines.service';
+import { FigureElementsService } from '../services/figure-elements.service';
 
 export class Triangle implements DrawingTool {
   private path: { x: number; y: number; color: string }[] = [];
@@ -23,7 +25,9 @@ export class Triangle implements DrawingTool {
   constructor(
     private canvasService: CanvasService,
     private pointsService: PointsService,
+    private linesService: LinesService,
     private anglesService: AnglesService,
+    private figureElementsService: FigureElementsService,
     private counterService: CounterService
   ) {}
 
@@ -66,25 +70,25 @@ export class Triangle implements DrawingTool {
         figureName,
         path
       );
-      this.canvasService.createLine(label1, label2);
-      this.canvasService.createLine(label2, label3);
-      this.canvasService.createLine(label1, label3);
+      this.linesService.createLine(label1, label2);
+      this.linesService.createLine(label2, label3);
+      this.linesService.createLine(label1, label3);
       restoreLineLengthToService(
-        this.canvasService,
+        this.linesService,
         this.pointsService,
         ctx,
         label1,
         label2
       );
       restoreLineLengthToService(
-        this.canvasService,
+        this.linesService,
         this.pointsService,
         ctx,
         label2,
         label3
       );
       restoreLineLengthToService(
-        this.canvasService,
+        this.linesService,
         this.pointsService,
         ctx,
         label1,
@@ -103,8 +107,14 @@ export class Triangle implements DrawingTool {
     figureName: string,
     isPreview: boolean = false
   ): void {
-    const hasHeight = this.canvasService.hasFigureElement(figureName, 'height');
-    const hasMedian = this.canvasService.hasFigureElement(figureName, 'median');
+    const hasHeight = this.figureElementsService.hasFigureElement(
+      figureName,
+      'height'
+    );
+    const hasMedian = this.figureElementsService.hasFigureElement(
+      figureName,
+      'median'
+    );
 
     const labelA = this.anglesService.getAngleLabelByCoords(path[0]);
     const labelB = this.anglesService.getAngleLabelByCoords(path[1]);
@@ -176,11 +186,11 @@ export class Triangle implements DrawingTool {
           ctx,
           figureName
         );
-        this.canvasService.createLine(label1, label2);
-        this.canvasService.createLine(label2, label3);
-        this.canvasService.createLine(label1, label3);
+        this.linesService.createLine(label1, label2);
+        this.linesService.createLine(label2, label3);
+        this.linesService.createLine(label1, label3);
         setLineLengthToService(
-          this.canvasService,
+          this.linesService,
           this.pointsService,
           ctx,
           label1,
@@ -188,7 +198,7 @@ export class Triangle implements DrawingTool {
           '?'
         );
         setLineLengthToService(
-          this.canvasService,
+          this.linesService,
           this.pointsService,
           ctx,
           label2,
@@ -196,7 +206,7 @@ export class Triangle implements DrawingTool {
           '?'
         );
         setLineLengthToService(
-          this.canvasService,
+          this.linesService,
           this.pointsService,
           ctx,
           label1,
@@ -348,7 +358,7 @@ export class Triangle implements DrawingTool {
     const ctx = data.canvas?.getContext('2d');
     if (!ctx) return;
 
-    const path = this.canvasService
+    const path = this.pointsService
       .getPointsByFigure(figureName)
       .map((p) => ({ x: p.x, y: p.y }));
 
@@ -416,9 +426,9 @@ export class Triangle implements DrawingTool {
 
     drawLabel(ctx, labelB, foot.x, foot.y);
 
-    this.canvasService.createLine(labelA, labelB);
+    this.linesService.createLine(labelA, labelB);
     setLineLengthToService(
-      this.canvasService,
+      this.linesService,
       this.pointsService,
       ctx,
       labelA,
@@ -428,8 +438,8 @@ export class Triangle implements DrawingTool {
 
     const line = `${labelA}${labelB}`;
 
-    if (!this.canvasService.hasFigureElement(figureName, 'height')) {
-      this.canvasService.addFigureElement(figureName, 'height', line);
+    if (!this.figureElementsService.hasFigureElement(figureName, 'height')) {
+      this.figureElementsService.addFigureElement(figureName, 'height', line);
     }
   }
 
@@ -486,9 +496,9 @@ export class Triangle implements DrawingTool {
 
     drawLabel(ctx, labelB, midPoint.x, midPoint.y);
 
-    this.canvasService.createLine(labelA, labelB);
+    this.linesService.createLine(labelA, labelB);
     setLineLengthToService(
-      this.canvasService,
+      this.linesService,
       this.pointsService,
       ctx,
       labelA,
@@ -498,8 +508,8 @@ export class Triangle implements DrawingTool {
 
     const line = `${labelA}${labelB}`;
 
-    if (!this.canvasService.hasFigureElement(figureName, 'median')) {
-      this.canvasService.addFigureElement(figureName, 'median', line);
+    if (!this.figureElementsService.hasFigureElement(figureName, 'median')) {
+      this.figureElementsService.addFigureElement(figureName, 'median', line);
     }
   }
 

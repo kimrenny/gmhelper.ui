@@ -1,13 +1,16 @@
 import { Injectable } from '@angular/core';
 import { Point } from '../drawing-tools/types/point';
 import { Coords2d } from '../drawing-tools/types/coords.type';
+import { StackService } from './stack.service';
 
-Injectable({
+@Injectable({
   providedIn: 'root',
-});
+})
 export class PointsService {
   private points: Point[] = [];
   private pointCounter: number = 0;
+
+  constructor(private stackService: StackService) {}
 
   addPoint(
     x: number,
@@ -59,6 +62,34 @@ export class PointsService {
       }
     }
     return null;
+  }
+
+  getPointsByFigure(figureName: string, isEllipse: boolean = false): Point[] {
+    if (!isEllipse) {
+      const matchedPoints = this.getAllPoints().filter(
+        (point) => point.attachedToFigure === figureName
+      );
+
+      if (matchedPoints.length > 0) {
+        return matchedPoints;
+      }
+    }
+
+    const pathEntry = this.stackService
+      .getPaths()
+      .find((p) => p.figureName === figureName);
+
+    if (pathEntry && pathEntry.path.length >= 2) {
+      return pathEntry.path.map((p) => ({
+        x: p.x,
+        y: p.y,
+        attachedToFigure: figureName,
+        attachedToPoint: -1,
+        label: '',
+      }));
+    }
+
+    return [];
   }
 
   bindPointToFigure(

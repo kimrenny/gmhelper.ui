@@ -11,6 +11,7 @@ import {
   setLineLengthToService,
 } from '../utils/line-length.utils';
 import { PointsService } from '../services/points.service';
+import { LinesService } from '../services/lines.service';
 
 export class Line implements DrawingTool {
   private isDrawing: boolean = false;
@@ -21,6 +22,7 @@ export class Line implements DrawingTool {
   constructor(
     private canvasService: CanvasService,
     private pointsService: PointsService,
+    private linesService: LinesService,
     private counterService: CounterService
   ) {}
 
@@ -51,9 +53,9 @@ export class Line implements DrawingTool {
 
     if (redraw) {
       const [label1, label2] = this.addPointsToCanvasService(ctx, path);
-      this.canvasService.createLine(label1, label2);
+      this.linesService.createLine(label1, label2);
       restoreLineLengthToService(
-        this.canvasService,
+        this.linesService,
         this.pointsService,
         ctx,
         label1,
@@ -141,9 +143,9 @@ export class Line implements DrawingTool {
       if (ctx) {
         this.figureName = '';
         const [label1, label2] = this.addPointsToCanvasService(ctx);
-        this.canvasService.createLine(label1, label2);
+        this.linesService.createLine(label1, label2);
         setLineLengthToService(
-          this.canvasService,
+          this.linesService,
           this.pointsService,
           ctx,
           label1,
@@ -174,7 +176,7 @@ export class Line implements DrawingTool {
       this.draw(ctx, this.path, data.selectedColor);
 
       const [label1, label2] = this.addPointsToCanvasService(ctx);
-      this.canvasService.createLine(label1, label2);
+      this.linesService.createLine(label1, label2);
     }
 
     if (data.previewCanvas) {

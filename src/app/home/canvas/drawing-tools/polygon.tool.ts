@@ -13,6 +13,8 @@ import {
 } from '../utils/line-length.utils';
 import { PointsService } from '../services/points.service';
 import { AnglesService } from '../services/angles.service';
+import { LinesService } from '../services/lines.service';
+import { FigureElementsService } from '../services/figure-elements.service';
 
 export class Polygon implements DrawingTool {
   private center: { x: number; y: number } | null = null;
@@ -26,7 +28,9 @@ export class Polygon implements DrawingTool {
     sides: number,
     private canvasService: CanvasService,
     private pointsService: PointsService,
+    private linesService: LinesService,
     private anglesService: AnglesService,
+    private figureElementsService: FigureElementsService,
     private counterService: CounterService
   ) {
     if (sides < 3) {
@@ -69,9 +73,9 @@ export class Polygon implements DrawingTool {
       for (let i = 0; i < labels.length - 1; i++) {
         const from = labels[i];
         const to = labels[(i + 1) % labels.length];
-        this.canvasService.createLine(from, to);
+        this.linesService.createLine(from, to);
         restoreLineLengthToService(
-          this.canvasService,
+          this.linesService,
           this.pointsService,
           ctx,
           from,
@@ -82,9 +86,9 @@ export class Polygon implements DrawingTool {
       if (labels.length > 1) {
         const from = labels[0];
         const to = labels[labels.length - 1];
-        this.canvasService.createLine(from, to);
+        this.linesService.createLine(from, to);
         restoreLineLengthToService(
-          this.canvasService,
+          this.linesService,
           this.pointsService,
           ctx,
           from,
@@ -154,9 +158,9 @@ export class Polygon implements DrawingTool {
       for (let i = 0; i < labels.length - 1; i++) {
         const from = labels[i];
         const to = labels[(i + 1) % labels.length];
-        this.canvasService.createLine(from, to);
+        this.linesService.createLine(from, to);
         setLineLengthToService(
-          this.canvasService,
+          this.linesService,
           this.pointsService,
           ctx,
           from,
@@ -168,9 +172,9 @@ export class Polygon implements DrawingTool {
       if (labels.length > 1) {
         const from = labels[0];
         const to = labels[labels.length - 1];
-        this.canvasService.createLine(from, to);
+        this.linesService.createLine(from, to);
         setLineLengthToService(
-          this.canvasService,
+          this.linesService,
           this.pointsService,
           ctx,
           from,
@@ -224,7 +228,7 @@ export class Polygon implements DrawingTool {
     const ctx = data.canvas?.getContext('2d');
     if (!ctx) return;
 
-    const path = this.canvasService
+    const path = this.pointsService
       .getPointsByFigure(figureName)
       .map((p) => ({ x: p.x, y: p.y }));
 

@@ -1,10 +1,10 @@
 import { LineLength } from '../drawing-tools/types/line-length.type';
-import { CanvasService } from '../services/canvas.service';
+import { LinesService } from '../services/lines.service';
 import { PointsService } from '../services/points.service';
 import { drawTextAboveLine } from '../tools/draw-text-above-line';
 
 export function setLineLengthToService(
-  canvasService: CanvasService,
+  linesService: LinesService,
   pointsService: PointsService,
   ctx: CanvasRenderingContext2D,
   a: string,
@@ -15,7 +15,7 @@ export function setLineLengthToService(
   fontsize: number = 14,
   color: string = 'black'
 ) {
-  canvasService.setLineLength(a, b, length);
+  linesService.setLineLength(a, b, length);
 
   const pointA = pointsService.getPointByLabel(a);
   const pointB = pointsService.getPointByLabel(b);
@@ -37,7 +37,7 @@ export function setLineLengthToService(
 }
 
 export function restoreLineLengthToService(
-  canvasService: CanvasService,
+  linesService: LinesService,
   pointsService: PointsService,
   ctx: CanvasRenderingContext2D,
   a: string,
@@ -47,7 +47,7 @@ export function restoreLineLengthToService(
   fontsize: number = 14,
   color: string = 'black'
 ) {
-  const length = canvasService.getLineLength(a, b);
+  const length = linesService.getLineLength(a, b);
 
   const pointA = pointsService.getPointByLabel(a);
   const pointB = pointsService.getPointByLabel(b);

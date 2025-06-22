@@ -11,47 +11,71 @@ import { CanvasService } from '../services/canvas.service';
 import { CounterService } from '../services/counter.service';
 import { PointsService } from '../services/points.service';
 import { AnglesService } from '../services/angles.service';
+import { LinesService } from '../services/lines.service';
+import { FigureElementsService } from '../services/figure-elements.service';
+import { StackService } from '../services/stack.service';
 
 export function getDefaultTools(
   polygonTool: DrawingTool,
   canvasService: CanvasService,
   pointsService: PointsService,
+  linesService: LinesService,
   anglesService: AnglesService,
+  figureElementsService: FigureElementsService,
+  stackService: StackService,
   counterService: CounterService
 ) {
   return {
     pencil: new Pencil(),
-    ellipse: new Ellipse(canvasService, pointsService, counterService),
+    ellipse: new Ellipse(
+      canvasService,
+      pointsService,
+      linesService,
+      anglesService,
+      figureElementsService,
+      stackService,
+      counterService
+    ),
     parallelogram: new Parallelogram(
       canvasService,
       pointsService,
+      linesService,
       anglesService,
+      figureElementsService,
       counterService
     ),
-    line: new Line(canvasService, pointsService, counterService),
+    line: new Line(canvasService, pointsService, linesService, counterService),
     polygon: polygonTool,
     triangle: new Triangle(
       canvasService,
       pointsService,
+      linesService,
       anglesService,
+      figureElementsService,
       counterService
     ),
     rectangle: new Rectangle(
       canvasService,
       pointsService,
+      linesService,
       anglesService,
+      figureElementsService,
       counterService
     ),
     trapezoid: new Trapezoid(
       canvasService,
       pointsService,
+      linesService,
       anglesService,
+      figureElementsService,
       counterService
     ),
     rhombus: new Rhombus(
       canvasService,
       pointsService,
+      linesService,
       anglesService,
+      figureElementsService,
       counterService
     ),
   };

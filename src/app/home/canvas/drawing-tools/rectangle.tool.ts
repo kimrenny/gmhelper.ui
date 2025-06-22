@@ -13,6 +13,8 @@ import {
 } from '../utils/line-length.utils';
 import { PointsService } from '../services/points.service';
 import { AnglesService } from '../services/angles.service';
+import { FigureElementsService } from '../services/figure-elements.service';
+import { LinesService } from '../services/lines.service';
 
 export class Rectangle implements DrawingTool {
   private start: { x: number; y: number; color: string } | null = null;
@@ -23,7 +25,9 @@ export class Rectangle implements DrawingTool {
   constructor(
     private canvasService: CanvasService,
     private pointsService: PointsService,
+    private linesService: LinesService,
     private anglesService: AnglesService,
+    private figureElementsService: FigureElementsService,
     private counterService: CounterService
   ) {}
 
@@ -58,33 +62,33 @@ export class Rectangle implements DrawingTool {
         ctx,
         path
       );
-      this.canvasService.createLine(label1, label2);
-      this.canvasService.createLine(label2, label3);
-      this.canvasService.createLine(label3, label4);
-      this.canvasService.createLine(label1, label4);
+      this.linesService.createLine(label1, label2);
+      this.linesService.createLine(label2, label3);
+      this.linesService.createLine(label3, label4);
+      this.linesService.createLine(label1, label4);
       restoreLineLengthToService(
-        this.canvasService,
+        this.linesService,
         this.pointsService,
         ctx,
         label1,
         label2
       );
       restoreLineLengthToService(
-        this.canvasService,
+        this.linesService,
         this.pointsService,
         ctx,
         label2,
         label3
       );
       restoreLineLengthToService(
-        this.canvasService,
+        this.linesService,
         this.pointsService,
         ctx,
         label3,
         label4
       );
       restoreLineLengthToService(
-        this.canvasService,
+        this.linesService,
         this.pointsService,
         ctx,
         label1,
@@ -138,12 +142,12 @@ export class Rectangle implements DrawingTool {
         ctx,
         path
       );
-      this.canvasService.createLine(label1, label2);
-      this.canvasService.createLine(label2, label3);
-      this.canvasService.createLine(label3, label4);
-      this.canvasService.createLine(label1, label4);
+      this.linesService.createLine(label1, label2);
+      this.linesService.createLine(label2, label3);
+      this.linesService.createLine(label3, label4);
+      this.linesService.createLine(label1, label4);
       setLineLengthToService(
-        this.canvasService,
+        this.linesService,
         this.pointsService,
         ctx,
         label1,
@@ -151,7 +155,7 @@ export class Rectangle implements DrawingTool {
         '?'
       );
       setLineLengthToService(
-        this.canvasService,
+        this.linesService,
         this.pointsService,
         ctx,
         label2,
@@ -160,7 +164,7 @@ export class Rectangle implements DrawingTool {
         10
       );
       setLineLengthToService(
-        this.canvasService,
+        this.linesService,
         this.pointsService,
         ctx,
         label3,
@@ -168,7 +172,7 @@ export class Rectangle implements DrawingTool {
         '?'
       );
       setLineLengthToService(
-        this.canvasService,
+        this.linesService,
         this.pointsService,
         ctx,
         label1,
@@ -226,7 +230,7 @@ export class Rectangle implements DrawingTool {
     const ctx = data.canvas?.getContext('2d');
     if (!ctx) return;
 
-    const path = this.canvasService
+    const path = this.pointsService
       .getPointsByFigure(figureName)
       .map((p) => ({ x: p.x, y: p.y }));
 
