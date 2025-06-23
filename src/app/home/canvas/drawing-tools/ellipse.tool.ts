@@ -4,6 +4,7 @@ import { AnglesService } from '../services/angles.service';
 import { CanvasService } from '../services/canvas.service';
 import { CounterService } from '../services/counter.service';
 import { FigureElementsService } from '../services/figure-elements.service';
+import { FiguresService } from '../services/figures.service';
 import { LinesService } from '../services/lines.service';
 import { PointsService } from '../services/points.service';
 import { StackService } from '../services/stack.service';
@@ -24,6 +25,7 @@ export class Ellipse implements DrawingTool {
     private anglesService: AnglesService,
     private figureElementsService: FigureElementsService,
     private stackService: StackService,
+    private figuresService: FiguresService,
     private counterService: CounterService
   ) {}
 
@@ -39,7 +41,7 @@ export class Ellipse implements DrawingTool {
 
     let figureName: string | null = null;
     if (redraw) {
-      figureName = this.canvasService.getFigureNameByCoords({
+      figureName = this.figuresService.getFigureNameByCoords({
         x: start.x,
         y: start.y,
       });
@@ -214,7 +216,7 @@ export class Ellipse implements DrawingTool {
       return;
     }
 
-    const figureName = this.canvasService.getFigureNameByCoords(path[0]);
+    const figureName = this.figuresService.getFigureNameByCoords(path[0]);
     if (!figureName) {
       console.warn('[onSelectFigure] no figure name found for coords.');
       return;
@@ -262,7 +264,7 @@ export class Ellipse implements DrawingTool {
       .getPointsByFigure(figureName)
       .map((p) => ({ x: p.x, y: p.y }));
 
-    const color = this.canvasService.getFigureColorByName(figureName);
+    const color = this.figuresService.getFigureColorByName(figureName);
 
     switch (action) {
       case 'drawRadius': {

@@ -14,6 +14,7 @@ import { PointsService } from '../services/points.service';
 import { AnglesService } from '../services/angles.service';
 import { LinesService } from '../services/lines.service';
 import { FigureElementsService } from '../services/figure-elements.service';
+import { FiguresService } from '../services/figures.service';
 
 export class Parallelogram implements DrawingTool {
   private path: { x: number; y: number }[] = [];
@@ -27,6 +28,7 @@ export class Parallelogram implements DrawingTool {
     private linesService: LinesService,
     private anglesService: AnglesService,
     private figureElementsService: FigureElementsService,
+    private figuresService: FiguresService,
     private counterService: CounterService
   ) {}
 

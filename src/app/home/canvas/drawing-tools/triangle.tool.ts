@@ -16,6 +16,7 @@ import { PointsService } from '../services/points.service';
 import { AnglesService } from '../services/angles.service';
 import { LinesService } from '../services/lines.service';
 import { FigureElementsService } from '../services/figure-elements.service';
+import { FiguresService } from '../services/figures.service';
 
 export class Triangle implements DrawingTool {
   private path: { x: number; y: number; color: string }[] = [];
@@ -28,6 +29,7 @@ export class Triangle implements DrawingTool {
     private linesService: LinesService,
     private anglesService: AnglesService,
     private figureElementsService: FigureElementsService,
+    private figuresService: FiguresService,
     private counterService: CounterService
   ) {}
 
@@ -58,7 +60,7 @@ export class Triangle implements DrawingTool {
     }
 
     if (redraw) {
-      const figureName = this.canvasService.getFigureNameByCoords({
+      const figureName = this.figuresService.getFigureNameByCoords({
         x: path[0].x,
         y: path[0].y,
       });
@@ -304,7 +306,7 @@ export class Triangle implements DrawingTool {
       return;
     }
 
-    const figureName = this.canvasService.getFigureNameByCoords(path[0]);
+    const figureName = this.figuresService.getFigureNameByCoords(path[0]);
     if (!figureName) {
       console.warn('[onSelectFigure] no figure name found for coords.');
       return;
@@ -362,7 +364,7 @@ export class Triangle implements DrawingTool {
       .getPointsByFigure(figureName)
       .map((p) => ({ x: p.x, y: p.y }));
 
-    const color = this.canvasService.getFigureColorByName(figureName);
+    const color = this.figuresService.getFigureColorByName(figureName);
 
     switch (action) {
       case 'drawHeight': {

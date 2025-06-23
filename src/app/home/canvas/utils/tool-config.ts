@@ -14,6 +14,7 @@ import { AnglesService } from '../services/angles.service';
 import { LinesService } from '../services/lines.service';
 import { FigureElementsService } from '../services/figure-elements.service';
 import { StackService } from '../services/stack.service';
+import { FiguresService } from '../services/figures.service';
 
 export function getDefaultTools(
   polygonTool: DrawingTool,
@@ -23,6 +24,7 @@ export function getDefaultTools(
   anglesService: AnglesService,
   figureElementsService: FigureElementsService,
   stackService: StackService,
+  figuresService: FiguresService,
   counterService: CounterService
 ) {
   return {
@@ -34,6 +36,7 @@ export function getDefaultTools(
       anglesService,
       figureElementsService,
       stackService,
+      figuresService,
       counterService
     ),
     parallelogram: new Parallelogram(
@@ -42,6 +45,7 @@ export function getDefaultTools(
       linesService,
       anglesService,
       figureElementsService,
+      figuresService,
       counterService
     ),
     line: new Line(canvasService, pointsService, linesService, counterService),
@@ -52,6 +56,7 @@ export function getDefaultTools(
       linesService,
       anglesService,
       figureElementsService,
+      figuresService,
       counterService
     ),
     rectangle: new Rectangle(
@@ -60,6 +65,7 @@ export function getDefaultTools(
       linesService,
       anglesService,
       figureElementsService,
+      figuresService,
       counterService
     ),
     trapezoid: new Trapezoid(
@@ -68,6 +74,7 @@ export function getDefaultTools(
       linesService,
       anglesService,
       figureElementsService,
+      figuresService,
       counterService
     ),
     rhombus: new Rhombus(
@@ -76,6 +83,7 @@ export function getDefaultTools(
       linesService,
       anglesService,
       figureElementsService,
+      figuresService,
       counterService
     ),
   };

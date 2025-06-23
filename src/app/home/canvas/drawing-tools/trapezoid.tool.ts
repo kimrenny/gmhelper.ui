@@ -14,6 +14,7 @@ import { PointsService } from '../services/points.service';
 import { AnglesService } from '../services/angles.service';
 import { FigureElementsService } from '../services/figure-elements.service';
 import { LinesService } from '../services/lines.service';
+import { FiguresService } from '../services/figures.service';
 
 export class Trapezoid implements DrawingTool {
   private path: { x: number; y: number; color: string }[] = [];
@@ -27,6 +28,7 @@ export class Trapezoid implements DrawingTool {
     private linesService: LinesService,
     private anglesService: AnglesService,
     private figureElementsService: FigureElementsService,
+    private figuresService: FiguresService,
     private counterService: CounterService
   ) {}
 

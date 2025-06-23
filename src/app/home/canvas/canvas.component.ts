@@ -27,6 +27,8 @@ import { AnglesService } from './services/angles.service';
 import { LinesService } from './services/lines.service';
 import { StackService } from './services/stack.service';
 import { FigureElementsService } from './services/figure-elements.service';
+import { FiguresService } from './services/figures.service';
+import { SelectionService } from './services/selection.service';
 
 @Component({
   selector: 'app-canvas',
@@ -255,6 +257,8 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     private stackService: StackService,
     private anglesService: AnglesService,
     private figureElementsService: FigureElementsService,
+    private figuresService: FiguresService,
+    private selectionService: SelectionService,
     private counterService: CounterService,
     private toastr: ToastrService,
     private translate: TranslateService
@@ -270,6 +274,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
         this.anglesService,
         this.figureElementsService,
         this.stackService,
+        this.figuresService,
         this.counterService
       )
     );
@@ -319,8 +324,8 @@ export class CanvasComponent implements OnInit, AfterViewInit {
       const pos = this.toolContext.getMousePos(event);
       if (!pos) return;
 
-      this.canvasService.resetSelectedLine();
-      this.canvasService.setSelectedFigure(null);
+      this.selectionService.resetSelectedLine();
+      this.selectionService.setSelectedFigure(null);
       this.selectedAngle = null;
 
       const angleData = this.anglesService.findAngleByPoint(pos);
@@ -331,7 +336,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
       }
 
       const lineData = this.linesService.findLineByPoint(pos);
-      const figureData = this.canvasService.findFigureByPoint(pos);
+      const figureData = this.figuresService.findFigureByPoint(pos);
 
       if (lineData) {
         if (this.isFigureSelection) {
@@ -393,7 +398,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
         lineData.point2,
         this.toolContext.previewCanvas
       );
-      this.canvasService.setSelectedLine(lineData.point1, lineData.point2);
+      this.selectionService.setSelectedLine(lineData.point1, lineData.point2);
     }
 
     return;
@@ -415,7 +420,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
       .getPointsByFigure(figureName)
       .map((p) => ({ x: p.x, y: p.y }));
 
-    this.canvasService.setSelectedFigure(figureName);
+    this.selectionService.setSelectedFigure(figureName);
 
     this.selectedFigure = figureName;
 
@@ -465,19 +470,18 @@ export class CanvasComponent implements OnInit, AfterViewInit {
   }
 
   get isLineSelected(): boolean {
-    return this.canvasService.isLineSelected;
+    return this.selectionService.isLineSelected;
   }
 
   get isFigureSelected(): boolean {
-    return this.canvasService.isFigureSelected;
+    return this.selectionService.isFigureSelected;
   }
 
   changeFigureColor(color: string) {
     this.isFigureColorPaletteVisible = false;
-    this.canvasService.changeFigureColor(color);
+    this.figuresService.changeFigureColor(color);
     this.redraw();
-    this.clearPreviewCanvas();
-    this.isFigureSelection = false;
+    this.deselectFigure();
     this.toolSelector.select('pencil');
   }
 
@@ -606,7 +610,8 @@ export class CanvasComponent implements OnInit, AfterViewInit {
   }
 
   deselectFigure(): void {
-    this.canvasService.setSelectedFigure(null);
+    this.selectionService.setSelectedFigure(null);
+    this.isFigureSelection = false;
     this.selectedFigure = null;
     this.clearPreviewCanvas();
   }
@@ -633,7 +638,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
   }
 
   onChangeLineLengthClick(): void {
-    const selectedLine = this.canvasService.getSelectedLine();
+    const selectedLine = this.selectionService.getSelectedLine();
     if (selectedLine) {
       const a = this.pointsService.getPointLabelByCoords(selectedLine.a);
       const b = this.pointsService.getPointLabelByCoords(selectedLine.b);
@@ -650,7 +655,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
 
   onLineLengthConfirm(): void {
     if (this.lineLength != null) {
-      const selectedLine = this.canvasService.getSelectedLine();
+      const selectedLine = this.selectionService.getSelectedLine();
       if (selectedLine) {
         const a = this.pointsService.getPointLabelByCoords(selectedLine.a);
         const b = this.pointsService.getPointLabelByCoords(selectedLine.b);
@@ -689,6 +694,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
         this.linesService,
         this.anglesService,
         this.figureElementsService,
+        this.figuresService,
         this.counterService
       );
       this.toolSelector = new ToolSelector(
@@ -700,6 +706,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
           this.anglesService,
           this.figureElementsService,
           this.stackService,
+          this.figuresService,
           this.counterService
         )
       );
@@ -721,7 +728,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
 
     tool?.handleAction?.(action, this.toolContext, figure);
 
-    this.canvasService.setSelectedFigure(null);
+    this.selectionService.setSelectedFigure(null);
     this.selectedFigure = null;
     this.clearPreviewCanvas();
     this.isFigureSelection = false;

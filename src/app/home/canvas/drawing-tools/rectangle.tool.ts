@@ -15,6 +15,7 @@ import { PointsService } from '../services/points.service';
 import { AnglesService } from '../services/angles.service';
 import { FigureElementsService } from '../services/figure-elements.service';
 import { LinesService } from '../services/lines.service';
+import { FiguresService } from '../services/figures.service';
 
 export class Rectangle implements DrawingTool {
   private start: { x: number; y: number; color: string } | null = null;
@@ -28,6 +29,7 @@ export class Rectangle implements DrawingTool {
     private linesService: LinesService,
     private anglesService: AnglesService,
     private figureElementsService: FigureElementsService,
+    private figuresService: FiguresService,
     private counterService: CounterService
   ) {}
 

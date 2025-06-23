@@ -15,6 +15,7 @@ import { PointsService } from '../services/points.service';
 import { AnglesService } from '../services/angles.service';
 import { LinesService } from '../services/lines.service';
 import { FigureElementsService } from '../services/figure-elements.service';
+import { FiguresService } from '../services/figures.service';
 
 export class Polygon implements DrawingTool {
   private center: { x: number; y: number } | null = null;
@@ -31,6 +32,7 @@ export class Polygon implements DrawingTool {
     private linesService: LinesService,
     private anglesService: AnglesService,
     private figureElementsService: FigureElementsService,
+    private figuresService: FiguresService,
     private counterService: CounterService
   ) {
     if (sides < 3) {
