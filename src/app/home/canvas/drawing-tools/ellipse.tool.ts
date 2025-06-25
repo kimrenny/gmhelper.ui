@@ -10,7 +10,10 @@ import { PointsService } from '../services/points.service';
 import { StackService } from '../services/stack.service';
 import { clearPreviewCanvas } from '../tools/clear-preview';
 import { drawLabel } from '../tools/draw-point-label';
-import { setLineLengthToService } from '../utils/line-length.utils';
+import {
+  restoreLineLengthToService,
+  setLineLengthToService,
+} from '../utils/line-length.utils';
 import { toTransparentColor } from '../utils/preview-color';
 
 export class Ellipse implements DrawingTool {
@@ -96,7 +99,7 @@ export class Ellipse implements DrawingTool {
     ctx: CanvasRenderingContext2D,
     path: { x: number; y: number; color: string }[],
     figureName: string,
-    isPreview: boolean = false
+    isRedraw: boolean = false
   ): void {
     const hasDiameter = this.figureElementsService.hasFigureElement(
       figureName,
@@ -114,7 +117,7 @@ export class Ellipse implements DrawingTool {
     }));
 
     if (hasDiameter) {
-      this.drawDiameter(ctx, paths, color, figureName, isPreview, true);
+      this.drawDiameter(ctx, paths, color, figureName, isRedraw, true);
     }
 
     if (hasRadius) {
@@ -124,7 +127,7 @@ export class Ellipse implements DrawingTool {
         color,
         figureName,
         hasDiameter,
-        isPreview,
+        isRedraw,
         true
       );
     }
@@ -324,34 +327,55 @@ export class Ellipse implements DrawingTool {
 
     if (isPreview) return;
 
-    const labelA = this.pointsService.addPoint(
-      centerX,
-      centerY,
-      figureName,
-      drawVertical ? 2 : 0
-    );
-    drawLabel(ctx, labelA, centerX, centerY);
+    let labelA = this.pointsService.getPointLabelByCoords({
+      x: centerX,
+      y: centerY,
+    });
+    if (!labelA) {
+      labelA = this.pointsService.addPoint(
+        centerX,
+        centerY,
+        figureName,
+        drawVertical ? 2 : 0
+      );
+    }
 
-    const labelB = this.pointsService.addPoint(
-      edgePoint.x,
-      edgePoint.y,
-      figureName,
-      drawVertical ? 3 : 0
-    );
+    let labelB = this.pointsService.getPointLabelByCoords(edgePoint);
+    if (!labelB) {
+      labelB = this.pointsService.addPoint(
+        edgePoint.x,
+        edgePoint.y,
+        figureName,
+        drawVertical ? 3 : 0
+      );
+    }
+
+    if (!(labelA && labelB)) return;
+
+    drawLabel(ctx, labelA, centerX, centerY);
     drawLabel(ctx, labelB, edgePoint.x, edgePoint.y);
 
-    this.linesService.createLine(labelA, labelB);
-
-    setLineLengthToService(
-      this.linesService,
-      this.pointsService,
-      ctx,
-      labelA,
-      labelB,
-      '?'
-    );
-
     const line = `${labelA}${labelB}`;
+
+    if (!this.linesService.hasLine(line)) {
+      this.linesService.createLine(labelA, labelB);
+      setLineLengthToService(
+        this.linesService,
+        this.pointsService,
+        ctx,
+        labelA,
+        labelB,
+        '?'
+      );
+    } else {
+      restoreLineLengthToService(
+        this.linesService,
+        this.pointsService,
+        ctx,
+        labelA,
+        labelB
+      );
+    }
 
     if (!this.figureElementsService.hasFigureElement(figureName, 'radius')) {
       this.figureElementsService.addFigureElement(figureName, 'radius', line);
@@ -399,37 +423,60 @@ export class Ellipse implements DrawingTool {
 
     if (isPreview) return;
 
-    const labelA = this.pointsService.addPoint(
-      firstPoint.x,
-      firstPoint.y,
-      figureName,
-      0
-    );
-    drawLabel(ctx, labelA, firstPoint.x, firstPoint.y);
+    let labelA = this.pointsService.getPointLabelByCoords(firstPoint);
+    let labelB = this.pointsService.getPointLabelByCoords(secondPoint);
 
-    const labelB = this.pointsService.addPoint(
-      secondPoint.x,
-      secondPoint.y,
-      figureName,
-      1
-    );
+    if (!labelA) {
+      labelA = this.pointsService.addPoint(
+        firstPoint.x,
+        firstPoint.y,
+        figureName,
+        0
+      );
+    }
+
+    if (!labelB) {
+      labelB = this.pointsService.addPoint(
+        secondPoint.x,
+        secondPoint.y,
+        figureName,
+        1
+      );
+    }
+
+    if (!(labelA && labelB)) return;
+
+    drawLabel(ctx, labelA, firstPoint.x, firstPoint.y);
     drawLabel(ctx, labelB, secondPoint.x, secondPoint.y);
 
-    this.linesService.createLine(labelA, labelB);
+    const lineKey = labelA + labelB;
 
-    setLineLengthToService(
-      this.linesService,
-      this.pointsService,
-      ctx,
-      labelA,
-      labelB,
-      '?'
-    );
-
-    const line = `${labelA}${labelB}`;
+    if (!this.linesService.hasLine(lineKey)) {
+      this.linesService.createLine(labelA, labelB);
+      setLineLengthToService(
+        this.linesService,
+        this.pointsService,
+        ctx,
+        labelA,
+        labelB,
+        '?'
+      );
+    } else {
+      restoreLineLengthToService(
+        this.linesService,
+        this.pointsService,
+        ctx,
+        labelA,
+        labelB
+      );
+    }
 
     if (!this.figureElementsService.hasFigureElement(figureName, 'diameter')) {
-      this.figureElementsService.addFigureElement(figureName, 'diameter', line);
+      this.figureElementsService.addFigureElement(
+        figureName,
+        'diameter',
+        lineKey
+      );
     }
   }
 

@@ -492,6 +492,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
       this.redraw();
     }
     if (!this.canUndo) {
+      this.deselectFigure();
       this.isAngleSelection = false;
       this.isAngleInputVisible = false;
       if (this.selectedAngle) this.selectedAngle = null;
