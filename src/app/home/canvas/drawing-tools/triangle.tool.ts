@@ -419,26 +419,46 @@ export class Triangle implements DrawingTool {
     ctx.lineTo(foot.x, foot.y);
     ctx.stroke();
 
-    if (isPreview) return;
+    let labelA = this.pointsService.getPointLabelByCoords(topPoint);
+    if (!labelA) {
+      labelA = this.pointsService.addPoint(
+        topPoint.x,
+        topPoint.y,
+        figureName,
+        0
+      );
+    }
 
-    const labelA = this.pointsService.getPointLabelByCoords(topPoint);
-    if (!labelA) return;
+    let labelB = this.pointsService.getPointLabelByCoords(foot);
+    if (!labelB) {
+      labelB = this.pointsService.addPoint(foot.x, foot.y, figureName, 4);
+    }
 
-    const labelB = this.pointsService.addPoint(foot.x, foot.y, figureName, 4);
+    if (!(labelA && labelB)) return;
 
     drawLabel(ctx, labelB, foot.x, foot.y);
 
-    this.linesService.createLine(labelA, labelB);
-    setLineLengthToService(
-      this.linesService,
-      this.pointsService,
-      ctx,
-      labelA,
-      labelB,
-      '?'
-    );
-
     const line = `${labelA}${labelB}`;
+
+    if (!this.linesService.hasLine(line)) {
+      this.linesService.createLine(labelA, labelB);
+      setLineLengthToService(
+        this.linesService,
+        this.pointsService,
+        ctx,
+        labelA,
+        labelB,
+        '?'
+      );
+    } else {
+      restoreLineLengthToService(
+        this.linesService,
+        this.pointsService,
+        ctx,
+        labelA,
+        labelB
+      );
+    }
 
     if (!this.figureElementsService.hasFigureElement(figureName, 'height')) {
       this.figureElementsService.addFigureElement(figureName, 'height', line);
@@ -453,9 +473,7 @@ export class Triangle implements DrawingTool {
     hasHeight: boolean = false,
     isPreview: boolean = false
   ): void {
-    if (path.length !== 3) {
-      return;
-    }
+    if (path.length !== 3) return;
 
     let vertexIndex = 0;
     if (hasHeight) {
@@ -466,8 +484,8 @@ export class Triangle implements DrawingTool {
 
     const vertex = path[vertexIndex];
     const basePoints = path.filter((_, i) => i !== vertexIndex);
-
     const [A, B] = basePoints;
+
     const midPoint = {
       x: (A.x + B.x) / 2,
       y: (A.y + B.y) / 2,
@@ -480,39 +498,57 @@ export class Triangle implements DrawingTool {
     ctx.lineTo(midPoint.x, midPoint.y);
     ctx.stroke();
 
-    if (isPreview) {
-      return;
-    }
+    if (isPreview) return;
 
     const labelA = this.pointsService.getPointLabelByCoords(vertex);
-    if (!labelA) {
-      return;
+
+    let labelB = this.pointsService.getPointLabelByCoords(midPoint);
+    if (labelB && !this.pointsService.isPointAt(labelB, midPoint)) {
+      this.pointsService.removePoint(labelB);
+      labelB = null;
     }
 
-    const labelB = this.pointsService.addPoint(
-      midPoint.x,
-      midPoint.y,
-      figureName,
-      4
-    );
+    if (!labelB) {
+      labelB = this.pointsService.addPoint(
+        midPoint.x,
+        midPoint.y,
+        figureName,
+        4
+      );
+    }
 
+    if (!(labelA && labelB)) return;
+
+    drawLabel(ctx, labelA, vertex.x, vertex.y);
     drawLabel(ctx, labelB, midPoint.x, midPoint.y);
 
-    this.linesService.createLine(labelA, labelB);
-    setLineLengthToService(
-      this.linesService,
-      this.pointsService,
-      ctx,
-      labelA,
-      labelB,
-      '?'
-    );
+    const lineKey = `${labelA}${labelB}`;
 
-    const line = `${labelA}${labelB}`;
+    if (!this.linesService.hasLine(lineKey)) {
+      this.linesService.createLine(labelA, labelB);
+      setLineLengthToService(
+        this.linesService,
+        this.pointsService,
+        ctx,
+        labelA,
+        labelB,
+        '?'
+      );
+    } else {
+      restoreLineLengthToService(
+        this.linesService,
+        this.pointsService,
+        ctx,
+        labelA,
+        labelB
+      );
+    }
 
     if (!this.figureElementsService.hasFigureElement(figureName, 'median')) {
-      this.figureElementsService.addFigureElement(figureName, 'median', line);
+      this.figureElementsService.removeFigureElement(figureName, 'median');
     }
+
+    this.figureElementsService.addFigureElement(figureName, 'median', lineKey);
   }
 
   markAngles(

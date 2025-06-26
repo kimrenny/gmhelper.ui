@@ -10,6 +10,8 @@ export class PointsService {
   private points: Point[] = [];
   private pointCounter: number = 0;
 
+  private readonly epsilon = 0.1;
+
   constructor(private stackService: StackService) {}
 
   addPoint(
@@ -57,7 +59,10 @@ export class PointsService {
 
   getPointLabelByCoords(coords: Coords2d): string | null {
     for (const point of this.points) {
-      if (point.x === coords.x && point.y === coords.y) {
+      const dx = Math.abs(point.x - coords.x);
+      const dy = Math.abs(point.y - coords.y);
+
+      if (dx < this.epsilon && dy < this.epsilon) {
         return point.label;
       }
     }
@@ -90,6 +95,16 @@ export class PointsService {
     }
 
     return [];
+  }
+
+  isPointAt(label: string, point: { x: number; y: number }): boolean {
+    const existing = this.getPointByLabel(label);
+    if (!existing) return false;
+    return existing.x === point.x && existing.y === point.y;
+  }
+
+  removePoint(label: string): void {
+    this.points = this.points.filter((p) => p.label !== label);
   }
 
   bindPointToFigure(
