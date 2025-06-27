@@ -371,8 +371,8 @@ export class CanvasComponent implements OnInit, AfterViewInit {
       if (this.currentTool?.onMouseUp) {
         const newPath = this.currentTool.onMouseUp(pos, this.toolContext);
         if (newPath) {
-          this.stackService.pushStack(newPath, 'paths');
           this.stackService.resetStack('redo');
+          this.stackService.pushStack(newPath, 'paths');
         }
       }
     });

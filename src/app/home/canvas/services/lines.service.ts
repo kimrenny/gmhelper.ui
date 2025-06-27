@@ -147,7 +147,10 @@ export class LinesService {
 
     for (const label of labels) {
       if (this.hasLine(label)) {
-        linesToRedo[label] = this.getLineLength(label[0], label[1]);
+        const original = this.getLineLength(label[0], label[1]);
+        if (original !== undefined) {
+          linesToRedo[label] = original;
+        }
         this.deleteLine(label);
       }
     }

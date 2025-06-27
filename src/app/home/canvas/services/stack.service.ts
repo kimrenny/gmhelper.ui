@@ -46,10 +46,7 @@ export class StackService {
             path.figureName
           );
           const labels = Array.from(elements ?? [])
-            .filter(
-              (el: { type: string; label?: string }) =>
-                el.type === 'line' && el.label
-            )
+            .filter((el) => !!el.label)
             .map((el) => el.label!);
 
           linesService.moveToRedo(labels);
@@ -135,8 +132,6 @@ export class StackService {
         return path;
       }
     }
-
-    return undefined;
   }
 
   resetStack(stack: StackType) {

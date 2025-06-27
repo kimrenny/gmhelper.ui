@@ -77,7 +77,9 @@ export class FigureElementsService {
   moveToRedo(figureName: string): void {
     const original = this.figureElements[figureName];
     if (original) {
-      this.figureElementsRedo[figureName] = original;
+      this.figureElementsRedo[figureName] = new Set(
+        Array.from(original).map((el) => ({ ...el }))
+      );
       delete this.figureElements[figureName];
     }
   }
