@@ -98,7 +98,7 @@ export class Triangle implements DrawingTool {
       );
 
       if (redraw && figureName) {
-        this.drawLinesFromFigureData(ctx, path, figureName, true);
+        this.drawLinesFromFigureData(ctx, path, figureName);
       }
     }
   }
@@ -307,14 +307,17 @@ export class Triangle implements DrawingTool {
     }
 
     const figureName = this.figuresService.getFigureNameByCoords(path[0]);
+
     if (!figureName) {
       console.warn('[onSelectFigure] no figure name found for coords.');
       return;
     }
 
-    const drawPath = path;
+    const drawPath = path.slice(0, 3);
+
     if (drawPath.length === 3) {
       const color = '#ffcc00';
+
       ctx.strokeStyle = color;
       ctx.lineWidth = 2;
 
@@ -325,7 +328,6 @@ export class Triangle implements DrawingTool {
       ctx.closePath();
       ctx.stroke();
 
-      ctx.fillStyle = color;
       for (const point of drawPath) {
         ctx.beginPath();
         ctx.arc(point.x, point.y, 4, 0, 2 * Math.PI);
@@ -360,9 +362,11 @@ export class Triangle implements DrawingTool {
     const ctx = data.canvas?.getContext('2d');
     if (!ctx) return;
 
-    const path = this.pointsService
+    const fullPath = this.pointsService
       .getPointsByFigure(figureName)
       .map((p) => ({ x: p.x, y: p.y }));
+
+    const path = fullPath.slice(0, 3);
 
     const color = this.figuresService.getFigureColorByName(figureName);
 
@@ -389,7 +393,12 @@ export class Triangle implements DrawingTool {
     figureName: string,
     isPreview: boolean = false
   ): void {
-    if (path.length !== 3) return;
+    if (path.length > 3) {
+      path = path.slice(0, 3);
+    }
+    if (path.length < 3) {
+      console.warn('[drawHeight] path length < 3');
+    }
 
     const topIndex = path.reduce(
       (minIdx, p, i, arr) => (p.y < arr[minIdx].y ? i : minIdx),
@@ -412,12 +421,16 @@ export class Triangle implements DrawingTool {
       y: A.y + clampedT * dy,
     };
 
-    ctx.strokeStyle = color ?? '#000000';
+    ctx.strokeStyle = isPreview ? '#ffcc00' : color ? color : '#000000';
     ctx.lineWidth = 2;
     ctx.beginPath();
     ctx.moveTo(topPoint.x, topPoint.y);
     ctx.lineTo(foot.x, foot.y);
     ctx.stroke();
+
+    if (isPreview) {
+      return;
+    }
 
     let labelA = this.pointsService.getPointLabelByCoords(topPoint);
     if (!labelA) {
@@ -434,7 +447,10 @@ export class Triangle implements DrawingTool {
       labelB = this.pointsService.addPoint(foot.x, foot.y, figureName, 4);
     }
 
-    if (!(labelA && labelB)) return;
+    if (!(labelA && labelB)) {
+      console.warn('[drawHeight] missing labels:', { labelA, labelB });
+      return;
+    }
 
     drawLabel(ctx, labelB, foot.x, foot.y);
 
@@ -473,7 +489,12 @@ export class Triangle implements DrawingTool {
     hasHeight: boolean = false,
     isPreview: boolean = false
   ): void {
-    if (path.length !== 3) return;
+    if (path.length > 3) {
+      path = path.slice(0, 3);
+    }
+    if (path.length < 3) {
+      console.warn('[drawMedian] path length < 3');
+    }
 
     let vertexIndex = 0;
     if (hasHeight) {
@@ -491,14 +512,16 @@ export class Triangle implements DrawingTool {
       y: (A.y + B.y) / 2,
     };
 
-    ctx.strokeStyle = color ?? '#000000';
+    ctx.strokeStyle = isPreview ? '#ffcc00' : color ? color : '#000000';
     ctx.lineWidth = 2;
     ctx.beginPath();
     ctx.moveTo(vertex.x, vertex.y);
     ctx.lineTo(midPoint.x, midPoint.y);
     ctx.stroke();
 
-    if (isPreview) return;
+    if (isPreview) {
+      return;
+    }
 
     const labelA = this.pointsService.getPointLabelByCoords(vertex);
 
@@ -513,11 +536,14 @@ export class Triangle implements DrawingTool {
         midPoint.x,
         midPoint.y,
         figureName,
-        4
+        5
       );
     }
 
-    if (!(labelA && labelB)) return;
+    if (!(labelA && labelB)) {
+      console.warn('[drawMedian] missing labels:', { labelA, labelB });
+      return;
+    }
 
     drawLabel(ctx, labelA, vertex.x, vertex.y);
     drawLabel(ctx, labelB, midPoint.x, midPoint.y);
