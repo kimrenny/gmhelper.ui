@@ -232,39 +232,49 @@ export class Rectangle implements DrawingTool {
     const ctx = data.canvas?.getContext('2d');
     if (!ctx) return;
 
-    const path = this.pointsService
+    const fullPath = this.pointsService
       .getPointsByFigure(figureName)
       .map((p) => ({ x: p.x, y: p.y }));
 
+    const path = fullPath.slice(0, 4);
+
+    const color = this.figuresService.getFigureColorByName(figureName);
+
     switch (action) {
-      case 'func1': {
-        this.firstAction(ctx, path);
+      case 'drawDiagonal': {
+        this.drawDiagonal(ctx, path, color, figureName);
         break;
       }
-      case 'func2': {
-        this.secondAction(ctx, path);
+      case 'makeSquare': {
+        this.makeSquare(ctx, path, color, figureName);
         break;
       }
-      case 'func3': {
-        this.thirdAction(ctx, path);
+      case 'rotateRectangle': {
+        this.rotateRectangle(ctx, path, color, figureName);
         break;
       }
     }
   }
 
-  firstAction(
+  drawDiagonal(
     ctx: CanvasRenderingContext2D,
-    path: { x: number; y: number }[]
+    path: { x: number; y: number }[],
+    color: string,
+    figureName: string,
   ): void {}
 
-  secondAction(
+  makeSquare(
     ctx: CanvasRenderingContext2D,
-    path: { x: number; y: number }[]
+    path: { x: number; y: number }[],
+    color: string,
+    figureName: string,
   ): void {}
 
-  thirdAction(
+  rotateRectangle(
     ctx: CanvasRenderingContext2D,
-    path: { x: number; y: number }[]
+    path: { x: number; y: number }[],
+    color: string,
+    figureName: string,
   ): void {}
 
   private renderPreview(data: ToolContext): void {
