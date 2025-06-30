@@ -60,6 +60,13 @@ export class Rectangle implements DrawingTool {
     }
 
     if (redraw) {
+      const figureName = this.figuresService.getFigureNameByCoords({
+        x: path[0].x,
+        y: path[0].y,
+      });
+
+      if (!figureName) return;
+
       const [label1, label2, label3, label4] = this.addPointsToCanvasService(
         ctx,
         path
@@ -96,6 +103,33 @@ export class Rectangle implements DrawingTool {
         label1,
         label4
       );
+
+      if (redraw && figureName) {
+        this.drawLinesFromFigureData(ctx, path, figureName, false, true);
+      }
+    }
+  }
+
+  private drawLinesFromFigureData(
+    ctx: CanvasRenderingContext2D,
+    path: { x: number; y: number; color: string }[],
+    figureName: string,
+    isPreview: boolean = false,
+    isRedraw: boolean = false
+  ): void {
+    const hasDiagonal = this.figureElementsService.hasFigureElement(
+      figureName,
+      'diagonal'
+    );
+
+    const color = path[0].color ?? '#000';
+    const paths = path.map((p) => ({
+      x: p.x,
+      y: p.y,
+    }));
+
+    if (hasDiagonal) {
+      this.drawDiagonal(ctx, paths, color, figureName, isPreview, isRedraw);
     }
   }
 
@@ -207,24 +241,42 @@ export class Rectangle implements DrawingTool {
       return;
     }
 
-    if (path.length !== 4) return;
+    const figureName = this.figuresService.getFigureNameByCoords(path[0]);
 
-    ctx.strokeStyle = '#ffcc00';
-    ctx.lineWidth = 2;
-
-    ctx.beginPath();
-    ctx.moveTo(path[0].x, path[0].y);
-    for (let i = 1; i < path.length; i++) {
-      ctx.lineTo(path[i].x, path[i].y);
+    if (!figureName) {
+      console.warn('[onSelectFigure] no figure name found for coords.');
+      return;
     }
-    ctx.closePath();
-    ctx.stroke();
 
-    ctx.fillStyle = '#ffcc00';
-    for (const point of path) {
+    const drawPath = path.slice(0, 4);
+
+    if (drawPath.length === 4) {
+      const color = '#ffcc00';
+
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2;
+
       ctx.beginPath();
-      ctx.arc(point.x, point.y, 4, 0, 2 * Math.PI);
-      ctx.fill();
+      ctx.moveTo(path[0].x, path[0].y);
+      for (let i = 1; i < path.length; i++) {
+        ctx.lineTo(path[i].x, path[i].y);
+      }
+      ctx.closePath();
+      ctx.stroke();
+
+      ctx.fillStyle = '#ffcc00';
+      for (const point of path) {
+        ctx.beginPath();
+        ctx.arc(point.x, point.y, 4, 0, 2 * Math.PI);
+        ctx.fill();
+      }
+
+      this.drawLinesFromFigureData(
+        ctx,
+        path.map((p) => ({ ...p, color: color })),
+        figureName,
+        true
+      );
     }
   }
 
@@ -261,20 +313,127 @@ export class Rectangle implements DrawingTool {
     path: { x: number; y: number }[],
     color: string,
     figureName: string,
-  ): void {}
+    isPreview: boolean = false,
+    isRedraw: boolean = false
+  ): void {
+    if (path.length > 4) {
+      path = path.slice(0, 4);
+    }
+    if (path.length < 4) {
+      console.warn('[drawDiagonal] path length < 4');
+      return;
+    }
+
+    const existingElements =
+      this.figureElementsService.getFigureElements(figureName);
+    const existingDiagonals = existingElements
+      ? Array.from(existingElements)
+          .filter(
+            (e: { type: string; label?: string }) => e.type === 'diagonal'
+          )
+          .map((e) => e.label)
+      : [];
+
+    const diagonalsToCheck: [(typeof path)[0], (typeof path)[0]][] = [
+      [path[0], path[2]],
+      [path[1], path[3]],
+    ];
+
+    if (isPreview) {
+      for (const [p1, p2] of diagonalsToCheck) {
+        const label1 = this.pointsService.getPointLabelByCoords(p1);
+        const label2 = this.pointsService.getPointLabelByCoords(p2);
+        const line = label1 && label2 ? `${label1}${label2}` : null;
+        if (line && existingDiagonals.includes(line)) {
+          ctx.strokeStyle = '#ffcc00';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.moveTo(p1.x, p1.y);
+          ctx.lineTo(p2.x, p2.y);
+          ctx.stroke();
+        }
+      }
+      return;
+    }
+
+    for (const [p1, p2] of diagonalsToCheck) {
+      let label1 = this.pointsService.getPointLabelByCoords(p1);
+      let label2 = this.pointsService.getPointLabelByCoords(p2);
+      const line = label1 && label2 ? `${label1}${label2}` : null;
+      const alreadyExists = line && existingDiagonals.includes(line);
+
+      if (alreadyExists) {
+        if (!(label1 && label2)) continue;
+
+        ctx.strokeStyle = color ?? '#000000';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(p1.x, p1.y);
+        ctx.lineTo(p2.x, p2.y);
+        ctx.stroke();
+
+        drawLabel(ctx, label2, p2.x, p2.y);
+
+        restoreLineLengthToService(
+          this.linesService,
+          this.pointsService,
+          ctx,
+          label1,
+          label2
+        );
+
+        continue;
+      }
+
+      if (isRedraw) continue;
+
+      if (!(label1 && label2)) continue;
+
+      const newLine = `${label1}${label2}`;
+
+      ctx.strokeStyle = color ?? '#000000';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(p1.x, p1.y);
+      ctx.lineTo(p2.x, p2.y);
+      ctx.stroke();
+
+      drawLabel(ctx, label2, p2.x, p2.y);
+
+      if (!this.linesService.hasLine(newLine)) {
+        this.linesService.createLine(label1, label2);
+        setLineLengthToService(
+          this.linesService,
+          this.pointsService,
+          ctx,
+          label1,
+          label2,
+          '?'
+        );
+      }
+
+      this.figureElementsService.addFigureElement(
+        figureName,
+        'diagonal',
+        newLine
+      );
+
+      return;
+    }
+  }
 
   makeSquare(
     ctx: CanvasRenderingContext2D,
     path: { x: number; y: number }[],
     color: string,
-    figureName: string,
+    figureName: string
   ): void {}
 
   rotateRectangle(
     ctx: CanvasRenderingContext2D,
     path: { x: number; y: number }[],
     color: string,
-    figureName: string,
+    figureName: string
   ): void {}
 
   private renderPreview(data: ToolContext): void {
