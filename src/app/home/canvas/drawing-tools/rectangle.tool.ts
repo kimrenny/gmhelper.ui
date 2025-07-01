@@ -16,6 +16,7 @@ import { AnglesService } from '../services/angles.service';
 import { FigureElementsService } from '../services/figure-elements.service';
 import { LinesService } from '../services/lines.service';
 import { FiguresService } from '../services/figures.service';
+import { StackService } from '../services/stack.service';
 
 export class Rectangle implements DrawingTool {
   private start: { x: number; y: number; color: string } | null = null;
@@ -29,6 +30,7 @@ export class Rectangle implements DrawingTool {
     private linesService: LinesService,
     private anglesService: AnglesService,
     private figureElementsService: FigureElementsService,
+    private stackService: StackService,
     private figuresService: FiguresService,
     private counterService: CounterService
   ) {}
@@ -427,14 +429,102 @@ export class Rectangle implements DrawingTool {
     path: { x: number; y: number }[],
     color: string,
     figureName: string
-  ): void {}
+  ): void {
+    if (path.length > 4) {
+      path = path.slice(0, 4);
+    }
+    if (path.length < 4) {
+      console.warn('[makeSquare] path length < 4');
+      return;
+    }
+
+    const [A, B, C, D] = path;
+
+    const dist = (p1: { x: number; y: number }, p2: { x: number; y: number }) =>
+      Math.hypot(p1.x - p2.x, p1.y - p2.y);
+
+    const AB = dist(A, B);
+    const BC = dist(B, C);
+
+    const side = Math.min(AB, BC);
+
+    let newPath: { x: number; y: number; color: string }[];
+
+    if (AB <= BC) {
+      const dx = B.x - A.x;
+      const dy = B.y - A.y;
+      const len = Math.hypot(dx, dy);
+      const ux = dx / len;
+      const uy = dy / len;
+
+      const px = -uy;
+      const py = ux;
+
+      const Cx = B.x + px * side;
+      const Cy = B.y + py * side;
+
+      const Dx = A.x + px * side;
+      const Dy = A.y + py * side;
+
+      newPath = [
+        { x: A.x, y: A.y, color },
+        { x: B.x, y: B.y, color },
+        { x: Cx, y: Cy, color },
+        { x: Dx, y: Dy, color },
+      ];
+    } else {
+      const dx = C.x - B.x;
+      const dy = C.y - B.y;
+      const len = Math.hypot(dx, dy);
+      const ux = dx / len;
+      const uy = dy / len;
+
+      const px = -uy;
+      const py = ux;
+
+      const Dx = C.x + px * side;
+      const Dy = C.y + py * side;
+
+      const Ax = B.x + px * side;
+      const Ay = B.y + py * side;
+
+      newPath = [
+        { x: Ax, y: Ay, color },
+        { x: B.x, y: B.y, color },
+        { x: C.x, y: C.y, color },
+        { x: Dx, y: Dy, color },
+      ];
+    }
+
+    this.stackService.updateFigurePath(figureName, newPath);
+  }
 
   rotateRectangle(
     ctx: CanvasRenderingContext2D,
     path: { x: number; y: number }[],
     color: string,
     figureName: string
-  ): void {}
+  ): void {
+    if (path.length !== 4) return;
+
+    const centerX = (path[0].x + path[1].x + path[2].x + path[3].x) / 4;
+    const centerY = (path[0].y + path[1].y + path[2].y + path[3].y) / 4;
+
+    const rotatedPath = path.map((point) => {
+      const dx = point.x - centerX;
+      const dy = point.y - centerY;
+
+      return {
+        x: centerX - dy,
+        y: centerY + dx,
+        color: color ?? color ?? '#000000',
+      };
+    });
+
+    if (figureName) {
+      this.stackService.updateFigurePath(figureName, rotatedPath);
+    }
+  }
 
   private renderPreview(data: ToolContext): void {
     if (!this.start || !this.end) return;
