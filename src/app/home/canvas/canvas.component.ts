@@ -144,19 +144,28 @@ export class CanvasComponent implements OnInit, AfterViewInit {
         name: 'drawDiagonal',
         icon: 'rect-diagonal-icon.svg',
         action: () =>
-          this.handleFigureAction(this.selectedFigure ?? 'rectangle', 'drawDiagonal'),
+          this.handleFigureAction(
+            this.selectedFigure ?? 'rectangle',
+            'drawDiagonal'
+          ),
       },
       {
         name: 'makeSquare',
         icon: 'rect-to-square-icon.svg',
         action: () =>
-          this.handleFigureAction(this.selectedFigure ?? 'rectangle', 'makeSquare'),
+          this.handleFigureAction(
+            this.selectedFigure ?? 'rectangle',
+            'makeSquare'
+          ),
       },
       {
         name: 'rotateRectangle',
         icon: 'rect-rotation-icon.svg',
         action: () =>
-          this.handleFigureAction(this.selectedFigure ?? 'rectangle', 'rotateRectangle'),
+          this.handleFigureAction(
+            this.selectedFigure ?? 'rectangle',
+            'rotateRectangle'
+          ),
       },
     ],
     rhombus: [
@@ -493,9 +502,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     }
     if (!this.canUndo) {
       this.deselectFigure();
-      this.isAngleSelection = false;
-      this.isAngleInputVisible = false;
-      if (this.selectedAngle) this.selectedAngle = null;
+      this.deselectAngle();
     }
   }
 
@@ -538,6 +545,10 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     );
     this.pointsService.resetPoints();
     this.counterService.resetCounter();
+
+    this.counterService.setCounterFromFigures(
+      this.figuresService.getAllFigures()
+    );
 
     for (const p of this.stackService.getPaths()) {
       const color = p.path[0]?.color || '#000000';
@@ -588,7 +599,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     }
 
     if (this.isFigureSelection) {
-      this.isAngleSelection = false;
+      this.deselectAngle();
     } else {
       this.deselectFigure();
     }
@@ -598,8 +609,9 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     this.isAngleSelection = !this.isAngleSelection;
 
     if (this.isAngleSelection) {
-      this.isFigureSelection = false;
       this.deselectFigure();
+    } else {
+      this.deselectAngle();
     }
   }
 
@@ -614,6 +626,13 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     this.selectionService.setSelectedFigure(null);
     this.isFigureSelection = false;
     this.selectedFigure = null;
+    this.clearPreviewCanvas();
+  }
+
+  deselectAngle(): void {
+    this.isAngleSelection = false;
+    this.selectedAngle = null;
+    this.isAngleInputVisible = false;
     this.clearPreviewCanvas();
   }
 
