@@ -583,8 +583,11 @@ export class Triangle implements DrawingTool {
     isPreview: boolean = false,
     index?: number
   ): void {
-    if (path.length !== 3) {
-      return;
+    if (path.length > 3) {
+      path = path.slice(0, 3);
+    }
+    if (path.length < 3) {
+      console.warn('[markAngles] path length < 3');
     }
 
     const angles: {

@@ -106,9 +106,7 @@ export class Rectangle implements DrawingTool {
         label4
       );
 
-      if (redraw && figureName) {
-        this.drawLinesFromFigureData(ctx, path, figureName, false, true);
-      }
+      this.drawLinesFromFigureData(ctx, path, figureName, false, true);
     }
   }
 
@@ -266,7 +264,7 @@ export class Rectangle implements DrawingTool {
       ctx.closePath();
       ctx.stroke();
 
-      ctx.fillStyle = '#ffcc00';
+      ctx.fillStyle = color;
       for (const point of path) {
         ctx.beginPath();
         ctx.arc(point.x, point.y, 4, 0, 2 * Math.PI);

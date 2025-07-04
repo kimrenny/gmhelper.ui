@@ -190,22 +190,31 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     ],
     trapezoid: [
       {
-        name: 'func1',
-        icon: 'func-icon.svg',
+        name: 'drawDiagonal',
+        icon: 'trapezoid-diagonal-icon.svg',
         action: () =>
-          this.handleFigureAction(this.selectedFigure ?? 'trapezoid', 'func1'),
+          this.handleFigureAction(
+            this.selectedFigure ?? 'trapezoid',
+            'drawDiagonal'
+          ),
       },
       {
-        name: 'func2',
-        icon: 'func-icon.svg',
+        name: 'drawMidLine',
+        icon: 'trapezoid-midline-icon.svg',
         action: () =>
-          this.handleFigureAction(this.selectedFigure ?? 'trapezoid', 'func2'),
+          this.handleFigureAction(
+            this.selectedFigure ?? 'trapezoid',
+            'drawMidLine'
+          ),
       },
       {
-        name: 'func3',
-        icon: 'func-icon.svg',
+        name: 'markAngles',
+        icon: 'trapezoid-angles-icon.svg',
         action: () =>
-          this.handleFigureAction(this.selectedFigure ?? 'trapezoid', 'func3'),
+          this.handleFigureAction(
+            this.selectedFigure ?? 'trapezoid',
+            'markAngles'
+          ),
       },
     ],
     parallelogram: [
@@ -788,5 +797,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     this.counterService.resetCounter();
     this.figureElementsService.clearAllFigureElements();
     this.anglesService.clearAllAngles();
+    this.deselectAngle();
+    this.deselectFigure();
   }
 }
