@@ -301,8 +301,8 @@ export class Rectangle implements DrawingTool {
         this.makeSquare(ctx, path, color, figureName);
         break;
       }
-      case 'rotateRectangle': {
-        this.rotateRectangle(ctx, path, color, figureName);
+      case 'rotate': {
+        this.rotate(ctx, path, color, figureName);
         break;
       }
     }
@@ -497,7 +497,7 @@ export class Rectangle implements DrawingTool {
     this.stackService.updateFigurePath(figureName, newPath);
   }
 
-  rotateRectangle(
+  rotate(
     ctx: CanvasRenderingContext2D,
     path: { x: number; y: number }[],
     color: string,

@@ -159,13 +159,10 @@ export class CanvasComponent implements OnInit, AfterViewInit {
           ),
       },
       {
-        name: 'rotateRectangle',
+        name: 'rotate',
         icon: 'rect-rotation-icon.svg',
         action: () =>
-          this.handleFigureAction(
-            this.selectedFigure ?? 'rectangle',
-            'rotateRectangle'
-          ),
+          this.handleFigureAction(this.selectedFigure ?? 'rectangle', 'rotate'),
       },
     ],
     rhombus: [
