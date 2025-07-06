@@ -222,30 +222,30 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     ],
     parallelogram: [
       {
-        name: 'func1',
-        icon: 'func-icon.svg',
+        name: 'drawDiagonal',
+        icon: 'parallelogram-diagonal-icon.svg',
         action: () =>
           this.handleFigureAction(
             this.selectedFigure ?? 'parallelogram',
-            'func1'
+            'drawDiagonal'
           ),
       },
       {
-        name: 'func2',
-        icon: 'func-icon.svg',
+        name: 'makeRegular',
+        icon: 'parallelogram-to-regular-icon.svg',
         action: () =>
           this.handleFigureAction(
             this.selectedFigure ?? 'parallelogram',
-            'func2'
+            'makeRegular'
           ),
       },
       {
-        name: 'func3',
-        icon: 'func-icon.svg',
+        name: 'markAngles',
+        icon: 'parallelogram-angles-icon.svg',
         action: () =>
           this.handleFigureAction(
             this.selectedFigure ?? 'parallelogram',
-            'func3'
+            'markAngles'
           ),
       },
     ],

@@ -45,6 +45,7 @@ export function getDefaultTools(
       linesService,
       anglesService,
       figureElementsService,
+      stackService,
       figuresService,
       counterService
     ),
