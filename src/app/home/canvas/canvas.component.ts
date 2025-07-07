@@ -251,22 +251,28 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     ],
     polygon: [
       {
-        name: 'func1',
-        icon: 'func-icon.svg',
+        name: 'markAngles',
+        icon: 'polygon-angles-icon.svg',
         action: () =>
-          this.handleFigureAction(this.selectedFigure ?? 'polygon', 'func1'),
+          this.handleFigureAction(
+            this.selectedFigure ?? 'polygon',
+            'markAngles'
+          ),
       },
       {
-        name: 'func2',
-        icon: 'func-icon.svg',
+        name: 'rotate',
+        icon: 'polygon-rotation-icon.svg',
         action: () =>
-          this.handleFigureAction(this.selectedFigure ?? 'polygon', 'func2'),
+          this.handleFigureAction(this.selectedFigure ?? 'polygon', 'rotate'),
       },
       {
-        name: 'func3',
-        icon: 'func-icon.svg',
+        name: 'rotateLabels',
+        icon: 'polygon-labels-rotation-icon.svg',
         action: () =>
-          this.handleFigureAction(this.selectedFigure ?? 'polygon', 'func3'),
+          this.handleFigureAction(
+            this.selectedFigure ?? 'polygon',
+            'rotateLabels'
+          ),
       },
     ],
   };
@@ -726,6 +732,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
         this.linesService,
         this.anglesService,
         this.figureElementsService,
+        this.stackService,
         this.figuresService,
         this.counterService
       );

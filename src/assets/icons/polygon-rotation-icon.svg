@@ -1,0 +1,15 @@
+<svg width="200" height="200" viewBox="40 40 120 120" xmlns="http://www.w3.org/2000/svg">
+  <polygon 
+    points="100,40 160,85 135,140 65,140 40,85"
+    fill="none" stroke="gray" stroke-width="2"
+  />
+  
+  <polygon 
+    points="100,40 160,85 135,140 65,140 40,85" 
+    fill="none" stroke="black" stroke-width="3"
+    transform="rotate(90 100 100)"
+  />
+
+  <path d="M115,50 A20,20 0 0,1 145,75" fill="none" stroke="red" stroke-width="3"/>
+  <polygon points="144,78 144,73 147,75" fill="red"/>
+</svg>

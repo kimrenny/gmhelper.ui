@@ -16,6 +16,8 @@ import { AnglesService } from '../services/angles.service';
 import { LinesService } from '../services/lines.service';
 import { FigureElementsService } from '../services/figure-elements.service';
 import { FiguresService } from '../services/figures.service';
+import { drawFigureAngles } from '../utils/angle.utils';
+import { StackService } from '../services/stack.service';
 
 export class Polygon implements DrawingTool {
   private center: { x: number; y: number } | null = null;
@@ -32,6 +34,7 @@ export class Polygon implements DrawingTool {
     private linesService: LinesService,
     private anglesService: AnglesService,
     private figureElementsService: FigureElementsService,
+    private stackService: StackService,
     private figuresService: FiguresService,
     private counterService: CounterService
   ) {
@@ -47,7 +50,12 @@ export class Polygon implements DrawingTool {
     color: string,
     redraw: boolean = false
   ): void {
-    const drawPath = path ?? this.path;
+    const drawPath = path.map((p) => ({
+      x: p.x,
+      y: p.y,
+      color: color ?? '#000000',
+    }));
+
     if (drawPath.length >= 3) {
       ctx.strokeStyle = color;
       ctx.lineWidth = 2;
@@ -70,6 +78,13 @@ export class Polygon implements DrawingTool {
     }
 
     if (redraw) {
+      const figureName = this.figuresService.getFigureNameByCoords({
+        x: drawPath[0].x,
+        y: drawPath[0].y,
+      });
+
+      if (!figureName) return;
+
       const labels = this.addPointsToCanvasService(ctx, path);
 
       for (let i = 0; i < labels.length - 1; i++) {
@@ -97,6 +112,39 @@ export class Polygon implements DrawingTool {
           to
         );
       }
+
+      this.drawLinesFromFigureData(ctx, drawPath, figureName, false, true);
+    }
+  }
+
+  private drawLinesFromFigureData(
+    ctx: CanvasRenderingContext2D,
+    path: { x: number; y: number; color: string }[],
+    figureName: string,
+    isPreview: boolean = false,
+    isRedraw: boolean = false
+  ): void {
+    const color = path[0].color ?? '#000';
+    const paths = path.map((p) => ({
+      x: p.x,
+      y: p.y,
+    }));
+
+    const angleLabels = path.map((point) =>
+      this.anglesService.getAngleLabelByCoords(point)
+    );
+
+    const hasAllLabels = angleLabels.every((label) => !!label);
+
+    if (hasAllLabels) {
+      this.markAngles(ctx, paths, true);
+      drawFigureAngles(
+        ctx,
+        this.anglesService,
+        this.pointsService,
+        paths,
+        path.length
+      );
     }
   }
 
@@ -203,9 +251,18 @@ export class Polygon implements DrawingTool {
       return;
     }
 
-    const drawPath = path ?? this.path;
+    const figureName = this.figuresService.getFigureNameByCoords(path[0]);
+
+    if (!figureName) {
+      console.warn('[onSelectFigure] no figure name found for coords.');
+      return;
+    }
+
+    const drawPath = path;
     if (drawPath.length >= 3) {
-      ctx.strokeStyle = '#ffcc00';
+      const color = '#ffcc00';
+
+      ctx.strokeStyle = color;
       ctx.lineWidth = 2;
 
       ctx.beginPath();
@@ -216,14 +273,36 @@ export class Polygon implements DrawingTool {
       ctx.closePath();
       ctx.stroke();
 
-      ctx.fillStyle = '#ffcc00';
+      ctx.fillStyle = color;
       for (const point of drawPath) {
         ctx.beginPath();
         ctx.arc(point.x, point.y, 3, 0, Math.PI * 2);
         ctx.fill();
         ctx.closePath();
       }
+
+      this.drawLinesFromFigureData(
+        ctx,
+        path.map((p) => ({ ...p, color: color })),
+        figureName,
+        true
+      );
     }
+  }
+
+  onSelectAngle(
+    previewCanvas: HTMLCanvasElement,
+    path: { x: number; y: number }[],
+    label: string,
+    attachedToFigure: string,
+    attachedToPoint: number
+  ) {
+    const ctx = previewCanvas.getContext('2d');
+    if (!ctx) {
+      return;
+    }
+
+    this.markAngles(ctx, path, true, attachedToPoint);
   }
 
   handleAction(action: string, data: ToolContext, figureName: string): void {
@@ -234,36 +313,130 @@ export class Polygon implements DrawingTool {
       .getPointsByFigure(figureName)
       .map((p) => ({ x: p.x, y: p.y }));
 
+    const color = this.figuresService.getFigureColorByName(figureName);
+
     switch (action) {
-      case 'func1': {
-        this.firstAction(ctx, path);
+      case 'markAngles': {
+        this.markAngles(ctx, path);
         break;
       }
-      case 'func2': {
-        this.secondAction(ctx, path);
+      case 'rotate': {
+        this.rotate(ctx, path, color, figureName);
         break;
       }
-      case 'func3': {
-        this.thirdAction(ctx, path);
+      case 'rotateLabels': {
+        const coloredPath = path.map((p) => ({
+          x: p.x,
+          y: p.y,
+          color: color ?? '#000000',
+        }));
+        this.rotateLabels(ctx, coloredPath, figureName);
         break;
       }
     }
   }
 
-  firstAction(
+  markAngles(
     ctx: CanvasRenderingContext2D,
-    path: { x: number; y: number }[]
-  ): void {}
+    path: { x: number; y: number }[],
+    isPreview: boolean = false,
+    index?: number
+  ): void {
+    const n = path.length;
 
-  secondAction(
-    ctx: CanvasRenderingContext2D,
-    path: { x: number; y: number }[]
-  ): void {}
+    if (n < 3) {
+      console.warn('[markAngles] path length < 3');
+      return;
+    }
 
-  thirdAction(
+    const angleValue = (180 * (n - 2)) / n;
+
+    ctx.lineWidth = 1;
+
+    const drawAngle = (i: number) => {
+      const vertex = path[i];
+      const prev = path[(i - 1 + path.length) % path.length];
+      const next = path[(i + 1) % path.length];
+
+      const v1 = { x: prev.x - vertex.x, y: prev.y - vertex.y };
+      const v2 = { x: next.x - vertex.x, y: next.y - vertex.y };
+
+      const angleStart = Math.atan2(v1.y, v1.x);
+      const angleEnd = Math.atan2(v2.y, v2.x);
+
+      let deltaAngle = angleEnd - angleStart;
+      if (deltaAngle < 0) {
+        deltaAngle += 2 * Math.PI;
+      }
+      const anticlockwise = deltaAngle > Math.PI;
+
+      ctx.beginPath();
+      ctx.arc(vertex.x, vertex.y, 15, angleStart, angleEnd, anticlockwise);
+      ctx.stroke();
+
+      if (!isPreview) {
+        const label = this.pointsService.getPointLabelByCoords(vertex);
+        if (label) {
+          this.anglesService.setAngleValue(label, angleValue);
+        }
+      }
+    };
+
+    if (index !== undefined && index >= 0 && index < path.length) {
+      drawAngle(index);
+    } else {
+      for (let i = 0; i < path.length; i++) {
+        drawAngle(i);
+      }
+    }
+  }
+
+  rotate(
     ctx: CanvasRenderingContext2D,
-    path: { x: number; y: number }[]
-  ): void {}
+    path: { x: number; y: number }[],
+    color: string,
+    figureName: string
+  ): void {
+    if (path.length < 3) {
+      console.warn('[rotate] path length < 3');
+      return;
+    }
+
+    const centerX = path.reduce((sum, p) => sum + p.x, 0) / path.length;
+    const centerY = path.reduce((sum, p) => sum + p.y, 0) / path.length;
+
+    const rotatedPath = path.map((point) => {
+      const dx = point.x - centerX;
+      const dy = point.y - centerY;
+
+      return {
+        x: centerX - dy,
+        y: centerY + dx,
+        color: color ?? '#000000',
+      };
+    });
+
+    if (figureName) {
+      this.stackService.updateFigurePath(figureName, rotatedPath);
+    }
+  }
+
+  rotateLabels(
+    ctx: CanvasRenderingContext2D,
+    path: { x: number; y: number; color: string }[],
+    figureName: string
+  ): void {
+    if (path.length < 3) {
+      console.warn('[rotateLabels] path length < 3');
+      return;
+    }
+
+    const newPath = [...path.slice(1), { ...path[0] }];
+
+    if (figureName) {
+      this.stackService.updateFigurePath(figureName, newPath);
+    }
+  }
 
   private renderPreview(data: ToolContext): void {
     if (!this.isDrawing || !this.center || this.radius <= 0) return;
