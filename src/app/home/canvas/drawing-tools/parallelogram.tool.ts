@@ -274,7 +274,7 @@ export class Parallelogram implements DrawingTool {
       ctx.closePath();
       ctx.stroke();
 
-      ctx.fillStyle = '#ffcc00';
+      ctx.fillStyle = color;
       for (const point of path) {
         ctx.beginPath();
         ctx.arc(point.x, point.y, 4, 0, 2 * Math.PI);

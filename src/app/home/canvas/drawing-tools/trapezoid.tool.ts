@@ -39,7 +39,7 @@ export class Trapezoid implements DrawingTool {
     color: string,
     redraw: boolean = false
   ): void {
-    const drawPath = path ?? this.path;
+    const drawPath = path;
     if (drawPath.length === 4) {
       ctx.strokeStyle = color;
       ctx.lineWidth = 2;
