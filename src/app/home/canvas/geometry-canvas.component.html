@@ -1,0 +1,178 @@
+<div class="geo-canvas-container">
+  <canvas
+    #drawingCanvas
+    [class.blurred]="!selectedSubject"
+    class="canvas"
+  ></canvas>
+
+  <canvas
+    #previewCanvas
+    [class.blurred]="!selectedSubject"
+    class="canvas preview-canvas"
+  ></canvas>
+
+  <div class="scale-controls" [class.disabled]="!selectedSubject">
+    <button (click)="adjustScale(-10)" [disabled]="scale <= minScale">-</button>
+    <span class="scale-value">{{ scale }}%</span>
+    <button (click)="adjustScale(10)" [disabled]="scale >= maxScale">+</button>
+  </div>
+
+  <div class="canvas-controls" [class.disabled]="!selectedSubject">
+    <button
+      class="undo-btn"
+      (click)="undo()"
+      [class.disabled]="!canUndo"
+    ></button>
+    <button
+      class="redo-btn"
+      (click)="redo()"
+      [class.disabled]="!canRedo"
+    ></button>
+  </div>
+
+  <div
+    class="tool-buttons"
+    [class.disabled]="!selectedSubject"
+    [class.show-palette]="isColorPaletteVisible"
+  >
+    <button (click)="selectTool('pencil')" class="pencil-btn"></button>
+    <button (click)="selectTool('line')" class="line-btn"></button>
+    <button (click)="toggleColorPalette()" class="color-btn" #colorBtn></button>
+
+    <button (click)="toggleShapeTools()" class="tool-btn"></button>
+    <button (click)="onClearCanvas()" class="clear-btn"></button>
+    <div
+      [style.display]="shapeToolsVisible ? 'flex' : 'none'"
+      class="shape-tools"
+    >
+      <button (click)="selectTool('triangle')" class="triangle-btn"></button>
+      <button (click)="selectTool('rectangle')" class="quad-btn"></button>
+      <button (click)="selectTool('ellipse')" class="ellipse-btn"></button>
+      <button
+        (click)="selectTool('parallelogram')"
+        class="parallelogram-btn"
+      ></button>
+      <button (click)="selectTool('polygon')" class="polygon-btn"></button>
+      <button (click)="selectTool('trapezoid')" class="trapezoid-btn"></button>
+      <button (click)="selectTool('rhombus')" class="rhombus-btn"></button>
+    </div>
+
+    <div
+      class="color-palette"
+      [style.display]="isColorPaletteVisible ? 'grid' : 'none'"
+      #colorPalette
+    >
+      <div
+        class="color-option"
+        *ngFor="let color of colors"
+        [style.background-color]="color"
+        (click)="selectColor(color)"
+      ></div>
+    </div>
+  </div>
+
+  <div
+    class="figure-action-panel"
+    *ngIf="
+      selectedFigure &&
+      figureToolMap[selectedFigure.split('_')[0].toLowerCase()]
+    "
+  >
+    <button
+      *ngFor="
+        let tool of figureToolMap[selectedFigure.split('_')[0].toLowerCase()]
+      "
+      class="figure-action-btn"
+      [ngStyle]="{ 'background-image': 'url(assets/icons/' + tool.icon + ')' }"
+      (click)="tool.action()"
+    ></button>
+  </div>
+
+  <div class="figure-action-panel" *ngIf="selectedAngle">
+    <button
+      *ngFor="let tool of angleTools"
+      class="figure-action-btn"
+      [ngStyle]="{ 'background-image': 'url(assets/icons/' + tool.icon + ')' }"
+      (click)="handleAngleAction(tool.name)"
+    ></button>
+  </div>
+
+  <angle-input
+    class="angle-input"
+    *ngIf="isAngleInputVisible"
+    [initialValue]="60"
+    (confirm)="onAngleConfirm($event)"
+  ></angle-input>
+
+  <div
+    class="figure-tool-buttons"
+    [class.not-visible]="!selectedSubject || !canUndo"
+    [class.show-palette]="isFigureColorPaletteVisible"
+  >
+    <button
+      [class.disabled]="!isLineSelected"
+      (click)="onChangeLineLengthClick()"
+      class="set-length-btn"
+    ></button>
+    <button
+      class="select-figure-btn"
+      [class.active]="isFigureSelection"
+      (click)="toggleFigureSelection()"
+    ></button>
+    <button
+      class="select-angle-btn"
+      [class.active]="isAngleSelection"
+      (click)="toggleAngleSelection()"
+    ></button>
+    <button
+      [class.disabled]="!isFigureSelected"
+      (click)="toggleFigureColorPalette()"
+      class="color-btn"
+      #lineColorBtn
+    ></button>
+
+    <div
+      class="line-color-palette"
+      [style.display]="isFigureColorPaletteVisible ? 'grid' : 'none'"
+      #lineColorPalette
+    >
+      <div
+        class="color-option"
+        *ngFor="let color of colors"
+        [style.background-color]="color"
+        (click)="changeFigureColor(color)"
+      ></div>
+    </div>
+  </div>
+
+  <div *ngIf="isLineLengthChanging" class="line-length-input">
+    <input
+      [(ngModel)]="lineLength"
+      (keydown.enter)="onLineLengthConfirm()"
+      [style.left.px]="lineInputPosition!.x"
+      [style.top.px]="lineInputPosition!.y"
+      min="1"
+      class="line-length-input-field"
+    />
+  </div>
+
+  <div *ngIf="showPolygonInput" class="polygon-input-overlay">
+    <div class="polygon-input-box">
+      <h3>{{ "CANVAS.POLYGON.HINT" | translate }}</h3>
+      <input
+        type="number"
+        #polygonInput
+        (keydown.enter)="confirmPolygonSides(polygonInput.value)"
+        min="3"
+      />
+      <div class="button-group">
+        <button (click)="confirmPolygonSides(polygonInput.value)">
+          {{ "CANVAS.POLYGON.CONFIRM" | translate }}
+        </button>
+        <button (click)="closePolygonInput()">
+          {{ "CANVAS.POLYGON.CANCEL" | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
