@@ -29,6 +29,13 @@ export class FigureElementsService {
     }
   }
 
+  getAllFigureElements(): Record<
+    string,
+    Set<{ type: string; label?: string }>
+  > {
+    return this.figureElements;
+  }
+
   hasFigureElement(figureName: string, elementType: string): boolean {
     if (!this.figureElements[figureName]) return false;
     for (const el of this.figureElements[figureName]) {

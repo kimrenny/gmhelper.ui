@@ -44,6 +44,9 @@ import { rawFigureToolMap } from './tools/figure-tool-map';
 export class GeoCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
   private subjectSub!: Subscription;
   selectedSubject: boolean = false;
+  hasFigures: boolean = false;
+
+  private figuresSub!: Subscription;
 
   scale = 100;
   minScale = 50;
@@ -105,6 +108,11 @@ export class GeoCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit(): void {
     this.subjectSub = this.subjectService.getSubject().subscribe((subject) => {
       this.selectedSubject = subject == 'Geo';
+    });
+
+    this.figuresSub = this.canvasService.hasFigures$.subscribe((value) => {
+      this.hasFigures = value;
+      console.log(value);
     });
 
     this.toolSelector = new ToolSelector(
@@ -604,6 +612,10 @@ export class GeoCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
+  onSubmitTask(): void {
+    this.canvasService.exportTaskJson();
+  }
+
   clearPreviewCanvas(): void {
     const previewCanvas = this.previewCanvasRef.nativeElement;
     this.previewCtx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
@@ -628,5 +640,6 @@ export class GeoCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subjectSub.unsubscribe();
+    this.figuresSub.unsubscribe();
   }
 }

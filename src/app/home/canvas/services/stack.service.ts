@@ -4,6 +4,7 @@ import { stackInfo } from '../drawing-tools/types/stack-info.type';
 import { FigureElementsService } from './figure-elements.service';
 import { LinesService } from './lines.service';
 import { StackType } from '../drawing-tools/types/stack.type';
+import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -13,6 +14,9 @@ export class StackService {
   private redoStack: stackInfo[] = [];
 
   private linesService!: LinesService;
+
+  private pathsChangedSubject = new Subject<void>();
+  pathsChanged$ = this.pathsChangedSubject.asObservable();
 
   constructor(
     private injector: Injector,
@@ -72,6 +76,7 @@ export class StackService {
 
           linesService.restoreFromRedo(labels);
         }
+        this.pathsChangedSubject.next();
         break;
       }
     }
@@ -129,6 +134,7 @@ export class StackService {
           );
         }
 
+        this.pathsChangedSubject.next();
         return path;
       }
     }
@@ -151,6 +157,8 @@ export class StackService {
         break;
       }
     }
+
+    this.pathsChangedSubject.next();
   }
 
   get canUndo(): boolean {
