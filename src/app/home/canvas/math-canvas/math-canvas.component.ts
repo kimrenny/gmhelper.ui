@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { SubjectService } from './services/subject.service';
+import { SubjectService } from '../services/subject.service';
 import { Subscription } from 'rxjs';
 
 @Component({

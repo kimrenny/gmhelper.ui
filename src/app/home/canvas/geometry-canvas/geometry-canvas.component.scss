@@ -1,4 +1,4 @@
-@use "../../shared/animations/canvas-border.animation.scss";
+@use "../../../shared/animations/canvas-border.animation.scss";
 
 .geo-canvas-container {
   position: relative;
@@ -187,14 +187,14 @@
     }
 
     .undo-btn {
-      background-image: url(../../../assets/icons/undo-btn.png);
+      background-image: url(../../../../assets/icons/undo-btn.png);
 
       &:hover:not(.disabled) {
-        background-image: url(../../../assets/icons/undo-btn-hover.png);
+        background-image: url(../../../../assets/icons/undo-btn-hover.png);
       }
 
       &.disabled {
-        background-image: url(../../../assets/icons/undo-btn-disabled.png);
+        background-image: url(../../../../assets/icons/undo-btn-disabled.png);
         cursor: not-allowed;
         pointer-events: none;
         opacity: 0.6;
@@ -204,14 +204,14 @@
     }
 
     .redo-btn {
-      background-image: url(../../../assets/icons/redo-btn.png);
+      background-image: url(../../../../assets/icons/redo-btn.png);
 
       &:hover:not(.disabled) {
-        background-image: url(../../../assets/icons/redo-btn-hover.png);
+        background-image: url(../../../../assets/icons/redo-btn-hover.png);
       }
 
       &.disabled {
-        background-image: url(../../../assets/icons/redo-btn-disabled.png);
+        background-image: url(../../../../assets/icons/redo-btn-disabled.png);
         cursor: not-allowed;
         pointer-events: none;
         opacity: 0.6;
@@ -263,98 +263,98 @@
       }
 
       &.pencil-btn {
-        background-image: url("../../../assets/icons/pencil.png");
+        background-image: url("../../../../assets/icons/pencil.png");
 
         &:hover {
-          background-image: url("../../../assets/icons/pencil-hover.png");
+          background-image: url("../../../../assets/icons/pencil-hover.png");
         }
       }
 
       &.color-btn {
-        background-image: url("../../../assets/icons/color-palette.png");
+        background-image: url("../../../../assets/icons/color-palette.png");
 
         &:hover {
-          background-image: url("../../../assets/icons/color-palette-hover.png");
+          background-image: url("../../../../assets/icons/color-palette-hover.png");
         }
       }
 
       &.tool-btn {
-        background-image: url("../../../assets/icons/tool-btn.png");
+        background-image: url("../../../../assets/icons/tool-btn.png");
 
         &:hover {
-          background-image: url("../../../assets/icons/tool-btn-hover.png");
+          background-image: url("../../../../assets/icons/tool-btn-hover.png");
         }
       }
 
       &.ellipse-btn {
-        background-image: url("../../../assets/icons/ellipse-btn.png");
+        background-image: url("../../../../assets/icons/ellipse-btn.png");
 
         &:hover {
-          background-image: url("../../../assets/icons/ellipse-btn-hover.png");
+          background-image: url("../../../../assets/icons/ellipse-btn-hover.png");
         }
       }
 
       &.parallelogram-btn {
-        background-image: url("../../../assets/icons/parallelogram-btn.png");
+        background-image: url("../../../../assets/icons/parallelogram-btn.png");
 
         &:hover {
-          background-image: url("../../../assets/icons/parallelogram-btn-hover.png");
+          background-image: url("../../../../assets/icons/parallelogram-btn-hover.png");
         }
       }
 
       &.line-btn {
-        background-image: url("../../../assets/icons/line-btn.png");
+        background-image: url("../../../../assets/icons/line-btn.png");
 
         &:hover {
-          background-image: url("../../../assets/icons/line-btn-hover.png");
+          background-image: url("../../../../assets/icons/line-btn-hover.png");
         }
       }
 
       &.polygon-btn {
-        background-image: url("../../../assets/icons/polygon-btn.png");
+        background-image: url("../../../../assets/icons/polygon-btn.png");
 
         &:hover {
-          background-image: url("../../../assets/icons/polygon-btn-hover.png");
+          background-image: url("../../../../assets/icons/polygon-btn-hover.png");
         }
       }
 
       &.triangle-btn {
-        background-image: url("../../../assets/icons/triangle-btn.png");
+        background-image: url("../../../../assets/icons/triangle-btn.png");
 
         &:hover {
-          background-image: url("../../../assets/icons/triangle-btn-hover.png");
+          background-image: url("../../../../assets/icons/triangle-btn-hover.png");
         }
       }
 
       &.quad-btn {
-        background-image: url("../../../assets/icons/quad-btn.png");
+        background-image: url("../../../../assets/icons/quad-btn.png");
 
         &:hover {
-          background-image: url("../../../assets/icons/quad-btn-hover.png");
+          background-image: url("../../../../assets/icons/quad-btn-hover.png");
         }
       }
 
       &.trapezoid-btn {
-        background-image: url("../../../assets/icons/trapezoid-btn.png");
+        background-image: url("../../../../assets/icons/trapezoid-btn.png");
 
         &:hover {
-          background-image: url("../../../assets/icons/trapezoid-btn-hover.png");
+          background-image: url("../../../../assets/icons/trapezoid-btn-hover.png");
         }
       }
 
       &.rhombus-btn {
-        background-image: url("../../../assets/icons/rhombus-btn.png");
+        background-image: url("../../../../assets/icons/rhombus-btn.png");
 
         &:hover {
-          background-image: url("../../../assets/icons/rhombus-btn-hover.png");
+          background-image: url("../../../../assets/icons/rhombus-btn-hover.png");
         }
       }
 
       &.clear-btn {
-        background-image: url("../../../assets/icons/eraser.png");
+        background-image: url("../../../../assets/icons/eraser.png");
 
         &:hover {
-          background-image: url("../../../assets/icons/eraser-hover.png");
+          background-image: url("../../../../assets/icons/eraser-hover.png");
         }
       }
     }
@@ -466,44 +466,44 @@
       }
 
       &.set-length-btn {
-        background-image: url("../../../assets/icons/set-length-btn.png");
+        background-image: url("../../../../assets/icons/set-length-btn.png");
 
         &:hover {
-          background-image: url("../../../assets/icons/set-length-btn-hover.png");
+          background-image: url("../../../../assets/icons/set-length-btn-hover.png");
         }
       }
 
       &.select-figure-btn {
-        background-image: url("../../../assets/icons/figure-click.png");
+        background-image: url("../../../../assets/icons/figure-click.png");
 
         &.active,
         &:hover {
-          background-image: url("../../../assets/icons/figure-click-hover.png");
+          background-image: url("../../../../assets/icons/figure-click-hover.png");
         }
       }
 
       &.select-angle-btn {
-        background-image: url("../../../assets/icons/angle-click-icon.svg");
+        background-image: url("../../../../assets/icons/angle-click-icon.svg");
 
         &.active,
         &:hover {
-          background-image: url("../../../assets/icons/angle-click-icon-hover.svg");
+          background-image: url("../../../../assets/icons/angle-click-icon-hover.svg");
         }
       }
 
       &.color-btn {
-        background-image: url("../../../assets/icons/color-palette.png");
+        background-image: url("../../../../assets/icons/color-palette.png");
 
         &:hover {
-          background-image: url("../../../assets/icons/color-palette-hover.png");
+          background-image: url("../../../../assets/icons/color-palette-hover.png");
         }
       }
 
       &.line-btn {
-        background-image: url("../../../assets/icons/line-btn.png");
+        background-image: url("../../../../assets/icons/line-btn.png");
 
         &:hover {
-          background-image: url("../../../assets/icons/line-btn-hover.png");
+          background-image: url("../../../../assets/icons/line-btn-hover.png");
         }
       }
     }

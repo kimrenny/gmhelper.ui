@@ -9,30 +9,30 @@ import {
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { DrawingTool } from './interfaces/drawing-tool.interface';
-import { Polygon } from './drawing-tools/polygon.tool';
+import { DrawingTool } from '../interfaces/drawing-tool.interface';
+import { Polygon } from '../drawing-tools/polygon.tool';
 import { ToastrService } from 'ngx-toastr';
-import { COLORS } from './utils/colors';
-import { getMousePos } from './utils/mouse.utils';
-import { ToolSelector } from './tools/tool-selector';
-import { ToolContext } from './interfaces/tool-context.interface';
-import { getDefaultTools } from './utils/tool-config';
-import { CanvasService } from './services/canvas.service';
-import { CounterService } from './services/counter.service';
-import { LineLength } from './drawing-tools/types/line-length.type';
-import { Coords2d } from './drawing-tools/types/coords.type';
-import { AngleToolAction, angleToolMap } from './tools/angle-tools';
-import { AngleInputComponent } from './drawing-tools/angle-input/angle-input.component';
-import { PointsService } from './services/points.service';
-import { AnglesService } from './services/angles.service';
-import { LinesService } from './services/lines.service';
-import { StackService } from './services/stack.service';
-import { FigureElementsService } from './services/figure-elements.service';
-import { FiguresService } from './services/figures.service';
-import { SelectionService } from './services/selection.service';
-import { SubjectService } from './services/subject.service';
+import { COLORS } from '../utils/colors';
+import { getMousePos } from '../utils/mouse.utils';
+import { ToolSelector } from '../tools/tool-selector';
+import { ToolContext } from '../interfaces/tool-context.interface';
+import { getDefaultTools } from '../utils/tool-config';
+import { CanvasService } from '../services/canvas.service';
+import { CounterService } from '../services/counter.service';
+import { LineLength } from '../drawing-tools/types/line-length.type';
+import { Coords2d } from '../drawing-tools/types/coords.type';
+import { AngleToolAction, angleToolMap } from '../tools/angle-tools';
+import { AngleInputComponent } from '../drawing-tools/angle-input/angle-input.component';
+import { PointsService } from '../services/points.service';
+import { AnglesService } from '../services/angles.service';
+import { LinesService } from '../services/lines.service';
+import { StackService } from '../services/stack.service';
+import { FigureElementsService } from '../services/figure-elements.service';
+import { FiguresService } from '../services/figures.service';
+import { SelectionService } from '../services/selection.service';
+import { SubjectService } from '../services/subject.service';
 import { Subscription } from 'rxjs';
-import { rawFigureToolMap } from './tools/figure-tool-map';
+import { rawFigureToolMap } from '../tools/figure-tool-map';
 
 @Component({
   selector: 'app-geometry-canvas',
@@ -83,6 +83,8 @@ export class GeoCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
 
   isAngleInputVisible = false;
 
+  private isViewInitialized = false;
+
   angleTools: AngleToolAction[] = angleToolMap;
 
   figureToolMap: Record<
@@ -108,11 +110,16 @@ export class GeoCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit(): void {
     this.subjectSub = this.subjectService.getSubject().subscribe((subject) => {
       this.selectedSubject = subject == 'Geo';
+
+      if (this.selectedSubject) {
+        setTimeout(() => {
+          this.clearCanvas();
+        });
+      }
     });
 
     this.figuresSub = this.canvasService.hasFigures$.subscribe((value) => {
       this.hasFigures = value;
-      console.log(value);
     });
 
     this.toolSelector = new ToolSelector(
@@ -136,6 +143,8 @@ export class GeoCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
   ngAfterViewInit(): void {
     this.updateCanvasSize();
     this.setupCanvasEvents();
+
+    this.isViewInitialized = true;
   }
 
   updateCanvasSize(): void {
@@ -381,8 +390,12 @@ export class GeoCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   redraw(): void {
+    if (!this.canvasRef || !this.previewCanvasRef) return;
+
     const canvas = this.canvasRef.nativeElement;
     const previewCanvas = this.previewCanvasRef.nativeElement;
+
+    if (!canvas || !previewCanvas || !this.ctx || !this.previewCtx) return;
 
     this.ctx.clearRect(0, 0, canvas.width, canvas.height);
     this.previewCtx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
@@ -629,7 +642,11 @@ export class GeoCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
   clearCanvas(): void {
     this.stackService.resetStack('paths');
     this.stackService.resetStack('redo');
-    this.redraw();
+
+    if (!this.isViewInitialized) {
+      this.redraw();
+    }
+
     this.pointsService.resetPoints();
     this.counterService.resetCounter();
     this.figureElementsService.clearAllFigureElements();
