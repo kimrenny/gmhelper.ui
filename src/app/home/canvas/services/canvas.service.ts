@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Coords2d } from '../drawing-tools/types/coords.type';
 import { PointsService } from './points.service';
 import { StackService } from './stack.service';
@@ -6,6 +6,8 @@ import { AnglesService } from './angles.service';
 import { FigureElementsService } from './figure-elements.service';
 import { LinesService } from './lines.service';
 import { BehaviorSubject } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { ApiResponse } from 'src/app/models/api-response.model';
 
 @Injectable({
   providedIn: 'root',
@@ -13,6 +15,9 @@ import { BehaviorSubject } from 'rxjs';
 export class CanvasService {
   private hasFiguresSubject = new BehaviorSubject<boolean>(false);
   hasFigures$ = this.hasFiguresSubject.asObservable();
+
+  private api = 'https://localhost:7057';
+  private http = inject(HttpClient);
 
   constructor(
     private pointsService: PointsService,
@@ -31,6 +36,43 @@ export class CanvasService {
   exportTaskJson() {
     const taskData = this.serializeTaskJson();
     console.log('Sending task to the server:', taskData);
+
+    this.sendTaskToApi(taskData);
+  }
+
+  private sendTaskToApi(data: any) {
+    this.http
+      .post<ApiResponse<string>>(`${this.api}/api/taskprocessing/process`, data)
+      .subscribe({
+        next: (res) => {
+          if (res.success) {
+            console.log('Task saved with ID:', res.data);
+            this.getTaskFromApi(res.data);
+          } else {
+            console.warn('Server rejected task:', res.message);
+          }
+        },
+        error: (err) => {
+          console.error('HTTP error while sending task:', err);
+        },
+      });
+  }
+
+  private getTaskFromApi(id: string) {
+    this.http
+      .get<ApiResponse<any>>(`${this.api}/api/taskprocessing/get/${id}`)
+      .subscribe({
+        next: (res) => {
+          if (res.success) {
+            console.log('Task data:', res.data);
+          } else {
+            console.warn('Server rejected request:', res.message);
+          }
+        },
+        error: (err) => {
+          console.error('HTTP error while sending task:', err);
+        },
+      });
   }
 
   serializeTaskJson(): any {
