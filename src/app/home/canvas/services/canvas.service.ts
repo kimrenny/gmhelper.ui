@@ -16,6 +16,9 @@ export class CanvasService {
   private hasFiguresSubject = new BehaviorSubject<boolean>(false);
   hasFigures$ = this.hasFiguresSubject.asObservable();
 
+  private taskIdSubject = new BehaviorSubject<string | null>(null);
+  taskId$ = this.taskIdSubject.asObservable();
+
   private api = 'https://localhost:7057';
   private http = inject(HttpClient);
 
@@ -47,26 +50,9 @@ export class CanvasService {
         next: (res) => {
           if (res.success) {
             console.log('Task saved with ID:', res.data);
-            this.getTaskFromApi(res.data);
+            this.taskIdSubject.next(res.data);
           } else {
             console.warn('Server rejected task:', res.message);
-          }
-        },
-        error: (err) => {
-          console.error('HTTP error while sending task:', err);
-        },
-      });
-  }
-
-  private getTaskFromApi(id: string) {
-    this.http
-      .get<ApiResponse<any>>(`${this.api}/api/taskprocessing/get/${id}`)
-      .subscribe({
-        next: (res) => {
-          if (res.success) {
-            console.log('Task data:', res.data);
-          } else {
-            console.warn('Server rejected request:', res.message);
           }
         },
         error: (err) => {

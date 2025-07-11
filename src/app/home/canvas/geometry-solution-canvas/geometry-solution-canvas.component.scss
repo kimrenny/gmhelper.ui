@@ -1,0 +1,110 @@
+@use "../../../shared/animations/canvas-border.animation.scss";
+
+:host {
+  display: block;
+  width: 100vw;
+  height: 100vh;
+}
+
+.geo-solution-canvas-container {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  z-index: 900;
+  background-color: rgba(0, 0, 0, 0.9);
+
+  &::before,
+  &::after {
+    content: "";
+    position: absolute;
+    pointer-events: none;
+    background: white;
+    box-shadow: 0 0 10px 2px white, 0 0 20px 4px rgba(255, 255, 255, 0.8);
+    z-index: 999;
+    transform: translateY(7.5px);
+  }
+
+  canvas {
+    width: 80vw;
+    height: 80vh;
+    border: 2px solid #ccc;
+    margin-top: 20px;
+    background-color: #f0f0f0;
+    background-image: linear-gradient(to right, #c0c0c0 1px, transparent 1px),
+      linear-gradient(to bottom, #c0c0c0 1px, transparent 1px);
+    background-size: 20px 20px;
+    z-index: 1000;
+
+    &.blurred {
+      filter: blur(5px);
+      background-color: rgba(255, 255, 255, 0.8);
+      pointer-events: none;
+    }
+
+    &.preview-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 35;
+      pointer-events: none;
+      background: transparent;
+    }
+  }
+
+  .scale-controls {
+    position: absolute;
+    top: 110px;
+    right: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 150px;
+    z-index: 1000;
+
+    button {
+      background-color: #444;
+      color: #fff;
+      border: none;
+      padding: 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+
+      &:hover {
+        background-color: #666;
+      }
+
+      &:disabled {
+        background-color: #888;
+        cursor: not-allowed;
+      }
+    }
+
+    .scale-value {
+      color: black;
+      width: 80px;
+      margin: 0 5px;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    &.disabled {
+      visibility: hidden;
+    }
+  }
+
+  @media (max-width: 768px) {
+    canvas {
+      width: 80vw;
+      height: 40vh;
+    }
+
+    .tool-buttons {
+      left: 5px;
+    }
+  }
+}

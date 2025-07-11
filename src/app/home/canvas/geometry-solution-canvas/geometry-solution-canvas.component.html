@@ -1,0 +1,9 @@
+<div class="geo-solution-canvas-container">
+  <canvas #geoSolutionCanvas [class.blurred]="false" class="canvas"></canvas>
+
+  <div class="scale-controls">
+    <button (click)="adjustScale(-10)" [disabled]="scale <= minScale">-</button>
+    <span class="scale-value">{{ scale }}%</span>
+    <button (click)="adjustScale(10)" [disabled]="scale >= maxScale">+</button>
+  </div>
+</div>

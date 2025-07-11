@@ -46,6 +46,16 @@
   }
 }
 
+.geo-canvas-solution-container {
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 999;
+}
+
 .subject-change {
   position: absolute;
   top: 60px;
