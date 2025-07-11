@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
+import { CounterServiceInterface } from '../interfaces/counter-service.interface';
 
 @Injectable({
   providedIn: 'root',
 })
-export class CounterService {
+export class CounterService implements CounterServiceInterface {
   private figureCounter: number = 0;
 
   getCurrentFigureCounter(): number {

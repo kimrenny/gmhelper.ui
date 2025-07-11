@@ -2,11 +2,12 @@ import { Injectable } from '@angular/core';
 import { Point } from '../drawing-tools/types/point';
 import { Coords2d } from '../drawing-tools/types/coords.type';
 import { StackService } from './stack.service';
+import { PointsServiceInterface } from '../interfaces/points-service.interface';
 
 @Injectable({
   providedIn: 'root',
 })
-export class PointsService {
+export class PointsService implements PointsServiceInterface {
   private points: Point[] = [];
   private pointCounter: number = 0;
 

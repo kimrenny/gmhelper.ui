@@ -3,11 +3,12 @@ import { LineLength } from '../drawing-tools/types/line-length.type';
 import { Coords2d } from '../drawing-tools/types/coords.type';
 import { PointsService } from './points.service';
 import { Point } from '../drawing-tools/types/point';
+import { LinesServiceInterface } from '../interfaces/lines-service.interface';
 
 @Injectable({
   providedIn: 'root',
 })
-export class LinesService {
+export class LinesService implements LinesServiceInterface {
   private lines: Record<string, LineLength> = {};
   private linesRedo: Record<string, LineLength>[] = [];
 

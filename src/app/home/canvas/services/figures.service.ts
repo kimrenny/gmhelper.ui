@@ -3,11 +3,12 @@ import { StackService } from './stack.service';
 import { PointsService } from './points.service';
 import { Coords2d } from '../drawing-tools/types/coords.type';
 import { SelectionService } from './selection.service';
+import { FiguresServiceInterface } from '../interfaces/figures-service.interface';
 
 @Injectable({
   providedIn: 'root',
 })
-export class FiguresService {
+export class FiguresService implements FiguresServiceInterface {
   constructor(
     private stackService: StackService,
     private pointsService: PointsService,

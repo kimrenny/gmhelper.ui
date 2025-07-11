@@ -5,11 +5,12 @@ import { FigureElementsService } from './figure-elements.service';
 import { LinesService } from './lines.service';
 import { StackType } from '../drawing-tools/types/stack.type';
 import { Subject } from 'rxjs';
+import { StackServiceInterface } from '../interfaces/stack-service.interface';
 
 @Injectable({
   providedIn: 'root',
 })
-export class StackService {
+export class StackService implements StackServiceInterface {
   private paths: stackInfo[] = [];
   private redoStack: stackInfo[] = [];
 

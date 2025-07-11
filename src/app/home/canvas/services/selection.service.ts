@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Coords2d } from '../drawing-tools/types/coords.type';
+import { SelectionServiceInterface } from '../interfaces/selection-service.interface';
 
 @Injectable({
   providedIn: 'root',
 })
-export class SelectionService {
+export class SelectionService implements SelectionServiceInterface {
   private selectedLine: { a: Coords2d; b: Coords2d } | null = null;
   private selectedFigure: { name: string } | null = null;
 

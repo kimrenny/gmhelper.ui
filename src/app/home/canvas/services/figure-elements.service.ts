@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
+import { FigureElementsServiceInterface } from '../interfaces/figure-elements-service.interface';
 
 @Injectable({
   providedIn: 'root',
 })
-export class FigureElementsService {
+export class FigureElementsService implements FigureElementsServiceInterface {
   private figureElements: Record<
     string,
     Set<{ type: string; label?: string }>

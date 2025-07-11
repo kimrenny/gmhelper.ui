@@ -2,11 +2,12 @@ import { Injectable } from '@angular/core';
 import { LineLength } from '../drawing-tools/types/line-length.type';
 import { PointsService } from './points.service';
 import { Coords2d } from '../drawing-tools/types/coords.type';
+import { AnglesServiceInterface } from '../interfaces/angles-service.interface';
 
 @Injectable({
   providedIn: 'root',
 })
-export class AnglesService {
+export class AnglesService implements AnglesServiceInterface {
   private angles: Record<string, LineLength> = {};
 
   constructor(private pointsService: PointsService) {}
