@@ -1,11 +1,11 @@
 import { LineLength } from '../drawing-tools/types/line-length.type';
-import { LinesService } from '../services/lines.service';
-import { PointsService } from '../services/points.service';
+import { LinesServiceInterface } from '../interfaces/lines-service.interface';
+import { PointsServiceInterface } from '../interfaces/points-service.interface';
 import { drawTextAboveLine } from '../tools/draw-text-above-line';
 
 export function setLineLengthToService(
-  linesService: LinesService,
-  pointsService: PointsService,
+  linesService: LinesServiceInterface,
+  pointsService: PointsServiceInterface,
   ctx: CanvasRenderingContext2D,
   a: string,
   b: string,
@@ -37,8 +37,8 @@ export function setLineLengthToService(
 }
 
 export function restoreLineLengthToService(
-  linesService: LinesService,
-  pointsService: PointsService,
+  linesService: LinesServiceInterface,
+  pointsService: PointsServiceInterface,
   ctx: CanvasRenderingContext2D,
   a: string,
   b: string,

@@ -44,9 +44,7 @@ export class GeoSolutionCanvasComponent implements OnInit, OnDestroy {
 
   constructor(
     private geoCanvasSolutionService: GeoCanvasSolutionService,
-    private subjectService: SubjectService,
     private pointsService: PointsSolutionService,
-    private linesService: LinesSolutionService,
     private stackService: StackSolutionService,
     private anglesService: AnglesSolutionService,
     private figureElementsService: FigureElementsSolutionService,
@@ -83,14 +81,6 @@ export class GeoSolutionCanvasComponent implements OnInit, OnDestroy {
     const canvas = this.canvasRef.nativeElement;
 
     const rect = canvas.getBoundingClientRect();
-    console.log('Canvas bounding rect:', rect);
-
-    console.log(
-      'Canvas clientWidth:',
-      canvas.clientWidth,
-      'clientHeight:',
-      canvas.clientHeight
-    );
 
     canvas.width = canvas.clientWidth;
     canvas.height = canvas.clientHeight;
@@ -98,7 +88,6 @@ export class GeoSolutionCanvasComponent implements OnInit, OnDestroy {
     const ctx = canvas.getContext('2d');
     if (ctx) {
       this.ctx = ctx;
-      console.log('2D context obtained');
     } else {
       console.warn('Failed to get 2D context');
     }

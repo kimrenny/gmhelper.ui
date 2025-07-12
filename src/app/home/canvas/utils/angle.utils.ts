@@ -1,11 +1,11 @@
 import { LineLength } from '../drawing-tools/types/line-length.type';
-import { AnglesService } from '../services/angles.service';
-import { PointsService } from '../services/points.service';
+import { AnglesServiceInterface } from '../interfaces/angles-service.interface';
+import { PointsServiceInterface } from '../interfaces/points-service.interface';
 
 export function drawFigureAngles(
   ctx: CanvasRenderingContext2D,
-  anglesService: AnglesService,
-  pointsService: PointsService,
+  anglesService: AnglesServiceInterface,
+  pointsService: PointsServiceInterface,
   path: { x: number; y: number }[],
   angleCount: number,
   fontsize: number = 14,

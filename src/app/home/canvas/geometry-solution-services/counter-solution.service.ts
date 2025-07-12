@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 @Injectable({
   providedIn: 'root',
 })
-export class CounterService {
+export class CounterSolutionService {
   private figureCounter: number = 0;
 
   getCurrentFigureCounter(): number {

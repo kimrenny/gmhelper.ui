@@ -7,25 +7,25 @@ import { Rectangle } from '../drawing-tools/rectangle.tool';
 import { Trapezoid } from '../drawing-tools/trapezoid.tool';
 import { Rhombus } from '../drawing-tools/rhombus.tool';
 import { DrawingTool } from '../interfaces/drawing-tool.interface';
-import { CanvasService } from '../services/canvas.service';
-import { CounterService } from '../services/counter.service';
-import { PointsService } from '../services/points.service';
-import { AnglesService } from '../services/angles.service';
-import { LinesService } from '../services/lines.service';
-import { FigureElementsService } from '../services/figure-elements.service';
-import { StackService } from '../services/stack.service';
-import { FiguresService } from '../services/figures.service';
+import { CanvasServiceInterface } from '../interfaces/canvas-service.interface';
+import { PointsServiceInterface } from '../interfaces/points-service.interface';
+import { LinesServiceInterface } from '../interfaces/lines-service.interface';
+import { AnglesServiceInterface } from '../interfaces/angles-service.interface';
+import { FigureElementsServiceInterface } from '../interfaces/figure-elements-service.interface';
+import { StackServiceInterface } from '../interfaces/stack-service.interface';
+import { FiguresServiceInterface } from '../interfaces/figures-service.interface';
+import { CounterServiceInterface } from '../interfaces/counter-service.interface';
 
 export function getDefaultTools(
-  polygonTool: DrawingTool,
-  canvasService: CanvasService,
-  pointsService: PointsService,
-  linesService: LinesService,
-  anglesService: AnglesService,
-  figureElementsService: FigureElementsService,
-  stackService: StackService,
-  figuresService: FiguresService,
-  counterService: CounterService
+  polygonFactory: (sides: number) => DrawingTool,
+  canvasService: CanvasServiceInterface,
+  pointsService: PointsServiceInterface,
+  linesService: LinesServiceInterface,
+  anglesService: AnglesServiceInterface,
+  figureElementsService: FigureElementsServiceInterface,
+  stackService: StackServiceInterface,
+  figuresService: FiguresServiceInterface,
+  counterService: CounterServiceInterface
 ) {
   return {
     pencil: new Pencil(),
@@ -50,7 +50,7 @@ export function getDefaultTools(
       counterService
     ),
     line: new Line(canvasService, pointsService, linesService, counterService),
-    polygon: polygonTool,
+    polygon: polygonFactory,
     triangle: new Triangle(
       canvasService,
       pointsService,

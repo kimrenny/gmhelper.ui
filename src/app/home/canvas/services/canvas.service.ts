@@ -8,11 +8,12 @@ import { LinesService } from './lines.service';
 import { BehaviorSubject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { ApiResponse } from 'src/app/models/api-response.model';
+import { CanvasServiceInterface } from '../interfaces/canvas-service.interface';
 
 @Injectable({
   providedIn: 'root',
 })
-export class CanvasService {
+export class CanvasService implements CanvasServiceInterface {
   private hasFiguresSubject = new BehaviorSubject<boolean>(false);
   hasFigures$ = this.hasFiguresSubject.asObservable();
 

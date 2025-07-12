@@ -12,12 +12,20 @@ import { LineLength } from '../drawing-tools/types/line-length.type';
 import { CanvasService } from '../services/canvas.service';
 import { Ellipse } from '../drawing-tools/ellipse.tool';
 import { FiguresService } from '../services/figures.service';
-import { CounterService } from './counter-solution.service';
+import { CounterSolutionService } from './counter-solution.service';
+import { CanvasServiceInterface } from '../interfaces/canvas-service.interface';
+import { Polygon } from '../drawing-tools/polygon.tool';
+import { Rectangle } from '../drawing-tools/rectangle.tool';
+import { Parallelogram } from '../drawing-tools/parallelogram.tool';
+import { Trapezoid } from '../drawing-tools/trapezoid.tool';
+import { Triangle } from '../drawing-tools/triangle.tool';
+import { Rhombus } from '../drawing-tools/rhombus.tool';
+import { Line } from '../drawing-tools/line.tool';
 
 @Injectable({
   providedIn: 'root',
 })
-export class GeoCanvasSolutionService {
+export class GeoCanvasSolutionService implements CanvasServiceInterface {
   private api = 'https://localhost:7057';
   private http = inject(HttpClient);
 
@@ -31,7 +39,7 @@ export class GeoCanvasSolutionService {
     private figureElementsService: FigureElementsSolutionService,
     private figuresService: FiguresService,
     private linesService: LinesSolutionService,
-    private counterService: CounterService
+    private counterService: CounterSolutionService
   ) {}
 
   public getTaskFromApi(id: string): Observable<boolean> {
@@ -81,7 +89,7 @@ export class GeoCanvasSolutionService {
         {
           figureName: figureName,
           path: figureData.path,
-          tool: this.getToolByFigureName(figureName),
+          tool: this.getToolByFigureName(figureName, figureData),
         },
         'paths'
       );
@@ -110,11 +118,130 @@ export class GeoCanvasSolutionService {
         );
         this.figureElementsService.setElements(figureName, elementsSet);
         console.log('→ Figure elements set:', Array.from(elementsSet));
+
+        for (const el of figureData.elements) {
+          if (el.label && el.length !== undefined) {
+            const point1 = el.label.charAt(0);
+            const point2 = el.label.charAt(1);
+            const currentLength = this.linesService.getLineLength(
+              point1,
+              point2
+            );
+            if (currentLength === undefined) {
+              this.linesService.setLine(el.label, el.length);
+              console.log(
+                `→ Line from element restored [${el.label}]:`,
+                el.length
+              );
+            }
+          }
+        }
       }
     }
 
     console.log('Deserialization finished');
   }
 
-  getToolByFigureName(figureName: string): any {}
+  getToolByFigureName(figureName: string, figureData: any): any {
+    const toolName = figureName.split('_')[0].toLowerCase();
+
+    switch (toolName) {
+      case 'polygon': {
+        const sides = figureData.path?.length ?? 3;
+        return new Polygon(
+          sides,
+          this,
+          this.pointsService,
+          this.linesService,
+          this.anglesService,
+          this.figureElementsService,
+          this.stackService,
+          this.figuresService,
+          this.counterService
+        );
+      }
+
+      case 'ellipse':
+        return new Ellipse(
+          this,
+          this.pointsService,
+          this.linesService,
+          this.anglesService,
+          this.figureElementsService,
+          this.stackService,
+          this.figuresService,
+          this.counterService
+        );
+
+      case 'rectangle':
+        return new Rectangle(
+          this,
+          this.pointsService,
+          this.linesService,
+          this.anglesService,
+          this.figureElementsService,
+          this.stackService,
+          this.figuresService,
+          this.counterService
+        );
+
+      case 'parallelogram':
+        return new Parallelogram(
+          this,
+          this.pointsService,
+          this.linesService,
+          this.anglesService,
+          this.figureElementsService,
+          this.stackService,
+          this.figuresService,
+          this.counterService
+        );
+
+      case 'trapezoid':
+        return new Trapezoid(
+          this,
+          this.pointsService,
+          this.linesService,
+          this.anglesService,
+          this.figureElementsService,
+          this.figuresService,
+          this.counterService
+        );
+
+      case 'triangle':
+        return new Triangle(
+          this,
+          this.pointsService,
+          this.linesService,
+          this.anglesService,
+          this.figureElementsService,
+          this.figuresService,
+          this.counterService
+        );
+
+      case 'rhombus':
+        return new Rhombus(
+          this,
+          this.pointsService,
+          this.linesService,
+          this.anglesService,
+          this.figureElementsService,
+          this.stackService,
+          this.figuresService,
+          this.counterService
+        );
+
+      case 'line':
+        return new Line(
+          this,
+          this.pointsService,
+          this.linesService,
+          this.counterService
+        );
+
+      default:
+        console.warn(`Unknown tool type: ${toolName}`);
+        return null;
+    }
+  }
 }

@@ -16,5 +16,5 @@ export interface StackServiceInterface {
     newPath: { x: number; y: number; color: string }[]
   ): void;
 
-  pathsChanged$: Observable<void>;
+  pathsChanged$?: Observable<void>;
 }

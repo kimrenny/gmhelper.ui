@@ -1,17 +1,15 @@
 import { DrawingTool } from '../interfaces/drawing-tool.interface';
 import { ToolContext } from '../interfaces/tool-context.interface';
-import { CanvasService } from '../services/canvas.service';
-import { CounterService } from '../services/counter.service';
 import { toTransparentColor } from '../utils/preview-color';
 import { drawLabel } from '../tools/draw-point-label';
-import { drawTextAboveLine } from '../tools/draw-text-above-line';
-import { LineLength } from './types/line-length.type';
 import {
   restoreLineLengthToService,
   setLineLengthToService,
 } from '../utils/line-length.utils';
-import { PointsService } from '../services/points.service';
-import { LinesService } from '../services/lines.service';
+import { CanvasServiceInterface } from '../interfaces/canvas-service.interface';
+import { PointsServiceInterface } from '../interfaces/points-service.interface';
+import { LinesServiceInterface } from '../interfaces/lines-service.interface';
+import { CounterServiceInterface } from '../interfaces/counter-service.interface';
 
 export class Line implements DrawingTool {
   private isDrawing: boolean = false;
@@ -20,10 +18,10 @@ export class Line implements DrawingTool {
   private figureName: string = '';
 
   constructor(
-    private canvasService: CanvasService,
-    private pointsService: PointsService,
-    private linesService: LinesService,
-    private counterService: CounterService
+    private canvasService: CanvasServiceInterface,
+    private pointsService: PointsServiceInterface,
+    private linesService: LinesServiceInterface,
+    private counterService: CounterServiceInterface
   ) {}
 
   draw(

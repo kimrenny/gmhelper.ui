@@ -1,4 +1,12 @@
+import { AnglesServiceInterface } from '../interfaces/angles-service.interface';
+import { CanvasServiceInterface } from '../interfaces/canvas-service.interface';
+import { CounterServiceInterface } from '../interfaces/counter-service.interface';
 import { DrawingTool } from '../interfaces/drawing-tool.interface';
+import { FigureElementsServiceInterface } from '../interfaces/figure-elements-service.interface';
+import { FiguresServiceInterface } from '../interfaces/figures-service.interface';
+import { LinesServiceInterface } from '../interfaces/lines-service.interface';
+import { PointsServiceInterface } from '../interfaces/points-service.interface';
+import { StackServiceInterface } from '../interfaces/stack-service.interface';
 import { ToolContext } from '../interfaces/tool-context.interface';
 import { AnglesService } from '../services/angles.service';
 import { CanvasService } from '../services/canvas.service';
@@ -22,14 +30,14 @@ export class Ellipse implements DrawingTool {
   private isDrawing: boolean = false;
 
   constructor(
-    private canvasService: CanvasService,
-    private pointsService: PointsService,
-    private linesService: LinesService,
-    private anglesService: AnglesService,
-    private figureElementsService: FigureElementsService,
-    private stackService: StackService,
-    private figuresService: FiguresService,
-    private counterService: CounterService
+    private canvasService: CanvasServiceInterface,
+    private pointsService: PointsServiceInterface,
+    private linesService: LinesServiceInterface,
+    private anglesService: AnglesServiceInterface,
+    private figureElementsService: FigureElementsServiceInterface,
+    private stackService: StackServiceInterface,
+    private figuresService: FiguresServiceInterface,
+    private counterService: CounterServiceInterface
   ) {}
 
   draw(

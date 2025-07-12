@@ -1,22 +1,20 @@
 import { DrawingTool } from '../interfaces/drawing-tool.interface';
 import { ToolContext } from '../interfaces/tool-context.interface';
-import { CanvasService } from '../services/canvas.service';
-import { CounterService } from '../services/counter.service';
 import { clearPreviewCanvas } from '../tools/clear-preview';
 import { toTransparentColor } from '../utils/preview-color';
 import { drawLabel } from '../tools/draw-point-label';
-import { drawTextAboveLine } from '../tools/draw-text-above-line';
-import { LineLength } from './types/line-length.type';
 import {
   restoreLineLengthToService,
   setLineLengthToService,
 } from '../utils/line-length.utils';
-import { PointsService } from '../services/points.service';
-import { AnglesService } from '../services/angles.service';
-import { FigureElementsService } from '../services/figure-elements.service';
-import { LinesService } from '../services/lines.service';
-import { FiguresService } from '../services/figures.service';
-import { StackService } from '../services/stack.service';
+import { CanvasServiceInterface } from '../interfaces/canvas-service.interface';
+import { PointsServiceInterface } from '../interfaces/points-service.interface';
+import { LinesServiceInterface } from '../interfaces/lines-service.interface';
+import { AnglesServiceInterface } from '../interfaces/angles-service.interface';
+import { FigureElementsServiceInterface } from '../interfaces/figure-elements-service.interface';
+import { StackServiceInterface } from '../interfaces/stack-service.interface';
+import { FiguresServiceInterface } from '../interfaces/figures-service.interface';
+import { CounterServiceInterface } from '../interfaces/counter-service.interface';
 
 export class Rectangle implements DrawingTool {
   private start: { x: number; y: number; color: string } | null = null;
@@ -25,14 +23,14 @@ export class Rectangle implements DrawingTool {
   private figureName: string = '';
 
   constructor(
-    private canvasService: CanvasService,
-    private pointsService: PointsService,
-    private linesService: LinesService,
-    private anglesService: AnglesService,
-    private figureElementsService: FigureElementsService,
-    private stackService: StackService,
-    private figuresService: FiguresService,
-    private counterService: CounterService
+    private canvasService: CanvasServiceInterface,
+    private pointsService: PointsServiceInterface,
+    private linesService: LinesServiceInterface,
+    private anglesService: AnglesServiceInterface,
+    private figureElementsService: FigureElementsServiceInterface,
+    private stackService: StackServiceInterface,
+    private figuresService: FiguresServiceInterface,
+    private counterService: CounterServiceInterface
   ) {}
 
   draw(

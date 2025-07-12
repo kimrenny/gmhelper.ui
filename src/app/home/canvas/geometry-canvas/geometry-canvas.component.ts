@@ -56,7 +56,19 @@ export class GeoCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
   selectedAngle: string | null = null;
   colors = COLORS;
 
-  private polygonTool!: Polygon;
+  private polygonFactory = (sides: number): DrawingTool => {
+    return new Polygon(
+      sides,
+      this.canvasService,
+      this.pointsService,
+      this.linesService,
+      this.anglesService,
+      this.figureElementsService,
+      this.stackService,
+      this.figuresService,
+      this.counterService
+    );
+  };
 
   private currentTool: DrawingTool | null = null;
   private toolSelector!: ToolSelector;
@@ -124,7 +136,7 @@ export class GeoCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.toolSelector = new ToolSelector(
       getDefaultTools(
-        this.polygonTool,
+        this.polygonFactory,
         this.canvasService,
         this.pointsService,
         this.linesService,
@@ -563,31 +575,8 @@ export class GeoCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
         );
         return;
       }
-      this.polygonTool = new Polygon(
-        sides,
-        this.canvasService,
-        this.pointsService,
-        this.linesService,
-        this.anglesService,
-        this.figureElementsService,
-        this.stackService,
-        this.figuresService,
-        this.counterService
-      );
-      this.toolSelector = new ToolSelector(
-        getDefaultTools(
-          this.polygonTool,
-          this.canvasService,
-          this.pointsService,
-          this.linesService,
-          this.anglesService,
-          this.figureElementsService,
-          this.stackService,
-          this.figuresService,
-          this.counterService
-        )
-      );
-      this.currentTool = this.toolSelector.select('polygon');
+
+      this.currentTool = this.toolSelector.select('polygon', sides);
       this.closePolygonInput();
     } else {
       this.closePolygonInput();
