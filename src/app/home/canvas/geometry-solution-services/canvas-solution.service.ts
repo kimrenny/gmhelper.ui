@@ -63,28 +63,13 @@ export class GeoCanvasSolutionService implements CanvasServiceInterface {
   }
 
   deserializeTaskJson(data: any) {
-    console.log('Deserialization started');
-    console.log('Raw data:', data);
-
     this.pointsService.resetPoints();
-    console.log('Points reset');
-
     this.stackService.clear();
-    console.log('Stack cleared');
-
     this.linesService.clearAllLines();
-    console.log('Lines cleared');
-
     this.anglesService.clearAllAngles();
-    console.log('Angles cleared');
-
     this.figureElementsService.clearAllFigureElements();
-    console.log('Figure elements cleared');
 
     for (const [figureName, figureData] of Object.entries<any>(data)) {
-      console.log(`Restoring figure: ${figureName}`);
-      console.log('Figure data:', figureData);
-
       this.stackService.pushStack(
         {
           figureName: figureName,
@@ -93,23 +78,19 @@ export class GeoCanvasSolutionService implements CanvasServiceInterface {
         },
         'paths'
       );
-      console.log('→ Path pushed to stack:', figureData.path);
 
       const restoredPoints = figureData.points.map((p: any) => ({
         ...p,
         attachedToFigure: figureName,
       }));
       this.pointsService.addPoints(restoredPoints);
-      console.log('→ Points added:', restoredPoints);
 
       for (const [key, value] of Object.entries(figureData.lines)) {
         this.linesService.setLine(key, value as LineLength);
-        console.log(`→ Line restored [${key}]:`, value);
       }
 
       for (const [key, value] of Object.entries(figureData.angles)) {
         this.anglesService.setAngleValue(key, value as LineLength);
-        console.log(`→ Angle restored [${key}]:`, value);
       }
 
       if (figureData.elements && Array.isArray(figureData.elements)) {
@@ -117,7 +98,6 @@ export class GeoCanvasSolutionService implements CanvasServiceInterface {
           figureData.elements
         );
         this.figureElementsService.setElements(figureName, elementsSet);
-        console.log('→ Figure elements set:', Array.from(elementsSet));
 
         for (const el of figureData.elements) {
           if (el.label && el.length !== undefined) {
@@ -129,17 +109,11 @@ export class GeoCanvasSolutionService implements CanvasServiceInterface {
             );
             if (currentLength === undefined) {
               this.linesService.setLine(el.label, el.length);
-              console.log(
-                `→ Line from element restored [${el.label}]:`,
-                el.length
-              );
             }
           }
         }
       }
     }
-
-    console.log('Deserialization finished');
   }
 
   getToolByFigureName(figureName: string, figureData: any): any {
