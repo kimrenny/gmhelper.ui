@@ -124,6 +124,11 @@ export class NavbarComponent implements AfterViewInit, OnDestroy {
   }
 
   onScroll(event: WheelEvent) {
+    if (event.ctrlKey) {
+      event.preventDefault();
+      return;
+    }
+
     event.preventDefault();
 
     if (this.scrolling) return;

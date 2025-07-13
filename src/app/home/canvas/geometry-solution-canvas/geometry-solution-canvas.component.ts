@@ -2,10 +2,8 @@ import {
   Component,
   ElementRef,
   ViewChild,
-  AfterViewInit,
   OnInit,
   OnDestroy,
-  AfterViewChecked,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -19,8 +17,6 @@ import { LinesSolutionService } from '../geometry-solution-services/lines-soluti
 import { StackSolutionService } from '../geometry-solution-services/stack-solution.service';
 import { AnglesSolutionService } from '../geometry-solution-services/angles-solution.service';
 import { FigureElementsSolutionService } from '../geometry-solution-services/figure-elements-solution.service';
-import { getMousePos } from '../utils/mouse.utils';
-import { ToolContext } from '../interfaces/tool-context.interface';
 
 @Component({
   selector: 'app-geometry-solution-canvas',
@@ -31,15 +27,24 @@ import { ToolContext } from '../interfaces/tool-context.interface';
 })
 export class GeoSolutionCanvasComponent implements OnInit, OnDestroy {
   scale = 100;
-  minScale = 50;
+  minScale = 100;
   maxScale = 200;
-  currentScaleFactor = 1;
+
+  offsetX = 0;
+  offsetY = 0;
+
+  private isPanning = false;
+  private lastX = 0;
+  private lastY = 0;
 
   taskSub!: Subscription;
-
   taskProcessing: boolean = true;
 
-  @ViewChild('geoSolutionCanvas') canvasRef!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('geoSolutionCanvas', { static: true })
+  canvasRef!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('canvasWrapper', { static: true })
+  wrapperRef!: ElementRef<HTMLDivElement>;
+
   private ctx!: CanvasRenderingContext2D;
 
   constructor(
@@ -53,9 +58,9 @@ export class GeoSolutionCanvasComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.taskSub = this.geoCanvasSolutionService.taskId$.subscribe((taskId) => {
-      console.log('taskId received:', taskId);
+    window.addEventListener('wheel', this.preventPageZoom, { passive: false });
 
+    this.taskSub = this.geoCanvasSolutionService.taskId$.subscribe((taskId) => {
       if (taskId) {
         this.geoCanvasSolutionService
           .getTaskFromApi(taskId)
@@ -66,21 +71,20 @@ export class GeoSolutionCanvasComponent implements OnInit, OnDestroy {
                 this.updateCanvasSize();
                 this.redraw();
               }, 0);
-            } else {
             }
           });
       }
     });
   }
 
-  updateCanvasSize(): void {
-    if (!this.canvasRef?.nativeElement) {
-      console.warn('Canvas element not found');
-      return;
+  preventPageZoom = (e: WheelEvent) => {
+    if (e.ctrlKey) {
+      e.preventDefault();
     }
-    const canvas = this.canvasRef.nativeElement;
+  };
 
-    const rect = canvas.getBoundingClientRect();
+  updateCanvasSize(): void {
+    const canvas = this.canvasRef.nativeElement;
 
     canvas.width = canvas.clientWidth;
     canvas.height = canvas.clientHeight;
@@ -88,74 +92,132 @@ export class GeoSolutionCanvasComponent implements OnInit, OnDestroy {
     const ctx = canvas.getContext('2d');
     if (ctx) {
       this.ctx = ctx;
-    } else {
-      console.warn('Failed to get 2D context');
     }
   }
 
   setCursor(cursorStyle: string): void {
-    const canvas = this.canvasRef.nativeElement;
-    canvas.style.cursor = cursorStyle;
+    this.canvasRef.nativeElement.style.cursor = cursorStyle;
   }
 
   adjustScale(delta: number): void {
-    const newScale = this.scale + delta;
-    if (newScale >= this.minScale && newScale <= this.maxScale) {
-      this.scale = newScale;
-      this.redraw();
-    }
+    this.scale = Math.min(
+      this.maxScale,
+      Math.max(this.minScale, this.scale + delta)
+    );
+    this.clampOffset();
+    this.redraw();
+  }
+
+  startPan(event: MouseEvent): void {
+    this.isPanning = true;
+    const wrapperRect = this.wrapperRef.nativeElement.getBoundingClientRect();
+    this.lastX = event.clientX - wrapperRect.left;
+    this.lastY = event.clientY - wrapperRect.top;
+  }
+
+  onPan(event: MouseEvent): void {
+    if (!this.isPanning) return;
+
+    const wrapperRect = this.wrapperRef.nativeElement.getBoundingClientRect();
+    const currentX = event.clientX - wrapperRect.left;
+    const currentY = event.clientY - wrapperRect.top;
+
+    const dx = currentX - this.lastX;
+    const dy = currentY - this.lastY;
+
+    this.lastX = currentX;
+    this.lastY = currentY;
+
+    this.offsetX += dx;
+    this.offsetY += dy;
+
+    this.clampOffset();
+    this.redraw();
+  }
+
+  endPan(): void {
+    this.isPanning = false;
+  }
+
+  private clampOffset(): void {
+    const wrapper = this.wrapperRef.nativeElement;
+    const canvas = this.canvasRef.nativeElement;
+
+    const scaleFactor = this.scale / 100;
+
+    const scaledCanvasWidth = canvas.width * scaleFactor;
+    const scaledCanvasHeight = canvas.height * scaleFactor;
+
+    const wrapperWidth = wrapper.clientWidth;
+    const wrapperHeight = wrapper.clientHeight;
+
+    const minOffsetX = wrapperWidth - scaledCanvasWidth;
+    const minOffsetY = wrapperHeight - scaledCanvasHeight;
+
+    this.offsetX = Math.min(0, Math.max(minOffsetX, this.offsetX));
+    this.offsetY = Math.min(0, Math.max(minOffsetY, this.offsetY));
+  }
+
+  onWheel(event: WheelEvent): void {
+    if (!event.ctrlKey) return;
+
+    event.preventDefault();
+
+    const scaleChange = event.deltaY > 0 ? -10 : 10;
+
+    const wrapperRect = this.wrapperRef.nativeElement.getBoundingClientRect();
+    const mouseX = event.clientX - wrapperRect.left;
+    const mouseY = event.clientY - wrapperRect.top;
+
+    const prevScale = this.scale;
+    this.scale = Math.min(
+      this.maxScale,
+      Math.max(this.minScale, this.scale + scaleChange)
+    );
+    const newScale = this.scale;
+
+    if (newScale === prevScale) return;
+
+    const scaleRatio = newScale / prevScale;
+
+    this.offsetX = mouseX - scaleRatio * (mouseX - this.offsetX);
+    this.offsetY = mouseY - scaleRatio * (mouseY - this.offsetY);
+
+    this.clampOffset();
+    this.redraw();
   }
 
   redraw(): void {
-    if (!this.canvasRef) {
-      console.warn('Canvas ref is undefined');
-      return;
-    }
-
     const canvas = this.canvasRef.nativeElement;
+    if (!this.ctx) return;
 
-    if (!canvas) {
-      console.warn('Canvas element not found in redraw');
-      return;
-    }
-
-    if (!this.ctx) {
-      console.warn('2D context is not initialized');
-      return;
-    }
-
-    const rect = canvas.getBoundingClientRect();
-    console.log('Redraw canvas rect:', rect);
-
-    this.ctx.clearRect(0, 0, canvas.width, canvas.height);
-    this.ctx.setTransform(this.scale / 100, 0, 0, this.scale / 100, 0, 0);
+    this.ctx.setTransform(
+      this.scale / 100,
+      0,
+      0,
+      this.scale / 100,
+      this.offsetX,
+      this.offsetY
+    );
+    this.ctx.clearRect(
+      -this.offsetX * (100 / this.scale),
+      -this.offsetY * (100 / this.scale),
+      canvas.width * (100 / this.scale),
+      canvas.height * (100 / this.scale)
+    );
 
     this.pointsService.resetPoints();
 
     const paths = this.stackService.getPaths();
-    console.log('paths to redraw:', paths);
-    console.log('Number of paths to draw:', paths.length);
-
-    if (paths.length === 0) {
-      console.warn('No paths found to draw');
-    }
 
     for (const p of paths) {
       const color = p.path[0]?.color || '#000000';
       this.ctx.strokeStyle = color;
 
       if (p.tool.draw) {
-        console.log('Drawing path with color:', color);
         p.tool.draw(this.ctx, p.path, color, true);
-      } else {
-        console.warn('No draw function found on tool for path');
       }
     }
-  }
-
-  updateCanvasTransform(): void {
-    const scaleFactor = this.scale / 100;
-    this.ctx.setTransform(scaleFactor, 0, 0, scaleFactor, 0, 0);
   }
 
   clearCanvas(): void {
@@ -168,6 +230,7 @@ export class GeoSolutionCanvasComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    window.removeEventListener('wheel', this.preventPageZoom);
     this.taskSub?.unsubscribe();
   }
 }
