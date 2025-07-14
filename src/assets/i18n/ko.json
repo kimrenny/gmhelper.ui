@@ -41,6 +41,16 @@
         "GEOMETRY": "기하학"
       }
     },
+    "ERRORS": {
+      "LENGTH": {
+        "INCORRECT": "잘못된 선 길이입니다. 숫자, 'x', 'y', 또는 '?'만 허용됩니다."
+      }
+    },
+    "TASK": {
+      "BUTTON": {
+        "SOLVE": "과제를 해결하다"
+      }
+    },
     "FEATURE_DISABLED": "이 기능은 현재 버전의 제품에서 지원되지 않습니다.",
     "POLYGON": {
       "HINT": "변의 수를 입력하세요:",

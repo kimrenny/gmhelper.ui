@@ -97,6 +97,14 @@
     ></button>
   </div>
 
+  <div class="figure-action-panel" *ngIf="isLineSelected">
+    <button
+      (click)="onChangeLineLengthClick()"
+      [ngStyle]="{ 'background-image': 'url(assets/icons/set-length-btn.png)' }"
+      class="set-length-btn"
+    ></button>
+  </div>
+
   <angle-input
     class="angle-input"
     *ngIf="isAngleInputVisible"
@@ -104,15 +112,22 @@
     (confirm)="onAngleConfirm($event)"
   ></angle-input>
 
+  <line-length-input
+    class="line-length-input"
+    *ngIf="isLineLengthChanging"
+    [initialValue]="lineLength"
+    (confirm)="onLineLengthConfirm($event)"
+  ></line-length-input>
+
   <div
     class="figure-tool-buttons"
     [class.not-visible]="!selectedSubject || !canUndo"
     [class.show-palette]="isFigureColorPaletteVisible"
   >
     <button
-      [class.disabled]="!isLineSelected"
-      (click)="onChangeLineLengthClick()"
-      class="set-length-btn"
+      class="select-line-btn"
+      [class.active]="isLineSelection"
+      (click)="toggleLineSelection()"
     ></button>
     <button
       class="select-figure-btn"
@@ -145,17 +160,6 @@
     </div>
   </div>
 
-  <div *ngIf="isLineLengthChanging" class="line-length-input">
-    <input
-      [(ngModel)]="lineLength"
-      (keydown.enter)="onLineLengthConfirm()"
-      [style.left.px]="lineInputPosition!.x"
-      [style.top.px]="lineInputPosition!.y"
-      min="1"
-      class="line-length-input-field"
-    />
-  </div>
-
   <div *ngIf="showPolygonInput" class="polygon-input-overlay">
     <div class="polygon-input-box">
       <h3>{{ "CANVAS.POLYGON.HINT" | translate }}</h3>
@@ -177,6 +181,6 @@
   </div>
 
   <button class="submit-task-btn" *ngIf="hasFigures" (click)="onSubmitTask()">
-    Solve task
+    {{ "CANVAS.TASK.BUTTON.SOLVE" | translate }}
   </button>
 </div>

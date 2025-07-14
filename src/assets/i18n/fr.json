@@ -41,6 +41,16 @@
         "GEOMETRY": "Géométrie"
       }
     },
+    "ERRORS": {
+      "LENGTH": {
+        "INCORRECT": "Longueur de ligne invalide. Seuls les nombres, 'x', 'y' ou '?' sont autorisés."
+      }
+    },
+    "TASK": {
+      "BUTTON": {
+        "SOLVE": "Résoudre la tâche"
+      }
+    },
     "FEATURE_DISABLED": "Cette fonctionnalité n'est pas prise en charge dans la version actuelle du produit.",
     "POLYGON": {
       "HINT": "Entrez le nombre de côtés :",

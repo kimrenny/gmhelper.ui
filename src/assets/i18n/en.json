@@ -41,6 +41,16 @@
         "GEOMETRY": "Geometry"
       }
     },
+    "ERRORS": {
+      "LENGTH": {
+        "INCORRECT": "Invalid line length. Only numbers, 'x', 'y', or '?' are allowed."
+      }
+    },
+    "TASK": {
+      "BUTTON": {
+        "SOLVE": "Solve task"
+      }
+    },
     "FEATURE_DISABLED": "This functionality is not supported in the current version of the product.",
     "POLYGON": {
       "HINT": "Enter the number of sides:",

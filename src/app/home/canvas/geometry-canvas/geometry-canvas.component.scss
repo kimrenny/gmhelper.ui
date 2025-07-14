@@ -400,8 +400,16 @@
 
   .angle-input {
     position: absolute;
-    top: 20%;
-    right: 100px;
+    top: 15%;
+    right: 60px;
+    display: flex;
+    z-index: 45;
+  }
+
+  .line-length-input {
+    position: absolute;
+    top: 15%;
+    right: 90px;
     display: flex;
     z-index: 45;
   }
@@ -465,11 +473,12 @@
         object-fit: cover;
       }
 
-      &.set-length-btn {
-        background-image: url("../../../../assets/icons/set-length-btn.png");
+      &.select-line-btn {
+        background-image: url("../../../../assets/icons/line-click.svg");
 
+        &.active,
         &:hover {
-          background-image: url("../../../../assets/icons/set-length-btn-hover.png");
+          background-image: url("../../../../assets/icons/line-click-hover.svg");
         }
       }
 

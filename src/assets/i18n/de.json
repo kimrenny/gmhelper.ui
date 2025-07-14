@@ -41,6 +41,16 @@
         "GEOMETRY": "Geometrie"
       }
     },
+    "ERRORS": {
+      "LENGTH": {
+        "INCORRECT": "Ungültige Linienlänge. Nur Zahlen, 'x', 'y' oder '?' sind erlaubt."
+      }
+    },
+    "TASK": {
+      "BUTTON": {
+        "SOLVE": "Aufgabe lösen"
+      }
+    },
     "FEATURE_DISABLED": "Diese Funktionalität wird in der aktuellen Version des Produkts nicht unterstützt.",
     "POLYGON": {
       "HINT": "Geben Sie die Anzahl der Seiten ein:",

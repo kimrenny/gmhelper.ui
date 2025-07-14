@@ -41,6 +41,16 @@
         "GEOMETRY": "几何"
       }
     },
+    "ERRORS": {
+      "LENGTH": {
+        "INCORRECT": "无效的线段长度。只允许数字、'x'、'y' 或 '?'."
+      }
+    },
+    "TASK": {
+      "BUTTON": {
+        "SOLVE": "解决任务"
+      }
+    },
     "FEATURE_DISABLED": "当前版本的产品不支持此功能。",
     "POLYGON": {
       "HINT": "请输入边的数量：",

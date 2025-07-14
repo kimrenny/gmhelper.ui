@@ -33,11 +33,18 @@ import { SelectionService } from '../services/selection.service';
 import { SubjectService } from '../services/subject.service';
 import { Subscription } from 'rxjs';
 import { rawFigureToolMap } from '../tools/figure-tool-map';
+import { LineLengthInputComponent } from '../drawing-tools/line-length-input/line-length-input.component';
 
 @Component({
   selector: 'app-geometry-canvas',
   standalone: true,
-  imports: [CommonModule, FormsModule, TranslateModule, AngleInputComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    TranslateModule,
+    AngleInputComponent,
+    LineLengthInputComponent,
+  ],
   templateUrl: './geometry-canvas.component.html',
   styleUrls: ['./geometry-canvas.component.scss'],
 })
@@ -88,8 +95,7 @@ export class GeoCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
   isLineLengthChanging = false;
   lineLength: LineLength = null;
 
-  lineInputPosition: Coords2d | null = null;
-
+  isLineSelection: boolean = false;
   isFigureSelection: boolean = false;
   isAngleSelection: boolean = false;
 
@@ -212,12 +218,14 @@ export class GeoCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
       const figureData = this.figuresService.findFigureByPoint(pos);
 
       if (lineData) {
+        if (this.isLineSelection) {
+          this.selectLine(lineData);
+          return;
+        }
         if (this.isFigureSelection) {
           this.selectFigure(lineData);
           return;
         }
-        this.selectLine(lineData);
-        return;
       }
 
       if (figureData) {
@@ -227,7 +235,12 @@ export class GeoCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
         return;
       }
 
-      if (this.isFigureSelection || this.isAngleSelection) return;
+      if (
+        this.isFigureSelection ||
+        this.isAngleSelection ||
+        this.isLineSelection
+      )
+        return;
 
       this.currentTool?.onMouseDown?.(pos, this.toolContext);
     });
@@ -468,6 +481,24 @@ export class GeoCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
+  toggleLineSelection(
+    manual: boolean = false,
+    changeTo: boolean = false
+  ): void {
+    if (manual) {
+      this.isLineSelection = changeTo;
+    } else {
+      this.isLineSelection = !this.isLineSelection;
+    }
+
+    if (this.isLineSelection) {
+      this.deselectAngle();
+      this.deselectFigure();
+    } else {
+      this.deselectLine();
+    }
+  }
+
   toggleFigureSelection(
     manual: boolean = false,
     changeTo: boolean = false
@@ -480,6 +511,7 @@ export class GeoCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
 
     if (this.isFigureSelection) {
       this.deselectAngle();
+      this.deselectLine();
     } else {
       this.deselectFigure();
     }
@@ -490,6 +522,7 @@ export class GeoCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
 
     if (this.isAngleSelection) {
       this.deselectFigure();
+      this.deselectLine();
     } else {
       this.deselectAngle();
     }
@@ -500,6 +533,14 @@ export class GeoCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
     this.anglesService.setAngleValue(this.selectedAngle, value);
     this.redraw();
     this.isAngleInputVisible = false;
+  }
+
+  deselectLine(): void {
+    this.selectionService.resetSelectedLine();
+    this.isLineSelection = false;
+    this.lineLength = null;
+    this.isLineLengthChanging = false;
+    this.clearPreviewCanvas();
   }
 
   deselectFigure(): void {
@@ -526,31 +567,49 @@ export class GeoCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onChangeLineLengthClick(): void {
+    if (this.isLineLengthChanging) {
+      this.isLineLengthChanging = false;
+      return;
+    }
+
     const selectedLine = this.selectionService.getSelectedLine();
     if (selectedLine) {
       const a = this.pointsService.getPointLabelByCoords(selectedLine.a);
       const b = this.pointsService.getPointLabelByCoords(selectedLine.b);
       if (!a || !b) return;
 
-      const centerX = (selectedLine.a.x + selectedLine.b.x) / 2;
-      const centerY = (selectedLine.a.y + selectedLine.b.y) / 2;
-
       this.lineLength = this.linesService.getLineLength(a, b);
-      this.lineInputPosition = { x: centerX, y: centerY };
       this.isLineLengthChanging = true;
     }
   }
 
-  onLineLengthConfirm(): void {
-    if (this.lineLength != null) {
+  onLineLengthConfirm(value: LineLength): void {
+    if (value != null) {
+      const val = value.toString().trim();
+
+      const isNumeric = /^-?\d+(\.\d+)?$/.test(val);
+      const allowedKeywords = ['x', 'y', '?'];
+      const isValid = isNumeric || allowedKeywords.includes(val);
+
+      console.log('val:', val);
+
+      if (!isValid) {
+        this.toastr.error(
+          this.translate.instant('CANVAS.LENGTH.LENGTH.INCORRECT'),
+          this.translate.instant('ADMIN.ERRORS.ERROR')
+        );
+        this.isLineLengthChanging = false;
+        this.lineLength = null;
+        return;
+      }
+
       const selectedLine = this.selectionService.getSelectedLine();
       if (selectedLine) {
         const a = this.pointsService.getPointLabelByCoords(selectedLine.a);
         const b = this.pointsService.getPointLabelByCoords(selectedLine.b);
         if (!a || !b) return;
-        this.linesService.setLineLength(a, b, this.lineLength);
-        this.isLineLengthChanging = false;
-        this.lineLength = null;
+        this.linesService.setLineLength(a, b, value);
+        this.deselectLine();
         this.redraw();
       }
     }
