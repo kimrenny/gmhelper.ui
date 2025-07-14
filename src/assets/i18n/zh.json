@@ -22,7 +22,7 @@
     },
     "START": {
       "TITLE": "试用我们的应用程序",
-      "DESCRIPTION": "首次尝试免费*"
+      "DESCRIPTION": "未登录用户每天可免费尝试一次。"
     },
     "NAVBAR": {
       "WELCOME": "欢迎",
@@ -49,6 +49,10 @@
     "TASK": {
       "BUTTON": {
         "SOLVE": "解决任务"
+      },
+      "ERRORS": {
+        "TRY_AGAIN": "{{time}} 后重试。",
+        "UNEXPECTED_ERROR": "发生了意外错误，请稍后再试。"
       }
     },
     "FEATURE_DISABLED": "当前版本的产品不支持此功能。",

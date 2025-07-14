@@ -22,7 +22,7 @@
     },
     "START": {
       "TITLE": "Probieren Sie unsere App aus",
-      "DESCRIPTION": "Erster Versuch ist kostenlos*"
+      "DESCRIPTION": "Der erste Versuch pro Tag ist für nicht angemeldete Nutzer kostenlos."
     },
     "NAVBAR": {
       "WELCOME": "Willkommen",
@@ -49,6 +49,10 @@
     "TASK": {
       "BUTTON": {
         "SOLVE": "Aufgabe lösen"
+      },
+      "ERRORS": {
+        "TRY_AGAIN": "Versuchen Sie es nach {{time}} erneut.",
+        "UNEXPECTED_ERROR": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es später erneut."
       }
     },
     "FEATURE_DISABLED": "Diese Funktionalität wird in der aktuellen Version des Produkts nicht unterstützt.",

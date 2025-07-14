@@ -22,7 +22,7 @@
     },
     "START": {
       "TITLE": "앱을 사용해 보세요",
-      "DESCRIPTION": "첫 시도는 무료입니다*"
+      "DESCRIPTION": "비로그인 사용자는 하루에 한 번 무료로 시도할 수 있습니다."
     },
     "NAVBAR": {
       "WELCOME": "환영합니다",
@@ -49,6 +49,10 @@
     "TASK": {
       "BUTTON": {
         "SOLVE": "과제를 해결하다"
+      },
+      "ERRORS": {
+        "TRY_AGAIN": "{{time}} 후에 다시 시도하세요.",
+        "UNEXPECTED_ERROR": "예기치 않은 오류가 발생했습니다. 나중에 다시 시도해 주세요."
       }
     },
     "FEATURE_DISABLED": "이 기능은 현재 버전의 제품에서 지원되지 않습니다.",

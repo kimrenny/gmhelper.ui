@@ -591,8 +591,6 @@ export class GeoCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
       const allowedKeywords = ['x', 'y', '?'];
       const isValid = isNumeric || allowedKeywords.includes(val);
 
-      console.log('val:', val);
-
       if (!isValid) {
         this.toastr.error(
           this.translate.instant('CANVAS.LENGTH.LENGTH.INCORRECT'),
@@ -666,17 +664,46 @@ export class GeoCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
         this.isAngleInputVisible = true;
         break;
       }
-      case 'func2': {
-        break;
-      }
-      case 'func3': {
-        break;
-      }
     }
   }
 
   onSubmitTask(): void {
-    this.canvasService.exportTaskJson();
+    this.canvasService.exportTaskJson().subscribe({
+      next: (res) => {
+        this.canvasService.updateTaskId(res.data);
+      },
+      error: (err) => {
+        this.canvasService.updateTaskId(null);
+
+        const message = err?.error?.message || '';
+
+        const tryAgainMatch = message.match(/Try again after (\d+) minutes/);
+
+        if (tryAgainMatch) {
+          const minutes = parseInt(tryAgainMatch[1], 10);
+          const hours = Math.floor(minutes / 60);
+          const mins = minutes % 60;
+
+          let formattedTime = '';
+          if (hours > 0) {
+            formattedTime += `${hours}h`;
+          }
+          formattedTime += `${mins}m`;
+
+          this.toastr.error(
+            this.translate.instant('CANVAS.TASK.ERRORS.TRY_AGAIN', {
+              time: formattedTime.trim(),
+            }),
+            this.translate.instant('ADMIN.ERRORS.ERROR')
+          );
+        } else {
+          this.toastr.error(
+            this.translate.instant('CANVAS.TASK.ERRORS.UNEXPECTED_ERROR'),
+            this.translate.instant('ADMIN.ERRORS.ERROR')
+          );
+        }
+      },
+    });
   }
 
   clearPreviewCanvas(): void {

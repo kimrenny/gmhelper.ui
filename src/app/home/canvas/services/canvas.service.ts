@@ -5,7 +5,7 @@ import { StackService } from './stack.service';
 import { AnglesService } from './angles.service';
 import { FigureElementsService } from './figure-elements.service';
 import { LinesService } from './lines.service';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { ApiResponse } from 'src/app/models/api-response.model';
 import { CanvasServiceInterface } from '../interfaces/canvas-service.interface';
@@ -37,29 +37,17 @@ export class CanvasService implements CanvasServiceInterface {
     });
   }
 
-  exportTaskJson() {
+  exportTaskJson(): Observable<ApiResponse<any>> {
     const taskData = this.serializeTaskJson();
-    console.log('Sending task to the server:', taskData);
 
-    this.sendTaskToApi(taskData);
+    return this.sendTaskToApi(taskData);
   }
 
   private sendTaskToApi(data: any) {
-    this.http
-      .post<ApiResponse<string>>(`${this.api}/api/taskprocessing/process`, data)
-      .subscribe({
-        next: (res) => {
-          if (res.success) {
-            console.log('Task saved with ID:', res.data);
-            this.taskIdSubject.next(res.data);
-          } else {
-            console.warn('Server rejected task:', res.message);
-          }
-        },
-        error: (err) => {
-          console.error('HTTP error while sending task:', err);
-        },
-      });
+    return this.http.post<ApiResponse<string>>(
+      `${this.api}/api/taskprocessing/process`,
+      data
+    );
   }
 
   serializeTaskJson(): any {
@@ -159,5 +147,9 @@ export class CanvasService implements CanvasServiceInterface {
     }
 
     return exportData;
+  }
+
+  public updateTaskId(id: string | null): void {
+    this.taskIdSubject.next(id);
   }
 }

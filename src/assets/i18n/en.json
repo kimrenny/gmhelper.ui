@@ -22,7 +22,7 @@
     },
     "START": {
       "TITLE": "Try our app",
-      "DESCRIPTION": "First attempt is free*"
+      "DESCRIPTION": "The first attempt per day is free for users without authorization."
     },
     "NAVBAR": {
       "WELCOME": "Welcome",
@@ -49,6 +49,10 @@
     "TASK": {
       "BUTTON": {
         "SOLVE": "Solve task"
+      },
+      "ERRORS": {
+        "TRY_AGAIN": "Try again after {{time}}.",
+        "UNEXPECTED_ERROR": "An unexpected error occurred. Please try again later."
       }
     },
     "FEATURE_DISABLED": "This functionality is not supported in the current version of the product.",

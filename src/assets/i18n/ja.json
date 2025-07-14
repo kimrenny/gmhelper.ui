@@ -22,7 +22,7 @@
     },
     "START": {
       "TITLE": "アプリを試してみてください",
-      "DESCRIPTION": "最初の試みは無料です*"
+      "DESCRIPTION": "未認証のユーザーは1日に1回無料で試すことができます。"
     },
     "NAVBAR": {
       "WELCOME": "ようこそ",
@@ -49,6 +49,10 @@
     "TASK": {
       "BUTTON": {
         "SOLVE": "課題を解く"
+      },
+      "ERRORS": {
+        "TRY_AGAIN": "{{time}}後に再試行してください。",
+        "UNEXPECTED_ERROR": "予期しないエラーが発生しました。後でもう一度お試しください。"
       }
     },
     "FEATURE_DISABLED": "この機能は現在のバージョンの製品ではサポートされていません。",

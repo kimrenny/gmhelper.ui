@@ -22,7 +22,7 @@
     },
     "START": {
       "TITLE": "Essayez notre application",
-      "DESCRIPTION": "La première tentative est gratuite*"
+      "DESCRIPTION": "La première tentative par jour est gratuite pour les utilisateurs non connectés."
     },
     "NAVBAR": {
       "WELCOME": "Bienvenue",
@@ -49,6 +49,10 @@
     "TASK": {
       "BUTTON": {
         "SOLVE": "Résoudre la tâche"
+      },
+      "ERRORS": {
+        "TRY_AGAIN": "Réessayez après {{time}}.",
+        "UNEXPECTED_ERROR": "Une erreur inattendue est survenue. Veuillez réessayer plus tard."
       }
     },
     "FEATURE_DISABLED": "Cette fonctionnalité n'est pas prise en charge dans la version actuelle du produit.",
