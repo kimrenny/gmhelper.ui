@@ -101,8 +101,6 @@ export class GeoCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
 
   isAngleInputVisible = false;
 
-  private isViewInitialized = false;
-
   angleTools: AngleToolAction[] = angleToolMap;
 
   figureToolMap: Record<
@@ -161,8 +159,6 @@ export class GeoCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
   ngAfterViewInit(): void {
     this.updateCanvasSize();
     this.setupCanvasEvents();
-
-    this.isViewInitialized = true;
   }
 
   updateCanvasSize(): void {
@@ -720,9 +716,7 @@ export class GeoCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
     this.stackService.resetStack('paths');
     this.stackService.resetStack('redo');
 
-    if (!this.isViewInitialized) {
-      this.redraw();
-    }
+    this.redraw();
 
     this.pointsService.resetPoints();
     this.counterService.resetCounter();
