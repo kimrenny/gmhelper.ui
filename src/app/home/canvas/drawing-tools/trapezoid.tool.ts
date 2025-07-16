@@ -14,6 +14,7 @@ import { AnglesServiceInterface } from '../interfaces/angles-service.interface';
 import { FigureElementsServiceInterface } from '../interfaces/figure-elements-service.interface';
 import { FiguresServiceInterface } from '../interfaces/figures-service.interface';
 import { CounterServiceInterface } from '../interfaces/counter-service.interface';
+import { LineLength } from './types/line-length.type';
 
 export class Trapezoid implements DrawingTool {
   private path: { x: number; y: number; color: string }[] = [];
@@ -74,34 +75,14 @@ export class Trapezoid implements DrawingTool {
       this.linesService.createLine(label2, label3);
       this.linesService.createLine(label3, label4);
       this.linesService.createLine(label1, label4);
-      restoreLineLengthToService(
-        this.linesService,
-        this.pointsService,
-        ctx,
-        label1,
-        label2
-      );
-      restoreLineLengthToService(
-        this.linesService,
-        this.pointsService,
-        ctx,
-        label2,
-        label3
-      );
-      restoreLineLengthToService(
-        this.linesService,
-        this.pointsService,
-        ctx,
-        label3,
-        label4
-      );
-      restoreLineLengthToService(
-        this.linesService,
-        this.pointsService,
-        ctx,
-        label1,
-        label4
-      );
+
+      const lines = [
+        { p1: path[0], p2: path[1], labelA: label1, labelB: label2 },
+        { p1: path[1], p2: path[2], labelA: label2, labelB: label3 },
+        { p1: path[2], p2: path[3], labelA: label3, labelB: label4 },
+        { p1: path[3], p2: path[0], labelA: label4, labelB: label1 },
+      ];
+      this.drawLinesLength(ctx, lines);
 
       this.drawLinesFromFigureData(ctx, path, figureName, false, true);
     }
@@ -146,6 +127,82 @@ export class Trapezoid implements DrawingTool {
     if (labelA && labelB && labelC && labelD) {
       this.markAngles(ctx, paths, true);
       drawFigureAngles(ctx, this.anglesService, this.pointsService, paths, 4);
+    }
+  }
+
+  drawLinesLength(
+    ctx: CanvasRenderingContext2D,
+    lines: {
+      p1: { x: number; y: number };
+      p2: { x: number; y: number };
+      labelA: string;
+      labelB: string;
+    }[],
+    length?: LineLength
+  ): void {
+    const centers = lines.map((line, i) => {
+      return {
+        index: i,
+        midX: (line.p1.x + line.p2.x) / 2,
+        midY: (line.p1.y + line.p2.y) / 2,
+      };
+    });
+
+    const topLine = centers.reduce((min, cur) =>
+      cur.midY < min.midY ? cur : min
+    );
+    const bottomLine = centers.reduce((max, cur) =>
+      cur.midY > max.midY ? cur : max
+    );
+    const leftLine = centers.reduce((min, cur) =>
+      cur.midX < min.midX ? cur : min
+    );
+    const rightLine = centers.reduce((max, cur) =>
+      cur.midX > max.midX ? cur : max
+    );
+
+    for (let i = 0; i < lines.length; i++) {
+      let offsetX = 0;
+      let offsetY = -15;
+
+      if (i === topLine.index) {
+        offsetX = 0;
+        offsetY = -15;
+      } else if (i === bottomLine.index) {
+        offsetX = 0;
+        offsetY = 20;
+      } else if (i === leftLine.index) {
+        offsetX = -15;
+        offsetY = 0;
+      } else if (i === rightLine.index) {
+        offsetX = 15;
+        offsetY = 0;
+      }
+
+      const { labelA, labelB } = lines[i];
+
+      if (length !== undefined) {
+        setLineLengthToService(
+          this.linesService,
+          this.pointsService,
+          ctx,
+          labelA,
+          labelB,
+          length,
+          offsetX,
+          offsetY
+        );
+      } else {
+        restoreLineLengthToService(
+          this.linesService,
+          this.pointsService,
+          ctx,
+          labelA,
+          labelB,
+          offsetX,
+          offsetY
+        );
+      }
     }
   }
 
@@ -200,42 +257,43 @@ export class Trapezoid implements DrawingTool {
       const ctx = data.canvas?.getContext('2d');
       if (ctx) {
         this.figureName = '';
-        const [label1, label2, label3, label4] =
-          this.addPointsToCanvasService(ctx);
+        const [label1, label2, label3, label4] = this.addPointsToCanvasService(
+          ctx,
+          this.path
+        );
         this.linesService.createLine(label1, label2);
         this.linesService.createLine(label2, label3);
         this.linesService.createLine(label3, label4);
         this.linesService.createLine(label1, label4);
-        setLineLengthToService(
-          this.linesService,
-          this.pointsService,
+
+        this.drawLinesLength(
           ctx,
-          label1,
-          label2,
-          '?'
-        );
-        setLineLengthToService(
-          this.linesService,
-          this.pointsService,
-          ctx,
-          label2,
-          label3,
-          '?'
-        );
-        setLineLengthToService(
-          this.linesService,
-          this.pointsService,
-          ctx,
-          label3,
-          label4,
-          '?'
-        );
-        setLineLengthToService(
-          this.linesService,
-          this.pointsService,
-          ctx,
-          label1,
-          label4,
+          [
+            {
+              p1: this.path[0],
+              p2: this.path[1],
+              labelA: label1,
+              labelB: label2,
+            },
+            {
+              p1: this.path[1],
+              p2: this.path[2],
+              labelA: label2,
+              labelB: label3,
+            },
+            {
+              p1: this.path[2],
+              p2: this.path[3],
+              labelA: label3,
+              labelB: label4,
+            },
+            {
+              p1: this.path[3],
+              p2: this.path[0],
+              labelA: label4,
+              labelB: label1,
+            },
+          ],
           '?'
         );
       }
@@ -414,8 +472,6 @@ export class Trapezoid implements DrawingTool {
         ctx.lineTo(p2.x, p2.y);
         ctx.stroke();
 
-        drawLabel(ctx, label2, p2.x, p2.y);
-
         restoreLineLengthToService(
           this.linesService,
           this.pointsService,
@@ -439,8 +495,6 @@ export class Trapezoid implements DrawingTool {
       ctx.moveTo(p1.x, p1.y);
       ctx.lineTo(p2.x, p2.y);
       ctx.stroke();
-
-      drawLabel(ctx, label2, p2.x, p2.y);
 
       if (!this.linesService.hasLine(newLine)) {
         this.linesService.createLine(label1, label2);
@@ -675,45 +729,61 @@ export class Trapezoid implements DrawingTool {
 
   private addPointsToCanvasService(
     ctx: CanvasRenderingContext2D,
-    path?: { x: number; y: number }[]
+    path: { x: number; y: number }[]
   ): [string, string, string, string] {
     if (!(this.figureName.length > 1)) {
       this.figureName = this.counterService.getNextFigureName('Trapezoid');
     }
+
     const labels: string[] = [];
 
-    if (!path) {
-      this.path.forEach((point, index) => {
-        const label = this.pointsService.addPoint(
-          point.x,
-          point.y,
-          this.figureName,
-          index
-        );
+    const center = path.reduce(
+      (acc, p) => {
+        acc.x += p.x;
+        acc.y += p.y;
+        return acc;
+      },
+      { x: 0, y: 0 }
+    );
+    center.x /= path.length;
+    center.y /= path.length;
 
-        drawLabel(ctx, label, point.x, point.y);
+    for (let i = 0; i < path.length; i++) {
+      const point = path[i];
 
-        labels.push(label);
-      });
+      const dx = center.x - point.x;
+      const dy = center.y - point.y;
 
-      return [labels[0], labels[1], labels[2], labels[3]];
-    }
+      const angle = Math.atan2(dy, dx) * (180 / Math.PI);
 
-    if (!(this.figureName.length > 1)) {
-      this.figureName = this.counterService.getNextFigureName('Trapezoid');
-    }
-    path.forEach((point, index) => {
+      let offsetX = 0;
+      let offsetY = 0;
+
+      if (angle >= -135 && angle < -45) {
+        offsetX = 0;
+        offsetY = 20;
+      } else if (angle >= -45 && angle < 45) {
+        offsetX = -20;
+        offsetY = 0;
+      } else if (angle >= 45 && angle < 135) {
+        offsetX = 0;
+        offsetY = -20;
+      } else {
+        offsetX = 20;
+        offsetY = 0;
+      }
+
       const label = this.pointsService.addPoint(
         point.x,
         point.y,
         this.figureName,
-        index
+        i
       );
 
-      drawLabel(ctx, label, point.x, point.y);
+      drawLabel(ctx, label, point.x, point.y, offsetX, offsetY);
 
       labels.push(label);
-    });
+    }
 
     return [labels[0], labels[1], labels[2], labels[3]];
   }

@@ -16,6 +16,7 @@ import { FigureElementsServiceInterface } from '../interfaces/figure-elements-se
 import { StackServiceInterface } from '../interfaces/stack-service.interface';
 import { FiguresServiceInterface } from '../interfaces/figures-service.interface';
 import { CounterServiceInterface } from '../interfaces/counter-service.interface';
+import { LineLength } from './types/line-length.type';
 
 export class Polygon implements DrawingTool {
   private center: { x: number; y: number } | null = null;
@@ -89,27 +90,15 @@ export class Polygon implements DrawingTool {
         const from = labels[i];
         const to = labels[(i + 1) % labels.length];
         this.linesService.createLine(from, to);
-        restoreLineLengthToService(
-          this.linesService,
-          this.pointsService,
-          ctx,
-          from,
-          to
-        );
       }
 
       if (labels.length > 1) {
         const from = labels[0];
         const to = labels[labels.length - 1];
         this.linesService.createLine(from, to);
-        restoreLineLengthToService(
-          this.linesService,
-          this.pointsService,
-          ctx,
-          from,
-          to
-        );
       }
+
+      this.drawLinesLength(ctx, labels, path);
 
       this.drawLinesFromFigureData(ctx, drawPath, figureName, false, true);
     }
@@ -142,6 +131,65 @@ export class Polygon implements DrawingTool {
         this.pointsService,
         paths,
         path.length
+      );
+    }
+  }
+
+  private drawLinesLength(
+    ctx: CanvasRenderingContext2D,
+    labels: string[],
+    path: { x: number; y: number }[],
+    length?: LineLength
+  ): void {
+    const center = path.reduce(
+      (acc, p) => ({ x: acc.x + p.x, y: acc.y + p.y }),
+      { x: 0, y: 0 }
+    );
+    center.x /= path.length;
+    center.y /= path.length;
+
+    for (let i = 0; i < labels.length; i++) {
+      const nextIndex = (i + 1) % labels.length;
+      const p1 = path[i];
+      const p2 = path[nextIndex];
+      const labelA = labels[i];
+      const labelB = labels[nextIndex];
+
+      const dx = p2.x - p1.x;
+      const dy = p2.y - p1.y;
+
+      const lengthValue =
+        length ?? this.linesService.getLineLength(labelA, labelB);
+      if (!lengthValue) continue;
+
+      const mx = (p1.x + p2.x) / 2;
+      const my = (p1.y + p2.y) / 2;
+
+      let nx = -dy;
+      let ny = dx;
+
+      const toCenterX = center.x - mx;
+      const toCenterY = center.y - my;
+
+      if (nx * toCenterX + ny * toCenterY > 0) {
+        nx = -nx;
+        ny = -ny;
+      }
+
+      const lengthNorm = Math.sqrt(nx * nx + ny * ny);
+      const offsetDistance = 20;
+      const offsetX = (nx / lengthNorm) * offsetDistance;
+      const offsetY = (ny / lengthNorm) * offsetDistance;
+
+      setLineLengthToService(
+        this.linesService,
+        this.pointsService,
+        ctx,
+        labelA,
+        labelB,
+        lengthValue,
+        offsetX,
+        offsetY
       );
     }
   }
@@ -207,29 +255,15 @@ export class Polygon implements DrawingTool {
         const from = labels[i];
         const to = labels[(i + 1) % labels.length];
         this.linesService.createLine(from, to);
-        setLineLengthToService(
-          this.linesService,
-          this.pointsService,
-          ctx,
-          from,
-          to,
-          '?'
-        );
       }
 
       if (labels.length > 1) {
         const from = labels[0];
         const to = labels[labels.length - 1];
         this.linesService.createLine(from, to);
-        setLineLengthToService(
-          this.linesService,
-          this.pointsService,
-          ctx,
-          from,
-          to,
-          '?'
-        );
       }
+
+      this.drawLinesLength(ctx, labels, this.path, '?');
     }
 
     this.center = null;
@@ -493,28 +527,54 @@ export class Polygon implements DrawingTool {
     }
 
     const labels: string[] = [];
-    const pointsToProcess = path && path.length > 0 ? path : this.path;
+    const points = path?.length ? path : this.path;
+    const n = points.length;
+    if (n < 3) return labels;
 
-    if (!pointsToProcess || pointsToProcess.length === 0) {
-      console.warn('Path is empty. No points to add.');
-      return labels;
-    }
+    const center = points.reduce(
+      (acc, p) => ({ x: acc.x + p.x / n, y: acc.y + p.y / n }),
+      { x: 0, y: 0 }
+    );
 
-    pointsToProcess.forEach((point, index) => {
+    for (let i = 0; i < n; i++) {
+      const prev = points[(i - 1 + n) % n];
+      const curr = points[i];
+      const next = points[(i + 1) % n];
+
       const label = this.pointsService.addPoint(
-        point.x,
-        point.y,
+        curr.x,
+        curr.y,
         this.figureName,
-        index
+        i
       );
 
-      if (!label) {
-        console.error(`Label was not returned for point at index ${index}`);
+      const v1 = { x: curr.x - prev.x, y: curr.y - prev.y };
+      const v2 = { x: next.x - curr.x, y: next.y - curr.y };
+
+      const len1 = Math.hypot(v1.x, v1.y);
+      const len2 = Math.hypot(v2.x, v2.y);
+      if (len1 === 0 || len2 === 0) continue;
+
+      const bx = v1.x / len1 + v2.x / len2;
+      const by = v1.y / len1 + v2.y / len2;
+
+      let offsetVec = { x: -by, y: bx };
+      const dot =
+        (curr.x - center.x) * offsetVec.x + (curr.y - center.y) * offsetVec.y;
+      if (dot < 0) {
+        offsetVec.x *= -1;
+        offsetVec.y *= -1;
       }
 
-      drawLabel(ctx, label, point.x, point.y);
+      const norm = Math.hypot(offsetVec.x, offsetVec.y);
+      const offsetScale = n <= 4 ? 25 : n <= 7 ? 20 : 15;
+
+      const offsetX = (offsetVec.x / norm) * offsetScale;
+      const offsetY = (offsetVec.y / norm) * offsetScale;
+
+      drawLabel(ctx, label, curr.x, curr.y, offsetX, offsetY);
       labels.push(label);
-    });
+    }
 
     return labels;
   }

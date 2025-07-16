@@ -15,6 +15,7 @@ import { AnglesServiceInterface } from '../interfaces/angles-service.interface';
 import { FigureElementsServiceInterface } from '../interfaces/figure-elements-service.interface';
 import { FiguresServiceInterface } from '../interfaces/figures-service.interface';
 import { CounterServiceInterface } from '../interfaces/counter-service.interface';
+import { LineLength } from './types/line-length.type';
 
 export class Triangle implements DrawingTool {
   private path: { x: number; y: number; color: string }[] = [];
@@ -73,27 +74,13 @@ export class Triangle implements DrawingTool {
       this.linesService.createLine(label1, label2);
       this.linesService.createLine(label2, label3);
       this.linesService.createLine(label1, label3);
-      restoreLineLengthToService(
-        this.linesService,
-        this.pointsService,
-        ctx,
-        label1,
-        label2
-      );
-      restoreLineLengthToService(
-        this.linesService,
-        this.pointsService,
-        ctx,
-        label2,
-        label3
-      );
-      restoreLineLengthToService(
-        this.linesService,
-        this.pointsService,
-        ctx,
-        label1,
-        label3
-      );
+
+      const lines = [
+        { p1: path[0], p2: path[1], labelA: label1, labelB: label2 },
+        { p1: path[1], p2: path[2], labelA: label2, labelB: label3 },
+        { p1: path[0], p2: path[2], labelA: label1, labelB: label3 },
+      ];
+      this.drawLinesLength(ctx, lines);
 
       if (redraw && figureName) {
         this.drawLinesFromFigureData(ctx, path, figureName);
@@ -137,6 +124,84 @@ export class Triangle implements DrawingTool {
     if (labelA && labelB && labelC) {
       this.markAngles(ctx, paths, true);
       drawFigureAngles(ctx, this.anglesService, this.pointsService, paths, 3);
+    }
+  }
+
+  private drawLinesLength(
+    ctx: CanvasRenderingContext2D,
+    lines: {
+      p1: { x: number; y: number };
+      p2: { x: number; y: number };
+      labelA: string;
+      labelB: string;
+    }[],
+    length?: LineLength
+  ): void {
+    const offsetMagnitude = 20;
+    const allPoints: { x: number; y: number }[] = [];
+
+    for (const line of lines) {
+      allPoints.push(line.p1, line.p2);
+    }
+
+    const uniquePoints = allPoints.filter(
+      (p, i, arr) => arr.findIndex((q) => q.x === p.x && q.y === p.y) === i
+    );
+
+    for (let i = 0; i < lines.length; i++) {
+      const { p1, p2, labelA, labelB } = lines[i];
+
+      const midX = (p1.x + p2.x) / 2;
+      const midY = (p1.y + p2.y) / 2;
+
+      const thirdPoint = uniquePoints.find(
+        (pt) =>
+          (pt.x !== p1.x || pt.y !== p1.y) && (pt.x !== p2.x || pt.y !== p2.y)
+      );
+
+      let offsetX = 0;
+      let offsetY = -10;
+
+      if (thirdPoint) {
+        const dx = p2.x - p1.x;
+        const dy = p2.y - p1.y;
+        const lengthVec = Math.sqrt(dx * dx + dy * dy) || 1;
+
+        const nx = -dy / lengthVec;
+        const ny = dx / lengthVec;
+
+        const toThirdX = thirdPoint.x - midX;
+        const toThirdY = thirdPoint.y - midY;
+
+        const dot = toThirdX * nx + toThirdY * ny;
+        const scale = dot < 0 ? 1 : -1;
+
+        offsetX = nx * offsetMagnitude * scale;
+        offsetY = ny * offsetMagnitude * scale;
+      }
+
+      if (length !== undefined) {
+        setLineLengthToService(
+          this.linesService,
+          this.pointsService,
+          ctx,
+          labelA,
+          labelB,
+          length,
+          offsetX,
+          offsetY
+        );
+      } else {
+        restoreLineLengthToService(
+          this.linesService,
+          this.pointsService,
+          ctx,
+          labelA,
+          labelB,
+          offsetX,
+          offsetY
+        );
+      }
     }
   }
 
@@ -189,28 +254,29 @@ export class Triangle implements DrawingTool {
         this.linesService.createLine(label1, label2);
         this.linesService.createLine(label2, label3);
         this.linesService.createLine(label1, label3);
-        setLineLengthToService(
-          this.linesService,
-          this.pointsService,
+
+        this.drawLinesLength(
           ctx,
-          label1,
-          label2,
-          '?'
-        );
-        setLineLengthToService(
-          this.linesService,
-          this.pointsService,
-          ctx,
-          label2,
-          label3,
-          '?'
-        );
-        setLineLengthToService(
-          this.linesService,
-          this.pointsService,
-          ctx,
-          label1,
-          label3,
+          [
+            {
+              p1: this.path[0],
+              p2: this.path[1],
+              labelA: label1,
+              labelB: label2,
+            },
+            {
+              p1: this.path[1],
+              p2: this.path[2],
+              labelA: label2,
+              labelB: label3,
+            },
+            {
+              p1: this.path[0],
+              p2: this.path[2],
+              labelA: label1,
+              labelB: label3,
+            },
+          ],
           '?'
         );
       }
@@ -543,7 +609,6 @@ export class Triangle implements DrawingTool {
       return;
     }
 
-    drawLabel(ctx, labelA, vertex.x, vertex.y);
     drawLabel(ctx, labelB, midPoint.x, midPoint.y);
 
     const lineKey = `${labelA}${labelB}`;
@@ -704,29 +769,22 @@ export class Triangle implements DrawingTool {
     if (!(figureName.length > 1)) {
       figureName = this.counterService.getNextFigureName('Triangle');
     }
+
     const labels: string[] = [];
+    const usedPath = path ?? this.path;
 
-    if (!path) {
-      this.path.forEach((point, index) => {
-        const label = this.pointsService.addPoint(
-          point.x,
-          point.y,
-          figureName,
-          index
-        );
+    const center = usedPath.reduce(
+      (acc, point) => {
+        acc.x += point.x;
+        acc.y += point.y;
+        return acc;
+      },
+      { x: 0, y: 0 }
+    );
+    center.x /= usedPath.length;
+    center.y /= usedPath.length;
 
-        drawLabel(ctx, label, point.x, point.y);
-
-        labels.push(label);
-      });
-
-      return [labels[0], labels[1], labels[2]];
-    }
-    if (!(figureName.length > 1)) {
-      figureName = this.counterService.getNextFigureName('Triangle');
-    }
-
-    path.forEach((point, index) => {
+    usedPath.forEach((point, index) => {
       const label = this.pointsService.addPoint(
         point.x,
         point.y,
@@ -734,8 +792,13 @@ export class Triangle implements DrawingTool {
         index
       );
 
-      drawLabel(ctx, label, point.x, point.y);
+      const dx = point.x - center.x;
+      const dy = point.y - center.y;
 
+      const offsetX = dx >= 0 ? 20 : -30;
+      const offsetY = dy >= 0 ? 20 : -20;
+
+      drawLabel(ctx, label, point.x, point.y, offsetX, offsetY);
       labels.push(label);
     });
 

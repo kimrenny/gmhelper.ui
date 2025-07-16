@@ -16,6 +16,7 @@ import { FigureElementsServiceInterface } from '../interfaces/figure-elements-se
 import { StackServiceInterface } from '../interfaces/stack-service.interface';
 import { FiguresServiceInterface } from '../interfaces/figures-service.interface';
 import { CounterServiceInterface } from '../interfaces/counter-service.interface';
+import { LineLength } from './types/line-length.type';
 
 export class Rhombus implements DrawingTool {
   private start: { x: number; y: number; color: string } | null = null;
@@ -76,34 +77,14 @@ export class Rhombus implements DrawingTool {
       this.linesService.createLine(label2, label3);
       this.linesService.createLine(label3, label4);
       this.linesService.createLine(label1, label4);
-      restoreLineLengthToService(
-        this.linesService,
-        this.pointsService,
-        ctx,
-        label1,
-        label2
-      );
-      restoreLineLengthToService(
-        this.linesService,
-        this.pointsService,
-        ctx,
-        label2,
-        label3
-      );
-      restoreLineLengthToService(
-        this.linesService,
-        this.pointsService,
-        ctx,
-        label3,
-        label4
-      );
-      restoreLineLengthToService(
-        this.linesService,
-        this.pointsService,
-        ctx,
-        label1,
-        label4
-      );
+
+      const lines = [
+        { p1: path[0], p2: path[1], labelA: label1, labelB: label2 },
+        { p1: path[1], p2: path[2], labelA: label2, labelB: label3 },
+        { p1: path[2], p2: path[3], labelA: label3, labelB: label4 },
+        { p1: path[3], p2: path[0], labelA: label4, labelB: label1 },
+      ];
+      this.drawLinesLength(ctx, lines);
 
       this.drawLinesFromFigureData(ctx, path, figureName, false, true);
     }
@@ -139,6 +120,104 @@ export class Rhombus implements DrawingTool {
     if (labelA && labelB && labelC && labelD) {
       this.markAngles(ctx, paths, true);
       drawFigureAngles(ctx, this.anglesService, this.pointsService, paths, 4);
+    }
+  }
+
+  drawLinesLength(
+    ctx: CanvasRenderingContext2D,
+    lines: {
+      p1: { x: number; y: number };
+      p2: { x: number; y: number };
+      labelA: string;
+      labelB: string;
+    }[],
+    length?: LineLength
+  ): void {
+    const offsetDistance = 20;
+
+    const allPoints = lines.flatMap(({ p1, p2 }) => [p1, p2]);
+    const uniquePoints = Array.from(
+      new Set(allPoints.map((p) => `${p.x}_${p.y}`))
+    ).map((str) => {
+      const [x, y] = str.split('_').map(Number);
+      return { x, y };
+    });
+
+    const center = uniquePoints.reduce(
+      (acc, p) => {
+        acc.x += p.x;
+        acc.y += p.y;
+        return acc;
+      },
+      { x: 0, y: 0 }
+    );
+
+    center.x /= uniquePoints.length;
+    center.y /= uniquePoints.length;
+
+    for (let i = 0; i < lines.length; i++) {
+      const { p1, p2, labelA, labelB } = lines[i];
+
+      const mid = {
+        x: (p1.x + p2.x) / 2,
+        y: (p1.y + p2.y) / 2,
+      };
+
+      const dx = p2.x - p1.x;
+      const dy = p2.y - p1.y;
+
+      const lengthVec = Math.sqrt(dx * dx + dy * dy);
+      let normal = {
+        x: -dy / lengthVec,
+        y: dx / lengthVec,
+      };
+
+      const offsetX = normal.x * offsetDistance;
+      const offsetY = normal.y * offsetDistance;
+
+      const testPoint = {
+        x: mid.x + offsetX,
+        y: mid.y + offsetY,
+      };
+
+      const vectorToCenter = {
+        x: center.x - mid.x,
+        y: center.y - mid.y,
+      };
+
+      const vectorToTest = {
+        x: testPoint.x - mid.x,
+        y: testPoint.y - mid.y,
+      };
+
+      const dot =
+        vectorToCenter.x * vectorToTest.x + vectorToCenter.y * vectorToTest.y;
+
+      const finalOffsetX = dot > 0 ? -offsetX : offsetX;
+      const finalOffsetY = dot > 0 ? -offsetY : offsetY;
+
+      if (length !== undefined) {
+        setLineLengthToService(
+          this.linesService,
+          this.pointsService,
+          ctx,
+          labelA,
+          labelB,
+          length,
+          finalOffsetX,
+          finalOffsetY
+        );
+      } else {
+        restoreLineLengthToService(
+          this.linesService,
+          this.pointsService,
+          ctx,
+          labelA,
+          labelB,
+          finalOffsetX,
+          finalOffsetY
+        );
+      }
     }
   }
 
@@ -184,36 +263,15 @@ export class Rhombus implements DrawingTool {
       this.linesService.createLine(label2, label3);
       this.linesService.createLine(label3, label4);
       this.linesService.createLine(label1, label4);
-      setLineLengthToService(
-        this.linesService,
-        this.pointsService,
+
+      this.drawLinesLength(
         ctx,
-        label1,
-        label2,
-        '?'
-      );
-      setLineLengthToService(
-        this.linesService,
-        this.pointsService,
-        ctx,
-        label2,
-        label3,
-        '?'
-      );
-      setLineLengthToService(
-        this.linesService,
-        this.pointsService,
-        ctx,
-        label3,
-        label4,
-        '?'
-      );
-      setLineLengthToService(
-        this.linesService,
-        this.pointsService,
-        ctx,
-        label1,
-        label4,
+        [
+          { p1: path[0], p2: path[1], labelA: label1, labelB: label2 },
+          { p1: path[1], p2: path[2], labelA: label2, labelB: label3 },
+          { p1: path[2], p2: path[3], labelA: label3, labelB: label4 },
+          { p1: path[3], p2: path[0], labelA: label4, labelB: label1 },
+        ],
         '?'
       );
     }
@@ -388,8 +446,6 @@ export class Rhombus implements DrawingTool {
         ctx.lineTo(p2.x, p2.y);
         ctx.stroke();
 
-        drawLabel(ctx, label2, p2.x, p2.y);
-
         restoreLineLengthToService(
           this.linesService,
           this.pointsService,
@@ -413,8 +469,6 @@ export class Rhombus implements DrawingTool {
       ctx.moveTo(p1.x, p1.y);
       ctx.lineTo(p2.x, p2.y);
       ctx.stroke();
-
-      drawLabel(ctx, label2, p2.x, p2.y);
 
       if (!this.linesService.hasLine(newLine)) {
         this.linesService.createLine(label1, label2);
@@ -573,6 +627,18 @@ export class Rhombus implements DrawingTool {
 
     const labels: string[] = [];
 
+    const xs = path.map((p) => p.x);
+    const ys = path.map((p) => p.y);
+    const minX = Math.min(...xs);
+    const maxX = Math.max(...xs);
+    const minY = Math.min(...ys);
+    const maxY = Math.max(...ys);
+
+    const topPoint = path.find((p) => p.y === minY);
+    const bottomPoint = path.find((p) => p.y === maxY);
+    const leftPoint = path.find((p) => p.x === minX);
+    const rightPoint = path.find((p) => p.x === maxX);
+
     path.forEach((point, index) => {
       const label = this.pointsService.addPoint(
         point.x,
@@ -581,7 +647,26 @@ export class Rhombus implements DrawingTool {
         index
       );
 
-      drawLabel(ctx, label, point.x, point.y);
+      let offsetX = 0;
+      let offsetY = 0;
+
+      if (point === topPoint) {
+        offsetX = -3;
+        offsetY = -20;
+      } else if (point === bottomPoint) {
+        offsetX = -5;
+        offsetY = 25;
+      } else if (point === leftPoint) {
+        offsetX = -25;
+        offsetY = 3;
+      } else if (point === rightPoint) {
+        offsetX = 25;
+        offsetY = 3;
+      }
+
+      console.log(label, point.x, point.y, offsetX, offsetY);
+
+      drawLabel(ctx, label, point.x, point.y, offsetX, offsetY);
 
       labels.push(label);
     });

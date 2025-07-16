@@ -15,6 +15,7 @@ import { FigureElementsServiceInterface } from '../interfaces/figure-elements-se
 import { StackServiceInterface } from '../interfaces/stack-service.interface';
 import { FiguresServiceInterface } from '../interfaces/figures-service.interface';
 import { CounterServiceInterface } from '../interfaces/counter-service.interface';
+import { LineLength } from './types/line-length.type';
 
 export class Rectangle implements DrawingTool {
   private start: { x: number; y: number; color: string } | null = null;
@@ -75,34 +76,14 @@ export class Rectangle implements DrawingTool {
       this.linesService.createLine(label2, label3);
       this.linesService.createLine(label3, label4);
       this.linesService.createLine(label1, label4);
-      restoreLineLengthToService(
-        this.linesService,
-        this.pointsService,
-        ctx,
-        label1,
-        label2
-      );
-      restoreLineLengthToService(
-        this.linesService,
-        this.pointsService,
-        ctx,
-        label2,
-        label3
-      );
-      restoreLineLengthToService(
-        this.linesService,
-        this.pointsService,
-        ctx,
-        label3,
-        label4
-      );
-      restoreLineLengthToService(
-        this.linesService,
-        this.pointsService,
-        ctx,
-        label1,
-        label4
-      );
+
+      const lines = [
+        { p1: path[0], p2: path[1], labelA: label1, labelB: label2 },
+        { p1: path[1], p2: path[2], labelA: label2, labelB: label3 },
+        { p1: path[2], p2: path[3], labelA: label3, labelB: label4 },
+        { p1: path[3], p2: path[0], labelA: label4, labelB: label1 },
+      ];
+      this.drawLinesLength(ctx, lines);
 
       this.drawLinesFromFigureData(ctx, path, figureName, false, true);
     }
@@ -128,6 +109,82 @@ export class Rectangle implements DrawingTool {
 
     if (hasDiagonal) {
       this.drawDiagonal(ctx, paths, color, figureName, isPreview, isRedraw);
+    }
+  }
+
+  drawLinesLength(
+    ctx: CanvasRenderingContext2D,
+    lines: {
+      p1: { x: number; y: number };
+      p2: { x: number; y: number };
+      labelA: string;
+      labelB: string;
+    }[],
+    length?: LineLength
+  ): void {
+    const centers = lines.map((line, i) => {
+      return {
+        index: i,
+        midX: (line.p1.x + line.p2.x) / 2,
+        midY: (line.p1.y + line.p2.y) / 2,
+      };
+    });
+
+    const topLine = centers.reduce((min, cur) =>
+      cur.midY < min.midY ? cur : min
+    );
+    const bottomLine = centers.reduce((max, cur) =>
+      cur.midY > max.midY ? cur : max
+    );
+    const leftLine = centers.reduce((min, cur) =>
+      cur.midX < min.midX ? cur : min
+    );
+    const rightLine = centers.reduce((max, cur) =>
+      cur.midX > max.midX ? cur : max
+    );
+
+    for (let i = 0; i < lines.length; i++) {
+      let offsetX = 0;
+      let offsetY = -15;
+
+      if (i === topLine.index) {
+        offsetX = 0;
+        offsetY = -15;
+      } else if (i === bottomLine.index) {
+        offsetX = 0;
+        offsetY = 20;
+      } else if (i === leftLine.index) {
+        offsetX = -15;
+        offsetY = 0;
+      } else if (i === rightLine.index) {
+        offsetX = 15;
+        offsetY = 0;
+      }
+
+      const { labelA, labelB } = lines[i];
+
+      if (length !== undefined) {
+        setLineLengthToService(
+          this.linesService,
+          this.pointsService,
+          ctx,
+          labelA,
+          labelB,
+          length,
+          offsetX,
+          offsetY
+        );
+      } else {
+        restoreLineLengthToService(
+          this.linesService,
+          this.pointsService,
+          ctx,
+          labelA,
+          labelB,
+          offsetX,
+          offsetY
+        );
+      }
     }
   }
 
@@ -180,39 +237,16 @@ export class Rectangle implements DrawingTool {
       this.linesService.createLine(label2, label3);
       this.linesService.createLine(label3, label4);
       this.linesService.createLine(label1, label4);
-      setLineLengthToService(
-        this.linesService,
-        this.pointsService,
+
+      this.drawLinesLength(
         ctx,
-        label1,
-        label2,
+        [
+          { p1: path[0], p2: path[1], labelA: label1, labelB: label2 },
+          { p1: path[1], p2: path[2], labelA: label2, labelB: label3 },
+          { p1: path[2], p2: path[3], labelA: label3, labelB: label4 },
+          { p1: path[3], p2: path[0], labelA: label4, labelB: label1 },
+        ],
         '?'
-      );
-      setLineLengthToService(
-        this.linesService,
-        this.pointsService,
-        ctx,
-        label2,
-        label3,
-        '?',
-        10
-      );
-      setLineLengthToService(
-        this.linesService,
-        this.pointsService,
-        ctx,
-        label3,
-        label4,
-        '?'
-      );
-      setLineLengthToService(
-        this.linesService,
-        this.pointsService,
-        ctx,
-        label1,
-        label4,
-        '?',
-        -10
       );
     }
 
@@ -256,7 +290,7 @@ export class Rectangle implements DrawingTool {
 
       ctx.beginPath();
       ctx.moveTo(path[0].x, path[0].y);
-      for (let i = 1; i < path.length; i++) {
+      for (let i = 1; i < drawPath.length; i++) {
         ctx.lineTo(path[i].x, path[i].y);
       }
       ctx.closePath();
@@ -370,14 +404,14 @@ export class Rectangle implements DrawingTool {
         ctx.lineTo(p2.x, p2.y);
         ctx.stroke();
 
-        drawLabel(ctx, label2, p2.x, p2.y);
-
         restoreLineLengthToService(
           this.linesService,
           this.pointsService,
           ctx,
           label1,
-          label2
+          label2,
+          0,
+          -15
         );
 
         continue;
@@ -570,6 +604,13 @@ export class Rectangle implements DrawingTool {
     }
     const labels: string[] = [];
 
+    const xs = path.map((p) => p.x);
+    const ys = path.map((p) => p.y);
+    const minX = Math.min(...xs);
+    const maxX = Math.max(...xs);
+    const minY = Math.min(...ys);
+    const maxY = Math.max(...ys);
+
     path.forEach((point, index) => {
       const label = this.pointsService.addPoint(
         point.x,
@@ -578,7 +619,29 @@ export class Rectangle implements DrawingTool {
         index
       );
 
-      drawLabel(ctx, label, point.x, point.y);
+      let offsetX = 10;
+      let offsetY = -10;
+
+      const isLeft = point.x === minX;
+      const isRight = point.x === maxX;
+      const isTop = point.y === minY;
+      const isBottom = point.y === maxY;
+
+      if (isLeft && isTop) {
+        offsetX = -20;
+        offsetY = -20;
+      } else if (isRight && isTop) {
+        offsetX = 20;
+        offsetY = -20;
+      } else if (isRight && isBottom) {
+        offsetX = 20;
+        offsetY = 20;
+      } else if (isLeft && isBottom) {
+        offsetX = -20;
+        offsetY = 20;
+      }
+
+      drawLabel(ctx, label, point.x, point.y, offsetX, offsetY);
 
       labels.push(label);
     });

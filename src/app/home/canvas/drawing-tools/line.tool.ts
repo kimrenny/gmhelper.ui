@@ -10,6 +10,7 @@ import { CanvasServiceInterface } from '../interfaces/canvas-service.interface';
 import { PointsServiceInterface } from '../interfaces/points-service.interface';
 import { LinesServiceInterface } from '../interfaces/lines-service.interface';
 import { CounterServiceInterface } from '../interfaces/counter-service.interface';
+import { LineLength } from './types/line-length.type';
 
 export class Line implements DrawingTool {
   private isDrawing: boolean = false;
@@ -52,12 +53,46 @@ export class Line implements DrawingTool {
     if (redraw) {
       const [label1, label2] = this.addPointsToCanvasService(ctx, path);
       this.linesService.createLine(label1, label2);
+      this.drawLineLength(ctx, label1, label2, path[0], path[1]);
+    }
+  }
+
+  private drawLineLength(
+    ctx: CanvasRenderingContext2D,
+    labelA: string,
+    labelB: string,
+    p1: { x: number; y: number },
+    p2: { x: number; y: number },
+    length?: LineLength
+  ) {
+    const dx = p2.x - p1.x;
+    const dy = p2.y - p1.y;
+    const angle = Math.atan2(dy, dx);
+
+    const offsetDistance = 15;
+    const offsetX = offsetDistance * Math.cos(angle + Math.PI / 2);
+    const offsetY = offsetDistance * Math.sin(angle + Math.PI / 2);
+
+    if (length !== undefined) {
+      setLineLengthToService(
+        this.linesService,
+        this.pointsService,
+        ctx,
+        labelA,
+        labelB,
+        length,
+        offsetX,
+        offsetY
+      );
+    } else {
       restoreLineLengthToService(
         this.linesService,
         this.pointsService,
         ctx,
-        label1,
-        label2
+        labelA,
+        labelB,
+        offsetX,
+        offsetY
       );
     }
   }
@@ -142,12 +177,12 @@ export class Line implements DrawingTool {
         this.figureName = '';
         const [label1, label2] = this.addPointsToCanvasService(ctx);
         this.linesService.createLine(label1, label2);
-        setLineLengthToService(
-          this.linesService,
-          this.pointsService,
+        this.drawLineLength(
           ctx,
           label1,
           label2,
+          this.path[0],
+          this.path[1],
           '?'
         );
       }
