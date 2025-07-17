@@ -20,7 +20,6 @@ export class Trapezoid implements DrawingTool {
   private path: { x: number; y: number; color: string }[] = [];
   private isDrawing: boolean = false;
   private end: { x: number; y: number; color: string } | null = null;
-  private figureName: string = '';
 
   constructor(
     private canvasService: CanvasServiceInterface,
@@ -69,6 +68,7 @@ export class Trapezoid implements DrawingTool {
 
       const [label1, label2, label3, label4] = this.addPointsToCanvasService(
         ctx,
+        figureName,
         path
       );
       this.linesService.createLine(label1, label2);
@@ -255,10 +255,15 @@ export class Trapezoid implements DrawingTool {
       const savePath = [...this.path];
 
       const ctx = data.canvas?.getContext('2d');
+
+      let figureName = '';
       if (ctx) {
-        this.figureName = '';
+        figureName = this.counterService.getNextFigureName('Trapezoid');
+        if (!figureName) return;
+
         const [label1, label2, label3, label4] = this.addPointsToCanvasService(
           ctx,
+          figureName,
           this.path
         );
         this.linesService.createLine(label1, label2);
@@ -313,7 +318,7 @@ export class Trapezoid implements DrawingTool {
           data.previewCanvas.height
         );
 
-      return { tool: this, path: savePath, figureName: this.figureName };
+      return { tool: this, path: savePath, figureName: figureName };
     }
   }
 
@@ -729,10 +734,11 @@ export class Trapezoid implements DrawingTool {
 
   private addPointsToCanvasService(
     ctx: CanvasRenderingContext2D,
+    figureName: string,
     path: { x: number; y: number }[]
   ): [string, string, string, string] {
-    if (!(this.figureName.length > 1)) {
-      this.figureName = this.counterService.getNextFigureName('Trapezoid');
+    if (!(figureName.length > 1)) {
+      figureName = this.counterService.getNextFigureName('Trapezoid');
     }
 
     const labels: string[] = [];
@@ -776,7 +782,7 @@ export class Trapezoid implements DrawingTool {
       const label = this.pointsService.addPoint(
         point.x,
         point.y,
-        this.figureName,
+        figureName,
         i
       );
 

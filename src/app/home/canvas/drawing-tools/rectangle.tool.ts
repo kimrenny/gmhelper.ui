@@ -21,7 +21,6 @@ export class Rectangle implements DrawingTool {
   private start: { x: number; y: number; color: string } | null = null;
   private end: { x: number; y: number; color: string } | null = null;
   private isDrawing: boolean = false;
-  private figureName: string = '';
 
   constructor(
     private canvasService: CanvasServiceInterface,
@@ -70,6 +69,7 @@ export class Rectangle implements DrawingTool {
 
       const [label1, label2, label3, label4] = this.addPointsToCanvasService(
         ctx,
+        figureName,
         path
       );
       this.linesService.createLine(label1, label2);
@@ -96,6 +96,8 @@ export class Rectangle implements DrawingTool {
     isPreview: boolean = false,
     isRedraw: boolean = false
   ): void {
+    const elements = this.figureElementsService.getFigureElements(figureName);
+
     const hasDiagonal = this.figureElementsService.hasFigureElement(
       figureName,
       'diagonal'
@@ -225,12 +227,17 @@ export class Rectangle implements DrawingTool {
     );
     const ctx = data.canvas?.getContext('2d');
 
+    let figureName = '';
+
     if (ctx) {
       this.draw(ctx, path, data.selectedColor);
 
-      this.figureName = '';
+      figureName = this.counterService.getNextFigureName('Rectangle');
+      if (!figureName) return;
+
       const [label1, label2, label3, label4] = this.addPointsToCanvasService(
         ctx,
+        figureName,
         path
       );
       this.linesService.createLine(label1, label2);
@@ -255,7 +262,7 @@ export class Rectangle implements DrawingTool {
     this.isDrawing = false;
     clearPreviewCanvas(data);
 
-    return { tool: this, path, figureName: this.figureName };
+    return { tool: this, path, figureName: figureName };
   }
 
   onMouseLeave(pos: { x: number; y: number }, data: ToolContext): any {
@@ -430,8 +437,6 @@ export class Rectangle implements DrawingTool {
       ctx.lineTo(p2.x, p2.y);
       ctx.stroke();
 
-      drawLabel(ctx, label2, p2.x, p2.y);
-
       if (!this.linesService.hasLine(newLine)) {
         this.linesService.createLine(label1, label2);
         setLineLengthToService(
@@ -597,10 +602,11 @@ export class Rectangle implements DrawingTool {
 
   private addPointsToCanvasService(
     ctx: CanvasRenderingContext2D,
+    figureName: string,
     path: { x: number; y: number; color: string }[]
   ): [string, string, string, string] {
-    if (!(this.figureName.length > 1)) {
-      this.figureName = this.counterService.getNextFigureName('Rectangle');
+    if (!(figureName.length > 1)) {
+      figureName = this.counterService.getNextFigureName('Rectangle');
     }
     const labels: string[] = [];
 
@@ -615,7 +621,7 @@ export class Rectangle implements DrawingTool {
       const label = this.pointsService.addPoint(
         point.x,
         point.y,
-        this.figureName,
+        figureName,
         index
       );
 

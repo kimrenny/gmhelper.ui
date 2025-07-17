@@ -21,7 +21,6 @@ export class Parallelogram implements DrawingTool {
   private path: { x: number; y: number }[] = [];
   private isDrawing: boolean = false;
   private end: { x: number; y: number } | null = null;
-  private figureName: string = '';
 
   constructor(
     private canvasService: CanvasServiceInterface,
@@ -76,6 +75,7 @@ export class Parallelogram implements DrawingTool {
 
       const [label1, label2, label3, label4] = this.addPointsToCanvasService(
         ctx,
+        figureName,
         path
       );
       this.linesService.createLine(label1, label2);
@@ -234,10 +234,18 @@ export class Parallelogram implements DrawingTool {
       const savePath = [...this.path];
 
       const ctx = data.canvas?.getContext('2d');
+
+      let figureName = '';
+
       if (ctx) {
-        this.figureName = '';
+        this.draw(ctx, savePath, data.selectedColor);
+
+        figureName = this.counterService.getNextFigureName('Parallelogram');
+        if (!figureName) return;
+
         const [label1, label2, label3, label4] = this.addPointsToCanvasService(
           ctx,
+          figureName,
           this.path
         );
         this.linesService.createLine(label1, label2);
@@ -281,8 +289,6 @@ export class Parallelogram implements DrawingTool {
       this.isDrawing = false;
       this.end = null;
 
-      if (ctx) this.draw(ctx, savePath, data.selectedColor);
-
       const previewCtx = data.previewCanvas?.getContext('2d');
       if (previewCtx)
         previewCtx.clearRect(
@@ -292,7 +298,7 @@ export class Parallelogram implements DrawingTool {
           data.previewCanvas.height
         );
 
-      return { tool: this, path: savePath, figureName: this.figureName };
+      return { tool: this, path: savePath, figureName: figureName };
     }
   }
 
@@ -674,10 +680,11 @@ export class Parallelogram implements DrawingTool {
 
   private addPointsToCanvasService(
     ctx: CanvasRenderingContext2D,
+    figureName: string,
     path: { x: number; y: number }[]
   ): [string, string, string, string] {
-    if (!(this.figureName.length > 1)) {
-      this.figureName = this.counterService.getNextFigureName('Parallelogram');
+    if (!(figureName.length > 1)) {
+      figureName = this.counterService.getNextFigureName('Parallelogram');
     }
 
     const labels: string[] = [];
@@ -721,7 +728,7 @@ export class Parallelogram implements DrawingTool {
       const label = this.pointsService.addPoint(
         point.x,
         point.y,
-        this.figureName,
+        figureName,
         i
       );
 

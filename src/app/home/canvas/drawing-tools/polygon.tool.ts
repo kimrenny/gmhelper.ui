@@ -24,7 +24,6 @@ export class Polygon implements DrawingTool {
   private sides: number;
   private isDrawing: boolean = false;
   private path: { x: number; y: number; color: string }[] = [];
-  private figureName: string = '';
 
   constructor(
     sides: number,
@@ -84,7 +83,7 @@ export class Polygon implements DrawingTool {
 
       if (!figureName) return;
 
-      const labels = this.addPointsToCanvasService(ctx, path);
+      const labels = this.addPointsToCanvasService(ctx, figureName, path);
 
       for (let i = 0; i < labels.length - 1; i++) {
         const from = labels[i];
@@ -247,9 +246,11 @@ export class Polygon implements DrawingTool {
 
     const savePath = [...this.path];
 
+    let figureName = '';
+
     if (ctx) {
-      this.figureName = '';
-      const labels = this.addPointsToCanvasService(ctx);
+      figureName = this.counterService.getNextFigureName('Polygon');
+      const labels = this.addPointsToCanvasService(ctx, figureName, savePath);
 
       for (let i = 0; i < labels.length - 1; i++) {
         const from = labels[i];
@@ -271,7 +272,7 @@ export class Polygon implements DrawingTool {
     this.isDrawing = false;
     this.path = [];
 
-    return { tool: this, path: savePath, figureName: this.figureName };
+    return { tool: this, path: savePath, figureName: figureName };
   }
 
   onSelectFigure(
@@ -520,10 +521,11 @@ export class Polygon implements DrawingTool {
 
   private addPointsToCanvasService(
     ctx: CanvasRenderingContext2D,
+    figureName: string,
     path?: { x: number; y: number }[]
   ): string[] {
-    if (!(this.figureName.length > 1)) {
-      this.figureName = this.counterService.getNextFigureName('Polygon');
+    if (!(figureName.length > 1)) {
+      figureName = this.counterService.getNextFigureName('Polygon');
     }
 
     const labels: string[] = [];
@@ -541,12 +543,7 @@ export class Polygon implements DrawingTool {
       const curr = points[i];
       const next = points[(i + 1) % n];
 
-      const label = this.pointsService.addPoint(
-        curr.x,
-        curr.y,
-        this.figureName,
-        i
-      );
+      const label = this.pointsService.addPoint(curr.x, curr.y, figureName, i);
 
       const v1 = { x: curr.x - prev.x, y: curr.y - prev.y };
       const v2 = { x: next.x - curr.x, y: next.y - curr.y };

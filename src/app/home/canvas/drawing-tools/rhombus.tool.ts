@@ -22,7 +22,6 @@ export class Rhombus implements DrawingTool {
   private start: { x: number; y: number; color: string } | null = null;
   private end: { x: number; y: number; color: string } | null = null;
   private isDrawing: boolean = false;
-  private figureName: string = '';
 
   constructor(
     private canvasService: CanvasServiceInterface,
@@ -71,6 +70,7 @@ export class Rhombus implements DrawingTool {
 
       const [label1, label2, label3, label4] = this.addPointsToCanvasService(
         ctx,
+        figureName,
         path
       );
       this.linesService.createLine(label1, label2);
@@ -251,12 +251,17 @@ export class Rhombus implements DrawingTool {
     this.end = { x: pos.x, y: pos.y, color: data.selectedColor };
     const path = this.calculateRhombusPath(this.start, this.end);
     const ctx = data.canvas?.getContext('2d');
-    if (ctx) this.draw(ctx, path, data.selectedColor);
+
+    let figureName = '';
 
     if (ctx) {
-      this.figureName = '';
+      this.draw(ctx, path, data.selectedColor);
+
+      figureName = this.counterService.getNextFigureName('Rhombus');
+
       const [label1, label2, label3, label4] = this.addPointsToCanvasService(
         ctx,
+        figureName,
         path
       );
       this.linesService.createLine(label1, label2);
@@ -282,7 +287,7 @@ export class Rhombus implements DrawingTool {
     this.end = null;
     this.isDrawing = false;
 
-    return { tool: this, path, figureName: this.figureName };
+    return { tool: this, path, figureName: figureName };
   }
 
   onMouseLeave(pos: { x: number; y: number }, data: ToolContext): any {
@@ -619,10 +624,11 @@ export class Rhombus implements DrawingTool {
 
   private addPointsToCanvasService(
     ctx: CanvasRenderingContext2D,
+    figureName: string,
     path: { x: number; y: number; color: string }[]
   ): [string, string, string, string] {
-    if (!(this.figureName.length > 1)) {
-      this.figureName = this.counterService.getNextFigureName('Rhombus');
+    if (!(figureName.length > 1)) {
+      figureName = this.counterService.getNextFigureName('Rhombus');
     }
 
     const labels: string[] = [];
@@ -643,7 +649,7 @@ export class Rhombus implements DrawingTool {
       const label = this.pointsService.addPoint(
         point.x,
         point.y,
-        this.figureName,
+        figureName,
         index
       );
 
