@@ -17,6 +17,7 @@ import { LinesSolutionService } from '../geometry-solution-services/lines-soluti
 import { StackSolutionService } from '../geometry-solution-services/stack-solution.service';
 import { AnglesSolutionService } from '../geometry-solution-services/angles-solution.service';
 import { FigureElementsSolutionService } from '../geometry-solution-services/figure-elements-solution.service';
+import { CanvasService } from '../services/canvas.service';
 
 @Component({
   selector: 'app-geometry-solution-canvas',
@@ -48,8 +49,10 @@ export class GeoSolutionCanvasComponent implements OnInit, OnDestroy {
   private ctx!: CanvasRenderingContext2D;
 
   constructor(
+    private canvasService: CanvasService,
     private geoCanvasSolutionService: GeoCanvasSolutionService,
     private pointsService: PointsSolutionService,
+    private linesService: LinesSolutionService,
     private stackService: StackSolutionService,
     private anglesService: AnglesSolutionService,
     private figureElementsService: FigureElementsSolutionService,
@@ -220,11 +223,17 @@ export class GeoSolutionCanvasComponent implements OnInit, OnDestroy {
     }
   }
 
+  onClose(): void {
+    this.canvasService.updateTaskId(null);
+    this.clearCanvas();
+  }
+
   clearCanvas(): void {
     this.stackService.resetStack('paths');
     this.stackService.resetStack('redo');
     this.redraw();
     this.pointsService.resetPoints();
+    this.linesService.clearAllLines();
     this.figureElementsService.clearAllFigureElements();
     this.anglesService.clearAllAngles();
   }

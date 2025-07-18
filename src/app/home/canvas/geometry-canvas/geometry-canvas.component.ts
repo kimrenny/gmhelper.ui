@@ -63,6 +63,8 @@ export class GeoCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
   selectedAngle: string | null = null;
   colors = COLORS;
 
+  hoveredButton: string | null = null;
+
   private polygonFactory = (sides: number): DrawingTool => {
     return new Polygon(
       sides,
@@ -622,7 +624,7 @@ export class GeoCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
     if (sides >= 3) {
       if (isNaN(sides)) {
         this.toastr.error(
-          this.translate.instant('CANVAS.INVALID_SIDES_NUMBER') ||
+          this.translate.instant('CANVAS.ERRORS.INVALID_SIDES_NUMBER') ||
             'Invalid number of sides',
           this.translate.instant('ADMIN.ERRORS.ERROR')
         );
@@ -634,7 +636,7 @@ export class GeoCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
     } else {
       this.closePolygonInput();
       this.toastr.error(
-        this.translate.instant('CANVAS.INVALID_SIDES_NUMBER') ||
+        this.translate.instant('CANVAS.ERRORS.INVALID_SIDES_NUMBER') ||
           'Invalid number of sides',
         this.translate.instant('ADMIN.ERRORS.ERROR')
       );

@@ -42,6 +42,7 @@
       }
     },
     "ERRORS": {
+      "INVALID_SIDES_NUMBER": "Invalid number of sides. The value must be an integer greater than or equal to 3.",
       "LENGTH": {
         "INCORRECT": "Invalid line length. Only numbers, 'x', 'y', or '?' are allowed."
       }

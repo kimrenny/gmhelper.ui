@@ -42,6 +42,7 @@
       }
     },
     "ERRORS": {
+      "INVALID_SIDES_NUMBER": "Ungültige Anzahl der Seiten. Der Wert muss eine ganze Zahl größer oder gleich 3 sein.",
       "LENGTH": {
         "INCORRECT": "Ungültige Linienlänge. Nur Zahlen, 'x', 'y' oder '?' sind erlaubt."
       }
