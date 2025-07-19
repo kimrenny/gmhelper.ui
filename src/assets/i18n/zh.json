@@ -34,6 +34,64 @@
     "LOREM": "罗马假名是印刷和排版行业的虚拟文本..."
   },
   "CANVAS": {
+    "TOOLTIP": {
+      "TOOL": {
+        "PENCIL": "铅笔工具：绘制自由线",
+        "LINE": "线条工具：绘制直线",
+        "COLOR": "颜色选择器：选择绘图颜色",
+        "SHAPES": "形状工具：选择几何形状",
+        "CLEAR": "清除画布：擦除所有绘图"
+      },
+      "LINE": {
+        "CHANGE_LENGTH": "更改选定线的长度"
+      },
+      "FIGURE": {
+        "SELECT_LINE": "选择图形中的线条",
+        "SELECT_FIGURE": "选择整个图形",
+        "SELECT_ANGLE": "选择图形中的角度",
+        "COLOR": "更改图形颜色",
+        "ACTIONS": {
+          "TRIANGLE": {
+            "DRAWHEIGHT": "绘制三角形的高",
+            "DRAWMEDIAN": "绘制三角形的中线",
+            "MARKANGLES": "标记三角形的角度"
+          },
+          "ELLIPSE": {
+            "DRAWRADIUS": "绘制椭圆的半径",
+            "DRAWDIAMETER": "绘制椭圆的直径",
+            "MAKECIRCLE": "将椭圆转换为圆"
+          },
+          "RECTANGLE": {
+            "DRAWDIAGONAL": "绘制矩形的对角线",
+            "MAKESQUARE": "将矩形转换为正方形",
+            "ROTATE": "旋转90度"
+          },
+          "RHOMBUS": {
+            "DRAWDIAGONAL": "绘制菱形的对角线",
+            "MARKANGLES": "标记菱形的角度",
+            "ROTATE": "旋转90度"
+          },
+          "TRAPEZOID": {
+            "DRAWDIAGONAL": "绘制梯形的对角线",
+            "DRAWMIDLINE": "绘制梯形的中线",
+            "MARKANGLES": "标记梯形的角度"
+          },
+          "PARALLELOGRAM": {
+            "DRAWDIAGONAL": "绘制平行四边形的对角线",
+            "MAKEREGULAR": "使平行四边形规则化",
+            "MARKANGLES": "标记平行四边形的角度"
+          },
+          "POLYGON": {
+            "MARKANGLES": "标记多边形的角度",
+            "ROTATE": "旋转90度",
+            "ROTATELABELS": "旋转多边形的标签"
+          }
+        }
+      },
+      "ANGLE": {
+        "CHANGEMEASUREMENT": "更改角度测量"
+      }
+    },
     "SETTINGS": {
       "SELECT": {
         "TITLE": "选择科目",

@@ -53,6 +53,27 @@
     }
   }
 
+  .button-wrapper {
+    position: relative;
+    display: inline-block;
+  }
+
+  .tooltip {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: #fff;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    white-space: nowrap;
+    z-index: 100;
+    pointer-events: none;
+    opacity: 0.95;
+  }
+
   .scale-controls {
     position: absolute;
     top: 30px;
@@ -522,10 +543,10 @@
     }
   }
 
-  .line-color-palette {
+  .figure-color-palette {
     position: absolute;
-    top: 50%;
-    right: 50px;
+    top: 72%;
+    right: 65px;
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     gap: 10px;

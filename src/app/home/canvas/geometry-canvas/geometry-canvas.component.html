@@ -35,12 +35,67 @@
     [class.disabled]="!selectedSubject"
     [class.show-palette]="isColorPaletteVisible"
   >
-    <button (click)="selectTool('pencil')" class="pencil-btn"></button>
-    <button (click)="selectTool('line')" class="line-btn"></button>
-    <button (click)="toggleColorPalette()" class="color-btn" #colorBtn></button>
+    <div class="button-wrapper">
+      <button
+        (click)="selectTool('pencil')"
+        class="pencil-btn"
+        (mouseenter)="hoveredButton = 'pencil'"
+        (mouseleave)="hoveredButton = null"
+      ></button>
+      <div *ngIf="hoveredButton === 'pencil'" class="tooltip">
+        {{ "CANVAS.TOOLTIP.TOOL.PENCIL" | translate }}
+      </div>
+    </div>
 
-    <button (click)="toggleShapeTools()" class="tool-btn"></button>
-    <button (click)="onClearCanvas()" class="clear-btn"></button>
+    <div class="button-wrapper">
+      <button
+        (click)="selectTool('line')"
+        class="line-btn"
+        (mouseenter)="hoveredButton = 'line'"
+        (mouseleave)="hoveredButton = null"
+      ></button>
+      <div *ngIf="hoveredButton === 'line'" class="tooltip">
+        {{ "CANVAS.TOOLTIP.TOOL.LINE" | translate }}
+      </div>
+    </div>
+
+    <div class="button-wrapper">
+      <button
+        (click)="toggleColorPalette()"
+        class="color-btn"
+        #colorBtn
+        (mouseenter)="hoveredButton = 'color'"
+        (mouseleave)="hoveredButton = null"
+      ></button>
+      <div *ngIf="hoveredButton === 'color'" class="tooltip">
+        {{ "CANVAS.TOOLTIP.TOOL.COLOR" | translate }}
+      </div>
+    </div>
+
+    <div class="button-wrapper">
+      <button
+        (click)="toggleShapeTools()"
+        class="tool-btn"
+        (mouseenter)="hoveredButton = 'shapes'"
+        (mouseleave)="hoveredButton = null"
+      ></button>
+      <div *ngIf="hoveredButton === 'shapes'" class="tooltip">
+        {{ "CANVAS.TOOLTIP.TOOL.SHAPES" | translate }}
+      </div>
+    </div>
+
+    <div class="button-wrapper">
+      <button
+        (click)="onClearCanvas()"
+        class="clear-btn"
+        (mouseenter)="hoveredButton = 'clear'"
+        (mouseleave)="hoveredButton = null"
+      ></button>
+      <div *ngIf="hoveredButton === 'clear'" class="tooltip">
+        {{ "CANVAS.TOOLTIP.TOOL.CLEAR" | translate }}
+      </div>
+    </div>
+
     <div
       [style.display]="shapeToolsVisible ? 'flex' : 'none'"
       class="shape-tools"
@@ -78,23 +133,48 @@
       figureToolMap[selectedFigure.split('_')[0].toLowerCase()]
     "
   >
-    <button
+    <div
+      class="button-wrapper"
       *ngFor="
         let tool of figureToolMap[selectedFigure.split('_')[0].toLowerCase()]
       "
-      class="figure-action-btn"
-      [ngStyle]="{ 'background-image': 'url(assets/icons/' + tool.icon + ')' }"
-      (click)="tool.action()"
-    ></button>
+      (mouseenter)="hoveredButton = tool.name"
+      (mouseleave)="hoveredButton = null"
+    >
+      <button
+        class="figure-action-btn"
+        [ngStyle]="{
+          'background-image': 'url(assets/icons/' + tool.icon + ')'
+        }"
+        (click)="tool.action()"
+      ></button>
+
+      <div *ngIf="hoveredButton === tool.name" class="tooltip">
+        {{ tool.tooltip | translate }}
+      </div>
+    </div>
   </div>
 
   <div class="figure-action-panel" *ngIf="selectedAngle">
-    <button
+    <div
+      class="button-wrapper"
       *ngFor="let tool of angleTools"
-      class="figure-action-btn"
-      [ngStyle]="{ 'background-image': 'url(assets/icons/' + tool.icon + ')' }"
-      (click)="handleAngleAction(tool.name)"
-    ></button>
+      (mouseenter)="hoveredButton = tool.name"
+      (mouseleave)="hoveredButton = null"
+    >
+      <button
+        *ngFor="let tool of angleTools"
+        class="figure-action-btn"
+        [ngStyle]="{
+          'background-image': 'url(assets/icons/' + tool.icon + ')'
+        }"
+        (click)="handleAngleAction(tool.name)"
+      ></button>
+
+      <div *ngIf="hoveredButton === tool.name" class="tooltip">
+        {{ tool.tooltip | translate }}
+      </div>
+    </div>
   </div>
 
   <div class="figure-action-panel" *ngIf="isLineSelected">
@@ -102,7 +182,12 @@
       (click)="onChangeLineLengthClick()"
       [ngStyle]="{ 'background-image': 'url(assets/icons/set-length-btn.png)' }"
       class="set-length-btn"
+      (mouseenter)="hoveredButton = 'lineLength'"
+      (mouseleave)="hoveredButton = null"
     ></button>
+    <div *ngIf="hoveredButton === 'lineLength'" class="tooltip">
+      {{ "CANVAS.TOOLTIP.LINE.CHANGE_LENGTH" | translate }}
+    </div>
   </div>
 
   <angle-input
@@ -124,40 +209,71 @@
     [class.not-visible]="!selectedSubject || !canUndo"
     [class.show-palette]="isFigureColorPaletteVisible"
   >
-    <button
-      class="select-line-btn"
-      [class.active]="isLineSelection"
-      (click)="toggleLineSelection()"
-    ></button>
-    <button
-      class="select-figure-btn"
-      [class.active]="isFigureSelection"
-      (click)="toggleFigureSelection()"
-    ></button>
-    <button
-      class="select-angle-btn"
-      [class.active]="isAngleSelection"
-      (click)="toggleAngleSelection()"
-    ></button>
-    <button
-      [class.disabled]="!isFigureSelected"
-      (click)="toggleFigureColorPalette()"
-      class="color-btn"
-      #lineColorBtn
-    ></button>
-
-    <div
-      class="line-color-palette"
-      [style.display]="isFigureColorPaletteVisible ? 'grid' : 'none'"
-      #lineColorPalette
-    >
-      <div
-        class="color-option"
-        *ngFor="let color of colors"
-        [style.background-color]="color"
-        (click)="changeFigureColor(color)"
-      ></div>
+    <div class="button-wrapper">
+      <button
+        class="select-line-btn"
+        [class.active]="isLineSelection"
+        (click)="toggleLineSelection()"
+        (mouseenter)="hoveredButton = 'selectLine'"
+        (mouseleave)="hoveredButton = null"
+      ></button>
+      <div *ngIf="hoveredButton === 'selectLine'" class="tooltip">
+        {{ "CANVAS.TOOLTIP.FIGURE.SELECT_LINE" | translate }}
+      </div>
     </div>
+
+    <div class="button-wrapper">
+      <button
+        class="select-figure-btn"
+        [class.active]="isFigureSelection"
+        (click)="toggleFigureSelection()"
+        (mouseenter)="hoveredButton = 'selectFigure'"
+        (mouseleave)="hoveredButton = null"
+      ></button>
+      <div *ngIf="hoveredButton === 'selectFigure'" class="tooltip">
+        {{ "CANVAS.TOOLTIP.FIGURE.SELECT_FIGURE" | translate }}
+      </div>
+    </div>
+
+    <div class="button-wrapper">
+      <button
+        class="select-angle-btn"
+        [class.active]="isAngleSelection"
+        (click)="toggleAngleSelection()"
+        (mouseenter)="hoveredButton = 'selectAngle'"
+        (mouseleave)="hoveredButton = null"
+      ></button>
+      <div *ngIf="hoveredButton === 'selectAngle'" class="tooltip">
+        {{ "CANVAS.TOOLTIP.FIGURE.SELECT_ANGLE" | translate }}
+      </div>
+    </div>
+
+    <div class="button-wrapper">
+      <button
+        [class.disabled]="!isFigureSelected"
+        (click)="toggleFigureColorPalette()"
+        class="color-btn"
+        #lineColorBtn
+        (mouseenter)="hoveredButton = 'figureColor'"
+        (mouseleave)="hoveredButton = null"
+      ></button>
+      <div *ngIf="hoveredButton === 'figureColor'" class="tooltip">
+        {{ "CANVAS.TOOLTIP.FIGURE.COLOR" | translate }}
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="figure-color-palette"
+    [style.display]="isFigureColorPaletteVisible ? 'grid' : 'none'"
+    #lineColorPalette
+  >
+    <div
+      class="color-option"
+      *ngFor="let color of colors"
+      [style.background-color]="color"
+      (click)="changeFigureColor(color)"
+    ></div>
   </div>
 
   <div *ngIf="showPolygonInput" class="polygon-input-overlay">

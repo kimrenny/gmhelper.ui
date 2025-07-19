@@ -34,6 +34,64 @@
     "LOREM": "Lorem Ipsum is simply dummy text of the printing and typesetting industry..."
   },
   "CANVAS": {
+    "TOOLTIP": {
+      "TOOL": {
+        "PENCIL": "Pencil tool: draw freehand lines",
+        "LINE": "Line tool: draw straight lines",
+        "COLOR": "Color picker: select drawing color",
+        "SHAPES": "Shape tools: select geometric shapes",
+        "CLEAR": "Clear canvas: erase all drawings"
+      },
+      "LINE": {
+        "CHANGE_LENGTH": "Change the length of the selected line"
+      },
+      "FIGURE": {
+        "SELECT_LINE": "Select a line within the figure",
+        "SELECT_FIGURE": "Select the entire figure",
+        "SELECT_ANGLE": "Select an angle within the figure",
+        "COLOR": "Change figure color",
+        "ACTIONS": {
+          "TRIANGLE": {
+            "DRAWHEIGHT": "Draw the height of the triangle",
+            "DRAWMEDIAN": "Draw the median of the triangle",
+            "MARKANGLES": "Mark the angles of the triangle"
+          },
+          "ELLIPSE": {
+            "DRAWRADIUS": "Draw the radius of the ellipse",
+            "DRAWDIAMETER": "Draw the diameter of the ellipse",
+            "MAKECIRCLE": "Convert ellipse to circle"
+          },
+          "RECTANGLE": {
+            "DRAWDIAGONAL": "Draw the diagonal of the rectangle",
+            "MAKESQUARE": "Convert rectangle to square",
+            "ROTATE": "Rotate by 90 degrees"
+          },
+          "RHOMBUS": {
+            "DRAWDIAGONAL": "Draw the diagonal of the rhombus",
+            "MARKANGLES": "Mark the angles of the rhombus",
+            "ROTATE": "Rotate by 90 degrees"
+          },
+          "TRAPEZOID": {
+            "DRAWDIAGONAL": "Draw the diagonal of the trapezoid",
+            "DRAWMIDLINE": "Draw the midline of the trapezoid",
+            "MARKANGLES": "Mark the angles of the trapezoid"
+          },
+          "PARALLELOGRAM": {
+            "DRAWDIAGONAL": "Draw the diagonal of the parallelogram",
+            "MAKEREGULAR": "Make the parallelogram regular",
+            "MARKANGLES": "Mark the angles of the parallelogram"
+          },
+          "POLYGON": {
+            "MARKANGLES": "Mark the angles of the polygon",
+            "ROTATE": "Rotate by 90 degrees",
+            "ROTATELABELS": "Rotate the polygon's labels"
+          }
+        }
+      },
+      "ANGLE": {
+        "CHANGEMEASUREMENT": "Change the angle measurement"
+      }
+    },
     "SETTINGS": {
       "SELECT": {
         "TITLE": "Select a subject",

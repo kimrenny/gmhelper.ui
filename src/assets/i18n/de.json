@@ -34,6 +34,64 @@
     "LOREM": "Lorem Ipsum ist einfach Blindtext der Druck- und Satzindustrie..."
   },
   "CANVAS": {
+    "TOOLTIP": {
+      "TOOL": {
+        "PENCIL": "Stiftwerkzeug: Freihandlinien zeichnen",
+        "LINE": "Linienwerkzeug: Gerade Linien zeichnen",
+        "COLOR": "Farbwähler: Zeichnungsfarbe auswählen",
+        "SHAPES": "Formwerkzeuge: geometrische Formen auswählen",
+        "CLEAR": "Leinwand löschen: Alle Zeichnungen entfernen"
+      },
+      "LINE": {
+        "CHANGE_LENGTH": "Länge der ausgewählten Linie ändern"
+      },
+      "FIGURE": {
+        "SELECT_LINE": "Linie innerhalb der Figur auswählen",
+        "SELECT_FIGURE": "Gesamte Figur auswählen",
+        "SELECT_ANGLE": "Winkel innerhalb der Figur auswählen",
+        "COLOR": "Farbe der Figur ändern",
+        "ACTIONS": {
+          "TRIANGLE": {
+            "DRAWHEIGHT": "Höhe des Dreiecks zeichnen",
+            "DRAWMEDIAN": "Median des Dreiecks zeichnen",
+            "MARKANGLES": "Winkel des Dreiecks markieren"
+          },
+          "ELLIPSE": {
+            "DRAWRADIUS": "Radius der Ellipse zeichnen",
+            "DRAWDIAMETER": "Durchmesser der Ellipse zeichnen",
+            "MAKECIRCLE": "Ellipse in Kreis umwandeln"
+          },
+          "RECTANGLE": {
+            "DRAWDIAGONAL": "Diagonale des Rechtecks zeichnen",
+            "MAKESQUARE": "Rechteck in Quadrat umwandeln",
+            "ROTATE": "Um 90 Grad drehen"
+          },
+          "RHOMBUS": {
+            "DRAWDIAGONAL": "Diagonale der Raute zeichnen",
+            "MARKANGLES": "Winkel der Raute markieren",
+            "ROTATE": "Um 90 Grad drehen"
+          },
+          "TRAPEZOID": {
+            "DRAWDIAGONAL": "Diagonale des Trapezes zeichnen",
+            "DRAWMIDLINE": "Mittellinie des Trapezes zeichnen",
+            "MARKANGLES": "Winkel des Trapezes markieren"
+          },
+          "PARALLELOGRAM": {
+            "DRAWDIAGONAL": "Diagonale des Parallelogramms zeichnen",
+            "MAKEREGULAR": "Parallelogramm regulär machen",
+            "MARKANGLES": "Winkel des Parallelogramms markieren"
+          },
+          "POLYGON": {
+            "MARKANGLES": "Winkel des Polygons markieren",
+            "ROTATE": "Um 90 Grad drehen",
+            "ROTATELABELS": "Beschriftungen des Polygons drehen"
+          }
+        }
+      },
+      "ANGLE": {
+        "CHANGEMEASUREMENT": "Winkelmessung ändern"
+      }
+    },
     "SETTINGS": {
       "SELECT": {
         "TITLE": "Wählen Sie ein Fach aus",

@@ -34,6 +34,64 @@
     "LOREM": "로렘 입숨은 인쇄 및 조판 산업의 더미 텍스트입니다..."
   },
   "CANVAS": {
+    "TOOLTIP": {
+      "TOOL": {
+        "PENCIL": "연필 도구: 자유형 선 그리기",
+        "LINE": "선 도구: 직선 그리기",
+        "COLOR": "색상 선택기: 그리기 색상 선택",
+        "SHAPES": "도형 도구: 기하학적 도형 선택",
+        "CLEAR": "캔버스 지우기: 모든 그림 삭제"
+      },
+      "LINE": {
+        "CHANGE_LENGTH": "선택한 선의 길이 변경"
+      },
+      "FIGURE": {
+        "SELECT_LINE": "도형 내 선 선택",
+        "SELECT_FIGURE": "도형 전체 선택",
+        "SELECT_ANGLE": "도형 내 각도 선택",
+        "COLOR": "도형 색상 변경",
+        "ACTIONS": {
+          "TRIANGLE": {
+            "DRAWHEIGHT": "삼각형의 높이 그리기",
+            "DRAWMEDIAN": "삼각형의 중선 그리기",
+            "MARKANGLES": "삼각형의 각도 표시"
+          },
+          "ELLIPSE": {
+            "DRAWRADIUS": "타원의 반지름 그리기",
+            "DRAWDIAMETER": "타원의 지름 그리기",
+            "MAKECIRCLE": "타원을 원으로 변환"
+          },
+          "RECTANGLE": {
+            "DRAWDIAGONAL": "사각형의 대각선 그리기",
+            "MAKESQUARE": "사각형을 정사각형으로 변환",
+            "ROTATE": "90도 회전"
+          },
+          "RHOMBUS": {
+            "DRAWDIAGONAL": "마름모의 대각선 그리기",
+            "MARKANGLES": "마름모의 각도 표시",
+            "ROTATE": "90도 회전"
+          },
+          "TRAPEZOID": {
+            "DRAWDIAGONAL": "사다리꼴의 대각선 그리기",
+            "DRAWMIDLINE": "사다리꼴의 중간선 그리기",
+            "MARKANGLES": "사다리꼴의 각도 표시"
+          },
+          "PARALLELOGRAM": {
+            "DRAWDIAGONAL": "평행사변형의 대각선 그리기",
+            "MAKEREGULAR": "평행사변형을 정사변형으로 만들기",
+            "MARKANGLES": "평행사변형의 각도 표시"
+          },
+          "POLYGON": {
+            "MARKANGLES": "다각형의 각도 표시",
+            "ROTATE": "90도 회전",
+            "ROTATELABELS": "다각형 라벨 회전"
+          }
+        }
+      },
+      "ANGLE": {
+        "CHANGEMEASUREMENT": "각도 측정 변경"
+      }
+    },
     "SETTINGS": {
       "SELECT": {
         "TITLE": "과목을 선택하세요",

@@ -107,7 +107,7 @@ export class GeoCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
 
   figureToolMap: Record<
     string,
-    { name: string; icon: string; action: () => void }[]
+    { name: string; icon: string; tooltip: string; action: () => void }[]
   > = {};
 
   constructor(
@@ -271,7 +271,9 @@ export class GeoCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
   generateFigureToolMap(): void {
     for (const [figure, tools] of Object.entries(rawFigureToolMap)) {
       this.figureToolMap[figure] = tools.map((tool) => ({
-        ...tool,
+        name: tool.name,
+        icon: tool.icon,
+        tooltip: tool.tooltip,
         action: () =>
           this.handleFigureAction(this.selectedFigure ?? figure, tool.name),
       }));

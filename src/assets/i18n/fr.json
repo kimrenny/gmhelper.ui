@@ -34,6 +34,64 @@
     "LOREM": "Lorem Ipsum est simplement un faux texte de l'industrie de l'imprimerie et de la composition."
   },
   "CANVAS": {
+    "TOOLTIP": {
+      "TOOL": {
+        "PENCIL": "Outil crayon : dessiner des lignes à main levée",
+        "LINE": "Outil ligne : dessiner des lignes droites",
+        "COLOR": "Sélecteur de couleur : choisir la couleur du dessin",
+        "SHAPES": "Outils de forme : sélectionner des formes géométriques",
+        "CLEAR": "Effacer la toile : supprimer tous les dessins"
+      },
+      "LINE": {
+        "CHANGE_LENGTH": "Modifier la longueur de la ligne sélectionnée"
+      },
+      "FIGURE": {
+        "SELECT_LINE": "Sélectionner une ligne dans la figure",
+        "SELECT_FIGURE": "Sélectionner la figure entière",
+        "SELECT_ANGLE": "Sélectionner un angle dans la figure",
+        "COLOR": "Changer la couleur de la figure",
+        "ACTIONS": {
+          "TRIANGLE": {
+            "DRAWHEIGHT": "Tracer la hauteur du triangle",
+            "DRAWMEDIAN": "Tracer la médiane du triangle",
+            "MARKANGLES": "Marquer les angles du triangle"
+          },
+          "ELLIPSE": {
+            "DRAWRADIUS": "Tracer le rayon de l'ellipse",
+            "DRAWDIAMETER": "Tracer le diamètre de l'ellipse",
+            "MAKECIRCLE": "Convertir l'ellipse en cercle"
+          },
+          "RECTANGLE": {
+            "DRAWDIAGONAL": "Tracer la diagonale du rectangle",
+            "MAKESQUARE": "Convertir le rectangle en carré",
+            "ROTATE": "Pivoter de 90 degrés"
+          },
+          "RHOMBUS": {
+            "DRAWDIAGONAL": "Tracer la diagonale du losange",
+            "MARKANGLES": "Marquer les angles du losange",
+            "ROTATE": "Pivoter de 90 degrés"
+          },
+          "TRAPEZOID": {
+            "DRAWDIAGONAL": "Tracer la diagonale du trapèze",
+            "DRAWMIDLINE": "Tracer la ligne médiane du trapèze",
+            "MARKANGLES": "Marquer les angles du trapèze"
+          },
+          "PARALLELOGRAM": {
+            "DRAWDIAGONAL": "Tracer la diagonale du parallélogramme",
+            "MAKEREGULAR": "Rendre le parallélogramme régulier",
+            "MARKANGLES": "Marquer les angles du parallélogramme"
+          },
+          "POLYGON": {
+            "MARKANGLES": "Marquer les angles du polygone",
+            "ROTATE": "Pivoter de 90 degrés",
+            "ROTATELABELS": "Faire pivoter les étiquettes du polygone"
+          }
+        }
+      },
+      "ANGLE": {
+        "CHANGEMEASUREMENT": "Modifier la mesure de l'angle"
+      }
+    },
     "SETTINGS": {
       "SELECT": {
         "TITLE": "Sélectionnez un sujet",

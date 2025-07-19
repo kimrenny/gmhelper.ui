@@ -34,6 +34,64 @@
     "LOREM": "ロレム・イプサムは印刷および組版業界のダミーテキストです..."
   },
   "CANVAS": {
+    "TOOLTIP": {
+      "TOOL": {
+        "PENCIL": "鉛筆ツール：自由線を描く",
+        "LINE": "線ツール：直線を描く",
+        "COLOR": "カラーピッカー：描画色を選択",
+        "SHAPES": "図形ツール：幾何学的な形を選択",
+        "CLEAR": "キャンバスをクリア：すべての描画を消去"
+      },
+      "LINE": {
+        "CHANGE_LENGTH": "選択した線の長さを変更"
+      },
+      "FIGURE": {
+        "SELECT_LINE": "図形内の線を選択",
+        "SELECT_FIGURE": "図形全体を選択",
+        "SELECT_ANGLE": "図形内の角度を選択",
+        "COLOR": "図形の色を変更",
+        "ACTIONS": {
+          "TRIANGLE": {
+            "DRAWHEIGHT": "三角形の高さを描く",
+            "DRAWMEDIAN": "三角形の中線を描く",
+            "MARKANGLES": "三角形の角度をマーク"
+          },
+          "ELLIPSE": {
+            "DRAWRADIUS": "楕円の半径を描く",
+            "DRAWDIAMETER": "楕円の直径を描く",
+            "MAKECIRCLE": "楕円を円に変換"
+          },
+          "RECTANGLE": {
+            "DRAWDIAGONAL": "長方形の対角線を描く",
+            "MAKESQUARE": "長方形を正方形に変換",
+            "ROTATE": "90度回転"
+          },
+          "RHOMBUS": {
+            "DRAWDIAGONAL": "ひし形の対角線を描く",
+            "MARKANGLES": "ひし形の角度をマーク",
+            "ROTATE": "90度回転"
+          },
+          "TRAPEZOID": {
+            "DRAWDIAGONAL": "台形の対角線を描く",
+            "DRAWMIDLINE": "台形の中線を描く",
+            "MARKANGLES": "台形の角度をマーク"
+          },
+          "PARALLELOGRAM": {
+            "DRAWDIAGONAL": "平行四辺形の対角線を描く",
+            "MAKEREGULAR": "平行四辺形を正形にする",
+            "MARKANGLES": "平行四辺形の角度をマーク"
+          },
+          "POLYGON": {
+            "MARKANGLES": "多角形の角度をマーク",
+            "ROTATE": "90度回転",
+            "ROTATELABELS": "多角形のラベルを回転"
+          }
+        }
+      },
+      "ANGLE": {
+        "CHANGEMEASUREMENT": "角度の測定を変更"
+      }
+    },
     "SETTINGS": {
       "SELECT": {
         "TITLE": "科目を選択してください",
