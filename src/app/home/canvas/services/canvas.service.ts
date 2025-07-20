@@ -9,6 +9,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { ApiResponse } from 'src/app/models/api-response.model';
 import { CanvasServiceInterface } from '../interfaces/canvas-service.interface';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -20,7 +21,7 @@ export class CanvasService implements CanvasServiceInterface {
   private taskIdSubject = new BehaviorSubject<string | null>(null);
   taskId$ = this.taskIdSubject.asObservable();
 
-  private api = 'https://localhost:7057';
+  private api = `${environment.apiUrl}`;
   private http = inject(HttpClient);
 
   constructor(

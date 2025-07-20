@@ -21,12 +21,13 @@ import { Trapezoid } from '../drawing-tools/trapezoid.tool';
 import { Triangle } from '../drawing-tools/triangle.tool';
 import { Rhombus } from '../drawing-tools/rhombus.tool';
 import { Line } from '../drawing-tools/line.tool';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class GeoCanvasSolutionService implements CanvasServiceInterface {
-  private api = 'https://localhost:7057';
+  private api = `${environment.apiUrl}`;
   private http = inject(HttpClient);
 
   taskId$ = this.canvasService.taskId$;

@@ -2,11 +2,14 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs';
 import { ApiResponse } from '../models/api-response.model';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class RegisterService {
+  private api = `${environment.apiUrl}`;
+
   constructor(private http: HttpClient) {}
 
   validateUsername(username: string): string {
@@ -119,7 +122,7 @@ export class RegisterService {
     };
 
     return this.http.post<ApiResponse<any>>(
-      'https://localhost:7057/api/auth/register',
+      `${this.api}/api/auth/register`,
       body,
       {
         headers,
@@ -151,7 +154,7 @@ export class RegisterService {
       remember: rememberMe,
     };
     return this.http.post<ApiResponse<any>>(
-      'https://localhost:7057/api/auth/login',
+      `${this.api}/api/auth/login`,
       body,
       {
         headers,
@@ -166,18 +169,8 @@ export class RegisterService {
       captchaToken: captchaToken,
     };
 
-    console.log('Password Recovery Request:', {
-      url: 'https://localhost:7057/api/mail/password-recovery',
+    return this.http.post(`${this.api}/api/mail/password-recovery`, body, {
       headers,
-      body,
     });
-
-    return this.http.post(
-      'https://localhost:7057/api/mail/password-recovery',
-      body,
-      {
-        headers,
-      }
-    );
   }
 }

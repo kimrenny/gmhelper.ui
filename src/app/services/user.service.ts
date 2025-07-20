@@ -13,6 +13,7 @@ import {
 } from 'rxjs';
 import { TokenService } from './token.service';
 import { ApiResponse } from '../models/api-response.model';
+import { environment } from 'src/environments/environment';
 
 interface UserDetails {
   avatar: string | null;
@@ -52,7 +53,7 @@ export class UserService {
     Object.values(CriticalErrors)
   );
 
-  private readonly api = 'https://localhost:7057/api';
+  private readonly api = `${environment.apiUrl}/api`;
 
   constructor(private http: HttpClient, private tokenService: TokenService) {
     this.initializeAuthentication();

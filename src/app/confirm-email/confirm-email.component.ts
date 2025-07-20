@@ -6,6 +6,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { NgxCaptchaModule } from 'ngx-captcha';
 import { Subscription } from 'rxjs';
 import { UserService } from '../services/user.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   standalone: true,
@@ -20,7 +21,7 @@ export class ConfirmEmailComponent implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
   private http = inject(HttpClient);
   private router = inject(Router);
-  private api = 'https://localhost:7057';
+  private api = `${environment.apiUrl}`;
 
   message = 'AUTH.EMAIL.CONFIRM.CAPTCHA_REQUIRED';
   showTimer = false;

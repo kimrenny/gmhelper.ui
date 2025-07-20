@@ -4,6 +4,7 @@ import { Observable, BehaviorSubject } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
 import { ApiResponse } from '../models/api-response.model';
 import { TokenService } from './token.service';
+import { environment } from 'src/environments/environment';
 
 // interface AdminSettings {
 //   settings: boolean[][];
@@ -13,7 +14,7 @@ import { TokenService } from './token.service';
   providedIn: 'root',
 })
 export class AdminSettingsService {
-  private apiUrl = 'https://localhost:7057/api/admin';
+  private apiUrl = `${environment.apiUrl}/api/admin`;
   private settingsSubject = new BehaviorSubject<boolean[][] | null>(null);
   settings$ = this.settingsSubject.asObservable();
 

@@ -16,6 +16,7 @@ import { NgxCaptchaModule, ReCaptcha2Component } from 'ngx-captcha';
 import { RegisterService } from '../services/register.service';
 import { Subscription } from 'rxjs';
 import { UserService } from '../services/user.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   standalone: true,
@@ -29,7 +30,7 @@ export class PasswordRecoveryComponent implements OnInit, OnDestroy {
 
   private route = inject(ActivatedRoute);
   private http = inject(HttpClient);
-  private api = 'https://localhost:7057';
+  private api = `${environment.apiUrl}`;
 
   password: string = '';
 

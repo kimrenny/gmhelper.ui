@@ -10,6 +10,7 @@ import {
 } from 'rxjs';
 import { TokenService } from './token.service';
 import { ApiResponse } from '../models/api-response.model';
+import { environment } from 'src/environments/environment';
 
 interface DeviceInfo {
   userAgent: string;
@@ -119,7 +120,7 @@ interface ErrorLog {
 
 @Injectable({ providedIn: 'root' })
 export class AdminService {
-  private readonly apiUrl = 'https://localhost:7057/api/admin';
+  private readonly apiUrl = `${environment.apiUrl}/api/admin`;
   private usersSubject = new BehaviorSubject<User[] | null>(null);
   users$ = this.usersSubject.asObservable();
 
