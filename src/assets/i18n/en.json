@@ -103,6 +103,10 @@
       "INVALID_SIDES_NUMBER": "Invalid number of sides. The value must be an integer greater than or equal to 3.",
       "LENGTH": {
         "INCORRECT": "Invalid line length. Only numbers, 'x', 'y', or '?' are allowed."
+      },
+      "WARNING": {
+        "TITLE": "Warning",
+        "RATED": "Rating can only be submitted once."
       }
     },
     "TASK": {
@@ -119,6 +123,9 @@
       "HINT": "Enter the number of sides:",
       "CONFIRM": "Confirm",
       "CANCEL": "Cancel"
+    },
+    "SOLUTION": {
+      "RATE": "Rate Solution"
     }
   },
   "REGISTER": {

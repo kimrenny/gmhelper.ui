@@ -5,7 +5,18 @@ import { StackSolutionService } from './stack-solution.service';
 import { AnglesSolutionService } from './angles-solution.service';
 import { FigureElementsSolutionService } from './figure-elements-solution.service';
 import { LinesSolutionService } from './lines-solution.service';
-import { BehaviorSubject, catchError, map, Observable, of, tap } from 'rxjs';
+import {
+  BehaviorSubject,
+  catchError,
+  firstValueFrom,
+  from,
+  map,
+  Observable,
+  of,
+  switchMap,
+  tap,
+  throwError,
+} from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { ApiResponse } from 'src/app/models/api-response.model';
 import { LineLength } from '../drawing-tools/types/line-length.type';
@@ -22,6 +33,7 @@ import { Triangle } from '../drawing-tools/triangle.tool';
 import { Rhombus } from '../drawing-tools/rhombus.tool';
 import { Line } from '../drawing-tools/line.tool';
 import { environment } from 'src/environments/environment';
+import { TokenService } from 'src/app/services/token.service';
 
 @Injectable({
   providedIn: 'root',
@@ -34,6 +46,7 @@ export class GeoCanvasSolutionService implements CanvasServiceInterface {
 
   constructor(
     private canvasService: CanvasService,
+    private tokenService: TokenService,
     private pointsService: PointsSolutionService,
     private stackService: StackSolutionService,
     private anglesService: AnglesSolutionService,
@@ -115,6 +128,25 @@ export class GeoCanvasSolutionService implements CanvasServiceInterface {
         }
       }
     }
+  }
+
+  rateSolution(isCorrect: boolean): Observable<any> {
+    const token = this.tokenService.getTokenFromStorage('authToken');
+    if (!token) {
+      return throwError(() => new Error('User is not authorized'));
+    }
+
+    return from(firstValueFrom(this.taskId$)).pipe(
+      switchMap((taskId) => {
+        if (!taskId) {
+          return throwError(() => new Error('taskId is empty'));
+        }
+        const url = `${this.api}/api/taskprocessing/rate`;
+        const body = { taskId, isCorrect };
+        const headers = this.tokenService.createAuthHeaders(token);
+        return this.http.post(url, body, { headers });
+      })
+    );
   }
 
   getToolByFigureName(figureName: string, figureData: any): any {

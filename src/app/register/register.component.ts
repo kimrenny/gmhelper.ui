@@ -207,7 +207,6 @@ export class RegisterComponent {
       )
       .subscribe({
         next: (response: ApiResponse<any>) => {
-          console.log(response);
           this.captchaLoginToken = '';
           if (response.success) {
             localStorage.setItem('authToken', response.data.accessToken);

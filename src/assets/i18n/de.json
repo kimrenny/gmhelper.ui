@@ -103,6 +103,10 @@
       "INVALID_SIDES_NUMBER": "Ungültige Anzahl der Seiten. Der Wert muss eine ganze Zahl größer oder gleich 3 sein.",
       "LENGTH": {
         "INCORRECT": "Ungültige Linienlänge. Nur Zahlen, 'x', 'y' oder '?' sind erlaubt."
+      },
+      "WARNING": {
+        "TITLE": "Warnung",
+        "RATED": "Die Bewertung kann nur einmal abgegeben werden."
       }
     },
     "TASK": {
@@ -119,6 +123,9 @@
       "HINT": "Geben Sie die Anzahl der Seiten ein:",
       "CONFIRM": "Bestätigen",
       "CANCEL": "Abbrechen"
+    },
+    "SOLUTION": {
+      "RATE": "Lösung bewerten"
     }
   },
   "REGISTER": {

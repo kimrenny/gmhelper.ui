@@ -13,11 +13,14 @@ import {
   throwError,
   timer,
 } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TokenService {
+  private api = `${environment.apiUrl}`;
+
   private readonly authTokenKey: string = 'authToken';
   private readonly refreshTokenKey: string = 'refreshToken';
 
@@ -91,7 +94,7 @@ export class TokenService {
 
     return this.http
       .post<{ accessToken: string; refreshToken: string }>(
-        'https://localhost:7057/api/auth/refresh-token',
+        `${this.api}/api/auth/refresh-token`,
         JSON.stringify({ refreshToken }),
         { headers }
       )

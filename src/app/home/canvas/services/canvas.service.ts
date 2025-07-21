@@ -10,6 +10,7 @@ import { HttpClient } from '@angular/common/http';
 import { ApiResponse } from 'src/app/models/api-response.model';
 import { CanvasServiceInterface } from '../interfaces/canvas-service.interface';
 import { environment } from 'src/environments/environment';
+import { TokenService } from 'src/app/services/token.service';
 
 @Injectable({
   providedIn: 'root',
@@ -29,7 +30,8 @@ export class CanvasService implements CanvasServiceInterface {
     private stackService: StackService,
     private anglesService: AnglesService,
     private figureElementsService: FigureElementsService,
-    private linesService: LinesService
+    private linesService: LinesService,
+    private tokenService: TokenService
   ) {
     this.stackService.pathsChanged$.subscribe(() => {
       const paths = this.stackService.getPaths();
@@ -45,9 +47,25 @@ export class CanvasService implements CanvasServiceInterface {
   }
 
   private sendTaskToApi(data: any) {
+    const token = this.tokenService.getTokenFromStorage('authToken');
+
+    const options = token
+      ? { headers: this.tokenService.createAuthHeaders(token) }
+      : {};
+
+    console.log(
+      'Sending request to: ',
+      this.api,
+      'with data:',
+      data,
+      'options:',
+      options
+    );
+
     return this.http.post<ApiResponse<string>>(
       `${this.api}/api/taskprocessing/process`,
-      data
+      data,
+      options
     );
   }
 

@@ -103,6 +103,10 @@
       "INVALID_SIDES_NUMBER": "Nombre de côtés invalide. La valeur doit être un entier supérieur ou égal à 3.",
       "LENGTH": {
         "INCORRECT": "Longueur de ligne invalide. Seuls les nombres, 'x', 'y' ou '?' sont autorisés."
+      },
+      "WARNING": {
+        "TITLE": "Avertissement",
+        "RATED": "L'évaluation ne peut être soumise qu'une seule fois."
       }
     },
     "TASK": {
@@ -119,6 +123,9 @@
       "HINT": "Entrez le nombre de côtés :",
       "CONFIRM": "Confirmer",
       "CANCEL": "Annuler"
+    },
+    "SOLUTION": {
+      "RATE": "Évaluer la solution"
     }
   },
   "REGISTER": {

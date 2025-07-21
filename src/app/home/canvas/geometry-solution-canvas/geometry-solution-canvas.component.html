@@ -18,4 +18,27 @@
     <span class="scale-value">{{ scale }}%</span>
     <button (click)="adjustScale(10)" [disabled]="scale >= maxScale">+</button>
   </div>
+
+  <div class="rating-container" *ngIf="isAuthorized">
+    <div class="rating-text">{{ "CANVAS.SOLUTION.RATE" | translate }}</div>
+    <div class="rating-buttons">
+      <button
+        [ngClass]="{ rated: isRated && rated, correct: rated === true }"
+        (click)="onRateSolution(true)"
+        aria-label="Rate correct"
+      >
+        ▲
+      </button>
+      <button
+        [ngClass]="{
+          rated: isRated && rated === false,
+          incorrect: rated === false
+        }"
+        (click)="onRateSolution(false)"
+        aria-label="Rate incorrect"
+      >
+        ▼
+      </button>
+    </div>
+  </div>
 </div>

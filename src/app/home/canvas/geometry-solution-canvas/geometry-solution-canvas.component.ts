@@ -11,13 +11,14 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { GeoCanvasSolutionService } from '../geometry-solution-services/canvas-solution.service';
 import { SubjectService } from '../services/subject.service';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription, throwError } from 'rxjs';
 import { PointsSolutionService } from '../geometry-solution-services/points-solution.service';
 import { LinesSolutionService } from '../geometry-solution-services/lines-solution.service';
 import { StackSolutionService } from '../geometry-solution-services/stack-solution.service';
 import { AnglesSolutionService } from '../geometry-solution-services/angles-solution.service';
 import { FigureElementsSolutionService } from '../geometry-solution-services/figure-elements-solution.service';
 import { CanvasService } from '../services/canvas.service';
+import { TokenService } from 'src/app/services/token.service';
 
 @Component({
   selector: 'app-geometry-solution-canvas',
@@ -40,6 +41,11 @@ export class GeoSolutionCanvasComponent implements OnInit, OnDestroy {
 
   taskSub!: Subscription;
   taskProcessing: boolean = true;
+  isAuthorized = false;
+  private sub?: Subscription;
+
+  isRated = false;
+  rated: boolean | null = null;
 
   @ViewChild('geoSolutionCanvas', { static: true })
   canvasRef!: ElementRef<HTMLCanvasElement>;
@@ -50,6 +56,7 @@ export class GeoSolutionCanvasComponent implements OnInit, OnDestroy {
 
   constructor(
     private canvasService: CanvasService,
+    private tokenService: TokenService,
     private geoCanvasSolutionService: GeoCanvasSolutionService,
     private pointsService: PointsSolutionService,
     private linesService: LinesSolutionService,
@@ -77,6 +84,10 @@ export class GeoSolutionCanvasComponent implements OnInit, OnDestroy {
             }
           });
       }
+    });
+
+    this.sub = this.tokenService.userRole$.subscribe((role) => {
+      this.isAuthorized = !!role;
     });
   }
 
@@ -223,9 +234,29 @@ export class GeoSolutionCanvasComponent implements OnInit, OnDestroy {
     }
   }
 
+  onRateSolution(isCorrect: boolean): void {
+    if (this.isRated) {
+      this.toastr.warning(
+        this.translate.instant('CANVAS.ERRORS.WARNING.RATED'),
+        this.translate.instant('CANVAS.ERRORS.WARNING.TITLE')
+      );
+      return;
+    }
+    this.geoCanvasSolutionService.rateSolution(isCorrect).subscribe({
+      next: (response) => {
+        this.isRated = true;
+        this.rated = isCorrect;
+      },
+      error: (error) => {
+        console.error('Error during proccessing the request:', error);
+      },
+    });
+  }
+
   onClose(): void {
     this.canvasService.updateTaskId(null);
     this.clearCanvas();
+    this.isRated = false;
   }
 
   clearCanvas(): void {

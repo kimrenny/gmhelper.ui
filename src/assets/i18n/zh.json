@@ -103,6 +103,10 @@
       "INVALID_SIDES_NUMBER": "边数无效。该值必须是大于或等于 3 的整数。",
       "LENGTH": {
         "INCORRECT": "无效的线段长度。只允许数字、'x'、'y' 或 '?'."
+      },
+      "WARNING": {
+        "TITLE": "警告",
+        "RATED": "评分只能提交一次。"
       }
     },
     "TASK": {
@@ -119,6 +123,9 @@
       "HINT": "请输入边的数量：",
       "CONFIRM": "确认",
       "CANCEL": "取消"
+    },
+    "SOLUTION": {
+      "RATE": "评价答案"
     }
   },
   "REGISTER": {
