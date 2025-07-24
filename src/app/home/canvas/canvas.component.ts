@@ -6,7 +6,7 @@ import { ToastrService } from 'ngx-toastr';
 import { GeoCanvasComponent } from './geometry-canvas/geometry-canvas.component';
 import { MathCanvasComponent } from './math-canvas/math-canvas.component';
 import { SubjectService } from './services/subject.service';
-import { CanvasService } from './services/canvas.service';
+import { CanvasService } from './services/geometry-canvas/canvas.service';
 import { GeoSolutionCanvasComponent } from './geometry-solution-canvas/geometry-solution-canvas.component';
 
 @Component({

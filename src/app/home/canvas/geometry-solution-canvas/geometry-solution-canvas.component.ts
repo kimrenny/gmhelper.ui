@@ -17,7 +17,7 @@ import { LinesSolutionService } from '../geometry-solution-services/lines-soluti
 import { StackSolutionService } from '../geometry-solution-services/stack-solution.service';
 import { AnglesSolutionService } from '../geometry-solution-services/angles-solution.service';
 import { FigureElementsSolutionService } from '../geometry-solution-services/figure-elements-solution.service';
-import { CanvasService } from '../services/canvas.service';
+import { CanvasService } from '../services/geometry-canvas/canvas.service';
 import { TokenService } from 'src/app/services/token.service';
 import { GivenSolutionService } from '../geometry-solution-services/given-solution.service';
 

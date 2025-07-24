@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Coords2d } from '../drawing-tools/types/coords.type';
-import { SelectionServiceInterface } from '../interfaces/selection-service.interface';
+import { Coords2d } from '../../drawing-tools/types/coords.type';
+import { SelectionServiceInterface } from '../../interfaces/selection-service.interface';
 
 @Injectable({
   providedIn: 'root',

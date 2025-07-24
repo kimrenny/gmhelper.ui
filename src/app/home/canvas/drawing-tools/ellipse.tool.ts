@@ -8,14 +8,6 @@ import { LinesServiceInterface } from '../interfaces/lines-service.interface';
 import { PointsServiceInterface } from '../interfaces/points-service.interface';
 import { StackServiceInterface } from '../interfaces/stack-service.interface';
 import { ToolContext } from '../interfaces/tool-context.interface';
-import { AnglesService } from '../services/angles.service';
-import { CanvasService } from '../services/canvas.service';
-import { CounterService } from '../services/counter.service';
-import { FigureElementsService } from '../services/figure-elements.service';
-import { FiguresService } from '../services/figures.service';
-import { LinesService } from '../services/lines.service';
-import { PointsService } from '../services/points.service';
-import { StackService } from '../services/stack.service';
 import { clearPreviewCanvas } from '../tools/clear-preview';
 import { drawLabel } from '../tools/draw-point-label';
 import {

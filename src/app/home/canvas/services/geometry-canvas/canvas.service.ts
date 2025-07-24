@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { Coords2d } from '../drawing-tools/types/coords.type';
+import { Coords2d } from '../../drawing-tools/types/coords.type';
 import { PointsService } from './points.service';
 import { StackService } from './stack.service';
 import { AnglesService } from './angles.service';
@@ -8,7 +8,7 @@ import { LinesService } from './lines.service';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { ApiResponse } from 'src/app/models/api-response.model';
-import { CanvasServiceInterface } from '../interfaces/canvas-service.interface';
+import { CanvasServiceInterface } from '../../interfaces/canvas-service.interface';
 import { environment } from 'src/environments/environment';
 import { TokenService } from 'src/app/services/token.service';
 
@@ -52,15 +52,6 @@ export class CanvasService implements CanvasServiceInterface {
     const options = token
       ? { headers: this.tokenService.createAuthHeaders(token) }
       : {};
-
-    console.log(
-      'Sending request to: ',
-      this.api,
-      'with data:',
-      data,
-      'options:',
-      options
-    );
 
     return this.http.post<ApiResponse<string>>(
       `${this.api}/api/taskprocessing/process`,

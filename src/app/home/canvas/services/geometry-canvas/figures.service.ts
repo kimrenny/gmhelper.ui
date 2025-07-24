@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { StackService } from './stack.service';
 import { PointsService } from './points.service';
-import { Coords2d } from '../drawing-tools/types/coords.type';
+import { Coords2d } from '../../drawing-tools/types/coords.type';
 import { SelectionService } from './selection.service';
-import { FiguresServiceInterface } from '../interfaces/figures-service.interface';
+import { FiguresServiceInterface } from '../../interfaces/figures-service.interface';
 
 @Injectable({
   providedIn: 'root',

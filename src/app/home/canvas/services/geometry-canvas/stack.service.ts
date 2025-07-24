@@ -1,11 +1,11 @@
 import { Injectable, Injector } from '@angular/core';
-import { LineLength } from '../drawing-tools/types/line-length.type';
-import { stackInfo } from '../drawing-tools/types/stack-info.type';
+import { LineLength } from '../../drawing-tools/types/line-length.type';
+import { stackInfo } from '../../drawing-tools/types/stack-info.type';
 import { FigureElementsService } from './figure-elements.service';
 import { LinesService } from './lines.service';
-import { StackType } from '../drawing-tools/types/stack.type';
+import { StackType } from '../../drawing-tools/types/stack.type';
 import { Subject } from 'rxjs';
-import { StackServiceInterface } from '../interfaces/stack-service.interface';
+import { StackServiceInterface } from '../../interfaces/stack-service.interface';
 
 @Injectable({
   providedIn: 'root',

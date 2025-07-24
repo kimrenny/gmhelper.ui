@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FigureElementsServiceInterface } from '../interfaces/figure-elements-service.interface';
+import { FigureElementsServiceInterface } from '../../interfaces/figure-elements-service.interface';
 
 @Injectable({
   providedIn: 'root',

@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { LineLength } from '../drawing-tools/types/line-length.type';
-import { Coords2d } from '../drawing-tools/types/coords.type';
+import { LineLength } from '../../drawing-tools/types/line-length.type';
+import { Coords2d } from '../../drawing-tools/types/coords.type';
 import { PointsService } from './points.service';
-import { Point } from '../drawing-tools/types/point';
-import { LinesServiceInterface } from '../interfaces/lines-service.interface';
+import { Point } from '../../drawing-tools/types/point';
+import { LinesServiceInterface } from '../../interfaces/lines-service.interface';
 
 @Injectable({
   providedIn: 'root',
