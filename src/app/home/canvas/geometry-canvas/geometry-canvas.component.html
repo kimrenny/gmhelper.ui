@@ -192,14 +192,14 @@
 
   <angle-input
     class="angle-input"
-    *ngIf="isAngleInputVisible"
+    *ngIf="isAngleInputVisible && selectedAngle"
     [initialValue]="60"
     (confirm)="onAngleConfirm($event)"
   ></angle-input>
 
   <line-length-input
     class="line-length-input"
-    *ngIf="isLineLengthChanging"
+    *ngIf="isLineLengthChanging && isLineSelected"
     [initialValue]="lineLength"
     (confirm)="onLineLengthConfirm($event)"
   ></line-length-input>
