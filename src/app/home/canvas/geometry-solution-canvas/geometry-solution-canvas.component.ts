@@ -19,6 +19,7 @@ import { AnglesSolutionService } from '../geometry-solution-services/angles-solu
 import { FigureElementsSolutionService } from '../geometry-solution-services/figure-elements-solution.service';
 import { CanvasService } from '../services/canvas.service';
 import { TokenService } from 'src/app/services/token.service';
+import { GivenSolutionService } from '../geometry-solution-services/given-solution.service';
 
 @Component({
   selector: 'app-geometry-solution-canvas',
@@ -63,6 +64,7 @@ export class GeoSolutionCanvasComponent implements OnInit, OnDestroy {
     private stackService: StackSolutionService,
     private anglesService: AnglesSolutionService,
     private figureElementsService: FigureElementsSolutionService,
+    private givenService: GivenSolutionService,
     private toastr: ToastrService,
     private translate: TranslateService
   ) {}
@@ -232,6 +234,78 @@ export class GeoSolutionCanvasComponent implements OnInit, OnDestroy {
         p.tool.draw(this.ctx, p.path, color, true);
       }
     }
+
+    this.drawGiven(canvas);
+  }
+
+  drawGiven(canvas: HTMLCanvasElement) {
+    const given = this.givenService.getGiven();
+    if (!given || given.trim() === '') return;
+
+    const ctx = this.ctx;
+    const scaleFactor = this.scale / 100;
+
+    const baseFontSize = 14;
+    const baseMargin = 20;
+    const baseTopOffset = 75;
+    const baseLineHeight = 16;
+    const extraLineHeight = 10;
+
+    ctx.save();
+
+    ctx.font = `${baseFontSize}px Arial`;
+    ctx.fillStyle = '#000';
+    ctx.textAlign = 'left';
+
+    const rawLines = given.split('\n');
+    const processedLines: string[] = [];
+
+    for (const rawLine of rawLines) {
+      let currentLine = rawLine.trim();
+      while (ctx.measureText(currentLine).width > canvas.width / 3) {
+        let cutIndex = currentLine.lastIndexOf(
+          ' ',
+          (currentLine.length * 2) / 3
+        );
+        if (cutIndex === -1 || cutIndex < 5)
+          cutIndex = Math.floor(currentLine.length / 2);
+        processedLines.push(currentLine.slice(0, cutIndex).trim());
+        currentLine = currentLine.slice(cutIndex).trim();
+      }
+      processedLines.push(currentLine);
+    }
+
+    const maxLineWidth = Math.max(
+      ...processedLines.map((line) => ctx.measureText(line).width)
+    );
+    const minLineLengthPx = 150;
+
+    const desiredLineLengthPx = Math.max(
+      maxLineWidth + baseMargin * 2,
+      minLineLengthPx
+    );
+    const baseLineLength = desiredLineLengthPx / scaleFactor;
+
+    const rightEdgeX = canvas.width;
+    const boxLeftX = rightEdgeX - baseLineLength * scaleFactor;
+    const boxTopY = baseTopOffset;
+
+    processedLines.forEach((line, i) => {
+      ctx.fillText(line, boxLeftX + baseMargin, boxTopY + i * baseLineHeight);
+    });
+
+    const textHeight = processedLines.length * baseLineHeight;
+
+    ctx.beginPath();
+    ctx.strokeStyle = '#000';
+    ctx.lineWidth = 1;
+
+    ctx.moveTo(rightEdgeX, boxTopY + textHeight - baseLineHeight / 3);
+    ctx.lineTo(boxLeftX, boxTopY + textHeight - baseLineHeight / 3);
+    ctx.lineTo(boxLeftX, boxTopY - baseLineHeight / 2 - extraLineHeight);
+
+    ctx.stroke();
+    ctx.restore();
   }
 
   onRateSolution(isCorrect: boolean): void {
@@ -267,6 +341,7 @@ export class GeoSolutionCanvasComponent implements OnInit, OnDestroy {
     this.linesService.clearAllLines();
     this.figureElementsService.clearAllFigureElements();
     this.anglesService.clearAllAngles();
+    this.givenService.clear();
   }
 
   ngOnDestroy(): void {

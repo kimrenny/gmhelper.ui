@@ -34,6 +34,7 @@ import { Rhombus } from '../drawing-tools/rhombus.tool';
 import { Line } from '../drawing-tools/line.tool';
 import { environment } from 'src/environments/environment';
 import { TokenService } from 'src/app/services/token.service';
+import { GivenSolutionService } from './given-solution.service';
 
 @Injectable({
   providedIn: 'root',
@@ -53,7 +54,8 @@ export class GeoCanvasSolutionService implements CanvasServiceInterface {
     private figureElementsService: FigureElementsSolutionService,
     private figuresService: FiguresService,
     private linesService: LinesSolutionService,
-    private counterService: CounterSolutionService
+    private counterService: CounterSolutionService,
+    private givenService: GivenSolutionService
   ) {}
 
   public getTaskFromApi(id: string): Observable<boolean> {
@@ -63,7 +65,8 @@ export class GeoCanvasSolutionService implements CanvasServiceInterface {
         tap((res) => {
           if (res.success) {
             console.log('Task data:', res.data);
-            this.deserializeTaskJson(res.data);
+            this.deserializeTaskJson(res.data.task);
+            this.givenService.setGiven(res.data.given);
           } else {
             console.warn('Server rejected request:', res.message);
           }
