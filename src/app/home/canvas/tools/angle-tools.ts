@@ -8,6 +8,6 @@ export const angleToolMap: AngleToolAction[] = [
   {
     name: 'changeMeasurement',
     icon: 'angle-measurement-icon.svg',
-    tooltip: 'CANVAS.TOOLTIP.ANGLE.CHANGEMEAGUREMENT',
+    tooltip: 'CANVAS.TOOLTIP.ANGLE.CHANGEMEASUREMENT',
   },
 ];
