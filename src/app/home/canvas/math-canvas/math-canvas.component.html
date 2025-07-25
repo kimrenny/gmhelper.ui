@@ -4,4 +4,62 @@
     [class.blurred]="!selectedSubject"
     class="canvas"
   ></canvas>
+
+  <div class="tool-buttons" [class.disabled]="!selectedSubject">
+    <div class="button-wrapper">
+      <button
+        (click)="toggleWindow('special')"
+        class="special-chars-btn"
+      ></button>
+    </div>
+
+    <div class="button-wrapper">
+      <button
+        (click)="toggleWindow('functional')"
+        class="functional-btn"
+      ></button>
+    </div>
+
+    <div class="button-wrapper">
+      <button (click)="toggleWindow('input')" class="input-btn"></button>
+    </div>
+
+    <div class="button-wrapper">
+      <button (click)="onClearCanvas()" class="clear-btn"></button>
+    </div>
+  </div>
+
+  <div class="button-window" *ngIf="isSpecialWindowVisible">
+    <div
+      class="button-row"
+      *ngFor="let row of getButtonRows(specialWindowButtons)"
+    >
+      <button
+        *ngFor="let btn of row"
+        class="dynamic-button"
+        (click)="onSpecialWindowButtonClick(btn)"
+      >
+        {{ btn }}
+      </button>
+    </div>
+  </div>
+
+  <div class="button-window" *ngIf="isFunctionalWindowVisible">
+    <div
+      class="button-row"
+      *ngFor="let row of getButtonRows(functionalWindowButtons)"
+    >
+      <button
+        *ngFor="let btn of row"
+        class="dynamic-button"
+        (click)="onFunctionalWindowButtonClick(btn)"
+      >
+        {{ btn }}
+      </button>
+    </div>
+  </div>
+
+  <div class="latex-input-window" *ngIf="isInputWindowVisible">
+    <textarea class="latex-textarea"></textarea>
+  </div>
 </div>

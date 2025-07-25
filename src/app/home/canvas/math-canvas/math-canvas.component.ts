@@ -16,6 +16,13 @@ export class MathCanvasComponent implements OnInit, OnDestroy {
   selectedSubject: boolean = false;
   private subjectSub!: Subscription;
 
+  isSpecialWindowVisible = false;
+  isFunctionalWindowVisible = false;
+  isInputWindowVisible = false;
+
+  specialWindowButtons: string[] = [];
+  functionalWindowButtons: string[] = [];
+
   constructor(public subjectService: SubjectService) {}
 
   ngOnInit(): void {
@@ -24,7 +31,28 @@ export class MathCanvasComponent implements OnInit, OnDestroy {
     });
   }
 
-  clearCanvas(): void {}
+  toggleWindow(window: 'special' | 'functional' | 'input') {
+    this.isSpecialWindowVisible =
+      window === 'special' ? !this.isSpecialWindowVisible : false;
+    this.isFunctionalWindowVisible =
+      window === 'functional' ? !this.isFunctionalWindowVisible : false;
+    this.isInputWindowVisible =
+      window === 'input' ? !this.isInputWindowVisible : false;
+  }
+
+  getButtonRows(buttons: string[]): string[][] {
+    const rows: string[][] = [];
+    for (let i = 0; i < buttons.length; i += 10) {
+      rows.push(buttons.slice(i, i + 10));
+    }
+    return rows;
+  }
+
+  onSpecialWindowButtonClick(label: string) {}
+
+  onFunctionalWindowButtonClick(label: string) {}
+
+  onClearCanvas(): void {}
 
   ngOnDestroy(): void {
     this.subjectSub.unsubscribe();

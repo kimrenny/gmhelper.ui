@@ -42,56 +42,170 @@
       background-color: rgba(255, 255, 255, 0.8);
       pointer-events: none;
     }
-
-    &.preview-canvas {
-      position: absolute;
-      top: 0;
-      left: 0;
-      z-index: 35;
-      pointer-events: none;
-      background: transparent;
-    }
   }
 
-  .scale-controls {
+  .tool-buttons {
     position: absolute;
-    top: 30px;
-    right: 10px;
+    width: 40px;
+    left: 10px;
+    top: 30%;
+    background-color: rgba(0, 0, 0, 0.2);
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 150px;
+    flex-direction: column;
+    gap: 10px;
     z-index: 40;
 
     button {
-      background-color: #444;
-      color: #fff;
+      width: 30px;
+      height: 30px;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
       border: none;
-      padding: 10px;
-      border-radius: 4px;
       cursor: pointer;
-      transition: background-color 0.3s ease;
+      transition: transform 0.3s ease;
+      background-color: transparent;
+      padding: 0;
+      margin: 5px;
 
-      &:hover {
-        background-color: #666;
+      &.img {
+        object-fit: cover;
       }
 
-      &:disabled {
-        background-color: #888;
-        cursor: not-allowed;
-      }
-    }
+      &.special-chars-btn {
+        background-image: url("../../../../assets/icons/special-btn.svg");
 
-    .scale-value {
-      color: black;
-      width: 80px;
-      margin: 0 5px;
-      font-weight: bold;
-      text-align: center;
+        &:hover {
+          background-image: url("../../../../assets/icons/special-btn-hover.svg");
+        }
+      }
+
+      &.functional-btn {
+        background-image: url("../../../../assets/icons/functional-btn.svg");
+
+        &:hover {
+          background-image: url("../../../../assets/icons/functional-btn-hover.svg");
+        }
+      }
+
+      &.input-btn {
+        background-image: url("../../../../assets/icons/latex-btn.svg");
+
+        &:hover {
+          background-image: url("../../../../assets/icons/latex-btn-hover.svg");
+        }
+      }
+
+      &.clear-btn {
+        background-image: url("../../../../assets/icons/eraser.png");
+
+        &:hover {
+          background-image: url("../../../../assets/icons/eraser-hover.png");
+        }
+      }
     }
 
     &.disabled {
-      visibility: hidden;
+      display: none;
+    }
+  }
+
+  .button-window {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: 90%;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    z-index: 50;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    box-sizing: border-box;
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: flex-start;
+    }
+
+    .dynamic-button {
+      padding: 6px 10px;
+      border: 1px solid #999;
+      border-radius: 4px;
+      background-color: #f9f9f9;
+      font-size: 14px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background-color 0.2s ease;
+
+      &:hover {
+        background-color: #e6e6e6;
+      }
+    }
+  }
+
+  .latex-input-window {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 700px;
+    height: 200px;
+    background-color: white;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    padding: 12px;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.25);
+    z-index: 50;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+  }
+
+  .latex-textarea {
+    flex: 1;
+    width: 100%;
+    resize: none;
+    font-size: 16px;
+    font-family: "Courier New", Courier, monospace;
+    border: 1px solid #bbb;
+    border-radius: 6px;
+    padding: 10px;
+    outline: none;
+    background-color: #fafafa;
+    box-sizing: border-box;
+  }
+
+  .submit-task-btn {
+    position: absolute;
+    bottom: 20px;
+    left: 10px;
+    background-color: black;
+    color: white;
+    border: none;
+    width: 150px;
+    height: 48px;
+    border-radius: 10px;
+    font-size: 20px;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+    transition: background-color 0.3s ease;
+    z-index: 99;
+
+    &:hover {
+      background-color: #222;
+    }
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
     }
   }
 }
