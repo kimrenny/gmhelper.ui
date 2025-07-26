@@ -4,6 +4,11 @@ import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { SubjectService } from '../services/subject.service';
 import { Subscription } from 'rxjs';
+import {
+  FUNCTIONAL_BUTTONS,
+  MathButton,
+  SPECIAL_BUTTONS,
+} from '../tools/math-buttons';
 
 @Component({
   selector: 'app-math-canvas',
@@ -20,14 +25,24 @@ export class MathCanvasComponent implements OnInit, OnDestroy {
   isFunctionalWindowVisible = false;
   isInputWindowVisible = false;
 
-  specialWindowButtons: string[] = [];
-  functionalWindowButtons: string[] = [];
+  specialWindowButtons: MathButton[] = [];
+  functionalWindowButtons: MathButton[] = [];
+
+  specialWindowRows: MathButton[][] = [];
+  functionalWindowRows: MathButton[][] = [];
 
   constructor(public subjectService: SubjectService) {}
 
   ngOnInit(): void {
     this.subjectSub = this.subjectService.getSubject().subscribe((subject) => {
       this.selectedSubject = subject == 'Math';
+
+      if (this.selectedSubject) {
+        this.specialWindowButtons = SPECIAL_BUTTONS;
+        this.functionalWindowButtons = FUNCTIONAL_BUTTONS;
+        this.specialWindowRows = this.getButtonRows(SPECIAL_BUTTONS);
+        this.functionalWindowRows = this.getButtonRows(FUNCTIONAL_BUTTONS);
+      }
     });
   }
 
@@ -40,17 +55,17 @@ export class MathCanvasComponent implements OnInit, OnDestroy {
       window === 'input' ? !this.isInputWindowVisible : false;
   }
 
-  getButtonRows(buttons: string[]): string[][] {
-    const rows: string[][] = [];
+  getButtonRows(buttons: MathButton[]): MathButton[][] {
+    const rows: MathButton[][] = [];
     for (let i = 0; i < buttons.length; i += 10) {
       rows.push(buttons.slice(i, i + 10));
     }
     return rows;
   }
 
-  onSpecialWindowButtonClick(label: string) {}
+  onSpecialWindowButtonClick(latex: string) {}
 
-  onFunctionalWindowButtonClick(label: string) {}
+  onFunctionalWindowButtonClick(latex: string) {}
 
   onClearCanvas(): void {}
 

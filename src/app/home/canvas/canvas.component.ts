@@ -43,13 +43,6 @@ export class CanvasComponent implements OnInit {
   }
 
   selectSubject(subject: 'Math' | 'Geo'): void {
-    if (subject === 'Math') {
-      this.toastr.error(
-        this.translate.instant('CANVAS.FEATURE_DISABLED'),
-        this.translate.instant('ADMIN.ERRORS.ERROR')
-      );
-    }
-
     this.selectedSubject = subject;
     this.subjectService.setSubject(subject);
   }

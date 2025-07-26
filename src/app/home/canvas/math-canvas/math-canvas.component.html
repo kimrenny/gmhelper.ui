@@ -30,32 +30,36 @@
   </div>
 
   <div class="button-window" *ngIf="isSpecialWindowVisible">
-    <div
-      class="button-row"
-      *ngFor="let row of getButtonRows(specialWindowButtons)"
-    >
+    <div class="button-row" *ngFor="let row of specialWindowRows">
       <button
         *ngFor="let btn of row"
         class="dynamic-button"
-        (click)="onSpecialWindowButtonClick(btn)"
+        (click)="onSpecialWindowButtonClick(btn.latex)"
       >
-        {{ btn }}
+        {{ btn.label }}
       </button>
     </div>
   </div>
 
   <div class="button-window" *ngIf="isFunctionalWindowVisible">
-    <div
-      class="button-row"
-      *ngFor="let row of getButtonRows(functionalWindowButtons)"
-    >
-      <button
-        *ngFor="let btn of row"
-        class="dynamic-button"
-        (click)="onFunctionalWindowButtonClick(btn)"
-      >
-        {{ btn }}
-      </button>
+    <div class="button-row" *ngFor="let row of functionalWindowRows">
+      <ng-container *ngFor="let btn of row">
+        <img
+          *ngIf="btn.icon && btn.icon !== ''"
+          class="dynamic-button"
+          [src]="btn.icon"
+          [alt]="btn.label"
+          [title]="btn.label"
+          (click)="onSpecialWindowButtonClick(btn.latex)"
+        />
+        <button
+          *ngIf="!btn.icon || btn.icon === ''"
+          class="dynamic-button"
+          (click)="onSpecialWindowButtonClick(btn.latex)"
+        >
+          {{ btn.label }}
+        </button>
+      </ng-container>
     </div>
   </div>
 
