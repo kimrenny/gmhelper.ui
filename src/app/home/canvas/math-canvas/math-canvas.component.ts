@@ -1,4 +1,10 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
@@ -9,6 +15,7 @@ import {
   MathButton,
   SPECIAL_BUTTONS,
 } from '../tools/math-buttons';
+import katex from 'katex';
 
 @Component({
   selector: 'app-math-canvas',
@@ -21,6 +28,8 @@ export class MathCanvasComponent implements OnInit, OnDestroy {
   selectedSubject: boolean = false;
   private subjectSub!: Subscription;
 
+  latexInput: string = '';
+
   isSpecialWindowVisible = false;
   isFunctionalWindowVisible = false;
   isInputWindowVisible = false;
@@ -30,6 +39,9 @@ export class MathCanvasComponent implements OnInit, OnDestroy {
 
   specialWindowRows: MathButton[][] = [];
   functionalWindowRows: MathButton[][] = [];
+
+  @ViewChild('mathDiv', { static: true })
+  mathDivRef!: ElementRef<HTMLDivElement>;
 
   constructor(public subjectService: SubjectService) {}
 
@@ -43,6 +55,24 @@ export class MathCanvasComponent implements OnInit, OnDestroy {
         this.specialWindowRows = this.getButtonRows(SPECIAL_BUTTONS);
         this.functionalWindowRows = this.getButtonRows(FUNCTIONAL_BUTTONS);
       }
+    });
+  }
+
+  renderLatexOnCanvas(): void {
+    const div = this.mathDivRef.nativeElement.querySelector('.katex-wrapper');
+    if (!div || !(div instanceof HTMLElement)) return;
+
+    div.innerHTML = '';
+
+    const latexWithLineBreaks = (this.latexInput || '').replace(/\n/g, '\\\\');
+    const wrappedLatex = `\\begin{aligned} ${latexWithLineBreaks} \\end{aligned}`;
+
+    console.log('Rendering LaTeX:', wrappedLatex);
+
+    katex.render(wrappedLatex, div, {
+      throwOnError: false,
+      displayMode: true,
+      output: 'mathml',
     });
   }
 
@@ -63,11 +93,15 @@ export class MathCanvasComponent implements OnInit, OnDestroy {
     return rows;
   }
 
-  onSpecialWindowButtonClick(latex: string) {}
+  onWindowButtonClick(latex: string) {
+    this.latexInput += latex;
+    this.renderLatexOnCanvas();
+  }
 
-  onFunctionalWindowButtonClick(latex: string) {}
-
-  onClearCanvas(): void {}
+  onClearCanvas(): void {
+    this.latexInput = '';
+    this.renderLatexOnCanvas();
+  }
 
   ngOnDestroy(): void {
     this.subjectSub.unsubscribe();

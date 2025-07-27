@@ -1,9 +1,7 @@
 <div class="math-canvas-container">
-  <canvas
-    #mathCanvas
-    [class.blurred]="!selectedSubject"
-    class="canvas"
-  ></canvas>
+  <div #mathDiv [class.blurred]="!selectedSubject" class="canvas">
+    <div class="katex-wrapper"></div>
+  </div>
 
   <div class="tool-buttons" [class.disabled]="!selectedSubject">
     <div class="button-wrapper">
@@ -34,7 +32,7 @@
       <button
         *ngFor="let btn of row"
         class="dynamic-button"
-        (click)="onSpecialWindowButtonClick(btn.latex)"
+        (click)="onWindowButtonClick(btn.latex)"
       >
         {{ btn.label }}
       </button>
@@ -50,12 +48,12 @@
           [src]="btn.icon"
           [alt]="btn.label"
           [title]="btn.label"
-          (click)="onSpecialWindowButtonClick(btn.latex)"
+          (click)="onWindowButtonClick(btn.latex)"
         />
         <button
           *ngIf="!btn.icon || btn.icon === ''"
           class="dynamic-button"
-          (click)="onSpecialWindowButtonClick(btn.latex)"
+          (click)="onWindowButtonClick(btn.latex)"
         >
           {{ btn.label }}
         </button>
@@ -64,6 +62,10 @@
   </div>
 
   <div class="latex-input-window" *ngIf="isInputWindowVisible">
-    <textarea class="latex-textarea"></textarea>
+    <textarea
+      class="latex-textarea"
+      [(ngModel)]="latexInput"
+      (input)="renderLatexOnCanvas()"
+    ></textarea>
   </div>
 </div>
