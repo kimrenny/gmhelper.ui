@@ -32,7 +32,7 @@
       <button
         *ngFor="let btn of row"
         class="dynamic-button"
-        (click)="onWindowButtonClick(btn.latex)"
+        (click)="onWindowButtonClick(btn)"
       >
         {{ btn.label }}
       </button>
@@ -48,12 +48,12 @@
           [src]="btn.icon"
           [alt]="btn.label"
           [title]="btn.label"
-          (click)="onWindowButtonClick(btn.latex)"
+          (click)="onWindowButtonClick(btn)"
         />
         <button
           *ngIf="!btn.icon || btn.icon === ''"
           class="dynamic-button"
-          (click)="onWindowButtonClick(btn.latex)"
+          (click)="onWindowButtonClick(btn)"
         >
           {{ btn.label }}
         </button>

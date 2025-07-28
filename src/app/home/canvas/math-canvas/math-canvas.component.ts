@@ -1,4 +1,5 @@
 import {
+  AfterViewInit,
   Component,
   ElementRef,
   OnDestroy,
@@ -16,6 +17,8 @@ import {
   SPECIAL_BUTTONS,
 } from '../tools/math-buttons';
 import katex from 'katex';
+import { LatexNode } from '../tools/math-expression.model';
+import { latexNodesToLatex } from '../utils/latex.utils';
 
 @Component({
   selector: 'app-math-canvas',
@@ -24,10 +27,12 @@ import katex from 'katex';
   templateUrl: './math-canvas.component.html',
   styleUrls: ['./math-canvas.component.scss'],
 })
-export class MathCanvasComponent implements OnInit, OnDestroy {
+export class MathCanvasComponent implements OnInit, OnDestroy, AfterViewInit {
   selectedSubject: boolean = false;
   private subjectSub!: Subscription;
 
+  latexTree: LatexNode[] = [];
+  selectedPlaceholderId: string | null = null;
   latexInput: string = '';
 
   isSpecialWindowVisible = false;
@@ -58,22 +63,212 @@ export class MathCanvasComponent implements OnInit, OnDestroy {
     });
   }
 
+  ngAfterViewInit() {
+    this.mathDivRef.nativeElement.addEventListener(
+      'click',
+      this.onMathClick.bind(this)
+    );
+  }
+
+  onMathClick(event: MouseEvent) {
+    let target = event.target as HTMLElement | null;
+
+    while (target && target !== this.mathDivRef.nativeElement) {
+      if (target.dataset && target.dataset['placeholderId']) {
+        this.selectedPlaceholderId = target.dataset['placeholderId'];
+        this.renderLatexOnCanvas();
+        break;
+      }
+      target = target.parentElement;
+    }
+  }
+
+  addPlaceholderAttributes(container: HTMLElement) {
+    const spans = Array.from(container.querySelectorAll('span'));
+
+    let placeholderIndex = 0;
+
+    const markPlaceholders = (nodes: LatexNode[]) => {
+      for (const node of nodes) {
+        if (node.type === 'placeholder') {
+          if (placeholderIndex >= spans.length) break;
+
+          const span = spans[placeholderIndex] as HTMLElement;
+
+          span.classList.add('placeholder');
+          span.style.cursor = 'pointer';
+          span.dataset['placeholderId'] = node.id || '';
+
+          if (node.id === this.selectedPlaceholderId) {
+            span.classList.add('selected-placeholder');
+          } else {
+            span.classList.remove('selected-placeholder');
+          }
+
+          placeholderIndex++;
+        } else {
+          switch (node.type) {
+            case 'fraction':
+              if (node.numerator) markPlaceholders(node.numerator);
+              if (node.denominator) markPlaceholders(node.denominator);
+              break;
+            case 'sqrt':
+              if (node.radicand) markPlaceholders(node.radicand);
+              break;
+            case 'nthRoot':
+              if (node.degree) markPlaceholders(node.degree);
+              if (node.radicand) markPlaceholders(node.radicand);
+              break;
+            case 'integral':
+              if (node.integrand) markPlaceholders(node.integrand);
+              break;
+            case 'lim':
+              if (node.expr) markPlaceholders(node.expr);
+              break;
+            case 'matrix':
+            case 'system':
+              if (node.rows) {
+                for (const row of node.rows) {
+                  markPlaceholders(row);
+                }
+              }
+              break;
+          }
+        }
+      }
+    };
+
+    markPlaceholders(this.latexTree);
+  }
+
   renderLatexOnCanvas(): void {
     const div = this.mathDivRef.nativeElement.querySelector('.katex-wrapper');
     if (!div || !(div instanceof HTMLElement)) return;
 
     div.innerHTML = '';
 
-    const latexWithLineBreaks = (this.latexInput || '').replace(/\n/g, '\\\\');
-    const wrappedLatex = `\\begin{aligned} ${latexWithLineBreaks} \\end{aligned}`;
-
-    console.log('Rendering LaTeX:', wrappedLatex);
+    const latexStr = latexNodesToLatex(
+      this.latexTree,
+      this.selectedPlaceholderId
+    );
+    const wrappedLatex = `\\begin{aligned} ${latexStr} \\end{aligned}`;
 
     katex.render(wrappedLatex, div, {
       throwOnError: false,
       displayMode: true,
       output: 'mathml',
+      trust: true,
     });
+
+    this.addPlaceholderAttributes(div);
+  }
+
+  replacePlaceholder(
+    nodes: LatexNode[],
+    placeholderId: string,
+    newNodes: LatexNode[]
+  ): LatexNode[] {
+    return nodes.map((node) => {
+      if (node.type === 'placeholder' && node.id === placeholderId) {
+        return newNodes.length === 1
+          ? newNodes[0]
+          : { type: 'text', value: '' };
+      }
+
+      switch (node.type) {
+        case 'fraction':
+          return {
+            ...node,
+            numerator: node.numerator
+              ? this.replacePlaceholder(node.numerator, placeholderId, newNodes)
+              : node.numerator,
+            denominator: node.denominator
+              ? this.replacePlaceholder(
+                  node.denominator,
+                  placeholderId,
+                  newNodes
+                )
+              : node.denominator,
+          };
+        case 'sqrt':
+          return {
+            ...node,
+            radicand: node.radicand
+              ? this.replacePlaceholder(node.radicand, placeholderId, newNodes)
+              : node.radicand,
+          };
+        case 'nthRoot':
+          return {
+            ...node,
+            degree: node.degree
+              ? this.replacePlaceholder(node.degree, placeholderId, newNodes)
+              : node.degree,
+            radicand: node.radicand
+              ? this.replacePlaceholder(node.radicand, placeholderId, newNodes)
+              : node.radicand,
+          };
+        case 'integral':
+          return {
+            ...node,
+            integrand: node.integrand
+              ? this.replacePlaceholder(node.integrand, placeholderId, newNodes)
+              : node.integrand,
+          };
+        case 'lim':
+          return {
+            ...node,
+            expr: node.expr
+              ? this.replacePlaceholder(node.expr, placeholderId, newNodes)
+              : node.expr,
+          };
+        case 'matrix':
+        case 'system':
+          return {
+            ...node,
+            rows: node.rows.map((row) =>
+              row.map(
+                (cell) =>
+                  this.replacePlaceholder([cell], placeholderId, newNodes)[0]
+              )
+            ),
+          };
+        default:
+          return node;
+      }
+    });
+  }
+
+  onPlaceholderClick(placeholderId: string) {
+    this.selectedPlaceholderId = placeholderId;
+    this.renderLatexOnCanvas();
+  }
+
+  onWindowButtonClick(button: MathButton) {
+    if (this.selectedPlaceholderId) {
+      if (button.template) {
+        this.latexTree = this.replacePlaceholder(
+          this.latexTree,
+          this.selectedPlaceholderId,
+          [button.template]
+        );
+      } else {
+        const newNode: LatexNode = { type: 'text', value: button.latex };
+        this.latexTree = this.replacePlaceholder(
+          this.latexTree,
+          this.selectedPlaceholderId,
+          [newNode]
+        );
+        this.selectedPlaceholderId = null;
+      }
+    } else {
+      if (button.template) {
+        this.latexTree.push(button.template);
+      } else {
+        this.latexTree.push({ type: 'text', value: button.latex });
+      }
+    }
+
+    this.renderLatexOnCanvas();
   }
 
   toggleWindow(window: 'special' | 'functional' | 'input') {
@@ -87,19 +282,14 @@ export class MathCanvasComponent implements OnInit, OnDestroy {
 
   getButtonRows(buttons: MathButton[]): MathButton[][] {
     const rows: MathButton[][] = [];
-    for (let i = 0; i < buttons.length; i += 10) {
-      rows.push(buttons.slice(i, i + 10));
+    for (let i = 0; i < buttons.length; i += 14) {
+      rows.push(buttons.slice(i, i + 14));
     }
     return rows;
   }
 
-  onWindowButtonClick(latex: string) {
-    this.latexInput += latex;
-    this.renderLatexOnCanvas();
-  }
-
   onClearCanvas(): void {
-    this.latexInput = '';
+    this.latexTree = [];
     this.renderLatexOnCanvas();
   }
 
