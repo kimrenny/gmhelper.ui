@@ -21,6 +21,16 @@ export function latexNodesToLatex(
               ? latexNodesToLatex(node.denominator)
               : '\\boxed{?}';
           return `\\frac{${numerator}}{${denominator}}`;
+        case 'power':
+          const base =
+            node.base && node.base.length
+              ? latexNodesToLatex(node.base)
+              : '\\boxed{?}';
+          const exponent =
+            node.exponent && node.exponent.length
+              ? latexNodesToLatex(node.exponent)
+              : '\\boxed{?}';
+          return `${base}^{${exponent}}`;
         case 'sqrt':
           const radicand =
             node.radicand && node.radicand.length
@@ -81,4 +91,17 @@ export function latexNodesToLatex(
       }
     })
     .join('');
+}
+
+export function fixNestedPowers(latex: string): string {
+  return latex.replace(/(\^(\{[^}]*\}|[^{}\^])){2,}/g, (match) => {
+    const parts =
+      match
+        .match(/\^{([^}]*)}|(\^[^\{\}])/g)
+        ?.map((part) => part.replace(/^\^(\{)?|(\})?$/g, '')) || [];
+
+    const combined = parts.join('');
+
+    return `^{${combined}}`;
+  });
 }

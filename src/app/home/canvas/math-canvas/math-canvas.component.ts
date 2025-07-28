@@ -18,7 +18,7 @@ import {
 } from '../tools/math-buttons';
 import katex from 'katex';
 import { LatexNode } from '../tools/math-expression.model';
-import { latexNodesToLatex } from '../utils/latex.utils';
+import { fixNestedPowers, latexNodesToLatex } from '../utils/latex.utils';
 
 @Component({
   selector: 'app-math-canvas',
@@ -112,6 +112,10 @@ export class MathCanvasComponent implements OnInit, OnDestroy, AfterViewInit {
               if (node.numerator) markPlaceholders(node.numerator);
               if (node.denominator) markPlaceholders(node.denominator);
               break;
+            case 'power':
+              if (node.base) markPlaceholders(node.base);
+              if (node.exponent) markPlaceholders(node.exponent);
+              break;
             case 'sqrt':
               if (node.radicand) markPlaceholders(node.radicand);
               break;
@@ -153,7 +157,9 @@ export class MathCanvasComponent implements OnInit, OnDestroy, AfterViewInit {
     );
     const wrappedLatex = `\\begin{aligned} ${latexStr} \\end{aligned}`;
 
-    katex.render(wrappedLatex, div, {
+    const fixedLatex = fixNestedPowers(wrappedLatex);
+
+    katex.render(fixedLatex, div, {
       throwOnError: false,
       displayMode: true,
       output: 'mathml',
@@ -189,6 +195,16 @@ export class MathCanvasComponent implements OnInit, OnDestroy, AfterViewInit {
                   newNodes
                 )
               : node.denominator,
+          };
+        case 'power':
+          return {
+            ...node,
+            base: node.base
+              ? this.replacePlaceholder(node.base, placeholderId, newNodes)
+              : node.base,
+            exponent: node.exponent
+              ? this.replacePlaceholder(node.exponent, placeholderId, newNodes)
+              : node.exponent,
           };
         case 'sqrt':
           return {

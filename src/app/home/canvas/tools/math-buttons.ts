@@ -74,7 +74,16 @@ export const SPECIAL_BUTTONS: MathButton[] = [
 
 export const FUNCTIONAL_BUTTONS: MathButton[] = [
   { label: 'x²', icon: '', latex: 'x^2' },
-  { label: 'xⁿ', icon: '', latex: 'x^n' },
+  {
+    label: 'xⁿ',
+    icon: '',
+    latex: 'x^n',
+    template: {
+      type: 'power',
+      base: [createPlaceholder()],
+      exponent: [createPlaceholder()],
+    },
+  },
   {
     label: 'sqrt',
     icon: 'assets/icons/square-root.png',
