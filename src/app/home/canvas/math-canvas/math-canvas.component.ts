@@ -18,7 +18,11 @@ import {
 } from '../tools/math-buttons';
 import katex from 'katex';
 import { LatexNode } from '../tools/math-expression.model';
-import { fixNestedPowers, latexNodesToLatex } from '../utils/latex.utils';
+import {
+  fixNestedPowers,
+  latexNodesToLatex,
+  parseLatexToNodes,
+} from '../utils/latex.utils';
 
 @Component({
   selector: 'app-math-canvas',
@@ -44,6 +48,9 @@ export class MathCanvasComponent implements OnInit, OnDestroy, AfterViewInit {
 
   specialWindowRows: MathButton[][] = [];
   functionalWindowRows: MathButton[][] = [];
+
+  private invalidLatexTimeout: any = null;
+  private lastInvalidInput = '';
 
   @ViewChild('mathDiv', { static: true })
   mathDivRef!: ElementRef<HTMLDivElement>;
@@ -159,12 +166,18 @@ export class MathCanvasComponent implements OnInit, OnDestroy, AfterViewInit {
 
     const fixedLatex = fixNestedPowers(wrappedLatex);
 
+    if (!this.isLatexValid(fixedLatex)) return;
+
     katex.render(fixedLatex, div, {
       throwOnError: false,
       displayMode: true,
       output: 'mathml',
       trust: true,
     });
+
+    this.latexInput = fixedLatex
+      .replace(/\\begin{aligned}|\\end{aligned}/g, '')
+      .trim();
 
     this.addPlaceholderAttributes(div);
   }
@@ -285,6 +298,61 @@ export class MathCanvasComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     this.renderLatexOnCanvas();
+  }
+
+  onLatexInputChange() {
+    const input = this.latexInput.trim();
+    const wrapped = `\\begin{aligned} ${input} \\end{aligned}`;
+
+    try {
+      const fixedLatex = fixNestedPowers(wrapped);
+
+      if (!this.isLatexValid(fixedLatex)) throw new Error('Invalid LaTeX');
+
+      this.latexTree = parseLatexToNodes(
+        fixedLatex.replace(/\\begin{aligned}|\\end{aligned}/g, '').trim()
+      );
+
+      this.renderLatexOnCanvas();
+
+      if (this.invalidLatexTimeout) {
+        clearTimeout(this.invalidLatexTimeout);
+        this.invalidLatexTimeout = null;
+      }
+    } catch (e) {
+      console.warn('Invalid LaTeX input:', e);
+
+      this.lastInvalidInput = input;
+
+      if (this.invalidLatexTimeout) {
+        clearTimeout(this.invalidLatexTimeout);
+      }
+
+      this.invalidLatexTimeout = setTimeout(() => {
+        if (this.lastInvalidInput !== this.latexInput.trim()) return;
+
+        try {
+          const autofixed = fixNestedPowers(wrapped);
+
+          this.latexTree = parseLatexToNodes(
+            autofixed.replace(/\\begin{aligned|\\{aligned}/g, '').trim()
+          );
+
+          this.renderLatexOnCanvas();
+        } catch (e2) {
+          console.warn('Invalid after timeout.', e2);
+        }
+      }, 3000);
+    }
+  }
+
+  isLatexValid(latex: string): boolean {
+    try {
+      katex.renderToString(latex, { throwOnError: true });
+      return true;
+    } catch {
+      return false;
+    }
   }
 
   toggleWindow(window: 'special' | 'functional' | 'input') {
