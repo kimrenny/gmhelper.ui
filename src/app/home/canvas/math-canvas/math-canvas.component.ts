@@ -20,9 +20,14 @@ import katex from 'katex';
 import { LatexNode } from '../tools/math-expression.model';
 import {
   fixNestedPowers,
+  isLatexValid,
   latexNodesToLatex,
   parseLatexToNodes,
+  unwrapAligned,
+  wrapAligned,
 } from '../utils/latex.utils';
+import { replacePlaceholder } from '../utils/latex-tree.utils';
+import { addPlaceholderAttributes } from '../utils/latex-placeholders.utils';
 
 @Component({
   selector: 'app-math-canvas',
@@ -90,69 +95,10 @@ export class MathCanvasComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  addPlaceholderAttributes(container: HTMLElement) {
-    const spans = Array.from(container.querySelectorAll('span'));
-
-    let placeholderIndex = 0;
-
-    const markPlaceholders = (nodes: LatexNode[]) => {
-      for (const node of nodes) {
-        if (node.type === 'placeholder') {
-          if (placeholderIndex >= spans.length) break;
-
-          const span = spans[placeholderIndex] as HTMLElement;
-
-          span.classList.add('placeholder');
-          span.style.cursor = 'pointer';
-          span.dataset['placeholderId'] = node.id || '';
-
-          if (node.id === this.selectedPlaceholderId) {
-            span.classList.add('selected-placeholder');
-          } else {
-            span.classList.remove('selected-placeholder');
-          }
-
-          placeholderIndex++;
-        } else {
-          switch (node.type) {
-            case 'fraction':
-              if (node.numerator) markPlaceholders(node.numerator);
-              if (node.denominator) markPlaceholders(node.denominator);
-              break;
-            case 'power':
-              if (node.base) markPlaceholders(node.base);
-              if (node.exponent) markPlaceholders(node.exponent);
-              break;
-            case 'sqrt':
-              if (node.radicand) markPlaceholders(node.radicand);
-              break;
-            case 'nthRoot':
-              if (node.degree) markPlaceholders(node.degree);
-              if (node.radicand) markPlaceholders(node.radicand);
-              break;
-            case 'integral':
-              if (node.integrand) markPlaceholders(node.integrand);
-              break;
-            case 'lim':
-              if (node.expr) markPlaceholders(node.expr);
-              break;
-            case 'matrix':
-            case 'system':
-              if (node.rows) {
-                for (const row of node.rows) {
-                  markPlaceholders(row);
-                }
-              }
-              break;
-          }
-        }
-      }
-    };
-
-    markPlaceholders(this.latexTree);
-  }
-
-  renderLatexOnCanvas(): void {
+  renderLatexOnCanvas(
+    trustMode: boolean = true,
+    throwError: boolean = false
+  ): void {
     const div = this.mathDivRef.nativeElement.querySelector('.katex-wrapper');
     if (!div || !(div instanceof HTMLElement)) return;
 
@@ -162,109 +108,23 @@ export class MathCanvasComponent implements OnInit, OnDestroy, AfterViewInit {
       this.latexTree,
       this.selectedPlaceholderId
     );
-    const wrappedLatex = `\\begin{aligned} ${latexStr} \\end{aligned}`;
+    const wrappedLatex = wrapAligned(latexStr);
 
     const fixedLatex = fixNestedPowers(wrappedLatex);
 
-    if (!this.isLatexValid(fixedLatex)) return;
+    if (!isLatexValid(fixedLatex)) return;
 
     katex.render(fixedLatex, div, {
-      throwOnError: false,
+      throwOnError: throwError,
       displayMode: true,
       output: 'mathml',
-      trust: true,
+      trust: trustMode,
+      strict: false,
     });
 
-    this.latexInput = fixedLatex
-      .replace(/\\begin{aligned}|\\end{aligned}/g, '')
-      .trim();
+    this.latexInput = unwrapAligned(fixedLatex);
 
-    this.addPlaceholderAttributes(div);
-  }
-
-  replacePlaceholder(
-    nodes: LatexNode[],
-    placeholderId: string,
-    newNodes: LatexNode[]
-  ): LatexNode[] {
-    return nodes.map((node) => {
-      if (node.type === 'placeholder' && node.id === placeholderId) {
-        return newNodes.length === 1
-          ? newNodes[0]
-          : { type: 'text', value: '' };
-      }
-
-      switch (node.type) {
-        case 'fraction':
-          return {
-            ...node,
-            numerator: node.numerator
-              ? this.replacePlaceholder(node.numerator, placeholderId, newNodes)
-              : node.numerator,
-            denominator: node.denominator
-              ? this.replacePlaceholder(
-                  node.denominator,
-                  placeholderId,
-                  newNodes
-                )
-              : node.denominator,
-          };
-        case 'power':
-          return {
-            ...node,
-            base: node.base
-              ? this.replacePlaceholder(node.base, placeholderId, newNodes)
-              : node.base,
-            exponent: node.exponent
-              ? this.replacePlaceholder(node.exponent, placeholderId, newNodes)
-              : node.exponent,
-          };
-        case 'sqrt':
-          return {
-            ...node,
-            radicand: node.radicand
-              ? this.replacePlaceholder(node.radicand, placeholderId, newNodes)
-              : node.radicand,
-          };
-        case 'nthRoot':
-          return {
-            ...node,
-            degree: node.degree
-              ? this.replacePlaceholder(node.degree, placeholderId, newNodes)
-              : node.degree,
-            radicand: node.radicand
-              ? this.replacePlaceholder(node.radicand, placeholderId, newNodes)
-              : node.radicand,
-          };
-        case 'integral':
-          return {
-            ...node,
-            integrand: node.integrand
-              ? this.replacePlaceholder(node.integrand, placeholderId, newNodes)
-              : node.integrand,
-          };
-        case 'lim':
-          return {
-            ...node,
-            expr: node.expr
-              ? this.replacePlaceholder(node.expr, placeholderId, newNodes)
-              : node.expr,
-          };
-        case 'matrix':
-        case 'system':
-          return {
-            ...node,
-            rows: node.rows.map((row) =>
-              row.map(
-                (cell) =>
-                  this.replacePlaceholder([cell], placeholderId, newNodes)[0]
-              )
-            ),
-          };
-        default:
-          return node;
-      }
-    });
+    addPlaceholderAttributes(div, this.latexTree, this.selectedPlaceholderId);
   }
 
   onPlaceholderClick(placeholderId: string) {
@@ -275,14 +135,14 @@ export class MathCanvasComponent implements OnInit, OnDestroy, AfterViewInit {
   onWindowButtonClick(button: MathButton) {
     if (this.selectedPlaceholderId) {
       if (button.template) {
-        this.latexTree = this.replacePlaceholder(
+        this.latexTree = replacePlaceholder(
           this.latexTree,
           this.selectedPlaceholderId,
           [button.template]
         );
       } else {
         const newNode: LatexNode = { type: 'text', value: button.latex };
-        this.latexTree = this.replacePlaceholder(
+        this.latexTree = replacePlaceholder(
           this.latexTree,
           this.selectedPlaceholderId,
           [newNode]
@@ -302,16 +162,14 @@ export class MathCanvasComponent implements OnInit, OnDestroy, AfterViewInit {
 
   onLatexInputChange() {
     const input = this.latexInput.trim();
-    const wrapped = `\\begin{aligned} ${input} \\end{aligned}`;
+    const wrapped = wrapAligned(input);
 
     try {
       const fixedLatex = fixNestedPowers(wrapped);
 
-      if (!this.isLatexValid(fixedLatex)) throw new Error('Invalid LaTeX');
+      if (!isLatexValid(fixedLatex)) throw new Error('Invalid LaTeX');
 
-      this.latexTree = parseLatexToNodes(
-        fixedLatex.replace(/\\begin{aligned}|\\end{aligned}/g, '').trim()
-      );
+      this.latexTree = parseLatexToNodes(unwrapAligned(fixedLatex));
 
       this.renderLatexOnCanvas();
 
@@ -334,24 +192,13 @@ export class MathCanvasComponent implements OnInit, OnDestroy, AfterViewInit {
         try {
           const autofixed = fixNestedPowers(wrapped);
 
-          this.latexTree = parseLatexToNodes(
-            autofixed.replace(/\\begin{aligned|\\{aligned}/g, '').trim()
-          );
+          this.latexTree = parseLatexToNodes(unwrapAligned(autofixed));
 
           this.renderLatexOnCanvas();
         } catch (e2) {
           console.warn('Invalid after timeout.', e2);
         }
       }, 3000);
-    }
-  }
-
-  isLatexValid(latex: string): boolean {
-    try {
-      katex.renderToString(latex, { throwOnError: true });
-      return true;
-    } catch {
-      return false;
     }
   }
 
