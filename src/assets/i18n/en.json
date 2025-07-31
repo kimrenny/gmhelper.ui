@@ -106,7 +106,10 @@
       },
       "WARNING": {
         "TITLE": "Warning",
-        "RATED": "Rating can only be submitted once."
+        "RATED": "Rating can only be submitted once.",
+        "PLACEHOLDER": {
+          "EDIT_DISABLED": "Editing LaTeX code is disabled until all empty fields are filled"
+        }
       }
     },
     "TASK": {

@@ -66,6 +66,7 @@
       class="latex-textarea"
       [(ngModel)]="latexInput"
       (input)="onLatexInputChange()"
+      [readonly]="hasPlaceholders(latexTree)"
     ></textarea>
   </div>
 </div>

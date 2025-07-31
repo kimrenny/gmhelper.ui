@@ -106,7 +106,10 @@
       },
       "WARNING": {
         "TITLE": "警告",
-        "RATED": "评分只能提交一次。"
+        "RATED": "评分只能提交一次。",
+        "PLACEHOLDER": {
+          "EDIT_DISABLED": "在填写所有空字段之前，LaTeX 代码的编辑功能已被禁用"
+        }
       }
     },
     "TASK": {

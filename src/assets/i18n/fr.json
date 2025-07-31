@@ -106,7 +106,10 @@
       },
       "WARNING": {
         "TITLE": "Avertissement",
-        "RATED": "L'évaluation ne peut être soumise qu'une seule fois."
+        "RATED": "L'évaluation ne peut être soumise qu'une seule fois.",
+        "PLACEHOLDER": {
+          "EDIT_DISABLED": "La modification du code LaTeX est désactivée tant que tous les champs vides ne sont pas remplis"
+        }
       }
     },
     "TASK": {

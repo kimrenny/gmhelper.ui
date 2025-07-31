@@ -110,15 +110,16 @@ export const FUNCTIONAL_BUTTONS: MathButton[] = [
       denominator: [createPlaceholder()],
     },
   },
-  {
-    label: 'systemEquations',
-    icon: 'assets/icons/system-equations.png',
-    latex: '\\left\\{\\begin{array}{} \\end{array}\\right.',
-    template: {
-      type: 'system',
-      rows: [[createPlaceholder()]],
-    },
-  },
+  // disabled
+  // {
+  //   label: 'systemEquations',
+  //   icon: 'assets/icons/system-equations.png',
+  //   latex: '\\left\\{\\begin{array}{} \\end{array}\\right.',
+  //   template: {
+  //     type: 'system',
+  //     rows: [[createPlaceholder()], [createPlaceholder()]],
+  //   },
+  // },
   {
     label: 'integral',
     icon: 'assets/icons/integral.png',
@@ -143,7 +144,11 @@ export const FUNCTIONAL_BUTTONS: MathButton[] = [
     latex: '\\begin{bmatrix} \\end{bmatrix}',
     template: {
       type: 'matrix',
-      rows: [[createPlaceholder()]],
+      rows: [
+        [createPlaceholder(), createPlaceholder(), createPlaceholder()],
+        [createPlaceholder(), createPlaceholder(), createPlaceholder()],
+        [createPlaceholder(), createPlaceholder(), createPlaceholder()],
+      ],
     },
   },
 ];

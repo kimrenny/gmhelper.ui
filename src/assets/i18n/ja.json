@@ -106,7 +106,10 @@
       },
       "WARNING": {
         "TITLE": "警告",
-        "RATED": "評価は一度しか送信できません。"
+        "RATED": "評価は一度しか送信できません。",
+        "PLACEHOLDER": {
+          "EDIT_DISABLED": "空のフィールドがすべて埋まるまで、LaTeXコードの編集は無効です"
+        }
       }
     },
     "TASK": {

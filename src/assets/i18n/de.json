@@ -106,7 +106,10 @@
       },
       "WARNING": {
         "TITLE": "Warnung",
-        "RATED": "Die Bewertung kann nur einmal abgegeben werden."
+        "RATED": "Die Bewertung kann nur einmal abgegeben werden.",
+        "PLACEHOLDER": {
+          "EDIT_DISABLED": "Die Bearbeitung des LaTeX-Codes ist deaktiviert, bis alle leeren Felder ausgefüllt sind"
+        }
       }
     },
     "TASK": {

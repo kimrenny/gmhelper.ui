@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { SubjectService } from '../services/subject.service';
 import { Subscription } from 'rxjs';
 import {
@@ -27,7 +27,11 @@ import {
   wrapAligned,
 } from '../utils/latex.utils';
 import { replacePlaceholder } from '../utils/latex-tree.utils';
-import { addPlaceholderAttributes } from '../utils/latex-placeholders.utils';
+import {
+  addPlaceholderAttributes,
+  hasPlaceholders,
+} from '../utils/latex-placeholders.utils';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-math-canvas',
@@ -54,13 +58,21 @@ export class MathCanvasComponent implements OnInit, OnDestroy, AfterViewInit {
   specialWindowRows: MathButton[][] = [];
   functionalWindowRows: MathButton[][] = [];
 
+  private lastValidLatexInput: string = '';
+
   private invalidLatexTimeout: any = null;
   private lastInvalidInput = '';
+
+  hasPlaceholders = hasPlaceholders;
 
   @ViewChild('mathDiv', { static: true })
   mathDivRef!: ElementRef<HTMLDivElement>;
 
-  constructor(public subjectService: SubjectService) {}
+  constructor(
+    public subjectService: SubjectService,
+    private toastr: ToastrService,
+    private translate: TranslateService
+  ) {}
 
   ngOnInit(): void {
     this.subjectSub = this.subjectService.getSubject().subscribe((subject) => {
@@ -124,6 +136,8 @@ export class MathCanvasComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.latexInput = unwrapAligned(fixedLatex);
 
+    this.lastValidLatexInput = this.latexInput;
+
     addPlaceholderAttributes(div, this.latexTree, this.selectedPlaceholderId);
   }
 
@@ -161,6 +175,12 @@ export class MathCanvasComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   onLatexInputChange() {
+    if (hasPlaceholders(this.latexTree)) {
+      this.latexInput = this.lastValidLatexInput;
+
+      return;
+    }
+
     const input = this.latexInput.trim();
     const wrapped = wrapAligned(input);
 
@@ -209,6 +229,14 @@ export class MathCanvasComponent implements OnInit, OnDestroy, AfterViewInit {
       window === 'functional' ? !this.isFunctionalWindowVisible : false;
     this.isInputWindowVisible =
       window === 'input' ? !this.isInputWindowVisible : false;
+
+    if (this.isInputWindowVisible && hasPlaceholders(this.latexTree)) {
+      const message = this.translate.instant(
+        'CANVAS.ERRORS.WARNING.PLACEHOLDER.EDIT_DISABLED'
+      );
+      const title = this.translate.instant('CANVAS.ERRORS.WARNING.TITLE');
+      this.toastr.warning(message, title);
+    }
   }
 
   getButtonRows(buttons: MathButton[]): MathButton[][] {

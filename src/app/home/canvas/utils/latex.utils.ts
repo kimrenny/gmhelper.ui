@@ -85,17 +85,18 @@ export function latexNodesToLatex(
           return `\\begin{bmatrix} ${rowsLatex} \\end{bmatrix}`;
         }
 
-        case 'system': {
-          if (!node.rows || !node.rows.length) return '';
-          const systemRows = node.rows
-            .map((row) =>
-              row
-                .map((cell) => latexNodesToLatex([cell], selectedId))
-                .join(' & ')
-            )
-            .join(' \\\\ ');
-          return `\\left\\{\\begin{array}{} ${systemRows} \\end{array}\\right.`;
-        }
+        /* disabled */
+        // case 'system': {
+        //   if (!node.rows || !node.rows.length) return '';
+        //   const systemRows = node.rows
+        //     .map((row) =>
+        //       row
+        //         .map((cell) => latexNodesToLatex([cell], selectedId))
+        //         .join(' & ')
+        //     )
+        //     .join(' \\\\ ');
+        //   return `\\left\\{\\begin{array}{} ${systemRows} \\end{array}\\right.`;
+        // }
 
         case 'placeholder': {
           const classes = ['placeholder'];
@@ -265,23 +266,24 @@ export function parseLatexToNodes(input: string): LatexNode[] {
       continue;
     }
 
-    if (input.startsWith('\\left\\{\\begin{array}', i)) {
-      const endSig = '\\end{array}\\right.';
-      const endIdx = input.indexOf(endSig, i);
-      const content = endIdx >= 0 ? input.slice(i, endIdx) : '';
-      i = endIdx >= 0 ? endIdx + endSig.length : input.length;
-      const innerStart = content.indexOf('}');
-      const inner = innerStart >= 0 ? content.slice(innerStart + 1) : '';
-      const rowsStr = inner.split('\\\\');
-      const rows = rowsStr.map((r) =>
-        r
-          .split('&')
-          .map((cell) => parseLatexToNodes(cell.trim()) as unknown as LatexNode)
-          .flat()
-      );
-      nodes.push({ type: 'system', rows });
-      continue;
-    }
+    /* disabled */
+    // if (input.startsWith('\\left\\{\\begin{array}', i)) {
+    //   const endSig = '\\end{array}\\right.';
+    //   const endIdx = input.indexOf(endSig, i);
+    //   const content = endIdx >= 0 ? input.slice(i, endIdx) : '';
+    //   i = endIdx >= 0 ? endIdx + endSig.length : input.length;
+    //   const innerStart = content.indexOf('}');
+    //   const inner = innerStart >= 0 ? content.slice(innerStart + 1) : '';
+    //   const rowsStr = inner.split('\\\\');
+    //   const rows = rowsStr.map((r) =>
+    //     r
+    //       .split('&')
+    //       .map((cell) => parseLatexToNodes(cell.trim()) as unknown as LatexNode)
+    //       .flat()
+    //   );
+    //   nodes.push({ type: 'system', rows });
+    //   continue;
+    // }
 
     if (input[i] === '\\') {
       let cmd = '\\';
@@ -338,18 +340,22 @@ export function generateLatex(nodes: LatexNode[]): string {
           return `\\int ${generateLatex(node.integrand ?? [])} \\, dx`;
         case 'lim':
           return `\\lim_{x \\to \\infty} ${generateLatex(node.expr ?? [])}`;
-        case 'matrix':
-          return (
-            '\\begin{bmatrix}' +
-            node.rows.map((row) => generateLatex(row)).join(' \\\\ ') +
-            '\\end{bmatrix}'
-          );
-        case 'system':
-          return (
-            '\\left\\{\\begin{array}{}' +
-            node.rows.map((row) => generateLatex(row)).join(' \\\\ ') +
-            '\\end{array}\\right.'
-          );
+        case 'matrix': {
+          const rowsLatex = (node.rows ?? [])
+            .map((row) => row.map((cell) => generateLatex([cell])).join(' & '))
+            .join(' \\\\ ');
+          return `\\begin{bmatrix} ${rowsLatex} \\end{bmatrix}`;
+        }
+        /* disabled */
+        // case 'system': {
+        //   const cols = Math.max(1, ...(node.rows ?? []).map((r) => r.length));
+        //   const colSpec = 'l'.repeat(cols);
+
+        //   const rowsLatex = (node.rows ?? [])
+        //     .map((row) => row.map((cell) => generateLatex([cell])).join(' & '))
+        //     .join(' \\\\ ');
+        //   return `\\left\\{\\begin{array}{${colSpec}} ${rowsLatex} \\end{array}\\right.`;
+        // }
         case 'placeholder':
           return `\\htmlClass{placeholder}{\\htmlStyle{border:2px solid black; padding:2px; display:inline-block;}{?}}`;
         default:
@@ -470,13 +476,13 @@ export function isLatexStructurallyValid(latex: string): boolean {
       continue;
     }
 
-    if (s.startsWith('\\left\\{\\begin{array}', i)) {
-      const endSig = '\\end{array}\\right.';
-      const endIdx = s.indexOf(endSig, i);
-      if (endIdx === -1) return false;
-      i = endIdx + endSig.length;
-      continue;
-    }
+    // if (s.startsWith('\\left\\{\\begin{array}', i)) {
+    //   const endSig = '\\end{array}\\right.';
+    //   const endIdx = s.indexOf(endSig, i);
+    //   if (endIdx === -1) return false;
+    //   i = endIdx + endSig.length;
+    //   continue;
+    // }
 
     if (s[i] === '^') {
       i++;

@@ -62,8 +62,9 @@ export function replacePlaceholder(
             ? replacePlaceholder(node.expr, placeholderId, newNodes)
             : node.expr,
         };
+      /* disabled */
+      //case 'system':
       case 'matrix':
-      case 'system':
         return {
           ...node,
           rows: node.rows.map((row) =>

@@ -50,8 +50,9 @@ export function addPlaceholderAttributes(
           case 'lim':
             if (node.expr) markPlaceholders(node.expr);
             break;
+          /* disabled */
+          //case 'system':
           case 'matrix':
-          case 'system':
             if (node.rows) {
               for (const row of node.rows) {
                 markPlaceholders(row);
@@ -64,4 +65,40 @@ export function addPlaceholderAttributes(
   };
 
   markPlaceholders(latexTree);
+}
+
+export function hasPlaceholders(nodes: LatexNode[]): boolean {
+  return nodes.some((node) => {
+    if (node.type === 'placeholder') return true;
+
+    switch (node.type) {
+      case 'fraction':
+        return (
+          hasPlaceholders(node.numerator ?? []) ||
+          hasPlaceholders(node.denominator ?? [])
+        );
+      case 'power':
+        return (
+          hasPlaceholders(node.base ?? []) ||
+          hasPlaceholders(node.exponent ?? [])
+        );
+      case 'sqrt':
+        return hasPlaceholders(node.radicand ?? []);
+      case 'nthRoot':
+        return (
+          hasPlaceholders(node.degree ?? []) ||
+          hasPlaceholders(node.radicand ?? [])
+        );
+      case 'integral':
+        return hasPlaceholders(node.integrand ?? []);
+      case 'lim':
+        return hasPlaceholders(node.expr ?? []);
+      /* disabled */
+      //case 'system':
+      case 'matrix':
+        return node.rows.some((row) => hasPlaceholders(row));
+      default:
+        return false;
+    }
+  });
 }
