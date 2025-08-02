@@ -26,6 +26,7 @@ import {
 import { replacePlaceholder } from '../utils/latex-tree.utils';
 import {
   addPlaceholderAttributes,
+  assignNewPlaceholderIds,
   hasPlaceholders,
 } from '../utils/latex-placeholders.utils';
 import { ToastrService } from 'ngx-toastr';
@@ -249,6 +250,8 @@ export class MathCanvasComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.lastValidLatexInput = this.latexInput;
 
+    this.placeholderIdService.reset();
+    assignNewPlaceholderIds(this.latexTree, this.placeholderIdService);
     addPlaceholderAttributes(div, this.latexTree, this.selectedPlaceholderId);
   }
 
@@ -258,9 +261,11 @@ export class MathCanvasComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   onWindowButtonClick(button: MathButton) {
+    const template = button.getTemplate?.();
+
     if (this.selectedPlaceholderId) {
-      if (button.template) {
-        this.appendOrReplaceInPlaceholder(button.template);
+      if (template) {
+        this.appendOrReplaceInPlaceholder(template);
       } else {
         const newNode: LatexNode = { type: 'text', value: button.latex };
         console.log('[APPEND TEXT TO TREE]', JSON.stringify(newNode));
@@ -272,8 +277,8 @@ export class MathCanvasComponent implements OnInit, OnDestroy, AfterViewInit {
         this.selectedPlaceholderId = null;
       }
     } else {
-      if (button.template) {
-        this.latexTree.push(button.template);
+      if (template) {
+        this.latexTree.push(template);
       } else {
         const newNode: LatexNode = { type: 'text', value: button.latex };
 

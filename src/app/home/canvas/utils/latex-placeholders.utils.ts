@@ -1,3 +1,4 @@
+import { PlaceholderIdService } from '../services/math-canvas/placeholderId.service';
 import { LatexNode } from '../tools/math-expression.model';
 
 export function addPlaceholderAttributes(
@@ -64,6 +65,51 @@ export function addPlaceholderAttributes(
   };
 
   markPlaceholders(latexTree);
+}
+
+export function assignNewPlaceholderIds(
+  nodes: LatexNode[],
+  idService: PlaceholderIdService
+) {
+  for (const node of nodes) {
+    if (node.type === 'placeholder') {
+      node.id = `ph_${idService.getNextId()}`;
+    } else {
+      switch (node.type) {
+        case 'fraction':
+          if (node.numerator)
+            assignNewPlaceholderIds(node.numerator, idService);
+          if (node.denominator)
+            assignNewPlaceholderIds(node.denominator, idService);
+          break;
+        case 'power':
+          if (node.base) assignNewPlaceholderIds(node.base, idService);
+          if (node.exponent) assignNewPlaceholderIds(node.exponent, idService);
+          break;
+        case 'sqrt':
+          if (node.radicand) assignNewPlaceholderIds(node.radicand, idService);
+          break;
+        case 'nthRoot':
+          if (node.degree) assignNewPlaceholderIds(node.degree, idService);
+          if (node.radicand) assignNewPlaceholderIds(node.radicand, idService);
+          break;
+        case 'integral':
+          if (node.integrand)
+            assignNewPlaceholderIds(node.integrand, idService);
+          break;
+        case 'lim':
+          if (node.expr) assignNewPlaceholderIds(node.expr, idService);
+          break;
+        case 'matrix':
+          if (node.rows) {
+            for (const row of node.rows) {
+              assignNewPlaceholderIds(row, idService);
+            }
+          }
+          break;
+      }
+    }
+  }
 }
 
 export function hasPlaceholders(nodes: LatexNode[]): boolean {

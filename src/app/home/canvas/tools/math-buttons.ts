@@ -4,7 +4,7 @@ export interface MathButton {
   label: string;
   icon?: string;
   latex: string;
-  template?: LatexNode;
+  getTemplate?: () => LatexNode;
 }
 
 let placeholderIdCounter = 1;
@@ -78,77 +78,77 @@ export const FUNCTIONAL_BUTTONS: MathButton[] = [
     label: 'xⁿ',
     icon: '',
     latex: 'x^n',
-    template: {
+    getTemplate: () => ({
       type: 'power',
       base: [createPlaceholder()],
       exponent: [createPlaceholder()],
-    },
+    }),
   },
   {
     label: 'sqrt',
     icon: 'assets/icons/square-root.png',
     latex: '\\sqrt{}',
-    template: { type: 'sqrt', radicand: [createPlaceholder()] },
+    getTemplate: () => ({ type: 'sqrt', radicand: [createPlaceholder()] }),
   },
   {
     label: 'nthRoot',
     icon: 'assets/icons/nth-root.png',
     latex: '\\sqrt[n]{}',
-    template: {
+    getTemplate: () => ({
       type: 'nthRoot',
       degree: [createPlaceholder()],
       radicand: [createPlaceholder()],
-    },
+    }),
   },
   {
     label: 'fraction',
     icon: 'assets/icons/fraction.png',
     latex: '\\frac{}{}',
-    template: {
+    getTemplate: () => ({
       type: 'fraction',
       numerator: [createPlaceholder()],
       denominator: [createPlaceholder()],
-    },
+    }),
   },
   // disabled
   // {
   //   label: 'systemEquations',
   //   icon: 'assets/icons/system-equations.png',
   //   latex: '\\left\\{\\begin{array}{} \\end{array}\\right.',
-  //   template: {
+  //   getTemplate: () => ({
   //     type: 'system',
   //     rows: [[createPlaceholder()], [createPlaceholder()]],
-  //   },
+  //   }),
   // },
   {
     label: 'integral',
     icon: 'assets/icons/integral.png',
     latex: '\\int x \\, dx',
-    template: {
+    getTemplate: () => ({
       type: 'integral',
       integrand: [createPlaceholder()],
-    },
+    }),
   },
   {
     label: 'lim',
     icon: '',
     latex: '\\lim_{x \\to \\infty} a_x',
-    template: {
+    getTemplate: () => ({
       type: 'lim',
       expr: [createPlaceholder()],
-    },
+    }),
   },
   {
     label: 'matrix',
     icon: 'assets/icons/matrix.png',
     latex: '\\begin{bmatrix} \\end{bmatrix}',
-    template: {
+    getTemplate: () => ({
       type: 'matrix',
       rows: [
         [createPlaceholder(), createPlaceholder(), createPlaceholder()],
         [createPlaceholder(), createPlaceholder(), createPlaceholder()],
         [createPlaceholder(), createPlaceholder(), createPlaceholder()],
       ],
-    },
+    }),
   },
 ];
