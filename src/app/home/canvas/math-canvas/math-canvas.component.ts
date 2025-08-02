@@ -19,19 +19,22 @@ import {
 import katex from 'katex';
 import { LatexNode } from '../tools/math-expression.model';
 import {
-  fixNestedPowers,
   isLatexValid,
-  latexNodesToLatex,
-  parseLatexToNodes,
   unwrapAligned,
   wrapAligned,
-} from '../utils/latex.utils';
+} from '../utils/latex-validation.utils';
 import { replacePlaceholder } from '../utils/latex-tree.utils';
 import {
   addPlaceholderAttributes,
   hasPlaceholders,
 } from '../utils/latex-placeholders.utils';
 import { ToastrService } from 'ngx-toastr';
+import {
+  fixNestedPowers,
+  latexNodesToLatex,
+  parseLatexToNodes,
+} from '../utils/latex-parser.utils';
+import { PlaceholderIdService } from '../services/math-canvas/placeholderId.service';
 
 @Component({
   selector: 'app-math-canvas',
@@ -63,6 +66,8 @@ export class MathCanvasComponent implements OnInit, OnDestroy, AfterViewInit {
   private invalidLatexTimeout: any = null;
   private lastInvalidInput = '';
 
+  activePlaceholderEditMode: boolean = false;
+
   hasPlaceholders = hasPlaceholders;
 
   @ViewChild('mathDiv', { static: true })
@@ -71,7 +76,8 @@ export class MathCanvasComponent implements OnInit, OnDestroy, AfterViewInit {
   constructor(
     public subjectService: SubjectService,
     private toastr: ToastrService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private placeholderIdService: PlaceholderIdService
   ) {}
 
   ngOnInit(): void {
@@ -92,19 +98,124 @@ export class MathCanvasComponent implements OnInit, OnDestroy, AfterViewInit {
       'click',
       this.onMathClick.bind(this)
     );
+
+    document.addEventListener('keydown', (e: KeyboardEvent) => {
+      if (
+        (e.key === 'Enter' || e.key === 'Escape') &&
+        this.activePlaceholderEditMode
+      ) {
+        this.exitPlaceholderEditMode();
+        return;
+      }
+
+      this.handleKeyboardInput(e);
+    });
+  }
+
+  private handleKeyboardInput(event: KeyboardEvent) {
+    if (this.isInputWindowVisible && hasPlaceholders(this.latexTree)) {
+      return;
+    }
+
+    const key = event.key;
+
+    if (key.length !== 1) return;
+
+    event.preventDefault();
+
+    const newNode: LatexNode = { type: 'text', value: key };
+
+    if (this.selectedPlaceholderId && this.activePlaceholderEditMode) {
+      this.appendOrReplaceInPlaceholder(newNode);
+    } else {
+      this.latexTree.push(newNode);
+    }
+
+    this.renderLatexOnCanvas();
   }
 
   onMathClick(event: MouseEvent) {
     let target = event.target as HTMLElement | null;
+    let clickedPlaceholder = false;
 
     while (target && target !== this.mathDivRef.nativeElement) {
       if (target.dataset && target.dataset['placeholderId']) {
         this.selectedPlaceholderId = target.dataset['placeholderId'];
+        this.activePlaceholderEditMode = true;
+        clickedPlaceholder = true;
+        console.log('Clicked placeholder id:', this.selectedPlaceholderId);
         this.renderLatexOnCanvas();
+
         break;
       }
       target = target.parentElement;
     }
+
+    if (!clickedPlaceholder) {
+      this.exitPlaceholderEditMode();
+    }
+  }
+
+  private appendOrReplaceInPlaceholder(newNode: LatexNode) {
+    const tryAppend = (nodes: LatexNode[]): boolean => {
+      console.log('appendOrReplaceInPlaceholder:', newNode);
+      for (const node of nodes) {
+        if (
+          node.type === 'placeholder' &&
+          node.id === this.selectedPlaceholderId
+        ) {
+          if (newNode.type === 'text') {
+            this.latexTree = replacePlaceholder(
+              this.latexTree,
+              this.selectedPlaceholderId,
+              [newNode]
+            );
+          } else {
+            this.latexTree = replacePlaceholder(
+              this.latexTree,
+              this.selectedPlaceholderId,
+              [newNode]
+            );
+          }
+          return true;
+        }
+
+        if (node.type === 'fraction') {
+          if (node.numerator && tryAppend(node.numerator)) return true;
+          if (node.denominator && tryAppend(node.denominator)) return true;
+        } else if (node.type === 'power') {
+          if (node.base && tryAppend(node.base)) return true;
+          if (node.exponent && tryAppend(node.exponent)) return true;
+        } else if (node.type === 'sqrt') {
+          if (node.radicand && tryAppend(node.radicand)) return true;
+        } else if (node.type === 'nthRoot') {
+          if (node.degree && tryAppend(node.degree)) return true;
+          if (node.radicand && tryAppend(node.radicand)) return true;
+        } else if (node.type === 'integral') {
+          if (node.integrand && tryAppend(node.integrand)) return true;
+        } else if (node.type === 'lim') {
+          if (node.expr && tryAppend(node.expr)) return true;
+        } else if (node.type === 'matrix' || node.type === 'system') {
+          for (const row of node.rows) {
+            if (tryAppend(row)) return true;
+          }
+        }
+        /* else if (node.type === 'text') {
+          if (
+            this.selectedPlaceholderId &&
+            this.activePlaceholderEditMode &&
+            newNode.type === 'text'
+          ) {
+            node.value += newNode.value;
+            return true;
+          }
+        }
+        */
+      }
+      return false;
+    };
+
+    tryAppend(this.latexTree);
   }
 
   renderLatexOnCanvas(
@@ -149,25 +260,25 @@ export class MathCanvasComponent implements OnInit, OnDestroy, AfterViewInit {
   onWindowButtonClick(button: MathButton) {
     if (this.selectedPlaceholderId) {
       if (button.template) {
-        this.latexTree = replacePlaceholder(
-          this.latexTree,
-          this.selectedPlaceholderId,
-          [button.template]
-        );
+        this.appendOrReplaceInPlaceholder(button.template);
       } else {
         const newNode: LatexNode = { type: 'text', value: button.latex };
-        this.latexTree = replacePlaceholder(
-          this.latexTree,
-          this.selectedPlaceholderId,
-          [newNode]
-        );
+        console.log('[APPEND TEXT TO TREE]', JSON.stringify(newNode));
+
+        this.appendOrReplaceInPlaceholder(newNode);
+      }
+
+      if (!this.activePlaceholderEditMode) {
         this.selectedPlaceholderId = null;
       }
     } else {
       if (button.template) {
         this.latexTree.push(button.template);
       } else {
-        this.latexTree.push({ type: 'text', value: button.latex });
+        const newNode: LatexNode = { type: 'text', value: button.latex };
+
+        this.latexTree.push(newNode);
+        console.log('[APPEND TEXT TO TREE]', JSON.stringify(newNode));
       }
     }
 
@@ -222,6 +333,12 @@ export class MathCanvasComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
+  exitPlaceholderEditMode() {
+    this.selectedPlaceholderId = null;
+    this.activePlaceholderEditMode = false;
+    this.renderLatexOnCanvas();
+  }
+
   toggleWindow(window: 'special' | 'functional' | 'input') {
     this.isSpecialWindowVisible =
       window === 'special' ? !this.isSpecialWindowVisible : false;
@@ -249,7 +366,7 @@ export class MathCanvasComponent implements OnInit, OnDestroy, AfterViewInit {
 
   onClearCanvas(): void {
     this.latexTree = [];
-    this.renderLatexOnCanvas();
+    this.exitPlaceholderEditMode();
   }
 
   ngOnDestroy(): void {

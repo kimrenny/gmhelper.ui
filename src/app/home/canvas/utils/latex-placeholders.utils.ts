@@ -5,25 +5,25 @@ export function addPlaceholderAttributes(
   latexTree: LatexNode[],
   selectedId: string | null
 ) {
-  const spans = Array.from(container.querySelectorAll('span'));
+  const elements = Array.from(container.querySelectorAll('mo'));
 
   let placeholderIndex = 0;
 
   const markPlaceholders = (nodes: LatexNode[]) => {
     for (const node of nodes) {
       if (node.type === 'placeholder') {
-        if (placeholderIndex >= spans.length) break;
+        if (placeholderIndex >= elements.length) break;
 
-        const span = spans[placeholderIndex] as HTMLElement;
+        const el = elements[placeholderIndex] as HTMLElement;
 
-        span.classList.add('placeholder');
-        span.style.cursor = 'pointer';
-        span.dataset['placeholderId'] = node.id || '';
+        el.classList.add('placeholder');
+        el.style.cursor = 'pointer';
+        el.dataset['placeholderId'] = node.id || '';
 
         if (node.id === selectedId) {
-          span.classList.add('selected-placeholder');
+          el.classList.add('selected-placeholder');
         } else {
-          span.classList.remove('selected-placeholder');
+          el.classList.remove('selected-placeholder');
         }
 
         placeholderIndex++;
@@ -50,11 +50,10 @@ export function addPlaceholderAttributes(
           case 'lim':
             if (node.expr) markPlaceholders(node.expr);
             break;
-          /* disabled */
-          //case 'system':
           case 'matrix':
             if (node.rows) {
               for (const row of node.rows) {
+                if (placeholderIndex === 0) placeholderIndex++;
                 markPlaceholders(row);
               }
             }

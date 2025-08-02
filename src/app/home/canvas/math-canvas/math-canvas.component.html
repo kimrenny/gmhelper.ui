@@ -8,6 +8,7 @@
       <button
         (click)="toggleWindow('special')"
         class="special-chars-btn"
+        [class.active]="isSpecialWindowVisible"
       ></button>
     </div>
 
@@ -15,11 +16,16 @@
       <button
         (click)="toggleWindow('functional')"
         class="functional-btn"
+        [class.active]="isFunctionalWindowVisible"
       ></button>
     </div>
 
     <div class="button-wrapper">
-      <button (click)="toggleWindow('input')" class="input-btn"></button>
+      <button
+        (click)="toggleWindow('input')"
+        class="input-btn"
+        [class.active]="isInputWindowVisible"
+      ></button>
     </div>
 
     <div class="button-wrapper">
@@ -68,5 +74,12 @@
       (input)="onLatexInputChange()"
       [readonly]="hasPlaceholders(latexTree)"
     ></textarea>
+  </div>
+
+  <div *ngIf="activePlaceholderEditMode" class="placeholder-edit-banner">
+    {{ "CANVAS.EDIT_MODE.ALERT" | translate }}
+    <button (click)="exitPlaceholderEditMode()">
+      {{ "CANVAS.EDIT_MODE.EXIT" | translate }}
+    </button>
   </div>
 </div>

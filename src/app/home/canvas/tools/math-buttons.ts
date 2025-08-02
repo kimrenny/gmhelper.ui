@@ -7,7 +7,7 @@ export interface MathButton {
   template?: LatexNode;
 }
 
-let placeholderIdCounter = 0;
+let placeholderIdCounter = 1;
 
 function createPlaceholder(): LatexNode {
   return {
