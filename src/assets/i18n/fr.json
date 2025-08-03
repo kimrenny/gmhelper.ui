@@ -104,6 +104,13 @@
       "LENGTH": {
         "INCORRECT": "Longueur de ligne invalide. Seuls les nombres, 'x', 'y' ou '?' sont autorisés."
       },
+      "ERROR": {
+        "TITLE": "Erreur",
+        "NOT_AUTHORIZED": "L’autorisation est requise pour évaluer la solution.",
+        "UNKNOWN": "Une erreur inconnue s’est produite. Réessayez plus tard.",
+        "NOT_TASK_CREATOR": "Seul le créateur de la tâche peut évaluer cette solution.",
+        "UNAUTHORIZED": "Erreur d’autorisation côté serveur. Veuillez réessayer plus tard."
+      },
       "WARNING": {
         "TITLE": "Avertissement",
         "RATED": "L'évaluation ne peut être soumise qu'une seule fois.",

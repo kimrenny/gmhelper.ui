@@ -60,11 +60,10 @@ export class GeoCanvasSolutionService implements CanvasServiceInterface {
 
   public getTaskFromApi(id: string): Observable<boolean> {
     return this.http
-      .get<ApiResponse<any>>(`${this.api}/api/taskprocessing/get/${id}`)
+      .get<ApiResponse<any>>(`${this.api}/api/taskprocessing/geo/get/${id}`)
       .pipe(
         tap((res) => {
           if (res.success) {
-            console.log('Task data:', res.data);
             this.deserializeTaskJson(res.data.task);
             this.givenService.setGiven(res.data.given);
           } else {
@@ -136,7 +135,7 @@ export class GeoCanvasSolutionService implements CanvasServiceInterface {
   rateSolution(isCorrect: boolean): Observable<any> {
     const token = this.tokenService.getTokenFromStorage('authToken');
     if (!token) {
-      return throwError(() => new Error('User is not authorized'));
+      return throwError(() => new Error('USER_NOT_AUTHORIZED_CLIENT'));
     }
 
     return from(firstValueFrom(this.taskId$)).pipe(
@@ -144,7 +143,7 @@ export class GeoCanvasSolutionService implements CanvasServiceInterface {
         if (!taskId) {
           return throwError(() => new Error('taskId is empty'));
         }
-        const url = `${this.api}/api/taskprocessing/rate`;
+        const url = `${this.api}/api/taskprocessing/geo/rate`;
         const body = { taskId, isCorrect };
         const headers = this.tokenService.createAuthHeaders(token);
         return this.http.post(url, body, { headers });

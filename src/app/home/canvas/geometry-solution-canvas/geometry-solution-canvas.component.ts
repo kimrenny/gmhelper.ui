@@ -317,11 +317,41 @@ export class GeoSolutionCanvasComponent implements OnInit, OnDestroy {
       return;
     }
     this.geoCanvasSolutionService.rateSolution(isCorrect).subscribe({
-      next: (response) => {
+      next: () => {
         this.isRated = true;
         this.rated = isCorrect;
       },
       error: (error) => {
+        if (error.message === 'USER_NOT_AUTHORIZED_CLIENT') {
+          this.toastr.error(
+            this.translate.instant('CANVAS.ERRORS.ERROR.NOT_AUTHORIZED'),
+            this.translate.instant('CANVAS.ERRORS.ERROR.TITLE')
+          );
+          return;
+        }
+
+        if (error.status === 401) {
+          const message = error?.error?.message || '';
+
+          if (message === 'Only the task creator can rate this task.') {
+            this.toastr.error(
+              this.translate.instant('CANVAS.ERRORS.ERROR.NOT_TASK_CREATOR'),
+              this.translate.instant('CANVAS.ERRORS.ERROR.TITLE')
+            );
+            return;
+          }
+
+          this.toastr.error(
+            this.translate.instant('CANVAS.ERRORS.ERROR.UNAUTHORIZED'),
+            this.translate.instant('CANVAS.ERRORS.ERROR.TITLE')
+          );
+          return;
+        }
+
+        this.toastr.error(
+          this.translate.instant('CANVAS.ERRORS.ERROR.UNKNOWN'),
+          this.translate.instant('CANVAS.ERRORS.ERROR.TITLE')
+        );
         console.error('Error during proccessing the request:', error);
       },
     });

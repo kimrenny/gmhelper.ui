@@ -104,6 +104,13 @@
       "LENGTH": {
         "INCORRECT": "Ungültige Linienlänge. Nur Zahlen, 'x', 'y' oder '?' sind erlaubt."
       },
+      "ERROR": {
+        "TITLE": "Fehler",
+        "NOT_AUTHORIZED": "Zur Bewertung der Lösung ist eine Autorisierung erforderlich.",
+        "UNKNOWN": "Ein unbekannter Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.",
+        "NOT_TASK_CREATOR": "Nur der Aufgabenersteller kann diese Lösung bewerten.",
+        "UNAUTHORIZED": "Autorisierungsfehler auf der Serverseite. Bitte versuchen Sie es später erneut."
+      },
       "WARNING": {
         "TITLE": "Warnung",
         "RATED": "Die Bewertung kann nur einmal abgegeben werden.",

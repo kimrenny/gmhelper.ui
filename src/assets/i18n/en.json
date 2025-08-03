@@ -104,6 +104,13 @@
       "LENGTH": {
         "INCORRECT": "Invalid line length. Only numbers, 'x', 'y', or '?' are allowed."
       },
+      "ERROR": {
+        "TITLE": "Error",
+        "NOT_AUTHORIZED": "Authorization is required to rate the solution.",
+        "UNKNOWN": "An unknown error occurred. Try again later.",
+        "NOT_TASK_CREATOR": "Only the task creator can rate this solution.",
+        "UNAUTHORIZED": "Authorization error on the server side. Please try again later."
+      },
       "WARNING": {
         "TITLE": "Warning",
         "RATED": "Rating can only be submitted once.",

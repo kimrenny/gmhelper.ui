@@ -104,6 +104,13 @@
       "LENGTH": {
         "INCORRECT": "无效的线段长度。只允许数字、'x'、'y' 或 '?'."
       },
+      "ERROR": {
+        "TITLE": "错误",
+        "NOT_AUTHORIZED": "评价该解决方案需要授权。",
+        "UNKNOWN": "发生未知错误，请稍后再试。",
+        "NOT_TASK_CREATOR": "只有任务创建者可以评价此解决方案。",
+        "UNAUTHORIZED": "服务器端授权错误，请稍后再试。"
+      },
       "WARNING": {
         "TITLE": "警告",
         "RATED": "评分只能提交一次。",
