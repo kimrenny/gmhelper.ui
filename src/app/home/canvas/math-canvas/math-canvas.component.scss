@@ -220,6 +220,30 @@
     border-radius: 6px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 240px;
+
+    .placeholder-text {
+      text-align: left;
+    }
+
+    .exit-btn {
+      align-self: flex-end;
+      padding: 6px 12px;
+      background-color: #ffe8a1;
+      border: 1px solid #ffd75d;
+      border-radius: 4px;
+      color: #856404;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+
+      &:hover {
+        background-color: #ffd865;
+      }
+    }
   }
 
   .submit-task-btn {

@@ -36,6 +36,7 @@ import {
   parseLatexToNodes,
 } from '../utils/latex-parser.utils';
 import { PlaceholderIdService } from '../services/math-canvas/placeholderId.service';
+import { LatexRendererService } from '../services/math-canvas/latex-renderer.service';
 
 @Component({
   selector: 'app-math-canvas',
@@ -78,6 +79,7 @@ export class MathCanvasComponent implements OnInit, OnDestroy, AfterViewInit {
     public subjectService: SubjectService,
     private toastr: ToastrService,
     private translate: TranslateService,
+    private latexRenderer: LatexRendererService,
     private placeholderIdService: PlaceholderIdService
   ) {}
 
@@ -144,7 +146,6 @@ export class MathCanvasComponent implements OnInit, OnDestroy, AfterViewInit {
         this.selectedPlaceholderId = target.dataset['placeholderId'];
         this.activePlaceholderEditMode = true;
         clickedPlaceholder = true;
-        console.log('Clicked placeholder id:', this.selectedPlaceholderId);
         this.renderLatexOnCanvas();
 
         break;
@@ -159,7 +160,6 @@ export class MathCanvasComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private appendOrReplaceInPlaceholder(newNode: LatexNode) {
     const tryAppend = (nodes: LatexNode[]): boolean => {
-      console.log('appendOrReplaceInPlaceholder:', newNode);
       for (const node of nodes) {
         if (
           node.type === 'placeholder' &&
@@ -171,6 +171,8 @@ export class MathCanvasComponent implements OnInit, OnDestroy, AfterViewInit {
               this.selectedPlaceholderId,
               [newNode]
             );
+
+            this.exitPlaceholderEditMode();
           } else {
             this.latexTree = replacePlaceholder(
               this.latexTree,
@@ -201,17 +203,16 @@ export class MathCanvasComponent implements OnInit, OnDestroy, AfterViewInit {
             if (tryAppend(row)) return true;
           }
         }
-        /* else if (node.type === 'text') {
-          if (
-            this.selectedPlaceholderId &&
-            this.activePlaceholderEditMode &&
-            newNode.type === 'text'
-          ) {
-            node.value += newNode.value;
-            return true;
-          }
-        }
-        */
+        // else if (node.type === 'text') {
+        //   if (
+        //     this.selectedPlaceholderId &&
+        //     this.activePlaceholderEditMode &&
+        //     newNode.type === 'text'
+        //   ) {
+        //     node.value += newNode.value;
+        //     return true;
+        //   }
+        // }
       }
       return false;
     };
@@ -228,31 +229,17 @@ export class MathCanvasComponent implements OnInit, OnDestroy, AfterViewInit {
 
     div.innerHTML = '';
 
-    const latexStr = latexNodesToLatex(
+    const { latex, success } = this.latexRenderer.render(
+      div,
       this.latexTree,
-      this.selectedPlaceholderId
+      this.selectedPlaceholderId,
+      { trust: trustMode, throwError }
     );
-    const wrappedLatex = wrapAligned(latexStr);
 
-    const fixedLatex = fixNestedPowers(wrappedLatex);
-
-    if (!isLatexValid(fixedLatex)) return;
-
-    katex.render(fixedLatex, div, {
-      throwOnError: throwError,
-      displayMode: true,
-      output: 'mathml',
-      trust: trustMode,
-      strict: false,
-    });
-
-    this.latexInput = unwrapAligned(fixedLatex);
-
-    this.lastValidLatexInput = this.latexInput;
-
-    this.placeholderIdService.reset();
-    assignNewPlaceholderIds(this.latexTree, this.placeholderIdService);
-    addPlaceholderAttributes(div, this.latexTree, this.selectedPlaceholderId);
+    if (success) {
+      this.latexInput = latex;
+      this.lastValidLatexInput = latex;
+    }
   }
 
   onPlaceholderClick(placeholderId: string) {
@@ -268,7 +255,6 @@ export class MathCanvasComponent implements OnInit, OnDestroy, AfterViewInit {
         this.appendOrReplaceInPlaceholder(template);
       } else {
         const newNode: LatexNode = { type: 'text', value: button.latex };
-        console.log('[APPEND TEXT TO TREE]', JSON.stringify(newNode));
 
         this.appendOrReplaceInPlaceholder(newNode);
       }
@@ -283,7 +269,6 @@ export class MathCanvasComponent implements OnInit, OnDestroy, AfterViewInit {
         const newNode: LatexNode = { type: 'text', value: button.latex };
 
         this.latexTree.push(newNode);
-        console.log('[APPEND TEXT TO TREE]', JSON.stringify(newNode));
       }
     }
 

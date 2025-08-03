@@ -112,6 +112,10 @@
         }
       }
     },
+    "EDIT_MODE": {
+      "ALERT": "Le mode d’édition de l’espace réservé est activé pour l’élément sélectionné.<br>Veuillez saisir un caractère. Pour saisir plusieurs caractères, utilisez l’éditeur LaTeX.<br>Pour quitter ce mode, cliquez sur le bouton ci-dessous ou appuyez sur ESC/Entrée.",
+      "EXIT": "Quitter le mode d’édition"
+    },
     "TASK": {
       "BUTTON": {
         "SOLVE": "Résoudre la tâche"

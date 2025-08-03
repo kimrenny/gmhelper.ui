@@ -112,6 +112,10 @@
         }
       }
     },
+    "EDIT_MODE": {
+      "ALERT": "Der Platzhalter-Bearbeitungsmodus ist für das ausgewählte Element aktiviert.<br>Bitte geben Sie ein Zeichen ein. Wenn Sie mehr als ein Zeichen eingeben möchten, verwenden Sie bitte den LaTeX-Code-Editor.<br>Um den Bearbeitungsmodus zu verlassen, klicken Sie unten auf die Schaltfläche oder drücken Sie ESC/Eingabetaste.",
+      "EXIT": "Bearbeitungsmodus verlassen"
+    },
     "TASK": {
       "BUTTON": {
         "SOLVE": "Aufgabe lösen"

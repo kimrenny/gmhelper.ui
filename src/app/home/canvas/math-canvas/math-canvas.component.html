@@ -77,8 +77,11 @@
   </div>
 
   <div *ngIf="activePlaceholderEditMode" class="placeholder-edit-banner">
-    {{ "CANVAS.EDIT_MODE.ALERT" | translate }}
-    <button (click)="exitPlaceholderEditMode()">
+    <div
+      class="placeholder-text"
+      [innerHTML]="'CANVAS.EDIT_MODE.ALERT' | translate"
+    ></div>
+    <button class="exit-btn" (click)="exitPlaceholderEditMode()">
       {{ "CANVAS.EDIT_MODE.EXIT" | translate }}
     </button>
   </div>

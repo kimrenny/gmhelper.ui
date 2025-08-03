@@ -112,6 +112,10 @@
         }
       }
     },
+    "EDIT_MODE": {
+      "ALERT": "Placeholder editing mode is enabled for the selected element.<br>Please enter a character. If you want to enter more than one character, please use the LaTeX code editor.<br>To exit the editing mode, click the button below or press ESC/Enter.",
+      "EXIT": "Exit editing mode"
+    },
     "TASK": {
       "BUTTON": {
         "SOLVE": "Solve task"
