@@ -60,4 +60,35 @@ export class LatexRendererService {
 
     return { latex: unwrapped, success: true };
   }
+
+  renderLatex(
+    element: HTMLElement,
+    latex: string,
+    options: { trust?: boolean; throwError?: boolean } = {}
+  ): { success: boolean } {
+    if (!element) return { success: false };
+
+    const { trust = false, throwError = false } = options;
+
+    element.innerHTML = '';
+
+    const wrapped = wrapAligned(latex);
+    const fixedLatex = fixNestedPowers(wrapped);
+
+    if (!isLatexValid(fixedLatex)) return { success: false };
+
+    try {
+      katex.render(fixedLatex, element, {
+        throwOnError: throwError,
+        displayMode: true,
+        output: 'mathml',
+        trust,
+        strict: false,
+      });
+    } catch {
+      return { success: false };
+    }
+
+    return { success: true };
+  }
 }

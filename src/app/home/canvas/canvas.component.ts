@@ -6,8 +6,10 @@ import { ToastrService } from 'ngx-toastr';
 import { GeoCanvasComponent } from './geometry-canvas/geometry-canvas.component';
 import { MathCanvasComponent } from './math-canvas/math-canvas.component';
 import { SubjectService } from './services/subject.service';
-import { CanvasService } from './services/geometry-canvas/canvas.service';
+import { CanvasService as GeometryCanvasService } from './services/geometry-canvas/canvas.service';
+import { CanvasService as MathCanvasService } from './services/math-canvas/canvas.service';
 import { GeoSolutionCanvasComponent } from './geometry-solution-canvas/geometry-solution-canvas.component';
+import { MathSolutionCanvasComponent } from './math-solution-canvas/math-solution-canvas.component';
 
 @Component({
   selector: 'app-canvas',
@@ -19,6 +21,7 @@ import { GeoSolutionCanvasComponent } from './geometry-solution-canvas/geometry-
     GeoCanvasComponent,
     MathCanvasComponent,
     GeoSolutionCanvasComponent,
+    MathSolutionCanvasComponent,
   ],
   templateUrl: './canvas.component.html',
   styleUrls: ['./canvas.component.scss'],
@@ -27,18 +30,30 @@ export class CanvasComponent implements OnInit {
   selectedSubject: string = '';
   subjects: string[] = ['Math', 'Geo'];
 
-  taskId: string | null = null;
+  geoTaskId: string | null = null;
+  mathTaskId: string | null = null;
 
   constructor(
     private toastr: ToastrService,
     private translate: TranslateService,
     private subjectService: SubjectService,
-    private canvasSerivce: CanvasService
+    private geoCanvasService: GeometryCanvasService,
+    private mathCanvasService: MathCanvasService
   ) {}
 
   ngOnInit(): void {
-    this.canvasSerivce.taskId$.subscribe((id) => {
-      this.taskId = id;
+    this.geoCanvasService.taskId$.subscribe((id) => {
+      this.geoTaskId = id;
+      if (id) {
+        this.mathTaskId = null;
+      }
+    });
+
+    this.mathCanvasService.taskId$.subscribe((id) => {
+      this.mathTaskId = id;
+      if (id) {
+        this.geoTaskId = null;
+      }
     });
   }
 

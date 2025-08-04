@@ -1,4 +1,6 @@
 import katex from 'katex';
+import { hasPlaceholders } from './latex-placeholders.utils';
+import { LatexNode } from '../tools/math-expression.model';
 
 export function isLatexValid(latex: string): boolean {
   if (!isLatexStructurallyValid(latex)) return false;
@@ -8,6 +10,21 @@ export function isLatexValid(latex: string): boolean {
   } catch {
     return false;
   }
+}
+
+export function isLatexValidWithoutPlaceholders(
+  latexTree: LatexNode[],
+  latex: string
+): boolean {
+  if (hasPlaceholders(latexTree)) {
+    return false;
+  }
+
+  if (!isLatexValid(latex)) {
+    return false;
+  }
+
+  return true;
 }
 
 function hasBalancedBraces(s: string): boolean {

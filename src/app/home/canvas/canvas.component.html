@@ -30,6 +30,9 @@
     </select>
   </div>
 </div>
-<div class="geo-canvas-solution-container" *ngIf="taskId">
+<div class="canvas-solution-container" *ngIf="geoTaskId">
   <app-geometry-solution-canvas></app-geometry-solution-canvas>
+</div>
+<div class="canvas-solution-container" *ngIf="mathTaskId">
+  <app-math-solution-canvas></app-math-solution-canvas>
 </div>

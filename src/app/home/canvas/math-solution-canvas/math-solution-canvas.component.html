@@ -1,26 +1,10 @@
-<div class="geo-solution-canvas-container">
+<div class="math-solution-canvas-container">
   <button class="close-button" (click)="onClose()">×</button>
 
-  <div
-    class="canvas-wrapper"
-    #canvasWrapper
-    (mousedown)="startPan($event)"
-    (mousemove)="onPan($event)"
-    (mouseup)="endPan()"
-    (mouseleave)="endPan()"
-    (wheel)="onWheel($event)"
-  >
-    <canvas
-      #geoSolutionCanvas
-      class="canvas"
-      [class.blurred]="taskProcessing"
-    ></canvas>
-  </div>
-
-  <div class="scale-controls">
-    <button (click)="adjustScale(-10)" [disabled]="scale <= minScale">-</button>
-    <span class="scale-value">{{ scale }}%</span>
-    <button (click)="adjustScale(10)" [disabled]="scale >= maxScale">+</button>
+  <div class="canvas-wrapper">
+    <div #mathSolutionDiv class="canvas" [class.blurred]="taskProcessing">
+      <div class="solution-katex-wrapper"></div>
+    </div>
   </div>
 
   <div class="rating-container" *ngIf="isAuthorized">

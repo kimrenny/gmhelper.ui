@@ -16,27 +16,23 @@ import {
   MathButton,
   SPECIAL_BUTTONS,
 } from '../tools/math-buttons';
-import katex from 'katex';
 import { LatexNode } from '../tools/math-expression.model';
 import {
   isLatexValid,
+  isLatexValidWithoutPlaceholders,
   unwrapAligned,
   wrapAligned,
 } from '../utils/latex-validation.utils';
 import { replacePlaceholder } from '../utils/latex-tree.utils';
-import {
-  addPlaceholderAttributes,
-  assignNewPlaceholderIds,
-  hasPlaceholders,
-} from '../utils/latex-placeholders.utils';
+import { hasPlaceholders } from '../utils/latex-placeholders.utils';
 import { ToastrService } from 'ngx-toastr';
 import {
   fixNestedPowers,
-  latexNodesToLatex,
   parseLatexToNodes,
 } from '../utils/latex-parser.utils';
 import { PlaceholderIdService } from '../services/math-canvas/placeholderId.service';
 import { LatexRendererService } from '../services/math-canvas/latex-renderer.service';
+import { CanvasService } from '../services/math-canvas/canvas.service';
 
 @Component({
   selector: 'app-math-canvas',
@@ -80,7 +76,7 @@ export class MathCanvasComponent implements OnInit, OnDestroy, AfterViewInit {
     private toastr: ToastrService,
     private translate: TranslateService,
     private latexRenderer: LatexRendererService,
-    private placeholderIdService: PlaceholderIdService
+    private canvasService: CanvasService
   ) {}
 
   ngOnInit(): void {
@@ -135,6 +131,10 @@ export class MathCanvasComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     this.renderLatexOnCanvas();
+  }
+
+  latexValidation(): boolean {
+    return isLatexValidWithoutPlaceholders(this.latexTree, this.latexInput);
   }
 
   onMathClick(event: MouseEvent) {
@@ -239,6 +239,8 @@ export class MathCanvasComponent implements OnInit, OnDestroy, AfterViewInit {
     if (success) {
       this.latexInput = latex;
       this.lastValidLatexInput = latex;
+
+      this.canvasService.setLatex(latex);
     }
   }
 
@@ -352,6 +354,45 @@ export class MathCanvasComponent implements OnInit, OnDestroy, AfterViewInit {
       rows.push(buttons.slice(i, i + 14));
     }
     return rows;
+  }
+
+  onSubmitTask() {
+    this.canvasService.exportTaskJson().subscribe({
+      next: (res) => {
+        this.canvasService.updateTaskId(res.data);
+      },
+      error: (err) => {
+        this.canvasService.updateTaskId(null);
+
+        const message = err?.error?.message || '';
+
+        const tryAgainMatch = message.match(/Try again after (\d+) minutes/);
+
+        if (tryAgainMatch) {
+          const minutes = parseInt(tryAgainMatch[1], 10);
+          const hours = Math.floor(minutes / 60);
+          const mins = minutes % 60;
+
+          let formattedTime = '';
+          if (hours > 0) {
+            formattedTime += `${hours}h`;
+          }
+          formattedTime += `${mins}m`;
+
+          this.toastr.error(
+            this.translate.instant('CANVAS.TASK.ERRORS.TRY_AGAIN', {
+              time: formattedTime.trim(),
+            }),
+            this.translate.instant('CANVAS.ERRORS.ERROR.TITLE')
+          );
+        } else {
+          this.toastr.error(
+            this.translate.instant('CANVAS.TASK.ERRORS.UNEXPECTED_ERROR'),
+            this.translate.instant('CANVAS.ERRORS.ERROR.TITLE')
+          );
+        }
+      },
+    });
   }
 
   onClearCanvas(): void {

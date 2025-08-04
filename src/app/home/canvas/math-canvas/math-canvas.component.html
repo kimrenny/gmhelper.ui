@@ -85,4 +85,13 @@
       {{ "CANVAS.EDIT_MODE.EXIT" | translate }}
     </button>
   </div>
+
+  <button
+    class="submit-task-btn"
+    *ngIf="latexInput"
+    [disabled]="!latexValidation()"
+    (click)="onSubmitTask()"
+  >
+    {{ "CANVAS.TASK.BUTTON.SOLVE" | translate }}
+  </button>
 </div>

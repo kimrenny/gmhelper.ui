@@ -594,7 +594,7 @@ export class GeoCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
       if (!isValid) {
         this.toastr.error(
           this.translate.instant('CANVAS.LENGTH.LENGTH.INCORRECT'),
-          this.translate.instant('ADMIN.ERRORS.ERROR')
+          this.translate.instant('CANVAS.ERRORS.ERROR.TITLE')
         );
         this.isLineLengthChanging = false;
         this.lineLength = null;
@@ -628,7 +628,7 @@ export class GeoCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
         this.toastr.error(
           this.translate.instant('CANVAS.ERRORS.INVALID_SIDES_NUMBER') ||
             'Invalid number of sides',
-          this.translate.instant('ADMIN.ERRORS.ERROR')
+          this.translate.instant('CANVAS.ERRORS.ERROR.TITLE')
         );
         return;
       }
@@ -640,7 +640,7 @@ export class GeoCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
       this.toastr.error(
         this.translate.instant('CANVAS.ERRORS.INVALID_SIDES_NUMBER') ||
           'Invalid number of sides',
-        this.translate.instant('ADMIN.ERRORS.ERROR')
+        this.translate.instant('CANVAS.ERRORS.ERROR.TITLE')
       );
     }
   }
@@ -694,12 +694,12 @@ export class GeoCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
             this.translate.instant('CANVAS.TASK.ERRORS.TRY_AGAIN', {
               time: formattedTime.trim(),
             }),
-            this.translate.instant('ADMIN.ERRORS.ERROR')
+            this.translate.instant('CANVAS.ERRORS.ERROR.TITLE')
           );
         } else {
           this.toastr.error(
             this.translate.instant('CANVAS.TASK.ERRORS.UNEXPECTED_ERROR'),
-            this.translate.instant('ADMIN.ERRORS.ERROR')
+            this.translate.instant('CANVAS.ERRORS.ERROR.TITLE')
           );
         }
       },
