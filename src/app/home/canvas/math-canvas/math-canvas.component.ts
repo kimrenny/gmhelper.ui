@@ -236,11 +236,23 @@ export class MathCanvasComponent implements OnInit, OnDestroy, AfterViewInit {
       { trust: trustMode, throwError }
     );
 
-    if (success) {
-      this.latexInput = latex;
-      this.lastValidLatexInput = latex;
+    this.canvasService.setLatex(latex);
 
-      this.canvasService.setLatex(latex);
+    this.latexInput = latex;
+
+    if (success) {
+      this.lastValidLatexInput = latex;
+    } else if (this.lastValidLatexInput) {
+      try {
+        const success = this.latexRenderer.renderLatex(
+          div,
+          this.lastValidLatexInput,
+          {
+            trust: trustMode,
+            throwError: throwError,
+          }
+        );
+      } catch {}
     }
   }
 
@@ -290,7 +302,9 @@ export class MathCanvasComponent implements OnInit, OnDestroy, AfterViewInit {
     try {
       const fixedLatex = fixNestedPowers(wrapped);
 
-      if (!isLatexValid(fixedLatex)) throw new Error('Invalid LaTeX');
+      if (!isLatexValid(fixedLatex)) {
+        if (input.length > 0) return;
+      }
 
       this.latexTree = parseLatexToNodes(unwrapAligned(fixedLatex));
 
