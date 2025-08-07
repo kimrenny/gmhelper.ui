@@ -112,6 +112,11 @@ export class MathCanvasComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private handleKeyboardInput(event: KeyboardEvent) {
+    const activeElement = document.activeElement;
+    if (activeElement && activeElement.classList.contains('latex-textarea')) {
+      return;
+    }
+
     if (this.isInputWindowVisible && hasPlaceholders(this.latexTree)) {
       return;
     }
@@ -222,7 +227,8 @@ export class MathCanvasComponent implements OnInit, OnDestroy, AfterViewInit {
 
   renderLatexOnCanvas(
     trustMode: boolean = true,
-    throwError: boolean = false
+    throwError: boolean = false,
+    skipLatexInputUpdate: boolean = false
   ): void {
     const div = this.mathDivRef.nativeElement.querySelector('.katex-wrapper');
     if (!div || !(div instanceof HTMLElement)) return;
@@ -238,7 +244,9 @@ export class MathCanvasComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.canvasService.setLatex(latex);
 
-    this.latexInput = latex;
+    if (!skipLatexInputUpdate) {
+      this.latexInput = latex;
+    }
 
     if (success) {
       this.lastValidLatexInput = latex;
@@ -290,13 +298,13 @@ export class MathCanvasComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   onLatexInputChange() {
+    const input = this.latexInput.trim();
+
     if (hasPlaceholders(this.latexTree)) {
       this.latexInput = this.lastValidLatexInput;
-
       return;
     }
 
-    const input = this.latexInput.trim();
     const wrapped = wrapAligned(input);
 
     try {
@@ -308,7 +316,7 @@ export class MathCanvasComponent implements OnInit, OnDestroy, AfterViewInit {
 
       this.latexTree = parseLatexToNodes(unwrapAligned(fixedLatex));
 
-      this.renderLatexOnCanvas();
+      this.renderLatexOnCanvas(true, false, true);
 
       if (this.invalidLatexTimeout) {
         clearTimeout(this.invalidLatexTimeout);
