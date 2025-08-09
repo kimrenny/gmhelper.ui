@@ -476,8 +476,26 @@ export class Triangle implements DrawingTool {
     const dy = B.y - A.y;
     const lengthSquared = dx * dx + dy * dy;
 
+    if (lengthSquared === 0) {
+      console.warn('[drawHeight] base length is zero (A and B coincide).');
+      return;
+    }
+
     const t =
       ((topPoint.x - A.x) * dx + (topPoint.y - A.y) * dy) / lengthSquared;
+
+    if (isNaN(t)) {
+      console.warn('[drawHeight] computed t is NaN.');
+      return;
+    }
+
+    if (t < 0 || t > 1) {
+      console.warn(
+        'Projection of altitude falls outside base — height drawing canceled.'
+      );
+      return;
+    }
+
     const clampedT = Math.max(0, Math.min(1, t));
 
     const foot = {

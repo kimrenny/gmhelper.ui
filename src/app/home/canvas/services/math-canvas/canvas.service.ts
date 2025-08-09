@@ -23,7 +23,6 @@ export class CanvasService {
 
   setLatex(latex: string) {
     this.latex = latex;
-    console.log('setLatex:', latex);
   }
 
   exportTaskJson(): Observable<ApiResponse<any>> {

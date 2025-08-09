@@ -441,8 +441,6 @@ export class GeoCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
       this.figuresService.getAllFigures()
     );
 
-    console.log('paths to redraw:', this.stackService.getPaths());
-
     for (const p of this.stackService.getPaths()) {
       const color = p.path[0]?.color || '#000000';
       this.ctx.strokeStyle = color;
