@@ -231,24 +231,22 @@ export class Trapezoid implements DrawingTool {
       const dx = p2.x - p1.x;
       const dy = p2.y - p1.y;
 
-      let correctedFourthPoint;
+      const length = Math.sqrt(dx * dx + dy * dy);
+      if (length === 0) return;
 
-      if (dx === 0) {
-        correctedFourthPoint = {
-          x: p4.x,
-          y: p3.y + dy,
-          color: data.selectedColor,
-        };
-      } else {
-        const slope = dy / dx;
-        const dx4 = p4.x - p3.x;
-        const dy4 = slope * dx4;
-        correctedFourthPoint = {
-          x: p4.x,
-          y: p3.y + dy4,
-          color: data.selectedColor,
-        };
-      }
+      const unitDx = dx / length;
+      const unitDy = dy / length;
+
+      const dxMouse = p4.x - p3.x;
+      const dyMouse = p4.y - p3.y;
+
+      const projection = dxMouse * unitDx + dyMouse * unitDy;
+
+      const correctedFourthPoint = {
+        x: p3.x + unitDx * projection,
+        y: p3.y + unitDy * projection,
+        color: data.selectedColor,
+      };
 
       this.path[3] = correctedFourthPoint;
 
@@ -701,16 +699,21 @@ export class Trapezoid implements DrawingTool {
       const dx = p2.x - p1.x;
       const dy = p2.y - p1.y;
 
-      let fourthPoint;
+      const length = Math.sqrt(dx * dx + dy * dy);
+      if (length === 0) return;
 
-      if (dx === 0) {
-        fourthPoint = { x: this.end.x, y: p3.y + dy };
-      } else {
-        const slope = dy / dx;
-        const dx4 = this.end.x - p3.x;
-        const dy4 = slope * dx4;
-        fourthPoint = { x: this.end.x, y: p3.y + dy4 };
-      }
+      const unitDx = dx / length;
+      const unitDy = dy / length;
+
+      const dxMouse = this.end.x - p3.x;
+      const dyMouse = this.end.y - p3.y;
+
+      const projection = dxMouse * unitDx + dyMouse * unitDy;
+
+      const fourthPoint = {
+        x: p3.x + unitDx * projection,
+        y: p3.y + unitDy * projection,
+      };
 
       ctx.beginPath();
       ctx.moveTo(p1.x, p1.y);
