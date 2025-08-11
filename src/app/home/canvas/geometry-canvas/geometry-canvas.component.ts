@@ -197,6 +197,65 @@ export class GeoCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
         getMousePos(event, canvas, this.scale),
     };
 
+    let docMouseMoveHandler: ((event: MouseEvent) => void) | null = null;
+    let docMouseUpHandler: ((event: MouseEvent) => void) | null = null;
+    let isDocTracking = false;
+
+    const removeDocumentListeners = () => {
+      if (docMouseMoveHandler)
+        document.removeEventListener('mousemove', docMouseMoveHandler);
+      if (docMouseUpHandler)
+        document.removeEventListener('mouseup', docMouseUpHandler);
+      docMouseMoveHandler = null;
+      docMouseUpHandler = null;
+      isDocTracking = false;
+    };
+
+    const addDocumentListeners = () => {
+      removeDocumentListeners();
+      isDocTracking = true;
+
+      docMouseMoveHandler = (event: MouseEvent) => {
+        const rect = canvas.getBoundingClientRect();
+        const inside =
+          event.clientX >= rect.left &&
+          event.clientX <= rect.right &&
+          event.clientY >= rect.top &&
+          event.clientY <= rect.bottom;
+
+        if (!inside) {
+          if (this.currentTool?.onMouseLeave) {
+            this.currentTool.onMouseLeave(this.toolContext);
+          }
+          removeDocumentListeners();
+          return;
+        }
+
+        const posInside = this.toolContext.getMousePos(event);
+        if (posInside)
+          this.currentTool?.onMouseMove?.(posInside, this.toolContext);
+      };
+
+      docMouseUpHandler = (event: MouseEvent) => {
+        const pos = this.toolContext.getMousePos(event);
+        if (pos && this.currentTool?.onMouseUp) {
+          const newPath = this.currentTool.onMouseUp(pos, this.toolContext);
+          if (newPath) {
+            this.stackService.resetStack('redo');
+            this.stackService.pushStack(newPath, 'paths');
+          }
+        } else {
+          if (this.currentTool?.onMouseLeave) {
+            this.currentTool.onMouseLeave(this.toolContext);
+          }
+        }
+        removeDocumentListeners();
+      };
+
+      document.addEventListener('mousemove', docMouseMoveHandler);
+      document.addEventListener('mouseup', docMouseUpHandler);
+    };
+
     canvas.addEventListener('mousedown', (event) => {
       const pos = this.toolContext.getMousePos(event);
       if (!pos) return;
@@ -241,17 +300,28 @@ export class GeoCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
         return;
 
       this.currentTool?.onMouseDown?.(pos, this.toolContext);
+      addDocumentListeners();
     });
 
     canvas.addEventListener('mousemove', (event) => {
       const pos = this.toolContext.getMousePos(event);
-      if (!pos) return;
-      this.currentTool?.onMouseMove?.(pos, this.toolContext);
+      if (!pos) {
+        if (!isDocTracking && this.currentTool?.onMouseLeave) {
+          this.currentTool.onMouseLeave(this.toolContext);
+        }
+        return;
+      }
+      if (!isDocTracking) {
+        this.currentTool?.onMouseMove?.(pos, this.toolContext);
+      }
     });
 
     canvas.addEventListener('mouseup', (event) => {
       const pos = this.toolContext.getMousePos(event);
-      if (!pos) return;
+      if (!pos) {
+        removeDocumentListeners();
+        return;
+      }
       if (this.currentTool?.onMouseUp) {
         const newPath = this.currentTool.onMouseUp(pos, this.toolContext);
         if (newPath) {
@@ -259,12 +329,14 @@ export class GeoCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
           this.stackService.pushStack(newPath, 'paths');
         }
       }
+      removeDocumentListeners();
     });
 
-    canvas.addEventListener('mouseleave', (event) => {
-      const pos = this.toolContext.getMousePos(event);
-      if (!pos) return;
-      this.currentTool?.onMouseLeave?.(pos, this.toolContext);
+    canvas.addEventListener('mouseleave', () => {
+      if (this.currentTool?.onMouseLeave) {
+        this.currentTool.onMouseLeave(this.toolContext);
+      }
+      removeDocumentListeners();
     });
   }
 

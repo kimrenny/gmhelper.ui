@@ -300,6 +300,24 @@ export class Triangle implements DrawingTool {
     }
   }
 
+  onMouseLeave(data: ToolContext): void {
+    if (!this.isDrawing) return;
+
+    this.isDrawing = false;
+    this.path = [];
+    this.end = null;
+
+    if (data.previewCanvas) {
+      const previewCtx = data.previewCanvas.getContext('2d');
+      previewCtx?.clearRect(
+        0,
+        0,
+        data.previewCanvas.width,
+        data.previewCanvas.height
+      );
+    }
+  }
+
   private isNearExistingPoint(pos: { x: number; y: number }): boolean {
     return this.path.some(
       (point) => Math.hypot(point.x - pos.x, point.y - pos.y) < 30

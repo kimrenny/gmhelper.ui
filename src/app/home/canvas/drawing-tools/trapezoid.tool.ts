@@ -320,6 +320,24 @@ export class Trapezoid implements DrawingTool {
     }
   }
 
+  onMouseLeave(data: ToolContext) {
+    if (!this.isDrawing) return;
+
+    this.path = [];
+    this.end = null;
+    this.isDrawing = false;
+
+    if (data.previewCanvas) {
+      const previewCtx = data.previewCanvas.getContext('2d');
+      previewCtx?.clearRect(
+        0,
+        0,
+        data.previewCanvas.width,
+        data.previewCanvas.height
+      );
+    }
+  }
+
   onSelectFigure(
     path: { x: number; y: number }[],
     previewCanvas: HTMLCanvasElement

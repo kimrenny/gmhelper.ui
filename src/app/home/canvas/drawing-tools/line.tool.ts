@@ -195,22 +195,8 @@ export class Line implements DrawingTool {
     this.previewEnd = null;
   }
 
-  onMouseLeave(pos: { x: number; y: number }, data: ToolContext): any {
+  onMouseLeave(data: ToolContext): any {
     if (!this.isDrawing) return;
-
-    this.path.push({
-      x: pos.x,
-      y: pos.y,
-      color: data.selectedColor,
-    });
-
-    const ctx = data.canvas.getContext('2d');
-    if (ctx) {
-      this.draw(ctx, this.path, data.selectedColor);
-
-      const [label1, label2] = this.addPointsToCanvasService(ctx);
-      this.linesService.createLine(label1, label2);
-    }
 
     if (data.previewCanvas) {
       const previewCtx = data.previewCanvas.getContext('2d');
@@ -223,12 +209,6 @@ export class Line implements DrawingTool {
     }
 
     this.isDrawing = false;
-    if (this.path.length > 1) {
-      this.previewEnd = null;
-      const finalPath = [...this.path];
-      this.path = [];
-      return { tool: this, path: finalPath };
-    }
     this.path = [];
     this.previewEnd = null;
   }

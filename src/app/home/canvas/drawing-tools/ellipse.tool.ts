@@ -198,10 +198,22 @@ export class Ellipse implements DrawingTool {
     return { tool: this, path, figureName: figureName };
   }
 
-  onMouseLeave(pos: { x: number; y: number }, data: ToolContext): any {
+  onMouseLeave(data: ToolContext): any {
     if (!this.isDrawing) return;
 
-    this.onMouseUp(pos, data);
+    this.start = null;
+    this.end = null;
+    this.isDrawing = false;
+
+    if (data.previewCanvas) {
+      const previewCtx = data.previewCanvas.getContext('2d');
+      previewCtx?.clearRect(
+        0,
+        0,
+        data.previewCanvas.width,
+        data.previewCanvas.height
+      );
+    }
   }
 
   onSelectFigure(

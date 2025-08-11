@@ -47,11 +47,9 @@ export class Pencil implements DrawingTool {
     return { tool: this, path: finalPath };
   }
 
-  onMouseLeave(pos: { x: number; y: number }, data: ToolContext): any {
+  onMouseLeave(data: ToolContext): any {
     if (!this.isDrawing) return;
     this.isDrawing = false;
-    const finalPath = [...this.path];
     this.path = [];
-    return { tool: this, path: finalPath };
   }
 }

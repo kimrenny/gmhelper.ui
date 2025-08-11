@@ -275,6 +275,25 @@ export class Polygon implements DrawingTool {
     return { tool: this, path: savePath, figureName: figureName };
   }
 
+  onMouseLeave(data: ToolContext) {
+    if (!this.isDrawing) return;
+
+    this.center = null;
+    this.radius = 0;
+    this.isDrawing = false;
+    this.path = [];
+
+    if (data.previewCanvas) {
+      const previewCtx = data.previewCanvas.getContext('2d');
+      previewCtx?.clearRect(
+        0,
+        0,
+        data.previewCanvas.width,
+        data.previewCanvas.height
+      );
+    }
+  }
+
   onSelectFigure(
     path: { x: number; y: number }[],
     previewCanvas: HTMLCanvasElement
