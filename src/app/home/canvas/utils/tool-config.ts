@@ -28,7 +28,7 @@ export function getDefaultTools(
   counterService: CounterServiceInterface
 ) {
   return {
-    pencil: new Pencil(),
+    pencil: new Pencil(counterService),
     ellipse: new Ellipse(
       canvasService,
       pointsService,

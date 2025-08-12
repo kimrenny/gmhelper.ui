@@ -35,6 +35,7 @@ import { Line } from '../drawing-tools/line.tool';
 import { environment } from 'src/environments/environment';
 import { TokenService } from 'src/app/services/token.service';
 import { GivenSolutionService } from './given-solution.service';
+import { Pencil } from '../drawing-tools/pencil.tool';
 
 @Injectable({
   providedIn: 'root',
@@ -155,6 +156,9 @@ export class GeoCanvasSolutionService implements CanvasServiceInterface {
     const toolName = figureName.split('_')[0].toLowerCase();
 
     switch (toolName) {
+      case 'pencil': {
+        return new Pencil(this.counterService);
+      }
       case 'polygon': {
         const sides = figureData.path?.length ?? 3;
         return new Polygon(

@@ -1,9 +1,12 @@
+import { CounterServiceInterface } from '../interfaces/counter-service.interface';
 import { DrawingTool } from '../interfaces/drawing-tool.interface';
 import { ToolContext } from '../interfaces/tool-context.interface';
 
 export class Pencil implements DrawingTool {
   private isDrawing: boolean = false;
   private path: { x: number; y: number; color: string }[] = [];
+
+  constructor(private counterService: CounterServiceInterface) {}
 
   draw(
     ctx: CanvasRenderingContext2D,
@@ -41,10 +44,14 @@ export class Pencil implements DrawingTool {
 
   onMouseUp(pos: { x: number; y: number }, data: ToolContext): any {
     if (!this.isDrawing) return;
+
     this.isDrawing = false;
     const finalPath = [...this.path];
     this.path = [];
-    return { tool: this, path: finalPath };
+    const figureName = this.counterService.getNextFigureName('Pencil');
+    if (!figureName) return;
+
+    return { tool: this, path: finalPath, figureName: figureName };
   }
 
   onMouseLeave(data: ToolContext): any {
