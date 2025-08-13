@@ -155,7 +155,6 @@ export class GeoCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
     );
 
     this.generateFigureToolMap();
-    //this.selectTool('pencil');
   }
 
   ngAfterViewInit(): void {
@@ -534,6 +533,7 @@ export class GeoCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
       this.openPolygonInput();
     } else {
       this.currentTool = this.toolSelector.select(tool);
+      this.disableSelection();
     }
     this.shapeToolsVisible = false;
   }
@@ -549,6 +549,12 @@ export class GeoCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
     } else {
       this.isFigureColorPaletteVisible = !this.isFigureColorPaletteVisible;
     }
+  }
+
+  disableSelection() {
+    this.deselectLine();
+    this.deselectAngle();
+    this.deselectFigure();
   }
 
   toggleLineSelection(
@@ -704,6 +710,7 @@ export class GeoCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
       }
 
       this.currentTool = this.toolSelector.select('polygon', sides);
+      this.disableSelection();
       this.closePolygonInput();
     } else {
       this.closePolygonInput();

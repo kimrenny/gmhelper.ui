@@ -72,10 +72,24 @@ export class Rectangle implements DrawingTool {
         figureName,
         path
       );
-      this.linesService.createLine(label1, label2);
-      this.linesService.createLine(label2, label3);
-      this.linesService.createLine(label3, label4);
-      this.linesService.createLine(label1, label4);
+
+      const l12 = `${label1}${label2}`;
+      const l23 = `${label2}${label3}`;
+      const l34 = `${label3}${label4}`;
+      const l14 = `${label1}${label4}`;
+
+      if (!this.linesService.hasLine(l12)) {
+        this.linesService.createLine(label1, label2);
+      }
+      if (!this.linesService.hasLine(l23)) {
+        this.linesService.createLine(label2, label3);
+      }
+      if (!this.linesService.hasLine(l34)) {
+        this.linesService.createLine(label3, label4);
+      }
+      if (!this.linesService.hasLine(l14)) {
+        this.linesService.createLine(label1, label4);
+      }
 
       const lines = [
         { p1: path[0], p2: path[1], labelA: label1, labelB: label2 },

@@ -15,6 +15,10 @@ export function setLineLengthToService(
   fontsize: number = 14,
   color: string = 'black'
 ) {
+  if (a > b) {
+    [a, b] = [b, a];
+  }
+
   linesService.setLineLength(a, b, length);
 
   const pointA = pointsService.getPointByLabel(a);
