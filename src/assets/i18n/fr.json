@@ -128,7 +128,7 @@
         "SOLVE": "Résoudre la tâche"
       },
       "ERRORS": {
-        "TRY_AGAIN": "Réessayez après {{time}}.",
+        "TRY_AGAIN": "Réessayez après {{time}}.<br>Si vous ne voulez pas attendre, veuillez vous connecter en utilisant les boutons ci-dessus.",
         "UNEXPECTED_ERROR": "Une erreur inattendue est survenue. Veuillez réessayer plus tard."
       }
     },
@@ -205,7 +205,8 @@
       "EMAIL": {
         "REQUIRED": "L'adresse e-mail est requise.",
         "INVALID": "Format d'adresse e-mail invalide.",
-        "NOT_ALLOWED": "L'inscription n'est autorisée qu'avec des adresses e-mail provenant de fournisseurs approuvés."
+        "NOT_ALLOWED": "L'inscription n'est autorisée qu'avec des adresses e-mail provenant de fournisseurs approuvés.",
+        "TOO_LONG": "L'adresse e-mail est trop longue. La longueur maximale autorisée est de 80 caractères."
       },
       "PASSWORD": {
         "REQUIRED": "Le mot de passe est requis.",

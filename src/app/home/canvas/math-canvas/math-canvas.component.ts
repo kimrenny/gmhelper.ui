@@ -33,6 +33,7 @@ import {
 import { PlaceholderIdService } from '../services/math-canvas/placeholderId.service';
 import { LatexRendererService } from '../services/math-canvas/latex-renderer.service';
 import { CanvasService } from '../services/math-canvas/canvas.service';
+import { HeaderService } from 'src/app/services/header.service';
 
 @Component({
   selector: 'app-math-canvas',
@@ -76,7 +77,8 @@ export class MathCanvasComponent implements OnInit, OnDestroy, AfterViewInit {
     private toastr: ToastrService,
     private translate: TranslateService,
     private latexRenderer: LatexRendererService,
-    private canvasService: CanvasService
+    private canvasService: CanvasService,
+    private headerService: HeaderService
   ) {}
 
   ngOnInit(): void {
@@ -405,8 +407,11 @@ export class MathCanvasComponent implements OnInit, OnDestroy, AfterViewInit {
             this.translate.instant('CANVAS.TASK.ERRORS.TRY_AGAIN', {
               time: formattedTime.trim(),
             }),
-            this.translate.instant('CANVAS.ERRORS.ERROR.TITLE')
+            this.translate.instant('CANVAS.ERRORS.ERROR.TITLE'),
+            { enableHtml: true }
           );
+
+          this.headerService.triggerHighlight(5000);
         } else {
           this.toastr.error(
             this.translate.instant('CANVAS.TASK.ERRORS.UNEXPECTED_ERROR'),

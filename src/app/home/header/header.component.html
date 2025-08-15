@@ -42,7 +42,7 @@
       </div>
 
       <ng-template #authButtons>
-        <div class="auth-buttons">
+        <div class="auth-buttons" [class.highlight]="showAuthHighlight">
           <button class="login-btn" (click)="navigateToRegistration('login')">
             Log In
           </button>

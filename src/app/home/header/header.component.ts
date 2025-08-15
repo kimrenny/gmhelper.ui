@@ -14,6 +14,7 @@ import { TokenService } from 'src/app/services/token.service';
 import { LanguageService } from 'src/app/services/language.service';
 import { ToastrService } from 'ngx-toastr';
 import { TranslateService } from '@ngx-translate/core';
+import { HeaderService } from 'src/app/services/header.service';
 
 @Component({
   selector: 'app-header',
@@ -31,11 +32,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
   showUserMenu = false;
   isUserLoading = false;
 
+  showAuthHighlight = true;
+
   private subscriptions = new Subscription();
 
   constructor(
     @Inject(UserService) private userService: UserService,
     private tokenService: TokenService,
+    private headerService: HeaderService,
     private languageService: LanguageService,
     private translate: TranslateService,
     private toastr: ToastrService,
@@ -75,11 +79,19 @@ export class HeaderComponent implements OnInit, OnDestroy {
       }
     );
 
+    const highlightSub = this.headerService.showAuthHighlight$.subscribe(
+      (showHighlight) => {
+        this.showAuthHighlight = showHighlight;
+        this.cdr.detectChanges();
+      }
+    );
+
     this.subscriptions.add(authSub);
     this.subscriptions.add(userSub);
     this.subscriptions.add(routerSub);
     this.subscriptions.add(roleSub);
     this.subscriptions.add(loadingSub);
+    this.subscriptions.add(highlightSub);
   }
 
   ngOnDestroy() {

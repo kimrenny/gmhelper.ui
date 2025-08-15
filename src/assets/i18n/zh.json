@@ -128,7 +128,7 @@
         "SOLVE": "解决任务"
       },
       "ERRORS": {
-        "TRY_AGAIN": "{{time}} 后重试。",
+        "TRY_AGAIN": "{{time}} 后请重试。<br>如果不想等待，请使用上方按钮登录。",
         "UNEXPECTED_ERROR": "发生了意外错误，请稍后再试。"
       }
     },
@@ -205,7 +205,8 @@
       "EMAIL": {
         "REQUIRED": "电子邮件是必填项。",
         "INVALID": "电子邮件格式无效。",
-        "NOT_ALLOWED": "仅允许使用批准供应商的电子邮件地址注册。"
+        "NOT_ALLOWED": "仅允许使用批准供应商的电子邮件地址注册。",
+        "TOO_LONG": "电子邮件地址过长。最大长度为80个字符。"
       },
       "PASSWORD": {
         "REQUIRED": "密码是必填项。",

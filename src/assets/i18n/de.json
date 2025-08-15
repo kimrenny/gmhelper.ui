@@ -128,7 +128,7 @@
         "SOLVE": "Aufgabe lösen"
       },
       "ERRORS": {
-        "TRY_AGAIN": "Versuchen Sie es nach {{time}} erneut.",
+        "TRY_AGAIN": "Versuchen Sie es nach {{time}} erneut.<br>Wenn Sie nicht warten möchten, melden Sie sich bitte über die obigen Schaltflächen an.",
         "UNEXPECTED_ERROR": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es später erneut."
       }
     },
@@ -205,7 +205,8 @@
       "EMAIL": {
         "REQUIRED": "E-Mail ist erforderlich.",
         "INVALID": "Ungültiges E-Mail-Format.",
-        "NOT_ALLOWED": "Die Registrierung ist nur mit E-Mail-Adressen von zugelassenen Anbietern möglich."
+        "NOT_ALLOWED": "Die Registrierung ist nur mit E-Mail-Adressen von zugelassenen Anbietern möglich.",
+        "TOO_LONG": "Die E-Mail-Adresse ist zu lang. Die maximal zulässige Länge beträgt 80 Zeichen."
       },
       "PASSWORD": {
         "REQUIRED": "Passwort ist erforderlich.",

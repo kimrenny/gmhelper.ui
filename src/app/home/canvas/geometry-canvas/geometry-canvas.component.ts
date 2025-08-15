@@ -34,6 +34,7 @@ import { SubjectService } from '../services/subject.service';
 import { Subscription } from 'rxjs';
 import { rawFigureToolMap } from '../tools/figure-tool-map';
 import { LineLengthInputComponent } from '../drawing-tools/line-length-input/line-length-input.component';
+import { HeaderService } from 'src/app/services/header.service';
 
 @Component({
   selector: 'app-geometry-canvas',
@@ -121,6 +122,7 @@ export class GeoCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
     private figuresService: FiguresService,
     private selectionService: SelectionService,
     private counterService: CounterService,
+    private headerService: HeaderService,
     private toastr: ToastrService,
     private translate: TranslateService
   ) {}
@@ -771,8 +773,11 @@ export class GeoCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
             this.translate.instant('CANVAS.TASK.ERRORS.TRY_AGAIN', {
               time: formattedTime.trim(),
             }),
-            this.translate.instant('CANVAS.ERRORS.ERROR.TITLE')
+            this.translate.instant('CANVAS.ERRORS.ERROR.TITLE'),
+            { enableHtml: true }
           );
+
+          this.headerService.triggerHighlight(5000);
         } else {
           this.toastr.error(
             this.translate.instant('CANVAS.TASK.ERRORS.UNEXPECTED_ERROR'),

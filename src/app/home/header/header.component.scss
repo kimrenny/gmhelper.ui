@@ -183,22 +183,76 @@
   .auth-buttons {
     display: flex;
     align-items: center;
+    gap: 10px;
+    position: relative;
 
-    .register-btn,
-    .login-btn {
+    .login-btn,
+    .register-btn {
+      position: relative;
+      z-index: 1;
       background-color: #c444ff;
       color: white;
       border: none;
       padding: 8px 12px;
       cursor: pointer;
-      border-radius: 5px;
-      margin-left: 10px;
-      transition: background-color 0.3s;
+      border-radius: 6px;
+      transition: background-color 0.3s, box-shadow 0.3s;
+      background: linear-gradient(270deg, #c444ff, #9c33cc, #c444ff);
+      background-size: 200% 200%;
+      animation: buttonGlow 5s linear infinite;
 
       &:hover {
         background-color: #9c33cc;
       }
+
+      &::before {
+        content: "";
+        position: absolute;
+        top: -2px;
+        left: -2px;
+        right: -2px;
+        bottom: -2px;
+        border-radius: 10px;
+        z-index: -1;
+        display: none;
+        background: linear-gradient(90deg, #fff, #c444ff, #fff);
+        background-size: 200% 200%;
+        filter: blur(4px);
+        opacity: 0.9;
+      }
     }
+
+    &.highlight {
+      .login-btn::before,
+      .register-btn::before {
+        display: block;
+        animation: borderGlow 5s ease-in-out infinite;
+      }
+    }
+  }
+}
+
+@keyframes buttonGlow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes borderGlow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
   }
 }
 

@@ -128,7 +128,7 @@
         "SOLVE": "Solve task"
       },
       "ERRORS": {
-        "TRY_AGAIN": "Try again after {{time}}.",
+        "TRY_AGAIN": "Try again after {{time}}.<br>If you don't want to wait, please log in using the buttons above.",
         "UNEXPECTED_ERROR": "An unexpected error occurred. Please try again later."
       }
     },
@@ -205,7 +205,8 @@
       "EMAIL": {
         "REQUIRED": "Email is required.",
         "INVALID": "Invalid email format.",
-        "NOT_ALLOWED": "Registration is only allowed with email addresses from approved providers."
+        "NOT_ALLOWED": "Registration is only allowed with email addresses from approved providers.",
+        "TOO_LONG": "Email address is too long. Maximum allowed length is 80 characters."
       },
       "PASSWORD": {
         "REQUIRED": "Password is required.",
