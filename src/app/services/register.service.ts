@@ -59,18 +59,18 @@ export class RegisterService {
       'shaw.ca',
     ];
 
-    if (!email) {
-      return 'REGISTER.ERRORS.EMAIL.REQUIRED';
-    } else if (!emailPattern.test(email)) {
-      return 'REGISTER.ERRORS.EMAIL.INVALID';
-    } else {
-      const domain = email.split('@')[1];
-      if (!allowedDomains.includes(domain)) {
-        return 'REGISTER.ERRORS.EMAIL.NOT_ALLOWED';
-      } else {
-        return '';
-      }
-    }
+    const MAX_EMAIL_LENGTH = 80;
+
+    if (!email) return 'REGISTER.ERRORS.EMAIL.REQUIRED';
+    if (email.length > MAX_EMAIL_LENGTH)
+      return 'REGISTER.ERRORS.EMAIL.TOO_LONG';
+    if (!emailPattern.test(email)) return 'REGISTER.ERRORS.EMAIL.INVALID';
+
+    const domain = email.split('@')[1];
+    if (!allowedDomains.includes(domain))
+      return 'REGISTER.ERRORS.EMAIL.NOT_ALLOWED';
+
+    return '';
   }
 
   validatePassword(
