@@ -9,6 +9,8 @@ import { ExampleCanvasComponent } from './example-canvas/example-canvas.componen
 import { BinaryAnimationComponent } from './binary-animation/binaryAnimation.component';
 import { ExampleResponseComponent } from './example-response/example-response.component';
 import { AboutService } from 'src/app/services/about.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-example-animation',
@@ -24,18 +26,33 @@ import { AboutService } from 'src/app/services/about.service';
 export class ExampleAnimationComponent implements OnInit, OnDestroy {
   private observer: IntersectionObserver | null = null;
   private hasBeenVisible: boolean = false;
-
   private timeouts: any[] = [];
-
   private isAnimating: boolean = false;
+  private routeSub: Subscription | null = null;
+  public isSectionVisible: boolean = false;
 
   constructor(
     private elementRef: ElementRef,
     private aboutService: AboutService,
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    private route: ActivatedRoute,
+    private router: Router
   ) {}
 
   ngOnInit() {
+    this.routeSub = this.route.queryParams.subscribe((params) => {
+      const section = params['section'];
+      if (section === 'about') {
+        this.isSectionVisible = true;
+        this.hasBeenVisible = false;
+        this.restartAnimation();
+      } else {
+        this.isSectionVisible = false;
+        this.clearAllTimeouts();
+        this.resetAnimations();
+      }
+    });
+
     this.observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting && !this.hasBeenVisible) {
