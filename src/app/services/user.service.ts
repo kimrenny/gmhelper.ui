@@ -21,12 +21,13 @@ interface UserDetails {
   language: 'de' | 'en' | 'fr' | 'ja' | 'ko' | 'ru' | 'ua' | 'zh';
 }
 
-enum CriticalErrors {
+enum Errors {
   UserBlocked = 'User is blocked.',
   UserNotFound = 'User not found.',
   InvalidData = 'Invalid data.',
   InvalidToken = 'Invalid token.',
   Unauthorized = 'Unauthorized',
+  UserTokenNotActive = 'User token is not active.',
 }
 
 @Injectable({
@@ -49,9 +50,7 @@ export class UserService {
   private isUserLoadingSubject = new BehaviorSubject<boolean>(false);
   isUserLoading$ = this.isUserLoadingSubject.asObservable();
 
-  private readonly criticalErrors = new Set<string>(
-    Object.values(CriticalErrors)
-  );
+  private readonly errors = new Set<string>(Object.values(Errors));
 
   private readonly api = `${environment.apiUrl}/api`;
 
@@ -166,13 +165,8 @@ export class UserService {
       }
     }
 
-    if (error.message === 'User token is not active.') {
-      this.clearUser();
-      return throwError(() => new Error('User token is not active'));
-    }
-
-    if (this.criticalErrors.has(error.message)) {
-      console.warn(`Clearing user due to critical error:, ${error.message}`);
+    if (this.errors.has(error.error?.message)) {
+      console.warn(`Clearing user due to error:, ${error.message}`);
       this.clearUser();
     }
 
