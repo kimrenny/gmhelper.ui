@@ -243,9 +243,20 @@
         },
         "SUCCESS": "密码恢复电子邮件已发送。",
         "FAIL": "发送密码恢复电子邮件失败。请重试。"
+      },
+      "CODE": {
+        "INVALID_SESSION": "会话已过期，请重新登录并重试。",
+        "INVALID_CODE": "验证码错误，请重试。",
+        "USER_NOT_FOUND": "未找到用户。",
+        "USER_BANNED": "账户已被封禁。",
+        "UNKNOWN": "发生未知错误，请稍后重试。"
       }
     },
-    "REMEMBER_ME": "保持登录状态"
+    "REMEMBER_ME": "保持登录状态",
+    "CODE_INPUT": {
+      "EMAIL": "输入发送到您的电子邮件的验证码",
+      "GAUTH": "输入来自您的身份验证应用程序的验证码"
+    }
   },
   "SETTINGS": {
     "UNAUTHORIZED_MESSAGE": "您没有权限访问此内容。",

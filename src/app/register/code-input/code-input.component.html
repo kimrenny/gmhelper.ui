@@ -1,0 +1,18 @@
+<div class="code-input-container">
+  <h2>{{ sourceText | translate }}</h2>
+  <div class="code-visual" (click)="focusInputField()">
+    <span *ngFor="let digit of codeVisual" class="code-cell">
+      {{ digit }}
+    </span>
+  </div>
+  <input
+    #hiddenInput
+    type="text"
+    maxlength="6"
+    pattern="[0-9]*"
+    inputmode="numeric"
+    [(ngModel)]="codeString"
+    (input)="onInputChange()"
+    class="code-input-hidden"
+  />
+</div>

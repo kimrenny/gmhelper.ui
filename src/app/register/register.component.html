@@ -243,3 +243,13 @@
     </button>
   </div>
 </div>
+
+<div class="code-input-overlay" *ngIf="showCodeInput">
+  <div class="code-input-window">
+    <app-code-input (codeComplete)="onCodeComplete($event)"></app-code-input>
+    <div class="error-text" *ngIf="codeInputFeedbackMessage">
+      {{ codeInputFeedbackMessage | translate }}
+    </div>
+    <button class="close-btn" (click)="closeCodeInput()">×</button>
+  </div>
+</div>

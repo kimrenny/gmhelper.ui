@@ -243,9 +243,20 @@
         },
         "SUCCESS": "Password recovery email has been sent.",
         "FAIL": "Error sending recovery email. Please try again."
+      },
+      "CODE": {
+        "INVALID_SESSION": "Session expired. Please log in again.",
+        "INVALID_CODE": "Invalid code. Please try again.",
+        "USER_NOT_FOUND": "User not found.",
+        "USER_BANNED": "Account is banned.",
+        "UNKNOWN": "An unknown error occurred. Please try again later."
       }
     },
-    "REMEMBER_ME": "Stay signed in"
+    "REMEMBER_ME": "Stay signed in",
+    "CODE_INPUT": {
+      "EMAIL": "Enter the code sent to your email",
+      "GAUTH": "Enter the code from your authenticator app"
+    }
   },
   "SETTINGS": {
     "UNAUTHORIZED_MESSAGE": "You don’t have permission to access this content.",

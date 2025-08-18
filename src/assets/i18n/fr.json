@@ -243,9 +243,20 @@
         },
         "SUCCESS": "E-mail de récupération du mot de passe envoyé.",
         "FAIL": "Erreur d'envoi de l'e-mail de récupération. Veuillez réessayer."
+      },
+      "CODE": {
+        "INVALID_SESSION": "Session expirée. Veuillez vous reconnecter et réessayer.",
+        "INVALID_CODE": "Code invalide. Veuillez réessayer.",
+        "USER_NOT_FOUND": "Utilisateur non trouvé.",
+        "USER_BANNED": "Compte banni.",
+        "UNKNOWN": "Une erreur inconnue est survenue. Veuillez réessayer plus tard."
       }
     },
-    "REMEMBER_ME": "Rester connecté"
+    "REMEMBER_ME": "Rester connecté",
+    "CODE_INPUT": {
+      "EMAIL": "Entrez le code envoyé à votre e-mail",
+      "GAUTH": "Entrez le code de votre application d'authentification"
+    }
   },
   "SETTINGS": {
     "UNAUTHORIZED_MESSAGE": "Vous n’avez pas la permission d’accéder à ce contenu.",

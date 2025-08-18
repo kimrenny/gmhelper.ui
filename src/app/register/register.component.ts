@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef, Inject } from '@angular/core';
+import { Component, ChangeDetectorRef, Inject, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
@@ -8,11 +8,19 @@ import { RegisterService } from '../services/register.service';
 import { UserService } from '../services/user.service';
 import { Observable } from 'rxjs';
 import { ApiResponse } from '../models/api-response.model';
+import { CodeInputComponent } from './code-input/code-input.component';
+import { LoginResponse } from '../models/login-response.model';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, TranslateModule, FormsModule, NgxCaptchaModule],
+  imports: [
+    CommonModule,
+    TranslateModule,
+    FormsModule,
+    NgxCaptchaModule,
+    CodeInputComponent,
+  ],
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss'],
 })
@@ -48,6 +56,7 @@ export class RegisterComponent {
   registerFeedbackMessage: string = '';
   loginFeedbackMessage: string = '';
   recoveryFeedbackMessage: string = '';
+  codeInputFeedbackMessage: string = '';
 
   captchaRegisterToken: string = '';
   captchaLoginToken: string = '';
@@ -59,6 +68,10 @@ export class RegisterComponent {
   isCaptchaLoaded: boolean = false;
 
   isAuthorized!: Observable<boolean>;
+
+  showCodeInput: boolean = false;
+
+  @ViewChild(CodeInputComponent) codeInputComponent!: CodeInputComponent;
 
   constructor(
     private registerService: RegisterService,
@@ -206,17 +219,28 @@ export class RegisterComponent {
         this.rememberMe
       )
       .subscribe({
-        next: (response: ApiResponse<any>) => {
+        next: (response: ApiResponse<LoginResponse>) => {
           this.captchaLoginToken = '';
           if (response.success) {
-            localStorage.setItem('authToken', response.data.accessToken);
-            localStorage.setItem('refreshToken', response.data.refreshToken);
-            this.userService.checkAuthentication();
-            this.loginFeedbackMessage = 'REGISTER.ERRORS.LOGIN.SUCCESS';
-            this.clearMessageAfterDelay('login');
-            setTimeout(() => {
-              this.router.navigate(['/']); // Forced redirection in case of failure of subscription.
-            }, 1000);
+            if (
+              response.data.message == 'Check your email for the code' &&
+              response.data.sessionKey
+            ) {
+              this.showCodeInput = true;
+              this.registerService.setCodeSource('email');
+              this.registerService.setSessionKey(response.data.sessionKey);
+              return;
+            }
+            if (response.data.accessToken && response.data.refreshToken) {
+              localStorage.setItem('authToken', response.data.accessToken);
+              localStorage.setItem('refreshToken', response.data.refreshToken);
+              this.userService.checkAuthentication();
+              this.loginFeedbackMessage = 'REGISTER.ERRORS.LOGIN.SUCCESS';
+              this.clearMessageAfterDelay('login');
+              setTimeout(() => {
+                this.router.navigate(['/']); // Forced redirection in case of failure of subscription.
+              }, 1000);
+            }
           } else {
             this.handleLoginError(response.message);
           }
@@ -260,6 +284,60 @@ export class RegisterComponent {
     this.clearMessageAfterDelay('login');
   }
 
+  onCodeComplete(code: string) {
+    const sessionKey = this.registerService.getSessionKey();
+
+    if (!sessionKey) return;
+
+    this.registerService.confirmEmailCode(code, sessionKey).subscribe({
+      next: (response: ApiResponse<LoginResponse>) => {
+        if (response.success && response.data) {
+          if (response.data.accessToken && response.data.refreshToken) {
+            localStorage.setItem('authToken', response.data.accessToken);
+            localStorage.setItem('refreshToken', response.data.refreshToken);
+            this.showCodeInput = false;
+            this.userService.checkAuthentication();
+            this.loginFeedbackMessage = 'REGISTER.ERRORS.LOGIN.SUCCESS';
+            this.clearMessageAfterDelay('login');
+            setTimeout(() => this.router.navigate(['/']), 1000);
+          }
+        } else {
+          this.handleLoginError(response.message);
+        }
+      },
+      error: (error) => {
+        console.error('Email code confirmation error:', error);
+        if (error.error && error.error.message) {
+          this.handleConfirmEmailError(error.error.message);
+        } else {
+          this.codeInputFeedbackMessage = 'REGISTER.ERRORS.LOGIN.FAIL.UNKNOWN';
+          this.clearMessageAfterDelay('codeInput');
+        }
+      },
+    });
+  }
+
+  handleConfirmEmailError(message: string | null) {
+    switch (message) {
+      case 'Invalid or expired session key.':
+        this.codeInputFeedbackMessage = 'REGISTER.ERRORS.CODE.INVALID_SESSION';
+        break;
+      case 'Invalid confirmation code.':
+        this.codeInputFeedbackMessage = 'REGISTER.ERRORS.CODE.INVALID_CODE';
+        break;
+      case 'User not found.':
+        this.codeInputFeedbackMessage = 'REGISTER.ERRORS.CODE.USER_NOT_FOUND';
+        break;
+      case 'User is banned.':
+        this.codeInputFeedbackMessage = 'REGISTER.ERRORS.CODE.USER_BANNED';
+        break;
+      default:
+        this.codeInputFeedbackMessage = 'REGISTER.ERRORS.CODE.UNKNOWN';
+        break;
+    }
+    this.clearMessageAfterDelay('codeInput');
+  }
+
   validateUsername() {
     this.usernameError = this.registerService.validateUsername(this.username);
   }
@@ -296,13 +374,14 @@ export class RegisterComponent {
   }
 
   clearMessageAfterDelay(
-    messageType: 'register' | 'login' | 'recovery',
+    messageType: 'register' | 'login' | 'recovery' | 'codeInput',
     delay = 3000
   ) {
     setTimeout(() => {
       if (messageType === 'register') this.registerFeedbackMessage = '';
       if (messageType === 'login') this.loginFeedbackMessage = '';
       if (messageType === 'recovery') this.recoveryFeedbackMessage = '';
+      if (messageType === 'codeInput') this.codeInputFeedbackMessage = '';
       this.cdr.detectChanges();
     }, delay);
   }
@@ -317,6 +396,11 @@ export class RegisterComponent {
     this.recoveryFeedbackMessage = '';
     this.recoveryEmail = '';
     this.cdr.detectChanges();
+  }
+
+  closeCodeInput() {
+    this.showCodeInput = false;
+    this.codeInputComponent.clearCode();
   }
 
   submitPasswordRecovery() {

@@ -243,9 +243,20 @@
         },
         "SUCCESS": "Eine E-Mail zur Wiederherstellung des Passworts wurde gesendet.",
         "FAIL": "Fehler beim Senden der Wiederherstellungs-E-Mail. Bitte versuchen Sie es erneut."
+      },
+      "CODE": {
+        "INVALID_SESSION": "Sitzung abgelaufen. Bitte melden Sie sich erneut an und versuchen Sie es erneut.",
+        "INVALID_CODE": "Ungültiger Code. Bitte versuchen Sie es noch einmal.",
+        "USER_NOT_FOUND": "Benutzer nicht gefunden.",
+        "USER_BANNED": "Konto gesperrt.",
+        "UNKNOWN": "Ein unbekannter Fehler ist aufgetreten. Bitte später erneut versuchen."
       }
     },
-    "REMEMBER_ME": "Angemeldet bleiben"
+    "REMEMBER_ME": "Angemeldet bleiben",
+    "CODE_INPUT": {
+      "EMAIL": "Geben Sie den Code ein, der an Ihre E-Mail gesendet wurde",
+      "GAUTH": "Geben Sie den Code aus Ihrer Authentifizierungs-App ein"
+    }
   },
   "SETTINGS": {
     "UNAUTHORIZED_MESSAGE": "Sie haben keine Berechtigung, auf diesen Inhalt zuzugreifen.",

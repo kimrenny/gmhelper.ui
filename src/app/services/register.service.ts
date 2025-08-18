@@ -4,13 +4,32 @@ import { BehaviorSubject } from 'rxjs';
 import { ApiResponse } from '../models/api-response.model';
 import { environment } from 'src/environments/environment';
 
+export type CodeSource = 'email' | 'gauth' | null;
+
 @Injectable({
   providedIn: 'root',
 })
 export class RegisterService {
   private api = `${environment.apiUrl}`;
 
+  private codeSource = new BehaviorSubject<CodeSource>(null);
+  codeSource$ = this.codeSource.asObservable();
+
+  private sessionKey = new BehaviorSubject<string | null>(null);
+
   constructor(private http: HttpClient) {}
+
+  setCodeSource(source: CodeSource) {
+    this.codeSource.next(source);
+  }
+
+  getSessionKey(): string | null {
+    return this.sessionKey.getValue();
+  }
+
+  setSessionKey(key: string | null) {
+    this.sessionKey.next(key);
+  }
 
   validateUsername(username: string): string {
     const usernamePattern = /^[A-Za-z][A-Za-z0-9]{3,23}$/;
@@ -159,6 +178,20 @@ export class RegisterService {
       {
         headers,
       }
+    );
+  }
+
+  confirmEmailCode(code: string, sessionKey: string) {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    const body = {
+      code,
+      sessionKey,
+    };
+
+    return this.http.post<ApiResponse<any>>(
+      `${this.api}/api/auth/confirm-email-code`,
+      body,
+      { headers }
     );
   }
 
