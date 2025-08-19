@@ -259,6 +259,14 @@
     }
   },
   "SETTINGS": {
+    "SUCCESS": {
+      "TITLE": "Succès",
+      "MESSAGE": "Paramètres mis à jour avec succès"
+    },
+    "ERROR": {
+      "TITLE": "Erreur",
+      "MESSAGE": "Erreur lors de la mise à jour des paramètres"
+    },
     "UNAUTHORIZED_MESSAGE": "Vous n’avez pas la permission d’accéder à ce contenu.",
     "TITLE": "Paramètres",
     "BUTTON": {

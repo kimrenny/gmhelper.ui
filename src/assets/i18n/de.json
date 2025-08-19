@@ -259,6 +259,14 @@
     }
   },
   "SETTINGS": {
+    "SUCCESS": {
+      "TITLE": "Erfolg",
+      "MESSAGE": "Einstellungen erfolgreich aktualisiert"
+    },
+    "ERROR": {
+      "TITLE": "Fehler",
+      "MESSAGE": "Fehler beim Aktualisieren der Einstellungen"
+    },
     "UNAUTHORIZED_MESSAGE": "Sie haben keine Berechtigung, auf diesen Inhalt zuzugreifen.",
     "TITLE": "Einstellungen",
     "BUTTON": {

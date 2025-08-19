@@ -1,0 +1,24 @@
+<div class="devices-section">
+  <h3>{{ "SETTINGS.DEVICES.TITLE" | translate }}</h3>
+  <ul *ngIf="devices?.length">
+    <li *ngFor="let device of devices" class="device-item">
+      <div class="device-info">
+        <span class="authorization-date">{{
+          device.authorizationDate | date : "d MMM yyyy, h:mm a"
+        }}</span>
+        <span class="device-details">
+          <strong>IP:</strong> {{ device.ipAddress }} -
+          <strong>Platform:</strong> {{ device.platform }} -
+          <strong>User-Agent:</strong> {{ device.userAgent }}
+        </span>
+      </div>
+      <button class="delete-button" (click)="deactivateDevice(device)">
+        <i class="fa fa-ban"></i>
+        {{ "SETTINGS.DEVICES.REMOVE" | translate }}
+      </button>
+    </li>
+  </ul>
+  <p *ngIf="!devices?.length">
+    {{ "SETTINGS.DEVICES.ERROR.NOTFOUND" | translate }}
+  </p>
+</div>

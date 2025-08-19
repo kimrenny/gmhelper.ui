@@ -259,6 +259,14 @@
     }
   },
   "SETTINGS": {
+    "SUCCESS": {
+      "TITLE": "Success",
+      "MESSAGE": "Settings updated successfully"
+    },
+    "ERROR": {
+      "TITLE": "Error",
+      "MESSAGE": "Error updating settings"
+    },
     "UNAUTHORIZED_MESSAGE": "You don’t have permission to access this content.",
     "TITLE": "Settings",
     "BUTTON": {

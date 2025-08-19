@@ -18,19 +18,19 @@
       <div class="settings-tabs">
         <button
           [class.active]="selectedSection === 'user'"
-          (click)="showUserSettings()"
+          (click)="showSettingsSection('user')"
         >
           {{ "SETTINGS.BUTTON.USER_SETTINGS" | translate }}
         </button>
         <button
           [class.active]="selectedSection === 'settings'"
-          (click)="showSettings()"
+          (click)="showSettingsSection('settings')"
         >
           {{ "SETTINGS.BUTTON.APP_SETTINGS" | translate }}
         </button>
         <button
           [class.active]="selectedSection === 'devices'"
-          (click)="showDevices()"
+          (click)="showSettingsSection('devices')"
         >
           {{ "SETTINGS.BUTTON.DEVICEINFO" | translate }}
         </button>
@@ -41,181 +41,15 @@
     <h2 class="settings-title">{{ "SETTINGS.TITLE" | translate }}</h2>
 
     <div *ngIf="selectedSection === 'user'">
-      <div class="user-info">
-        <img
-          [src]="userAvatarUrl || '../../assets/icons/default-avatar.png'"
-          alt="User Avatar"
-          class="user-avatar"
-        />
-        <h3>{{ userNickname }}</h3>
-      </div>
-
-      <form
-        (ngSubmit)="onSubmit()"
-        [formGroup]="settingsForm"
-        class="settings-form"
-      >
-        <div class="form-group">
-          <label for="avatar">{{ "SETTINGS.FORM.AVATAR" | translate }}</label>
-          <div class="avatar-upload-section">
-            <div class="avatar-upload-row">
-              <div class="avatar-preview-container">
-                <img
-                  [src]="
-                    userAvatarUpload || '../../assets/icons/default-avatar.png'
-                  "
-                  alt="User Avatar"
-                  class="avatar-preview"
-                />
-              </div>
-              <label for="avatar" class="file-upload">{{
-                "SETTINGS.FORM.AVATAR_UPLOAD" | translate
-              }}</label>
-              <input
-                id="avatar"
-                type="file"
-                (change)="onAvatarSelected($event)"
-                accept="image/*"
-                class="file-input"
-              />
-              <button type="button" (click)="clearAvatar()" class="btn-clear">
-                {{ "SETTINGS.BUTTON.CLEAR_AVATAR" | translate }}
-              </button>
-            </div>
-            <div class="btn-avatar-container">
-              <button type="button" (click)="uploadAvatar()" class="btn-upload">
-                {{ "SETTINGS.BUTTON.UPLOAD_AVATAR" | translate }}
-              </button>
-            </div>
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="nickname">{{
-            "SETTINGS.FORM.NICKNAME" | translate
-          }}</label>
-          <input
-            id="nickname"
-            formControlName="nickname"
-            type="text"
-            class="form-control"
-            autocomplete="off"
-          />
-        </div>
-
-        <div class="form-group">
-          <label for="email">{{ "SETTINGS.FORM.EMAIL" | translate }}</label>
-          <input
-            id="email"
-            formControlName="email"
-            type="email"
-            class="form-control"
-            autocomplete="off"
-          />
-        </div>
-
-        <div class="form-group">
-          <label for="currentPassword">{{
-            "SETTINGS.FORM.CURRENTPASSWORD" | translate
-          }}</label>
-          <input
-            id="currentPassword"
-            formControlName="currentPassword"
-            type="password"
-            class="form-control"
-            [type]="showPassword ? 'text' : 'password'"
-            autocomplete="current-password"
-          />
-        </div>
-
-        <div class="form-group">
-          <label for="newPassword">{{
-            "SETTINGS.FORM.NEWPASSWORD" | translate
-          }}</label>
-          <input
-            id="newPassword"
-            formControlName="newPassword"
-            type="password"
-            class="form-control"
-            autocomplete="new-password"
-          />
-        </div>
-
-        <div class="form-group">
-          <label for="confirmNewPassword">{{
-            "SETTINGS.FORM.CONFIRMNEWPASSWORD" | translate
-          }}</label>
-          <input
-            id="confirmNewPassword"
-            formControlName="confirmNewPassword"
-            type="password"
-            class="form-control"
-            autocomplete="new-password"
-          />
-        </div>
-
-        <button
-          type="submit"
-          [disabled]="!settingsForm.valid"
-          class="btn-submit"
-        >
-          {{ "SETTINGS.BUTTON.CONFIRM" | translate }}
-        </button>
-      </form>
+      <app-user-settings></app-user-settings>
     </div>
 
     <div *ngIf="selectedSection === 'settings'">
-      <div class="settings-section">
-        <div class="language-selection">
-          <div #dropdown class="language-dropdown" (click)="toggleDropdown()">
-            <div class="selected-lang">
-              {{
-                selectedLanguageName || "SETTINGS.DROPDOWN.LANG.SELECT"
-                  | translate
-              }}
-            </div>
-            <div class="dropdown-icon">▼</div>
-          </div>
-          <div *ngIf="isDropdownOpen" class="language-options">
-            <div
-              class="language-option"
-              *ngFor="let lang of languages"
-              (click)="selectLanguage(lang)"
-            >
-              {{ lang.name }}
-            </div>
-          </div>
-          <button class="save-button" (click)="saveLanguage()">
-            {{ "SETTINGS.BUTTON.SAVE" | translate }}
-          </button>
-        </div>
-      </div>
+      <app-settings-app></app-settings-app>
     </div>
 
     <div *ngIf="selectedSection === 'devices'">
-      <div class="devices-section">
-        <h3>{{ "SETTINGS.DEVICES.TITLE" | translate }}</h3>
-        <ul *ngIf="devices?.length">
-          <li *ngFor="let device of devices" class="device-item">
-            <div class="device-info">
-              <span class="authorization-date">{{
-                device.authorizationDate | date : "d MMM yyyy, h:mm a"
-              }}</span>
-              <span class="device-details"
-                ><strong>IP:</strong> {{ device.ipAddress }} -
-                <strong>Platform:</strong> {{ device.platform }} -
-                <strong>User-Agent:</strong> {{ device.userAgent }}</span
-              >
-            </div>
-            <button class="delete-button" (click)="deactivateDevice(device)">
-              <i class="fa fa-ban"></i>
-              {{ "SETTINGS.DEVICES.REMOVE" | translate }}
-            </button>
-          </li>
-        </ul>
-        <p *ngIf="!devices?.length">
-          {{ "SETTINGS.DEVICES.ERROR.NOTFOUND" | translate }}
-        </p>
-      </div>
+      <app-devices-settings></app-devices-settings>
     </div>
   </div>
 </div>

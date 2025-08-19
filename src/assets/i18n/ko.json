@@ -259,6 +259,14 @@
     }
   },
   "SETTINGS": {
+    "SUCCESS": {
+      "TITLE": "성공",
+      "MESSAGE": "설정이 성공적으로 업데이트되었습니다"
+    },
+    "ERROR": {
+      "TITLE": "오류",
+      "MESSAGE": "설정 업데이트 중 오류 발생"
+    },
     "UNAUTHORIZED_MESSAGE": "이 콘텐츠에 접근할 권한이 없습니다.",
     "TITLE": "설정",
     "BUTTON": {

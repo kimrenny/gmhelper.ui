@@ -259,6 +259,14 @@
     }
   },
   "SETTINGS": {
+    "SUCCESS": {
+      "TITLE": "成功",
+      "MESSAGE": "設定が正常に更新されました"
+    },
+    "ERROR": {
+      "TITLE": "エラー",
+      "MESSAGE": "設定の更新中にエラーが発生しました"
+    },
     "UNAUTHORIZED_MESSAGE": "このコンテンツにアクセスする権限がありません。",
     "TITLE": "設定",
     "BUTTON": {

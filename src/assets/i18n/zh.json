@@ -259,6 +259,14 @@
     }
   },
   "SETTINGS": {
+    "SUCCESS": {
+      "TITLE": "成功",
+      "MESSAGE": "设置更新成功"
+    },
+    "ERROR": {
+      "TITLE": "错误",
+      "MESSAGE": "更新设置时出错"
+    },
     "UNAUTHORIZED_MESSAGE": "您没有权限访问此内容。",
     "TITLE": "设置",
     "BUTTON": {
