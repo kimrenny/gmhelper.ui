@@ -231,6 +231,16 @@ export class RegisterComponent {
               this.registerService.setSessionKey(response.data.sessionKey);
               return;
             }
+            if (
+              response.data.message == 'Enter the 2FA code from your app' &&
+              response.data.sessionKey
+            ) {
+              this.showCodeInput = true;
+              this.registerService.setCodeSource('gauth');
+              this.registerService.setSessionKey(response.data.sessionKey);
+              console.log(response);
+              return;
+            }
             if (response.data.accessToken && response.data.refreshToken) {
               localStorage.setItem('authToken', response.data.accessToken);
               localStorage.setItem('refreshToken', response.data.refreshToken);
@@ -289,40 +299,75 @@ export class RegisterComponent {
 
     if (!sessionKey) return;
 
-    this.registerService.confirmEmailCode(code, sessionKey).subscribe({
-      next: (response: ApiResponse<LoginResponse>) => {
-        if (response.success && response.data) {
-          if (response.data.accessToken && response.data.refreshToken) {
-            localStorage.setItem('authToken', response.data.accessToken);
-            localStorage.setItem('refreshToken', response.data.refreshToken);
-            this.showCodeInput = false;
-            this.userService.checkAuthentication();
-            this.loginFeedbackMessage = 'REGISTER.ERRORS.LOGIN.SUCCESS';
-            this.clearMessageAfterDelay('login');
-            setTimeout(() => this.router.navigate(['/']), 1000);
+    const codeSource = this.registerService.getCodeSource();
+    if (codeSource === 'gauth') {
+      this.registerService.confirmTwoFACode(code, sessionKey).subscribe({
+        next: (response: ApiResponse<LoginResponse>) => {
+          if (response.success && response.data) {
+            if (response.data.accessToken && response.data.refreshToken) {
+              localStorage.setItem('authToken', response.data.accessToken);
+              localStorage.setItem('refreshToken', response.data.refreshToken);
+              this.showCodeInput = false;
+              this.userService.checkAuthentication();
+              this.loginFeedbackMessage = 'REGISTER.ERRORS.LOGIN.SUCCESS';
+              this.clearMessageAfterDelay('login');
+              setTimeout(() => this.router.navigate(['/']), 1000);
+            }
+          } else {
+            this.handleLoginError(response.message);
           }
-        } else {
-          this.handleLoginError(response.message);
-        }
-      },
-      error: (error) => {
-        console.error('Email code confirmation error:', error);
-        if (error.error && error.error.message) {
-          this.handleConfirmEmailError(error.error.message);
-        } else {
-          this.codeInputFeedbackMessage = 'REGISTER.ERRORS.LOGIN.FAIL.UNKNOWN';
-          this.clearMessageAfterDelay('codeInput');
-        }
-      },
-    });
+        },
+        error: (error) => {
+          console.error('2FA code confirmation error:', error);
+          if (error.error && error.error.message) {
+            this.handleConfirmCodeError(error.error.message);
+          } else {
+            this.codeInputFeedbackMessage =
+              'REGISTER.ERRORS.LOGIN.FAIL.UNKNOWN';
+            this.clearMessageAfterDelay('codeInput');
+          }
+        },
+      });
+    }
+
+    if (codeSource === 'email') {
+      this.registerService.confirmEmailCode(code, sessionKey).subscribe({
+        next: (response: ApiResponse<LoginResponse>) => {
+          if (response.success && response.data) {
+            if (response.data.accessToken && response.data.refreshToken) {
+              localStorage.setItem('authToken', response.data.accessToken);
+              localStorage.setItem('refreshToken', response.data.refreshToken);
+              this.showCodeInput = false;
+              this.userService.checkAuthentication();
+              this.loginFeedbackMessage = 'REGISTER.ERRORS.LOGIN.SUCCESS';
+              this.clearMessageAfterDelay('login');
+              setTimeout(() => this.router.navigate(['/']), 1000);
+            }
+          } else {
+            this.handleLoginError(response.message);
+          }
+        },
+        error: (error) => {
+          console.error('Email code confirmation error:', error);
+          if (error.error && error.error.message) {
+            this.handleConfirmCodeError(error.error.message);
+          } else {
+            this.codeInputFeedbackMessage =
+              'REGISTER.ERRORS.LOGIN.FAIL.UNKNOWN';
+            this.clearMessageAfterDelay('codeInput');
+          }
+        },
+      });
+    }
   }
 
-  handleConfirmEmailError(message: string | null) {
+  handleConfirmCodeError(message: string | null) {
     switch (message) {
       case 'Invalid or expired session key.':
         this.codeInputFeedbackMessage = 'REGISTER.ERRORS.CODE.INVALID_SESSION';
         break;
       case 'Invalid confirmation code.':
+      case 'Invalid 2FA code.':
         this.codeInputFeedbackMessage = 'REGISTER.ERRORS.CODE.INVALID_CODE';
         break;
       case 'User not found.':

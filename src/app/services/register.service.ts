@@ -23,6 +23,10 @@ export class RegisterService {
     this.codeSource.next(source);
   }
 
+  getCodeSource(): CodeSource {
+    return this.codeSource.getValue();
+  }
+
   getSessionKey(): string | null {
     return this.sessionKey.getValue();
   }
@@ -190,6 +194,20 @@ export class RegisterService {
 
     return this.http.post<ApiResponse<any>>(
       `${this.api}/api/auth/confirm-email-code`,
+      body,
+      { headers }
+    );
+  }
+
+  confirmTwoFACode(code: string, sessionKey: string) {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    const body = {
+      code,
+      sessionKey,
+    };
+
+    return this.http.post<ApiResponse<any>>(
+      `${this.api}/api/auth/confirm-2fa-code`,
       body,
       { headers }
     );
