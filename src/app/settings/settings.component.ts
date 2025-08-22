@@ -21,6 +21,7 @@ import { ToastrService } from 'ngx-toastr';
 import { DevicesSettingsComponent } from './devices-settings/devices-settings.component';
 import { LanguageSettingsComponent } from './app-settings/app-settings.component';
 import { UserSettingsComponent } from './user-settings/user-settings.component';
+import { SecuritySettingsComponent } from './security-settings/security-settings.component';
 
 @Component({
   selector: 'app-settings',
@@ -28,6 +29,7 @@ import { UserSettingsComponent } from './user-settings/user-settings.component';
   imports: [
     UserSettingsComponent,
     LanguageSettingsComponent,
+    SecuritySettingsComponent,
     DevicesSettingsComponent,
     TranslateModule,
     ReactiveFormsModule,
@@ -40,7 +42,7 @@ import { UserSettingsComponent } from './user-settings/user-settings.component';
 export class SettingsComponent implements OnInit {
   @ViewChild('dropdown') dropdownRef!: ElementRef;
 
-  selectedSection: 'user' | 'settings' | 'devices' = 'user';
+  selectedSection: 'user' | 'settings' | 'security' | 'devices' = 'user';
   menuOpen = false;
 
   isAuthorized!: Observable<boolean>;
@@ -63,7 +65,7 @@ export class SettingsComponent implements OnInit {
     this.menuOpen = !this.menuOpen;
   }
 
-  showSettingsSection(section: 'user' | 'settings' | 'devices') {
+  showSettingsSection(section: 'user' | 'settings' | 'security' | 'devices') {
     this.selectedSection = section;
   }
 }

@@ -272,6 +272,7 @@
     "BUTTON": {
       "USER_SETTINGS": "ユーザー",
       "APP_SETTINGS": "アプリ",
+      "SECURITY": "セキュリティ",
       "DEVICEINFO": "ログインデバイス",
       "CONFIRM": "変更を保存",
       "CLEAR_AVATAR": "削除",

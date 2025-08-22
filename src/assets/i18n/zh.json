@@ -272,6 +272,7 @@
     "BUTTON": {
       "USER_SETTINGS": "用户",
       "APP_SETTINGS": "应用",
+      "SECURITY": "安全",
       "DEVICEINFO": "登录设备",
       "CONFIRM": "保存更改",
       "CLEAR_AVATAR": "删除",

@@ -1,0 +1,29 @@
+<div class="settings-section">
+  <div class="twofactor-selection">
+    <ng-container *ngIf="!twoFactorEnabled; else twoFactorBound">
+      <p>{{ "SETTINGS.2FA.NOT_ENABLED" | translate }}</p>
+      <button class="bind-button" (click)="generate2FA()">
+        {{ "SETTINGS.2FA.BUTTON.GENERATE" | translate }}
+      </button>
+    </ng-container>
+
+    <ng-template #twoFactorBound>
+      <p>{{ "SETTINGS.2FA.ENABLED" | translate }}</p>
+    </ng-template>
+
+    <div *ngIf="qrCode && secret" class="twofactor-setup">
+      <img [src]="'data:image/jpeg;base64,' + qrCode" alt="QR Code" />
+      <div class="secret-box">{{ secret }}</div>
+
+      <input
+        type="text"
+        maxlength="6"
+        [(ngModel)]="verificationCode"
+        placeholder="{{ 'SETTINGS.2FA.ENTER_CODE' | translate }}"
+      />
+      <button class="verify-button" (click)="verify2FA()">
+        {{ "SETTINGS.2FA.BUTTON.VERIFY" | translate }}
+      </button>
+    </div>
+  </div>
+</div>

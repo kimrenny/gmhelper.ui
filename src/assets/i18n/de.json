@@ -272,6 +272,7 @@
     "BUTTON": {
       "USER_SETTINGS": "Benutzer",
       "APP_SETTINGS": "App",
+      "SECURITY": "Sicherheit",
       "DEVICEINFO": "Angemeldete Geräte",
       "CONFIRM": "Änderungen speichern",
       "CLEAR_AVATAR": "Entfernen",

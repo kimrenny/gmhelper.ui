@@ -29,6 +29,12 @@
           {{ "SETTINGS.BUTTON.APP_SETTINGS" | translate }}
         </button>
         <button
+          [class.active]="selectedSection === 'security'"
+          (click)="showSettingsSection('security')"
+        >
+          {{ "SETTINGS.BUTTON.SECURITY" | translate }}
+        </button>
+        <button
           [class.active]="selectedSection === 'devices'"
           (click)="showSettingsSection('devices')"
         >
@@ -46,6 +52,10 @@
 
     <div *ngIf="selectedSection === 'settings'">
       <app-settings-app></app-settings-app>
+    </div>
+
+    <div *ngIf="selectedSection === 'security'">
+      <app-security-settings></app-security-settings>
     </div>
 
     <div *ngIf="selectedSection === 'devices'">

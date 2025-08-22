@@ -19,6 +19,7 @@ interface UserDetails {
   avatar: string | null;
   nickname: string;
   language: 'de' | 'en' | 'fr' | 'ja' | 'ko' | 'ru' | 'ua' | 'zh';
+  twoFactor: boolean;
 }
 
 enum Errors {
@@ -38,6 +39,7 @@ export class UserService {
     avatar: null,
     nickname: 'Guest',
     language: 'en',
+    twoFactor: false,
   });
   user$ = this.userSubject.asObservable();
 
@@ -295,6 +297,7 @@ export class UserService {
       avatar: null,
       nickname: 'Guest',
       language: 'en',
+      twoFactor: false,
     });
   }
 }

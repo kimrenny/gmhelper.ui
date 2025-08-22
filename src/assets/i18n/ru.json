@@ -272,6 +272,7 @@
     "BUTTON": {
       "USER_SETTINGS": "Пользователь",
       "APP_SETTINGS": "Приложение",
+      "SECURITY": "Безопасность",
       "DEVICEINFO": "Устройства входа",
       "CONFIRM": "Сохранить изменения",
       "CLEAR_AVATAR": "Удалить",

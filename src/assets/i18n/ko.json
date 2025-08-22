@@ -272,6 +272,7 @@
     "BUTTON": {
       "USER_SETTINGS": "사용자",
       "APP_SETTINGS": "앱",
+      "SECURITY": "보안",
       "DEVICEINFO": "로그인한 기기",
       "CONFIRM": "변경 사항 저장",
       "CLEAR_AVATAR": "제거",

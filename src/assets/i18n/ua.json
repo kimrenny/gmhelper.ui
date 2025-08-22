@@ -272,6 +272,7 @@
     "BUTTON": {
       "USER_SETTINGS": "Користувач",
       "APP_SETTINGS": "Додаток",
+      "SECURITY": "Безпека",
       "DEVICEINFO": "Пристрої входу",
       "CONFIRM": "Зберегти зміни",
       "CLEAR_AVATAR": "Видалити",

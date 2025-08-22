@@ -67,6 +67,23 @@ export class UserSettingsComponent implements OnInit {
     });
   }
 
+  getUserDetails(attempt = 0) {
+    const token = localStorage.getItem('authToken');
+    if (token) {
+      this.userService.loadUserDetails(token).subscribe({
+        next: (userDetails) => {
+          this.userNickname = userDetails.nickname;
+          this.userAvatarUrl =
+            userDetails.avatar || 'assets/icons/default-avatar.png';
+          this.cdr.detectChanges();
+        },
+        error: (err) => {
+          console.error('Error loading user details:', err);
+        },
+      });
+    }
+  }
+
   onSubmit() {
     if (this.settingsForm.valid) {
       const {
@@ -172,21 +189,6 @@ export class UserSettingsComponent implements OnInit {
   clearAvatar(): void {
     this.selectedAvatar = null;
     this.userAvatarUpload = 'assets/icons/default-avatar.png';
-  }
-
-  getUserDetails() {
-    const token = localStorage.getItem('authToken');
-    if (token) {
-      this.userService.loadUserDetails(token).subscribe({
-        next: (userDetails) => {
-          this.userNickname = userDetails.nickname;
-          this.userAvatarUrl =
-            userDetails.avatar || 'assets/icons/default-avatar.png';
-          this.cdr.detectChanges();
-        },
-        error: (err) => console.error('Error loading user details:', err),
-      });
-    }
   }
 
   validateEmail(email: string): boolean {
