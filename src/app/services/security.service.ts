@@ -39,4 +39,30 @@ export class SecurityService {
       { headers: this.tokenService.createAuthHeaders(token) }
     );
   }
+
+  update2FAMode(mode: 'always' | 'ip_only', code: string): Observable<any> {
+    const token = this.tokenService.getTokenFromStorage('authToken');
+    if (!token) {
+      return throwError(() => new Error('No token'));
+    }
+
+    return this.http.post<any>(
+      `${this.api}/2fa/update-mode`,
+      { mode, code },
+      { headers: this.tokenService.createAuthHeaders(token) }
+    );
+  }
+
+  disable2FA(code: string): Observable<any> {
+    const token = this.tokenService.getTokenFromStorage('authToken');
+    if (!token) {
+      return throwError(() => new Error('No token'));
+    }
+
+    return this.http.post<any>(
+      `${this.api}/2fa/disable`,
+      { code },
+      { headers: this.tokenService.createAuthHeaders(token) }
+    );
+  }
 }

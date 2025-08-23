@@ -288,6 +288,19 @@
       "CONFIRMNEWPASSWORD": "새 비밀번호 확인",
       "AVATAR_UPLOAD": "아바타를 선택하려면 클릭하세요"
     },
+    "2FA": {
+      "NOT_ENABLED": "2단계 인증이 활성화되지 않았습니다.",
+      "ENABLED": "2단계 인증이 활성화되었습니다.",
+      "ENTER_CODE": "인증 앱에서 코드를 입력하세요",
+      "BUTTON": {
+        "GENERATE": "2FA 활성화",
+        "VERIFY": "코드 확인"
+      },
+      "MODE": {
+        "ALWAYS": "항상 코드 요청",
+        "IP_ONLY": "새 장치/IP에서만 요청"
+      }
+    },
     "DEVICES": {
       "REMOVE": "비활성화",
       "TITLE": "로그인된 기기",

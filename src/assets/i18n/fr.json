@@ -288,6 +288,19 @@
       "CONFIRMNEWPASSWORD": "Confirmez le nouveau mot de passe",
       "AVATAR_UPLOAD": "Cliquez pour sélectionner un avatar"
     },
+    "2FA": {
+      "NOT_ENABLED": "L'authentification à deux facteurs n'est pas activée.",
+      "ENABLED": "L'authentification à deux facteurs est activée.",
+      "ENTER_CODE": "Entrez le code de l'application d'authentification",
+      "BUTTON": {
+        "GENERATE": "Activer 2FA",
+        "VERIFY": "Vérifier le code"
+      },
+      "MODE": {
+        "ALWAYS": "Toujours demander le code",
+        "IP_ONLY": "Demander seulement sur nouvel appareil/IP"
+      }
+    },
     "DEVICES": {
       "REMOVE": "Désactiver",
       "TITLE": "Appareils connectés",

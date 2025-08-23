@@ -288,6 +288,19 @@
       "CONFIRMNEWPASSWORD": "Confirm New Password",
       "AVATAR_UPLOAD": "Click to select an avatar"
     },
+    "2FA": {
+      "NOT_ENABLED": "Two-factor authentication is not enabled.",
+      "ENABLED": "Two-factor authentication is enabled.",
+      "ENTER_CODE": "Enter code from authenticator app",
+      "BUTTON": {
+        "GENERATE": "Enable 2FA",
+        "VERIFY": "Verify code"
+      },
+      "MODE": {
+        "ALWAYS": "Always ask for code",
+        "IP_ONLY": "Ask only on new device / IP"
+      }
+    },
     "DEVICES": {
       "REMOVE": "Disable",
       "TITLE": "Logged In Devices",

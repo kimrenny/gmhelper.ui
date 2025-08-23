@@ -288,6 +288,19 @@
       "CONFIRMNEWPASSWORD": "新しいパスワードを確認",
       "AVATAR_UPLOAD": "アバターを選択するにはクリックしてください"
     },
+    "2FA": {
+      "NOT_ENABLED": "二要素認証は有効になっていません。",
+      "ENABLED": "二要素認証は有効です。",
+      "ENTER_CODE": "認証アプリのコードを入力してください",
+      "BUTTON": {
+        "GENERATE": "2FAを有効にする",
+        "VERIFY": "コードを確認"
+      },
+      "MODE": {
+        "ALWAYS": "常にコードを要求する",
+        "IP_ONLY": "新しいデバイス/IP のみで要求"
+      }
+    },
     "DEVICES": {
       "REMOVE": "無効化する",
       "TITLE": "ログイン済みデバイス",

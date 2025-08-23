@@ -114,26 +114,7 @@ export class UserService {
             userDetails.avatar = `data:image/jpeg;base64,${userDetails.avatar}`;
           }
 
-          const listLangs: UserDetails['language'][] = [
-            'en',
-            'de',
-            'fr',
-            'ja',
-            'ko',
-            'ru',
-            'ua',
-            'zh',
-          ];
-
-          if (userDetails.language) {
-            const lang =
-              userDetails.language.toLowerCase() as UserDetails['language'];
-            if (listLangs.includes(lang)) {
-              userDetails.language = lang;
-            } else {
-              userDetails.language = 'en';
-            }
-          }
+          userDetails.language = this.normalizeLanguage(userDetails.language);
           this.userSubject.next(userDetails);
           this.isAuthorizedSubject.next(true);
           this.isServerAvailableSubject.next(true);
@@ -299,5 +280,22 @@ export class UserService {
       language: 'en',
       twoFactor: false,
     });
+  }
+
+  private normalizeLanguage(lang: string): UserDetails['language'] {
+    const listLangs: UserDetails['language'][] = [
+      'en',
+      'de',
+      'fr',
+      'ja',
+      'ko',
+      'ru',
+      'ua',
+      'zh',
+    ];
+
+    if (!lang) return 'en';
+    const normalized = lang.toLowerCase() as UserDetails['language'];
+    return listLangs.includes(normalized) ? normalized : 'en';
   }
 }

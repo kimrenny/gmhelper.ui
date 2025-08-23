@@ -18,6 +18,10 @@ export class SecuritySettingsComponent implements OnInit {
   qrCode: string | null = null;
   secret: string | null = null;
   verificationCode: string = '';
+  twoFactorMode: 'always' | 'ip_only' = 'always';
+
+  pendingModeChange: 'always' | 'ip_only' | null = null;
+  pendingDisable = false;
 
   constructor(
     private userService: UserService,
@@ -29,6 +33,9 @@ export class SecuritySettingsComponent implements OnInit {
   ngOnInit(): void {
     this.userService.user$.subscribe((user) => {
       this.twoFactorEnabled = user.twoFactor;
+      this.twoFactorMode = 'always';
+
+      console.log('this.twoFactorEnabled:', this.twoFactorEnabled);
     });
   }
 
@@ -62,6 +69,75 @@ export class SecuritySettingsComponent implements OnInit {
       },
       error: (err) => {
         console.error(err);
+        this.toastr.error(
+          this.translate.instant('SETTINGS.ERROR.MESSAGE'),
+          this.translate.instant('SETTINGS.ERROR.TITLE')
+        );
+      },
+    });
+  }
+
+  selectMode(mode: 'always' | 'ip_only') {
+    if (mode == this.twoFactorMode) {
+      this.pendingModeChange = null;
+      this.verificationCode = '';
+      return;
+    }
+
+    this.pendingModeChange = mode;
+    this.pendingDisable = false;
+    this.verificationCode = '';
+  }
+
+  confirmModeChange() {
+    if (!this.pendingModeChange) return;
+
+    this.securityService
+      .update2FAMode(this.pendingModeChange, this.verificationCode)
+      .subscribe({
+        next: () => {
+          this.twoFactorMode = this.pendingModeChange!;
+          this.pendingModeChange = null;
+          this.verificationCode = '';
+          this.toastr.success(
+            this.translate.instant('SETTINGS.SUCCESS.MESSAGE'),
+            this.translate.instant('SETTINGS.SUCCESS.TITLE')
+          );
+        },
+        error: () => {
+          this.toastr.error(
+            this.translate.instant('SETTINGS.ERROR.MESSAGE'),
+            this.translate.instant('SETTINGS.ERROR.TITLE')
+          );
+        },
+      });
+  }
+
+  cancelModeChange() {
+    this.pendingModeChange = null;
+    this.verificationCode = '';
+  }
+
+  requestDisable2FA() {
+    this.pendingDisable = true;
+    this.pendingModeChange = null;
+    this.verificationCode = '';
+  }
+
+  confirmDisable2FA() {
+    this.securityService.disable2FA(this.verificationCode).subscribe({
+      next: () => {
+        this.twoFactorEnabled = false;
+        this.pendingDisable = false;
+        this.qrCode = null;
+        this.secret = null;
+        this.verificationCode = '';
+        this.toastr.success(
+          this.translate.instant('SETTINGS.SUCCESS.MESSAGE'),
+          this.translate.instant('SETTINGS.SUCCESS.TITLE')
+        );
+      },
+      error: () => {
         this.toastr.error(
           this.translate.instant('SETTINGS.ERROR.MESSAGE'),
           this.translate.instant('SETTINGS.ERROR.TITLE')

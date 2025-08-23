@@ -288,6 +288,19 @@
       "CONFIRMNEWPASSWORD": "确认新密码",
       "AVATAR_UPLOAD": "点击选择头像"
     },
+    "2FA": {
+      "NOT_ENABLED": "双重身份验证未启用。",
+      "ENABLED": "双重身份验证已启用。",
+      "ENTER_CODE": "请输入身份验证应用中的代码",
+      "BUTTON": {
+        "GENERATE": "启用2FA",
+        "VERIFY": "验证代码"
+      },
+      "MODE": {
+        "ALWAYS": "始终要求输入验证码",
+        "IP_ONLY": "仅在新设备/IP 时要求输入验证码"
+      }
+    },
     "DEVICES": {
       "REMOVE": "禁用",
       "TITLE": "登录设备",
