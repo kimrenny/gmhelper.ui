@@ -46,9 +46,11 @@ export class SecurityService {
       return throwError(() => new Error('No token'));
     }
 
+    const alwaysAsk = mode === 'always';
+
     return this.http.post<any>(
-      `${this.api}/2fa/update-mode`,
-      { mode, code },
+      `${this.api}/2fa/change-mode`,
+      { type: 'totp', alwaysAsk, code },
       { headers: this.tokenService.createAuthHeaders(token) }
     );
   }
@@ -60,8 +62,8 @@ export class SecurityService {
     }
 
     return this.http.post<any>(
-      `${this.api}/2fa/disable`,
-      { code },
+      `${this.api}/2fa/remove`,
+      { type: 'totp', code },
       { headers: this.tokenService.createAuthHeaders(token) }
     );
   }

@@ -294,8 +294,12 @@
       "ENTER_CODE": "認証アプリのコードを入力してください",
       "BUTTON": {
         "GENERATE": "2FAを有効にする",
-        "VERIFY": "コードを確認"
+        "VERIFY": "コードを確認",
+        "DISABLE": "2FAを無効にする",
+        "CONFIRM": "確認"
       },
+      "MODE_TITLE": "二要素認証モード",
+      "DISABLE_TITLE": "二要素認証を無効にする",
       "MODE": {
         "ALWAYS": "常にコードを要求する",
         "IP_ONLY": "新しいデバイス/IP のみで要求"

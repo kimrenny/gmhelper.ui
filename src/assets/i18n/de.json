@@ -294,8 +294,12 @@
       "ENTER_CODE": "Geben Sie den Code aus der Authenticator-App ein",
       "BUTTON": {
         "GENERATE": "2FA aktivieren",
-        "VERIFY": "Code überprüfen"
+        "VERIFY": "Code überprüfen",
+        "DISABLE": "2FA deaktivieren",
+        "CONFIRM": "Bestätigen"
       },
+      "MODE_TITLE": "Zwei-Faktor-Authentifizierungsmodus",
+      "DISABLE_TITLE": "Zwei-Faktor-Authentifizierung deaktivieren",
       "MODE": {
         "ALWAYS": "Immer Code anfordern",
         "IP_ONLY": "Nur bei neuem Gerät/IP anfordern"

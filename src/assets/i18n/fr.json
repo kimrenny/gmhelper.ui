@@ -294,8 +294,12 @@
       "ENTER_CODE": "Entrez le code de l'application d'authentification",
       "BUTTON": {
         "GENERATE": "Activer 2FA",
-        "VERIFY": "Vérifier le code"
+        "VERIFY": "Vérifier le code",
+        "DISABLE": "Désactiver la 2FA",
+        "CONFIRM": "Confirmer"
       },
+      "MODE_TITLE": "Mode d'authentification à deux facteurs",
+      "DISABLE_TITLE": "Désactiver l'authentification à deux facteurs",
       "MODE": {
         "ALWAYS": "Toujours demander le code",
         "IP_ONLY": "Demander seulement sur nouvel appareil/IP"

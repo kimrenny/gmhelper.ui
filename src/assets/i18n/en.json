@@ -294,8 +294,12 @@
       "ENTER_CODE": "Enter code from authenticator app",
       "BUTTON": {
         "GENERATE": "Enable 2FA",
-        "VERIFY": "Verify code"
+        "VERIFY": "Verify code",
+        "DISABLE": "Disable 2FA",
+        "CONFIRM": "Confirm"
       },
+      "MODE_TITLE": "Two-Factor Authentication Mode",
+      "DISABLE_TITLE": "Disable Two-Factor Authentication",
       "MODE": {
         "ALWAYS": "Always ask for code",
         "IP_ONLY": "Ask only on new device / IP"

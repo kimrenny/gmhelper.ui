@@ -20,6 +20,7 @@ interface UserDetails {
   nickname: string;
   language: 'de' | 'en' | 'fr' | 'ja' | 'ko' | 'ru' | 'ua' | 'zh';
   twoFactor: boolean;
+  alwaysAsk: boolean;
 }
 
 enum Errors {
@@ -40,6 +41,7 @@ export class UserService {
     nickname: 'Guest',
     language: 'en',
     twoFactor: false,
+    alwaysAsk: true,
   });
   user$ = this.userSubject.asObservable();
 
@@ -279,6 +281,7 @@ export class UserService {
       nickname: 'Guest',
       language: 'en',
       twoFactor: false,
+      alwaysAsk: true,
     });
   }
 

@@ -33,9 +33,7 @@ export class SecuritySettingsComponent implements OnInit {
   ngOnInit(): void {
     this.userService.user$.subscribe((user) => {
       this.twoFactorEnabled = user.twoFactor;
-      this.twoFactorMode = 'always';
-
-      console.log('this.twoFactorEnabled:', this.twoFactorEnabled);
+      this.twoFactorMode = user.alwaysAsk ? 'always' : 'ip_only';
     });
   }
 
@@ -119,7 +117,7 @@ export class SecuritySettingsComponent implements OnInit {
   }
 
   requestDisable2FA() {
-    this.pendingDisable = true;
+    this.pendingDisable = !this.pendingDisable;
     this.pendingModeChange = null;
     this.verificationCode = '';
   }

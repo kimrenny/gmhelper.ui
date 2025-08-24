@@ -1,7 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
+import {
+  Language,
+  LanguageCode,
+  languages,
+} from 'src/app/models/languages.model';
 import { UserService } from 'src/app/services/user.service';
 
 @Component({
@@ -11,21 +16,11 @@ import { UserService } from 'src/app/services/user.service';
   templateUrl: './app-settings.component.html',
   styleUrls: ['./app-settings.component.scss'],
 })
-export class LanguageSettingsComponent {
-  selectedLanguage: 'de' | 'en' | 'fr' | 'ja' | 'ko' | 'ru' | 'ua' | 'zh' =
-    'en';
+export class LanguageSettingsComponent implements OnInit {
+  selectedLanguage: LanguageCode = 'en';
   selectedLanguageName: string = 'English';
-  languages = [
-    { code: 'de', name: 'Deutsch' },
-    { code: 'en', name: 'English' },
-    { code: 'fr', name: 'Français' },
-    { code: 'ja', name: '日本語' },
-    { code: 'ko', name: '한국어' },
-    { code: 'ru', name: 'Русский' },
-    { code: 'ua', name: 'Українська' },
-    { code: 'zh', name: '中文' },
-  ];
   isDropdownOpen = false;
+  languages = languages;
 
   constructor(
     private userService: UserService,
@@ -33,20 +28,28 @@ export class LanguageSettingsComponent {
     private translate: TranslateService
   ) {}
 
+  ngOnInit(): void {
+    this.userService.user$.subscribe((user) => {
+      const langCode = user.language.toLowerCase();
+
+      if (this.isLanguageCode(langCode) && langCode !== 'en') {
+        const langObj = languages.find((l) => l.code === langCode)!;
+        this.selectedLanguage = langObj.code;
+        this.selectedLanguageName = langObj.name;
+      }
+    });
+  }
+
+  isLanguageCode(code: string): code is LanguageCode {
+    return ['de', 'en', 'fr', 'ja', 'ko', 'ru', 'ua', 'zh'].includes(code);
+  }
+
   toggleDropdown() {
     this.isDropdownOpen = !this.isDropdownOpen;
   }
 
-  selectLanguage(lang: { code: string; name: string }) {
-    this.selectedLanguage = lang.code as
-      | 'de'
-      | 'en'
-      | 'fr'
-      | 'ja'
-      | 'ko'
-      | 'ru'
-      | 'ua'
-      | 'zh';
+  selectLanguage(lang: Language) {
+    this.selectedLanguage = lang.code;
     this.selectedLanguageName = lang.name;
     this.isDropdownOpen = false;
   }

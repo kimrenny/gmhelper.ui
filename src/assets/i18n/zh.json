@@ -294,8 +294,12 @@
       "ENTER_CODE": "请输入身份验证应用中的代码",
       "BUTTON": {
         "GENERATE": "启用2FA",
-        "VERIFY": "验证代码"
+        "VERIFY": "验证代码",
+        "DISABLE": "禁用2FA",
+        "CONFIRM": "确认"
       },
+      "MODE_TITLE": "双因素认证模式",
+      "DISABLE_TITLE": "禁用双因素认证",
       "MODE": {
         "ALWAYS": "始终要求输入验证码",
         "IP_ONLY": "仅在新设备/IP 时要求输入验证码"

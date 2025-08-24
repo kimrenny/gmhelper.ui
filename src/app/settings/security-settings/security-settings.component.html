@@ -2,50 +2,67 @@
   <div class="twofactor-selection">
     <ng-container *ngIf="twoFactorEnabled; else notEnabled">
       <div class="twofactor-enabled">
-        <div class="twofactor-options">
-          <div
-            class="option-card"
-            [class.active]="twoFactorMode === 'always'"
-            (click)="selectMode('always')"
-          >
-            {{ "SETTINGS.2FA.MODE.ALWAYS" | translate }}
+        <div *ngIf="!pendingDisable">
+          <div class="section-title">
+            {{ "SETTINGS.2FA.MODE_TITLE" | translate }}
+          </div>
+          <div class="twofactor-options">
+            <div
+              class="option-card"
+              [class.active]="twoFactorMode === 'always'"
+              [class.pending]="pendingModeChange === 'always'"
+              (click)="selectMode('always')"
+            >
+              {{ "SETTINGS.2FA.MODE.ALWAYS" | translate }}
+            </div>
+
+            <div
+              class="option-card"
+              [class.active]="twoFactorMode === 'ip_only'"
+              [class.pending]="pendingModeChange === 'ip_only'"
+              (click)="selectMode('ip_only')"
+            >
+              {{ "SETTINGS.2FA.MODE.IP_ONLY" | translate }}
+            </div>
           </div>
 
-          <div
-            class="option-card"
-            [class.active]="twoFactorMode === 'ip_only'"
-            (click)="selectMode('ip_only')"
-          >
-            {{ "SETTINGS.2FA.MODE.IP_ONLY" | translate }}
+          <div *ngIf="pendingModeChange" class="mode-verify">
+            <input
+              type="text"
+              maxlength="6"
+              [(ngModel)]="verificationCode"
+              placeholder="{{ 'SETTINGS.2FA.ENTER_CODE' | translate }}"
+            />
+            <button class="verify-button" (click)="confirmModeChange()">
+              {{ "SETTINGS.2FA.BUTTON.CONFIRM" | translate }}
+            </button>
           </div>
         </div>
 
-        <div *ngIf="pendingModeChange" class="mode-verify">
-          <input
-            type="text"
-            maxlength="6"
-            [(ngModel)]="verificationCode"
-            placeholder="{{ 'SETTINGS.2FA.ENTER_CODE' | translate }}"
-          />
-          <button class="verify-button" (click)="confirmModeChange()">
-            {{ "SETTINGS.2FA.BUTTON.CONFIRM_MODE" | translate }}
-          </button>
-        </div>
+        <div
+          *ngIf="!pendingModeChange && !pendingDisable"
+          class="section-divider"
+        ></div>
 
-        <button class="unbind-button" (click)="requestDisable2FA()">
-          {{ "SETTINGS.2FA.BUTTON.DISABLE" | translate }}
-        </button>
-
-        <div *ngIf="pendingDisable" class="disable-verify">
-          <input
-            type="text"
-            maxlength="6"
-            [(ngModel)]="verificationCode"
-            placeholder="{{ 'SETTINGS.2FA.ENTER_CODE' | translate }}"
-          />
-          <button class="verify-button" (click)="confirmDisable2FA()">
-            {{ "SETTINGS.2FA.BUTTON.CONFIRM_DISABLE" | translate }}
+        <div *ngIf="!pendingModeChange">
+          <div class="section-title">
+            {{ "SETTINGS.2FA.DISABLE_TITLE" | translate }}
+          </div>
+          <button class="unbind-button" (click)="requestDisable2FA()">
+            {{ "SETTINGS.2FA.BUTTON.DISABLE" | translate }}
           </button>
+
+          <div *ngIf="pendingDisable" class="disable-verify">
+            <input
+              type="text"
+              maxlength="6"
+              [(ngModel)]="verificationCode"
+              placeholder="{{ 'SETTINGS.2FA.ENTER_CODE' | translate }}"
+            />
+            <button class="verify-button" (click)="confirmDisable2FA()">
+              {{ "SETTINGS.2FA.BUTTON.CONFIRM" | translate }}
+            </button>
+          </div>
         </div>
       </div>
     </ng-container>

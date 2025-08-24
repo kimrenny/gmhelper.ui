@@ -294,8 +294,12 @@
       "ENTER_CODE": "인증 앱에서 코드를 입력하세요",
       "BUTTON": {
         "GENERATE": "2FA 활성화",
-        "VERIFY": "코드 확인"
+        "VERIFY": "코드 확인",
+        "DISABLE": "2FA 비활성화",
+        "CONFIRM": "확인"
       },
+      "MODE_TITLE": "2단계 인증 모드",
+      "DISABLE_TITLE": "2단계 인증 비활성화",
       "MODE": {
         "ALWAYS": "항상 코드 요청",
         "IP_ONLY": "새 장치/IP에서만 요청"
