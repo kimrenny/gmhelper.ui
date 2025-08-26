@@ -164,6 +164,10 @@ export class UserService {
   }
 
   checkAuthentication(callback?: () => void): void {
+    if (this.isUserLoadingSubject.getValue()) {
+      return;
+    }
+
     const currentUser = this.userSubject.getValue();
     const isDefaultUser =
       currentUser.avatar === null &&
