@@ -34,9 +34,13 @@
           </div>
 
           <ul *ngIf="showUserMenu" class="user-menu-list">
-            <li (click)="openUserSettings()">Settings</li>
-            <li *ngIf="checkAdminAccess()" (click)="openAdminPanel()">Admin</li>
-            <li (click)="logout()">Logout</li>
+            <li (click)="openUserSettings()">
+              {{ "HEADER.LIST.SETTINGS" | translate }}
+            </li>
+            <li *ngIf="checkAdminAccess()" (click)="openAdminPanel()">
+              {{ "HEADER.LIST.ADMIN" | translate }}
+            </li>
+            <li (click)="logout()">{{ "HEADER.LIST.LOGOUT" | translate }}</li>
           </ul>
         </div>
       </div>

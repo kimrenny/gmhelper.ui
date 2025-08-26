@@ -33,6 +33,13 @@
     },
     "LOREM": "Lorem Ipsum is simply dummy text of the printing and typesetting industry..."
   },
+  "HEADER": {
+    "LIST": {
+      "SETTINGS": "Settings",
+      "ADMIN": "Admin",
+      "LOGOUT": "Logout"
+    }
+  },
   "CANVAS": {
     "TOOLTIP": {
       "TOOL": {

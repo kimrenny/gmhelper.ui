@@ -33,6 +33,13 @@
     },
     "LOREM": "ロレム・イプサムは印刷および組版業界のダミーテキストです..."
   },
+  "HEADER": {
+    "LIST": {
+      "SETTINGS": "設定",
+      "ADMIN": "管理",
+      "LOGOUT": "ログアウト"
+    }
+  },
   "CANVAS": {
     "TOOLTIP": {
       "TOOL": {

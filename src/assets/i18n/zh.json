@@ -33,6 +33,13 @@
     },
     "LOREM": "罗马假名是印刷和排版行业的虚拟文本..."
   },
+  "HEADER": {
+    "LIST": {
+      "SETTINGS": "设置",
+      "ADMIN": "管理员",
+      "LOGOUT": "退出"
+    }
+  },
   "CANVAS": {
     "TOOLTIP": {
       "TOOL": {

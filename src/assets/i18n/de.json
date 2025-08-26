@@ -33,6 +33,13 @@
     },
     "LOREM": "Lorem Ipsum ist einfach Blindtext der Druck- und Satzindustrie..."
   },
+  "HEADER": {
+    "LIST": {
+      "SETTINGS": "Einstellungen",
+      "ADMIN": "Admin",
+      "LOGOUT": "Abmelden"
+    }
+  },
   "CANVAS": {
     "TOOLTIP": {
       "TOOL": {

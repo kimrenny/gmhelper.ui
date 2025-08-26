@@ -33,6 +33,13 @@
     },
     "LOREM": "Lorem Ipsum est simplement un faux texte de l'industrie de l'imprimerie et de la composition."
   },
+  "HEADER": {
+    "LIST": {
+      "SETTINGS": "Paramètres",
+      "ADMIN": "Admin",
+      "LOGOUT": "Déconnexion"
+    }
+  },
   "CANVAS": {
     "TOOLTIP": {
       "TOOL": {

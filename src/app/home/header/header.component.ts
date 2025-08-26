@@ -13,7 +13,7 @@ import { Subscription } from 'rxjs';
 import { TokenService } from 'src/app/services/token.service';
 import { LanguageService } from 'src/app/services/language.service';
 import { ToastrService } from 'ngx-toastr';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { HeaderService } from 'src/app/services/header.service';
 
 @Component({
@@ -21,7 +21,7 @@ import { HeaderService } from 'src/app/services/header.service';
   standalone: true,
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, TranslateModule],
 })
 export class HeaderComponent implements OnInit, OnDestroy {
   showLanguageMenu = false;

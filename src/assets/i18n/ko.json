@@ -33,6 +33,13 @@
     },
     "LOREM": "로렘 입숨은 인쇄 및 조판 산업의 더미 텍스트입니다..."
   },
+  "HEADER": {
+    "LIST": {
+      "SETTINGS": "설정",
+      "ADMIN": "관리자",
+      "LOGOUT": "로그아웃"
+    }
+  },
   "CANVAS": {
     "TOOLTIP": {
       "TOOL": {
