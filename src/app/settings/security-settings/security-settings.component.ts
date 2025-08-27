@@ -33,7 +33,9 @@ export class SecuritySettingsComponent implements OnInit {
   ngOnInit(): void {
     this.userService.user$.subscribe((user) => {
       this.twoFactorEnabled = user.twoFactor;
-      this.twoFactorMode = user.alwaysAsk ? 'always' : 'ip_only';
+      if (user.twoFactor) {
+        this.twoFactorMode = user.alwaysAsk ? 'always' : 'ip_only';
+      }
     });
   }
 
