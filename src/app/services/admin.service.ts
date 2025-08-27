@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import {
   BehaviorSubject,
@@ -11,112 +11,19 @@ import {
 import { TokenService } from './token.service';
 import { ApiResponse } from '../models/api-response.model';
 import { environment } from 'src/environments/environment';
-
-interface DeviceInfo {
-  userAgent: string;
-  platform: string;
-}
-
-interface LoginToken {
-  expiration: string;
-  deviceInfo: DeviceInfo;
-  ipAddress: string;
-  isActive: boolean;
-}
-
-interface User {
-  id: string;
-  username: string;
-  email: string;
-  role: string;
-  registrationDate: string;
-  isBlocked: boolean;
-  loginTokens: LoginToken[];
-}
-
-interface Token {
-  id: string;
-  token: string;
-  expiration: string;
-  refreshTokenExpiration: string;
-  userId: string;
-  deviceInfo: DeviceInfo;
-  ipAddress: string;
-  isActive: boolean;
-}
-
-interface RequestsData {
-  date: string;
-  count: number;
-}
-
-interface CombinedRequestsData {
-  regular: RequestsData[];
-  admin: RequestsData[];
-}
-
-interface RegistrationData {
-  date: string;
-  registrations: number;
-}
-
-interface CreatedTokens {
-  activeTokens: number;
-  totalTokens: number;
-  activeAdminTokens: number;
-  totalAdminTokens: number;
-}
-
-interface CountryStats {
-  country: string;
-  count: number;
-}
-
-interface RoleStats {
-  role: string;
-  count: number;
-}
-
-interface BlockStats {
-  status: string;
-  count: number;
-}
-
-interface RequestLog {
-  id: number;
-  timestamp: string;
-  method: string;
-  path: string;
-  userId: string;
-  requestBody: string;
-  statusCode: number;
-  startTime: string;
-  endTime: string;
-  elapsedTime: number;
-  ipAddress: string;
-  userAgent: string;
-  status: string;
-  requestType: string;
-}
-
-interface AuthLog {
-  id: number;
-  timestamp: string;
-  userId: string;
-  ipAddress: string;
-  userAgent: string;
-  status: string;
-  message: string;
-}
-
-interface ErrorLog {
-  id: number;
-  timestamp: string;
-  message: string;
-  stackTrace: string;
-  endpoint: string;
-  exceptionDetails: string;
-}
+import {
+  AuthLog,
+  BlockStats,
+  CombinedRequestsData,
+  CountryStats,
+  CreatedTokens,
+  ErrorLog,
+  RegistrationData,
+  RequestLog,
+  RoleStats,
+  Token,
+  User,
+} from '../models/admin.model';
 
 @Injectable({ providedIn: 'root' })
 export class AdminService {
