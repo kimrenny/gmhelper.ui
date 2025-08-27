@@ -23,7 +23,6 @@ export class AdminGuard implements CanActivate {
     return this.tokenService.userRole$.pipe(
       switchMap((role) => {
         if (role === 'Admin' || role === 'Owner') {
-          this.adminService.loadAdminData();
           return [true];
         }
         this.router.navigate(['/'], {

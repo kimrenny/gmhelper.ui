@@ -10,6 +10,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 import { TokenService } from '../services/token.service';
 import { Router } from '@angular/router';
+import { AdminService } from '../services/admin.service';
 
 @Component({
   selector: 'app-admin',
@@ -29,12 +30,21 @@ import { Router } from '@angular/router';
 })
 export class AdminComponent implements OnInit, OnDestroy {
   private userRole!: string | null;
-
   private subscriptions = new Subscription();
 
-  constructor(private tokenService: TokenService, private router: Router) {}
+  constructor(
+    private adminService: AdminService,
+    private tokenService: TokenService,
+    private router: Router
+  ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    if (this.router.url.startsWith('/admin')) {
+      this.adminService.loadAdminData();
+    }
+  }
 
-  ngOnDestroy(): void {}
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
+  }
 }
