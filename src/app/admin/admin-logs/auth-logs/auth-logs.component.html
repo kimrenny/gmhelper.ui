@@ -97,7 +97,11 @@
               : log.userAgent
           }}
         </div>
-        <div class="column">{{ log.status }}</div>
+        <div class="column">
+          {{
+            log.status.length > 6 ? log.status.slice(0, 6) + "..." : log.status
+          }}
+        </div>
         <div class="column">
           {{
             log.message.length > 6
