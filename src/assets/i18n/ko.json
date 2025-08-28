@@ -478,6 +478,9 @@
       "STACKTRACE": "스택 추적",
       "ENDPOINT": "엔드포인트",
       "EXCEPTIONDETAILS": "예외 세부정보",
+      "DETAILS": {
+        "TITLE": "로그 세부정보"
+      },
       "BUTTON": {
         "ALL": "전체",
         "AUTH": "인증",

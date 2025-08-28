@@ -478,6 +478,9 @@
       "STACKTRACE": "スタックトレース",
       "ENDPOINT": "エンドポイント",
       "EXCEPTIONDETAILS": "例外詳細",
+      "DETAILS": {
+        "TITLE": "ログの詳細"
+      },
       "BUTTON": {
         "ALL": "すべて",
         "AUTH": "認証",

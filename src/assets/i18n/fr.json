@@ -478,6 +478,9 @@
       "STACKTRACE": "Trace de pile",
       "ENDPOINT": "Point de terminaison",
       "EXCEPTIONDETAILS": "Détails de l'exc.",
+      "DETAILS": {
+        "TITLE": "Détails du journal"
+      },
       "BUTTON": {
         "ALL": "Tous",
         "AUTH": "Auth",

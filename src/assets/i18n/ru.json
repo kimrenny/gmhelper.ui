@@ -478,6 +478,9 @@
       "STACKTRACE": "Стек-трейс",
       "ENDPOINT": "Эндпоинт",
       "EXCEPTIONDETAILS": "Детали исключения",
+      "DETAILS": {
+        "TITLE": "Подробности лога"
+      },
       "BUTTON": {
         "ALL": "Все",
         "AUTH": "Авторизация",

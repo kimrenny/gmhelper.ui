@@ -478,6 +478,9 @@
       "STACKTRACE": "Stacktrace",
       "ENDPOINT": "Endpunkt",
       "EXCEPTIONDETAILS": "Ausnahmedetails",
+      "DETAILS": {
+        "TITLE": "Protokolldetails"
+      },
       "BUTTON": {
         "ALL": "Alle",
         "AUTH": "Auth",
