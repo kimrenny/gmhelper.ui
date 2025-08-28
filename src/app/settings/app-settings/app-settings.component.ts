@@ -7,6 +7,7 @@ import {
   LanguageCode,
   languages,
 } from 'src/app/models/languages.model';
+import { LanguageService } from 'src/app/services/language.service';
 import { UserService } from 'src/app/services/user.service';
 
 @Component({
@@ -25,23 +26,20 @@ export class LanguageSettingsComponent implements OnInit {
   constructor(
     private userService: UserService,
     private toastr: ToastrService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private languageService: LanguageService
   ) {}
 
   ngOnInit(): void {
     this.userService.user$.subscribe((user) => {
       const langCode = user.language.toLowerCase();
 
-      if (this.isLanguageCode(langCode) && langCode !== 'en') {
+      if (this.languageService.isLanguageCode(langCode)) {
         const langObj = languages.find((l) => l.code === langCode)!;
         this.selectedLanguage = langObj.code;
         this.selectedLanguageName = langObj.name;
       }
     });
-  }
-
-  isLanguageCode(code: string): code is LanguageCode {
-    return ['de', 'en', 'fr', 'ja', 'ko', 'ru', 'ua', 'zh'].includes(code);
   }
 
   toggleDropdown() {

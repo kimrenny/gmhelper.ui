@@ -1,37 +1,35 @@
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { UserService } from './user.service';
+import { LanguageCode } from '../models/languages.model';
 
 @Injectable({ providedIn: 'root' })
 export class LanguageService {
-  private readonly STORAGE_KEY = 'user-lang';
-
   constructor(
     private translate: TranslateService,
     private userService: UserService
   ) {}
 
   initializeLanguage(): void {
-    let language = localStorage.getItem(this.STORAGE_KEY);
+    const language = this.userService.getUserDetails().language || 'en';
 
-    if (!language) {
-      language = this.userService.getUserDetails().language || 'en';
-      localStorage.setItem(this.STORAGE_KEY, language);
-    }
-
-    this.translate.setDefaultLang(language);
-    this.translate.use(language);
+    this.translate.use(this.isLanguageCode(language) ? language : 'en');
   }
 
-  setLanguage(lang: string): void {
-    localStorage.setItem(this.STORAGE_KEY, lang);
+  updateLanguageFromUser(userLang: string): boolean {
+    if (this.isLanguageCode(userLang)) {
+      this.setLanguage(userLang);
+      return true;
+    }
+
+    return false;
+  }
+
+  private setLanguage(lang: string): void {
     this.translate.use(lang);
   }
 
-  updateLanguageFromUser(userLang: string): void {
-    const storedLang = localStorage.getItem(this.STORAGE_KEY);
-    if (storedLang !== userLang) {
-      this.setLanguage(userLang);
-    }
+  isLanguageCode(code: string): code is LanguageCode {
+    return ['de', 'en', 'fr', 'ja', 'ko', 'ru', 'ua', 'zh'].includes(code);
   }
 }

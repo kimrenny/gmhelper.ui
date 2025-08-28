@@ -122,7 +122,6 @@ export class AdminSettingsService {
     newValue: boolean
   ): void {
     const currentSettings = this.settingsSubject.value;
-    console.log(currentSettings);
 
     if (currentSettings) {
       const sectionIndex = this.getSectionIndexByTitle(sectionTitle);

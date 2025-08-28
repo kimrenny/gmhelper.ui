@@ -43,8 +43,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private languageService: LanguageService,
     private translate: TranslateService,
     private toastr: ToastrService,
-    private router: Router,
-    private cdr: ChangeDetectorRef
+    private router: Router
   ) {}
 
   ngOnInit() {
@@ -58,7 +57,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
       this.userNickname = userDetails.nickname;
       this.userAvatarUrl =
         userDetails.avatar || 'assets/icons/default-avatar.png';
-      this.cdr.detectChanges();
     });
 
     const routerSub = this.router.events.subscribe((event) => {
@@ -69,20 +67,17 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
     const roleSub = this.tokenService.userRole$.subscribe((role) => {
       this.userRole = role;
-      this.cdr.detectChanges();
     });
 
     const loadingSub = this.userService.isUserLoading$.subscribe(
       (isLoading) => {
         this.isUserLoading = isLoading;
-        this.cdr.detectChanges();
       }
     );
 
     const highlightSub = this.headerService.showAuthHighlight$.subscribe(
       (showHighlight) => {
         this.showAuthHighlight = showHighlight;
-        this.cdr.detectChanges();
       }
     );
 
@@ -103,16 +98,16 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   selectLanguage(language: string) {
-    this.languageService.setLanguage(language);
+    const result = this.languageService.updateLanguageFromUser(language);
     this.showLanguageMenu = false;
 
-    this.translate.onLangChange.subscribe(() => {
+    if (result) {
       this.toastr.info(
         this.translate.instant('LANGUAGE.TEMPORARY_MESSAGE'),
         this.translate.instant('LANGUAGE.CHANGE_TITLE'),
         { timeOut: 5000 }
       );
-    });
+    }
   }
 
   @HostListener('document:click', ['$event'])
