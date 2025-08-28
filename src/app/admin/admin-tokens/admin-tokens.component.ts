@@ -176,7 +176,7 @@ export class AdminTokensComponent implements OnInit, OnDestroy {
 
   toggleTokenStatus(token: Token) {
     this.adminService
-      .actionToken(token.token, token.isActive ? 'activate' : 'disable')
+      .actionToken(token.token, !token.isActive ? 'activate' : 'disable')
       .subscribe({
         next: () => {
           token.isActive = !token.isActive;
