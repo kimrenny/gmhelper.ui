@@ -224,6 +224,8 @@
       "REGISTRATION": {
         "SUCCESS": "Inscription réussie !",
         "FAIL": {
+          "EMAIL_EXISTS": "Cet e-mail est déjà enregistré.",
+          "USERNAME_EXISTS": "Ce nom d'utilisateur est déjà pris.",
           "DATA": "Données incorrectes. Vérifiez les informations et réessayez.",
           "CAPTCHA": "La vérification \"Je ne suis pas un robot\" a échoué.",
           "BANNED": "Ce compte a été bloqué.",

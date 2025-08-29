@@ -224,6 +224,8 @@
       "REGISTRATION": {
         "SUCCESS": "注册成功！",
         "FAIL": {
+          "EMAIL_EXISTS": "此电子邮件已注册。",
+          "USERNAME_EXISTS": "此用户名已被使用。",
           "DATA": "数据不正确。检查信息后重试。",
           "CAPTCHA": "\"我不是机器人\"验证失败。",
           "BANNED": "此帐户已被封锁。",

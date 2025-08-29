@@ -75,7 +75,6 @@ export class RegisterComponent {
 
   constructor(
     private registerService: RegisterService,
-    @Inject(ChangeDetectorRef) private cdr: ChangeDetectorRef,
     private route: ActivatedRoute,
     private router: Router,
     @Inject(UserService) private userService: UserService
@@ -100,7 +99,7 @@ export class RegisterComponent {
     });
 
     this.userService.isAuthorized$.subscribe((authorized) => {
-      if (authorized) {
+      if (authorized && this.router.url.startsWith('/register')) {
         setTimeout(() => {
           this.router.navigate(['/']);
         }, 100);
@@ -111,7 +110,6 @@ export class RegisterComponent {
   ngAfterViewInit(): void {
     setTimeout(() => {
       this.isCaptchaLoaded = true;
-      this.cdr.detectChanges();
     }, 500);
   }
 
@@ -129,8 +127,6 @@ export class RegisterComponent {
       queryParams: { type: this.formType },
       replaceUrl: true,
     });
-
-    this.cdr.detectChanges();
   }
 
   register(): void {
@@ -173,6 +169,13 @@ export class RegisterComponent {
   handleRegisterError(message: string | any) {
     switch (message) {
       case 'Email is already used by another user.':
+        this.registerFeedbackMessage =
+          'REGISTER.ERRORS.REGISTRATION.FAIL.EMAIL_EXISTS';
+        break;
+      case 'Username is already used by another user.':
+        this.registerFeedbackMessage =
+          'REGISTER.ERRORS.REGISTRATION.FAIL.USERNAME_EXISTS';
+        break;
       case 'Invalid data.':
         this.registerFeedbackMessage = 'REGISTER.ERRORS.REGISTRATION.FAIL.DATA';
         break;
@@ -247,9 +250,9 @@ export class RegisterComponent {
               this.userService.checkAuthentication();
               this.loginFeedbackMessage = 'REGISTER.ERRORS.LOGIN.SUCCESS';
               this.clearMessageAfterDelay('login');
-              setTimeout(() => {
-                this.router.navigate(['/']); // Forced redirection in case of failure of subscription.
-              }, 1000);
+              // setTimeout(() => {
+              //   this.router.navigate(['/']); // Forced redirection in case of failure of subscription.
+              // }, 1000);
             }
           } else {
             this.handleLoginError(response.message);
@@ -399,7 +402,6 @@ export class RegisterComponent {
     );
     this.passwordError = error;
     this.passwordStrength = strength;
-    this.cdr.detectChanges();
   }
 
   validateLoginEmail() {
@@ -427,20 +429,17 @@ export class RegisterComponent {
       if (messageType === 'login') this.loginFeedbackMessage = '';
       if (messageType === 'recovery') this.recoveryFeedbackMessage = '';
       if (messageType === 'codeInput') this.codeInputFeedbackMessage = '';
-      this.cdr.detectChanges();
     }, delay);
   }
 
   openForgotPassword() {
     this.showForgotPassword = true;
-    this.cdr.detectChanges();
   }
 
   closeForgotPassword() {
     this.showForgotPassword = false;
     this.recoveryFeedbackMessage = '';
     this.recoveryEmail = '';
-    this.cdr.detectChanges();
   }
 
   closeCodeInput() {
