@@ -6,10 +6,6 @@ import { ApiResponse } from '../models/api-response.model';
 import { TokenService } from './token.service';
 import { environment } from 'src/environments/environment';
 
-// interface AdminSettings {
-//   settings: boolean[][];
-// }
-
 @Injectable({
   providedIn: 'root',
 })
@@ -20,7 +16,15 @@ export class AdminSettingsService {
 
   constructor(private http: HttpClient, private tokenService: TokenService) {}
 
-  getSettings(returnData: boolean = false): Observable<boolean[][] | null> {
+  loadSettings(): void {
+    this.getSettings().subscribe((settings) => {
+      this.settingsSubject.next(settings);
+    });
+  }
+
+  private getSettings(
+    returnData: boolean = false
+  ): Observable<boolean[][] | null> {
     const authToken = this.tokenService.getTokenFromStorage('authToken');
 
     if (!authToken) {

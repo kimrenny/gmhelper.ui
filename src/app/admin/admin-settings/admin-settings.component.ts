@@ -64,11 +64,9 @@ export class AdminSettingsComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.settingsService.getSettings(true).subscribe((settings) => {
+    this.settingsService.settings$.subscribe((settings) => {
       if (settings && Array.isArray(settings) && settings.length > 0) {
         this.initSwitches(settings);
-      } else {
-        console.error('Invalid settings data received:', settings);
       }
     });
   }

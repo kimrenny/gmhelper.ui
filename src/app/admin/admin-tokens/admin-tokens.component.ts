@@ -74,11 +74,12 @@ export class AdminTokensComponent implements OnInit, OnDestroy {
     const roleSub = this.tokenService.userRole$.subscribe((role) => {
       this.userRole = role;
       if (this.userRole === 'Admin' || this.userRole === 'Owner') {
-        this.adminService.checkTokensData();
-
         this.adminService.getTokens().subscribe((tokens) => {
           if (tokens) {
             this.tokens = tokens;
+            if (!this.sortColumn) {
+              this.sortByColumn('expiration');
+            }
           }
         });
       }

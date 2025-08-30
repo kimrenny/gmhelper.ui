@@ -72,8 +72,6 @@ export class AdminAuthLogsComponent implements OnInit, OnDestroy {
     const roleSub = this.tokenService.userRole$.subscribe((role) => {
       this.userRole = role;
       if (this.userRole === 'Admin' || this.userRole === 'Owner') {
-        this.adminService.checkAuthLogData();
-
         this.adminService.getAuthLogDataObservable().subscribe((logs) => {
           if (logs) {
             this.logs = logs;

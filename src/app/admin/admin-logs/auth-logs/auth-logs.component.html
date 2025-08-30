@@ -17,7 +17,7 @@
         (click)="sortByColumn('timestamp')"
         [appTooltip]="'DESCRIPTION.ADMIN.LOGS.TIMESTAMP'"
       >
-        {{ "ADMIN.LOGS.TIMESTAMP" | translate | truncate : 5 }}
+        {{ "ADMIN.LOGS.TIMESTAMP" | translate | truncate : 10 }}
         <span *ngIf="sortColumn === 'timestamp'" class="sort-arrow">
           {{ sortDirection === "asc" ? "▼" : "▲" }}
         </span>
@@ -28,7 +28,7 @@
         (click)="sortByColumn('userId')"
         [appTooltip]="'DESCRIPTION.ADMIN.LOGS.USERID'"
       >
-        {{ "ADMIN.LOGS.USERID" | translate | truncate : 5 }}
+        {{ "ADMIN.LOGS.USERID" | translate | truncate : 10 }}
         <span *ngIf="sortColumn === 'userId'" class="sort-arrow">
           {{ sortDirection === "asc" ? "▼" : "▲" }}
         </span>
@@ -48,7 +48,7 @@
         (click)="sortByColumn('userAgent')"
         [appTooltip]="'DESCRIPTION.ADMIN.LOGS.USERAGENT'"
       >
-        {{ "ADMIN.LOGS.USERAGENT" | translate | truncate : 5 }}
+        {{ "ADMIN.LOGS.USERAGENT" | translate | truncate : 11 }}
         <span *ngIf="sortColumn === 'userAgent'" class="sort-arrow">
           {{ sortDirection === "asc" ? "▼" : "▲" }}
         </span>
@@ -58,7 +58,7 @@
         (click)="sortByColumn('status')"
         [appTooltip]="'DESCRIPTION.ADMIN.LOGS.STATUS'"
       >
-        {{ "ADMIN.LOGS.STATUS" | translate | truncate : 5 }}
+        {{ "ADMIN.LOGS.STATUS" | translate | truncate : 8 }}
         <span *ngIf="sortColumn === 'status'" class="sort-arrow">
           {{ sortDirection === "asc" ? "▼" : "▲" }}
         </span>
@@ -68,7 +68,7 @@
         (click)="sortByColumn('message')"
         [appTooltip]="'DESCRIPTION.ADMIN.LOGS.MESSAGE'"
       >
-        {{ "ADMIN.LOGS.MESSAGE" | translate | truncate : 5 }}
+        {{ "ADMIN.LOGS.MESSAGE" | translate | truncate : 8 }}
         <span *ngIf="sortColumn === 'message'" class="sort-arrow">
           {{ sortDirection === "asc" ? "▼" : "▲" }}
         </span>

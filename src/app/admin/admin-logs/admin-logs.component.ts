@@ -19,7 +19,7 @@ import { TranslateModule } from '@ngx-translate/core';
   styleUrls: ['./admin-logs.component.scss'],
 })
 export class AdminLogsComponent {
-  activeLog: 'all' | 'auth' | 'error' | 'none' = 'none';
+  activeLog: 'all' | 'auth' | 'error' | 'none' = 'all';
 
   setActiveLog(logType: 'all' | 'auth' | 'error') {
     this.activeLog = logType;

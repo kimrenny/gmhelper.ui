@@ -69,8 +69,6 @@ export class AdminErrorLogsComponent implements OnInit, OnDestroy {
     const roleSub = this.tokenService.userRole$.subscribe((role) => {
       this.userRole = role;
       if (this.userRole === 'Admin' || this.userRole === 'Owner') {
-        this.adminService.checkErrorLogData();
-
         this.adminService.getErrorLogDataObservable().subscribe((logs) => {
           if (logs) {
             this.logs = logs;

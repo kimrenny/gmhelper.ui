@@ -90,6 +90,7 @@ export class AdminService {
     this.getAllTokens();
     this.getRegistrationData();
     this.getCreatedTokens();
+    this.getRequestsData();
     this.getUsersByCountry();
     this.getRoleStats();
     this.getBlockStats();
@@ -100,7 +101,7 @@ export class AdminService {
     this.isDataLoaded = true;
   }
 
-  getAllUsers(): void {
+  private getAllUsers(): void {
     const token = this.tokenService.getTokenFromStorage('authToken');
 
     if (!token) {
@@ -130,13 +131,10 @@ export class AdminService {
   }
 
   getUsers(): Observable<User[] | null> {
-    return this.users$;
-  }
-
-  checkUsersData(): void {
-    if (!this.usersSubject.value) {
+    if (!this.isDataLoaded && this.usersSubject.value === null) {
       this.getAllUsers();
     }
+    return this.users$;
   }
 
   actionUser(userId: string, action: 'ban' | 'unban'): Observable<any> {
@@ -156,7 +154,7 @@ export class AdminService {
     });
   }
 
-  getAllTokens(): void {
+  private getAllTokens(): void {
     const token = this.tokenService.getTokenFromStorage('authToken');
 
     if (!token) {
@@ -186,13 +184,10 @@ export class AdminService {
   }
 
   getTokens(): Observable<Token[] | null> {
-    return this.tokens$;
-  }
-
-  checkTokensData(): void {
-    if (!this.tokensSubject.value) {
+    if (!this.isDataLoaded && this.tokensSubject.value === null) {
       this.getAllTokens();
     }
+    return this.tokens$;
   }
 
   actionToken(token: string, action: 'activate' | 'disable'): Observable<any> {
@@ -212,7 +207,7 @@ export class AdminService {
     });
   }
 
-  getRegistrationData(): void {
+  private getRegistrationData(): void {
     const authToken = this.tokenService.getTokenFromStorage('authToken');
 
     if (!authToken) {
@@ -242,17 +237,14 @@ export class AdminService {
       });
   }
 
-  checkRegistrationsData(): void {
-    if (!this.registrationDataSubject.value) {
+  getRegistrationDataObservable(): Observable<RegistrationData[] | null> {
+    if (!this.isDataLoaded && this.registrationDataSubject.value === null) {
       this.getRegistrationData();
     }
-  }
-
-  getRegistrationDataObservable(): Observable<RegistrationData[] | null> {
     return this.registrationData$;
   }
 
-  getCreatedTokens(): void {
+  private getCreatedTokens(): void {
     const authToken = this.tokenService.getTokenFromStorage('authToken');
 
     if (!authToken) {
@@ -287,29 +279,35 @@ export class AdminService {
       });
   }
 
-  checkCreatedTokens(): void {
-    if (!this.activeTokensSubject.value) {
+  getActiveTokensObservable(): Observable<number | null> {
+    if (!this.isDataLoaded && this.activeTokensSubject.value === null) {
       this.getCreatedTokens();
     }
-  }
-
-  getActiveTokensObservable(): Observable<number | null> {
     return this.activeTokens$;
   }
 
   getTotalTokensObservable(): Observable<number | null> {
+    if (!this.isDataLoaded && this.totalTokensSubject.value === null) {
+      this.getCreatedTokens();
+    }
     return this.totalTokens$;
   }
 
   getActiveAdminTokensObservable(): Observable<number | null> {
-    return this.activeTokens$;
+    if (!this.isDataLoaded && this.activeAdminTokensSubject.value === null) {
+      this.getCreatedTokens();
+    }
+    return this.activeAdminTokens$;
   }
 
   getTotalAdminTokensObservable(): Observable<number | null> {
-    return this.totalTokens$;
+    if (!this.isDataLoaded && this.totalAdminTokensSubject.value === null) {
+      this.getCreatedTokens();
+    }
+    return this.totalAdminTokens$;
   }
 
-  getRequestsData(): void {
+  private getRequestsData(): void {
     const authToken = this.tokenService.getTokenFromStorage('authToken');
 
     if (!authToken) {
@@ -339,17 +337,14 @@ export class AdminService {
       });
   }
 
-  checkRequestsData(): void {
-    if (!this.requestsDataSubject.value) {
+  getRequestsDataObservable(): Observable<CombinedRequestsData | null> {
+    if (!this.isDataLoaded && this.requestsDataSubject.value === null) {
       this.getRequestsData();
     }
-  }
-
-  getRequestsDataObservable(): Observable<CombinedRequestsData | null> {
     return this.requestsData$;
   }
 
-  getUsersByCountry(): void {
+  private getUsersByCountry(): void {
     const authToken = this.tokenService.getTokenFromStorage('authToken');
 
     if (!authToken) {
@@ -379,17 +374,14 @@ export class AdminService {
       });
   }
 
-  checkCountriesData(): void {
-    if (!this.userCountryStatsSubject.value) {
+  getCountryUsersDataObservable(): Observable<CountryStats[] | null> {
+    if (!this.isDataLoaded && this.userCountryStatsSubject.value === null) {
       this.getUsersByCountry();
     }
-  }
-
-  getCountryUsersDataObservable(): Observable<CountryStats[] | null> {
     return this.userCountryStats$;
   }
 
-  getRoleStats(): void {
+  private getRoleStats(): void {
     const authToken = this.tokenService.getTokenFromStorage('authToken');
 
     if (!authToken) {
@@ -418,17 +410,15 @@ export class AdminService {
       });
   }
 
-  checkRoleData(): void {
-    if (!this.userRoleStatsSubject.value) {
+  getRoleStatsDataObservable(): Observable<RoleStats[] | null> {
+    if (!this.isDataLoaded && this.userRoleStatsSubject.value === null) {
       this.getRoleStats();
     }
-  }
 
-  getRoleStatsDataObservable(): Observable<RoleStats[] | null> {
     return this.userRoleStats$;
   }
 
-  getBlockStats(): void {
+  private getBlockStats(): void {
     const authToken = this.tokenService.getTokenFromStorage('authToken');
 
     if (!authToken) {
@@ -457,17 +447,14 @@ export class AdminService {
       });
   }
 
-  checkBlockData(): void {
-    if (!this.userBlockStatsSubject.value) {
+  getBlockStatsDataObservable(): Observable<BlockStats[] | null> {
+    if (!this.isDataLoaded && this.userBlockStatsSubject.value === null) {
       this.getBlockStats();
     }
-  }
-
-  getBlockStatsDataObservable(): Observable<BlockStats[] | null> {
     return this.userBlockStats$;
   }
 
-  getRequestLogData(): void {
+  private getRequestLogData(): void {
     const authToken = this.tokenService.getTokenFromStorage('authToken');
 
     if (!authToken) {
@@ -496,17 +483,15 @@ export class AdminService {
       });
   }
 
-  checkRequestLogData(): void {
-    if (!this.requestLogsDataSubject.value) {
-      this.getRequestsData();
-    }
-  }
-
   getRequestLogsDataObservable(): Observable<RequestLog[] | null> {
+    if (!this.isDataLoaded && this.requestLogsDataSubject.value === null) {
+      this.getRequestLogData();
+    }
+
     return this.requestLogsData$;
   }
 
-  getAuthLogData(): void {
+  private getAuthLogData(): void {
     const authToken = this.tokenService.getTokenFromStorage('authToken');
 
     if (!authToken) {
@@ -535,17 +520,15 @@ export class AdminService {
       });
   }
 
-  checkAuthLogData(): void {
-    if (!this.authLogsDataSubject.value) {
+  getAuthLogDataObservable(): Observable<AuthLog[] | null> {
+    if (!this.isDataLoaded && this.authLogsDataSubject.value === null) {
       this.getAuthLogData();
     }
-  }
 
-  getAuthLogDataObservable(): Observable<AuthLog[] | null> {
     return this.authLogsData$;
   }
 
-  getErrorLogData(): void {
+  private getErrorLogData(): void {
     const authToken = this.tokenService.getTokenFromStorage('authToken');
 
     if (!authToken) {
@@ -574,13 +557,11 @@ export class AdminService {
       });
   }
 
-  checkErrorLogData(): void {
-    if (!this.errorLogsDataSubject.value) {
+  getErrorLogDataObservable(): Observable<ErrorLog[] | null> {
+    if (!this.isDataLoaded && this.errorLogsDataSubject.value === null) {
       this.getErrorLogData();
     }
-  }
 
-  getErrorLogDataObservable(): Observable<ErrorLog[] | null> {
     return this.errorLogsData$;
   }
 

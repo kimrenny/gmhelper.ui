@@ -11,6 +11,7 @@ import { Subscription } from 'rxjs';
 import { TokenService } from '../services/token.service';
 import { Router } from '@angular/router';
 import { AdminService } from '../services/admin.service';
+import { AdminSettingsService } from '../services/admin-settings.service';
 
 @Component({
   selector: 'app-admin',
@@ -29,18 +30,18 @@ import { AdminService } from '../services/admin.service';
   styleUrls: ['./admin.component.scss'],
 })
 export class AdminComponent implements OnInit, OnDestroy {
-  private userRole!: string | null;
   private subscriptions = new Subscription();
 
   constructor(
     private adminService: AdminService,
-    private tokenService: TokenService,
+    private adminSettings: AdminSettingsService,
     private router: Router
   ) {}
 
   ngOnInit(): void {
     if (this.router.url.startsWith('/admin')) {
       this.adminService.loadAdminData();
+      this.adminSettings.loadSettings();
     }
   }
 

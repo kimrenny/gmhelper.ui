@@ -107,8 +107,6 @@ export class RequestsChartComponent implements OnInit, OnDestroy {
     const roleSub = this.tokenService.userRole$.subscribe((role) => {
       this.userRole = role;
       if (this.userRole === 'Admin' || this.userRole === 'Owner') {
-        this.adminService.checkRequestsData();
-
         this.adminService.getRequestsDataObservable().subscribe((data) => {
           if (data?.regular && data?.admin) {
             this.updateChartData(

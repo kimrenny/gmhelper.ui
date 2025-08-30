@@ -36,21 +36,16 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
   constructor(private adminSettingsService: AdminSettingsService) {}
 
   ngOnInit(): void {
-    this.adminSettingsService.getSettings(false);
-
-    this.settingsSub = this.adminSettingsService
-      .getSettingsData()
-      .pipe(filter(Boolean))
-      .subscribe((settings) => {
-        if (Array.isArray(settings) && settings.length > 0) {
-          const switches = settings[0];
-          this.showRequests = switches[0];
-          this.showActiveUsers = switches[1];
-          this.showBlockStats = switches[2];
-          this.showRoleStats = switches[3];
-          this.showCountryStats = switches[4];
-        }
-      });
+    this.adminSettingsService.settings$.subscribe((settings) => {
+      if (Array.isArray(settings) && settings.length > 0) {
+        const switches = settings[0];
+        this.showRequests = switches[0];
+        this.showActiveUsers = switches[1];
+        this.showBlockStats = switches[2];
+        this.showRoleStats = switches[3];
+        this.showCountryStats = switches[4];
+      }
+    });
   }
 
   ngOnDestroy(): void {
