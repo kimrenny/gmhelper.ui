@@ -17,69 +17,20 @@ export class AdminSettingsService {
   constructor(private http: HttpClient, private tokenService: TokenService) {}
 
   loadSettings(): void {
-    this.getSettings().subscribe((settings) => {
-      this.settingsSubject.next(settings);
-    });
-  }
+    const token = this.tokenService.getTokenFromStorage('authToken');
+    const role = this.tokenService.getUserRole();
 
-  private getSettings(
-    returnData: boolean = false
-  ): Observable<boolean[][] | null> {
-    const authToken = this.tokenService.getTokenFromStorage('authToken');
-
-    if (!authToken) {
-      return new Observable<boolean[][] | null>((observer) => {
-        observer.next(null);
-        observer.complete();
-      });
+    if (!token || !this.checkAdminPermissions(role)) {
+      this.settingsSubject.next(null);
+      return;
     }
 
-    if (!returnData && this.settingsSubject.value) return this.settings$;
-
-    if (returnData) {
-      return this.tokenService.userRole$.pipe(
-        switchMap((role) => {
-          if (this.checkAdminPermissions(role)) {
-            return this.http
-              .get<ApiResponse<boolean[][]>>(`${this.apiUrl}/settings`, {
-                headers: this.tokenService.createAuthHeaders(authToken),
-              })
-              .pipe(map((response) => response.data));
-          } else {
-            return new Observable<boolean[][] | null>((observer) => {
-              observer.next(null);
-              observer.complete();
-            });
-          }
-        })
-      );
-    }
-
-    this.tokenService.userRole$
-      .pipe(
-        switchMap((role) => {
-          if (this.checkAdminPermissions(role)) {
-            return this.http
-              .get<ApiResponse<boolean[][]>>(`${this.apiUrl}/settings`, {
-                headers: this.tokenService.createAuthHeaders(authToken),
-              })
-              .pipe(map((response) => response.data));
-          } else {
-            return new Observable<boolean[][] | null>((observer) => {
-              observer.next(null);
-              observer.complete();
-            });
-          }
-        })
-      )
-      .subscribe((data) => {
-        this.settingsSubject.next(data);
-      });
-
-    return new Observable<boolean[][] | null>((observer) => {
-      observer.next(null);
-      observer.complete();
-    });
+    this.http
+      .get<ApiResponse<boolean[][]>>(`${this.apiUrl}/settings`, {
+        headers: this.tokenService.createAuthHeaders(token),
+      })
+      .pipe(map((response) => response.data))
+      .subscribe((settings) => this.settingsSubject.next(settings));
   }
 
   getSettingsData(): Observable<boolean[][] | null> {

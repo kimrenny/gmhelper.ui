@@ -35,6 +35,7 @@ export class AdminComponent implements OnInit, OnDestroy {
   constructor(
     private adminService: AdminService,
     private adminSettings: AdminSettingsService,
+    private tokenService: TokenService,
     private router: Router
   ) {}
 

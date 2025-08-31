@@ -37,6 +37,10 @@ export class TokenService {
 
   constructor(private http: HttpClient) {}
 
+  public getUserRole(): string | null {
+    return this.userRoleSubject.getValue();
+  }
+
   public getTokenFromStorage(key: string): string | null {
     return localStorage.getItem(key);
   }
@@ -175,5 +179,7 @@ export class TokenService {
   clearTokens(): void {
     localStorage.removeItem('authToken');
     localStorage.removeItem('refreshToken');
+
+    this.userRoleSubject.next(null);
   }
 }
