@@ -33,6 +33,34 @@ export class CanvasComponent implements OnInit {
   geoTaskId: string | null = null;
   mathTaskId: string | null = null;
 
+  geoLoading: boolean = false;
+  mathLoading: boolean = false;
+
+  loadingKeys: string[] = [
+    'CANVAS.PROCESSING.MESSAGE_1',
+    'CANVAS.PROCESSING.MESSAGE_2',
+    'CANVAS.PROCESSING.MESSAGE_3',
+    'CANVAS.PROCESSING.MESSAGE_4',
+    'CANVAS.PROCESSING.MESSAGE_5',
+    'CANVAS.PROCESSING.MESSAGE_6',
+    'CANVAS.PROCESSING.MESSAGE_7',
+    'CANVAS.PROCESSING.MESSAGE_8',
+    'CANVAS.PROCESSING.MESSAGE_9',
+    'CANVAS.PROCESSING.MESSAGE_10',
+    'CANVAS.PROCESSING.MESSAGE_11',
+    'CANVAS.PROCESSING.MESSAGE_12',
+    'CANVAS.PROCESSING.MESSAGE_13',
+    'CANVAS.PROCESSING.MESSAGE_14',
+    'CANVAS.PROCESSING.MESSAGE_15',
+    'CANVAS.PROCESSING.MESSAGE_16',
+    'CANVAS.PROCESSING.MESSAGE_17',
+    'CANVAS.PROCESSING.MESSAGE_18',
+    'CANVAS.PROCESSING.MESSAGE_19',
+    'CANVAS.PROCESSING.MESSAGE_20',
+  ];
+
+  currentLoadingMessage: string = '';
+
   constructor(
     private toastr: ToastrService,
     private translate: TranslateService,
@@ -42,6 +70,20 @@ export class CanvasComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.geoCanvasService.isProcessing$.subscribe((loading) => {
+      if (loading) {
+        this.pickRandomMessage();
+      }
+      this.geoLoading = loading;
+    });
+
+    this.mathCanvasService.isProcessing$.subscribe((loading) => {
+      if (loading) {
+        this.pickRandomMessage();
+      }
+      this.mathLoading = loading;
+    });
+
     this.geoCanvasService.taskId$.subscribe((id) => {
       this.geoTaskId = id;
       if (id) {
@@ -60,5 +102,20 @@ export class CanvasComponent implements OnInit {
   selectSubject(subject: 'Math' | 'Geo'): void {
     this.selectedSubject = subject;
     this.subjectService.setSubject(subject);
+  }
+
+  get isAnyLoading(): boolean {
+    return this.geoLoading || this.mathLoading;
+  }
+
+  pickRandomMessage(): void {
+    const index = Math.floor(Math.random() * this.loadingKeys.length);
+    const key = this.loadingKeys[index];
+
+    console.log(key);
+
+    this.translate.get(key).subscribe((res: string) => {
+      this.currentLoadingMessage = res;
+    });
   }
 }

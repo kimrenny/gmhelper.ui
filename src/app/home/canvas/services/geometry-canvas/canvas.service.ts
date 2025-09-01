@@ -5,7 +5,7 @@ import { StackService } from './stack.service';
 import { AnglesService } from './angles.service';
 import { FigureElementsService } from './figure-elements.service';
 import { LinesService } from './lines.service';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, catchError, Observable, tap, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { ApiResponse } from 'src/app/models/api-response.model';
 import { CanvasServiceInterface } from '../../interfaces/canvas-service.interface';
@@ -21,6 +21,9 @@ export class CanvasService implements CanvasServiceInterface {
 
   private taskIdSubject = new BehaviorSubject<string | null>(null);
   taskId$ = this.taskIdSubject.asObservable();
+
+  private isProcessingSubject = new BehaviorSubject<boolean>(false);
+  isProcessing$ = this.isProcessingSubject.asObservable();
 
   private api = `${environment.apiUrl}`;
   private http = inject(HttpClient);
@@ -43,7 +46,19 @@ export class CanvasService implements CanvasServiceInterface {
   exportTaskJson(): Observable<ApiResponse<any>> {
     const taskData = this.serializeTaskJson();
 
-    return this.sendTaskToApi(taskData);
+    this.isProcessingSubject.next(true);
+
+    return this.sendTaskToApi(taskData).pipe(
+      tap((response) => {
+        if (response.success && response.data) {
+          this.isProcessingSubject.next(false);
+        }
+      }),
+      catchError((err) => {
+        this.isProcessingSubject.next(false);
+        return throwError(() => err);
+      })
+    );
   }
 
   private sendTaskToApi(data: any) {

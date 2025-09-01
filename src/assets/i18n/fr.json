@@ -147,6 +147,28 @@
     },
     "SOLUTION": {
       "RATE": "Évaluer la solution"
+    },
+    "PROCESSING": {
+      "MESSAGE_1": "Votre tâche est en cours de traitement, veuillez patienter…",
+      "MESSAGE_2": "Traitement des données… tenez bon !",
+      "MESSAGE_3": "Nous travaillons sur votre solution, elle sera prête bientôt",
+      "MESSAGE_4": "Traitement de votre tâche — presque terminé !",
+      "MESSAGE_5": "Votre solution est en chemin, un instant…",
+      "MESSAGE_6": "Attendez un instant, nous calculons votre réponse !",
+      "MESSAGE_7": "Le système résout votre tâche, restez à l'écoute…",
+      "MESSAGE_8": "Presque fini ! Votre solution apparaîtra sous peu.",
+      "MESSAGE_9": "Nous travaillons dur sur votre solution — ne partez pas !",
+      "MESSAGE_10": "Patience ! Votre tâche est en cours de résolution.",
+      "MESSAGE_11": "Votre tâche est en cours — encore quelques secondes…",
+      "MESSAGE_12": "Nous préparons votre solution… tenez bon !",
+      "MESSAGE_13": "Calcul en cours… votre réponse arrive !",
+      "MESSAGE_14": "Attendez un moment ! Nous traitons votre tâche maintenant.",
+      "MESSAGE_15": "Tenez bon, la solution est presque prête…",
+      "MESSAGE_16": "Traitement des données… votre tâche sera prête bientôt !",
+      "MESSAGE_17": "Nous préparons votre solution, restez à l'écoute !",
+      "MESSAGE_18": "Presque là ! Le système finalise votre réponse.",
+      "MESSAGE_19": "Traitement en cours… votre tâche apparaîtra sous peu.",
+      "MESSAGE_20": "Tenez bon, la solution est en cours de génération maintenant."
     }
   },
   "REGISTER": {

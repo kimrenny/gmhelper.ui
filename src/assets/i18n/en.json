@@ -147,6 +147,28 @@
     },
     "SOLUTION": {
       "RATE": "Rate Solution"
+    },
+    "PROCESSING": {
+      "MESSAGE_1": "Your task is being processed, please wait…",
+      "MESSAGE_2": "Processing the data… please wait!",
+      "MESSAGE_3": "We’re working on your solution, it’ll be ready soon",
+      "MESSAGE_4": "Processing your task — almost there!",
+      "MESSAGE_5": "Your solution is on the way, just a moment…",
+      "MESSAGE_6": "Hang on, we’re calculating your answer!",
+      "MESSAGE_7": "The system is solving your task, stay tuned…",
+      "MESSAGE_8": "Almost done! Your solution will appear shortly.",
+      "MESSAGE_9": "Working hard on your solution — don’t go anywhere!",
+      "MESSAGE_10": "Patience! Your task is being solved right now.",
+      "MESSAGE_11": "Your task is in the works — just a few seconds…",
+      "MESSAGE_12": "We’re putting together your solution… hang tight!",
+      "MESSAGE_13": "Calculating… your answer is on its way!",
+      "MESSAGE_14": "Sit tight! We’re processing your task right now.",
+      "MESSAGE_15": "Hold on, the solution is almost ready…",
+      "MESSAGE_16": "Crunching numbers… your task will be ready soon!",
+      "MESSAGE_17": "We’re getting your solution ready, stay tuned!",
+      "MESSAGE_18": "Almost there! The system is finalizing your answer.",
+      "MESSAGE_19": "Processing in progress… your task will appear shortly.",
+      "MESSAGE_20": "Hang tight, the solution is being generated right now."
     }
   },
   "REGISTER": {

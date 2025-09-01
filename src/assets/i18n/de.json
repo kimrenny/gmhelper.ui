@@ -147,6 +147,28 @@
     },
     "SOLUTION": {
       "RATE": "Lösung bewerten"
+    },
+    "PROCESSING": {
+      "MESSAGE_1": "Ihre Aufgabe wird bearbeitet, bitte warten Sie…",
+      "MESSAGE_2": "Zahlen werden verarbeitet… bitte haben Sie Geduld!",
+      "MESSAGE_3": "Wir arbeiten an Ihrer Lösung, sie wird bald fertig sein",
+      "MESSAGE_4": "Ihre Aufgabe wird verarbeitet — fast geschafft!",
+      "MESSAGE_5": "Ihre Lösung ist unterwegs, einen Moment bitte…",
+      "MESSAGE_6": "Warten Sie kurz, wir berechnen Ihre Antwort!",
+      "MESSAGE_7": "Das System löst Ihre Aufgabe, bleiben Sie dran…",
+      "MESSAGE_8": "Fast fertig! Ihre Lösung erscheint in Kürze.",
+      "MESSAGE_9": "Wir arbeiten intensiv an Ihrer Lösung — bleiben Sie dran!",
+      "MESSAGE_10": "Geduld! Ihre Aufgabe wird gerade gelöst.",
+      "MESSAGE_11": "Ihre Aufgabe ist in Arbeit — nur noch wenige Sekunden…",
+      "MESSAGE_12": "Wir stellen Ihre Lösung zusammen… bitte warten Sie!",
+      "MESSAGE_13": "Berechnung läuft… Ihre Antwort ist unterwegs!",
+      "MESSAGE_14": "Bitte warten Sie! Wir bearbeiten Ihre Aufgabe gerade.",
+      "MESSAGE_15": "Halten Sie durch, die Lösung ist fast fertig…",
+      "MESSAGE_16": "Zahlen werden verarbeitet… Ihre Aufgabe wird bald bereit sein!",
+      "MESSAGE_17": "Wir bereiten Ihre Lösung vor, bleiben Sie dran!",
+      "MESSAGE_18": "Fast geschafft! Das System finalisiert Ihre Antwort.",
+      "MESSAGE_19": "Verarbeitung läuft… Ihre Aufgabe erscheint in Kürze.",
+      "MESSAGE_20": "Bitte warten Sie, die Lösung wird gerade erstellt."
     }
   },
   "REGISTER": {

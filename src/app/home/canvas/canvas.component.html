@@ -30,9 +30,18 @@
     </select>
   </div>
 </div>
-<div class="canvas-solution-container" *ngIf="geoTaskId">
+<div class="canvas-solution-container" *ngIf="geoTaskId || geoLoading">
   <app-geometry-solution-canvas></app-geometry-solution-canvas>
 </div>
-<div class="canvas-solution-container" *ngIf="mathTaskId">
+<div class="canvas-solution-container" *ngIf="mathTaskId || mathLoading">
   <app-math-solution-canvas></app-math-solution-canvas>
+</div>
+
+<div class="loading-overlay" *ngIf="isAnyLoading">
+  <div class="loading-content">
+    <div class="spinner"></div>
+    <div class="loading-message">
+      {{ currentLoadingMessage }}
+    </div>
+  </div>
 </div>
