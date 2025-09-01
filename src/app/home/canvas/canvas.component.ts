@@ -112,8 +112,6 @@ export class CanvasComponent implements OnInit {
     const index = Math.floor(Math.random() * this.loadingKeys.length);
     const key = this.loadingKeys[index];
 
-    console.log(key);
-
     this.translate.get(key).subscribe((res: string) => {
       this.currentLoadingMessage = res;
     });
