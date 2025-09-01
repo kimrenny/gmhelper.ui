@@ -132,7 +132,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   logout() {
     this.userService.clearUser();
     this.showUserMenu = false;
-    this.router.navigate(['/login']);
+    this.router.navigate(['/']);
   }
 
   toggleUserMenu() {
