@@ -17,18 +17,17 @@
   pointer-events: none;
   box-shadow: 0 0 2px 1px rgba(255, 255, 255, 0.8);
   animation: twinkle 2s infinite ease-in-out alternate;
-  opacity: 0.5; /* Начальная прозрачность */
-  animation-delay: var(--animation-delay); /* Задержка для каждой звезды */
+  opacity: 0.5;
+  animation-delay: var(--animation-delay);
 }
 
 canvas {
   position: absolute;
   top: 0;
   left: 0;
-  pointer-events: none; /* Чтобы не мешать взаимодействию с другими элементами */
+  pointer-events: none;
 }
 
-/* Анимация мерцания звезд */
 @keyframes twinkle {
   0% {
     opacity: 0.3;
@@ -44,7 +43,6 @@ canvas {
   }
 }
 
-/* Дополнительные цветовые вариации для звезд */
 .star::before {
   content: "";
   position: absolute;
@@ -54,5 +52,5 @@ canvas {
   background-color: rgba(255, 255, 255, 0.8);
   box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
   opacity: 0.8;
-  filter: hue-rotate(calc(360deg * var(--hue))); /* Случайные оттенки */
+  filter: hue-rotate(calc(360deg * var(--hue)));
 }
