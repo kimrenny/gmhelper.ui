@@ -40,6 +40,13 @@
       "LOGOUT": "Déconnexion"
     }
   },
+  "MOBILE": {
+    "SCREEN_BLOCK": {
+      "MESSAGE_1": "Les appareils mobiles ne sont pas pris en charge. Veuillez utiliser un appareil avec un écran plus grand.",
+      "MESSAGE_2": "Ce site n'est pas disponible sur les appareils mobiles. Veuillez utiliser un appareil avec un écran plus grand.",
+      "MESSAGE_3": "L'écran de votre appareil est trop petit pour afficher ce site. Veuillez utiliser un écran plus grand."
+    }
+  },
   "CANVAS": {
     "TOOLTIP": {
       "TOOL": {

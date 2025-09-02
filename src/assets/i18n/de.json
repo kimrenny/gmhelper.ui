@@ -40,6 +40,13 @@
       "LOGOUT": "Abmelden"
     }
   },
+  "MOBILE": {
+    "SCREEN_BLOCK": {
+      "MESSAGE_1": "Mobile Geräte werden nicht unterstützt. Bitte verwenden Sie ein Gerät mit größerem Bildschirm.",
+      "MESSAGE_2": "Diese Seite ist auf mobilen Geräten nicht verfügbar. Bitte wechseln Sie zu einem Gerät mit größerem Bildschirm.",
+      "MESSAGE_3": "Ihr Gerätescreen ist zu klein, um diese Seite anzuzeigen. Bitte verwenden Sie einen größeren Bildschirm."
+    }
+  },
   "CANVAS": {
     "TOOLTIP": {
       "TOOL": {

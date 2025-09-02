@@ -1,0 +1,27 @@
+@media (max-width: 1023px) {
+  .screen-block {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #121212;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 30px;
+    text-align: center;
+    z-index: 9999;
+  }
+
+  body {
+    overflow: hidden;
+  }
+}
+
+@media (min-width: 1024px) {
+  .screen-block {
+    display: none;
+  }
+}

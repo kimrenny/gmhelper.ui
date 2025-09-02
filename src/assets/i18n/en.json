@@ -40,6 +40,13 @@
       "LOGOUT": "Logout"
     }
   },
+  "MOBILE": {
+    "SCREEN_BLOCK": {
+      "MESSAGE_1": "Mobile devices are not supported. Please use a device with a larger screen.",
+      "MESSAGE_2": "This site is not available on mobile devices. Please switch to a device with a larger screen.",
+      "MESSAGE_3": "Your device screen is too small to display this site. Please use a larger screen."
+    }
+  },
   "CANVAS": {
     "TOOLTIP": {
       "TOOL": {
