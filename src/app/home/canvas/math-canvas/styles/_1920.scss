@@ -1,0 +1,272 @@
+.math-canvas-container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 30px;
+
+  &::before,
+  &::after {
+    content: "";
+    position: absolute;
+    pointer-events: none;
+    background: white;
+    box-shadow: 0 0 10px 2px white, 0 0 20px 4px rgba(255, 255, 255, 0.8);
+    z-index: 40;
+    transform: translateY(7.5px);
+  }
+
+  &::before {
+    animation: first-line-animation 5s linear infinite;
+  }
+
+  &::after {
+    animation: second-line-animation 5s linear infinite;
+  }
+
+  .canvas {
+    position: relative;
+    width: 50vw;
+    height: 50vh;
+    border: 2px solid transparent;
+    margin-top: 20px;
+    background-color: #f0f0f0;
+    background-image: linear-gradient(to right, #c0c0c0 1px, transparent 1px),
+      linear-gradient(to bottom, #c0c0c0 1px, transparent 1px);
+    background-size: 20px 20px;
+    z-index: 30;
+    overflow: hidden;
+
+    &.blurred {
+      filter: blur(5px);
+      background-color: rgba(255, 255, 255, 0.8);
+      pointer-events: none;
+    }
+
+    .katex-wrapper {
+      display: inline-block;
+      font-size: 16px;
+      padding: 10px;
+      width: 100%;
+      max-width: calc(100% - 140px);
+      max-height: calc(100% - 140px);
+      color: black !important;
+      box-sizing: border-box;
+      overflow-wrap: break-word;
+      white-space: normal;
+      text-align: left !important;
+      margin: 70px;
+      overflow: hidden;
+    }
+  }
+
+  .tool-buttons {
+    position: absolute;
+    width: 40px;
+    left: 10px;
+    top: 30%;
+    background-color: rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 40;
+
+    button {
+      width: 30px;
+      height: 30px;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+      background-color: transparent;
+      padding: 0;
+      margin: 5px;
+
+      &.img {
+        object-fit: cover;
+      }
+
+      &.special-chars-btn {
+        background-image: url("../../../../../assets/icons/special-btn.svg");
+
+        &:hover,
+        &.active {
+          background-image: url("../../../../../assets/icons/special-btn-hover.svg");
+        }
+      }
+
+      &.functional-btn {
+        background-image: url("../../../../../assets/icons/functional-btn.svg");
+
+        &:hover,
+        &.active {
+          background-image: url("../../../../../assets/icons/functional-btn-hover.svg");
+        }
+      }
+
+      &.input-btn {
+        background-image: url("../../../../../assets/icons/latex-btn.svg");
+
+        &:hover,
+        &.active {
+          background-image: url("../../../../../assets/icons/latex-btn-hover.svg");
+        }
+      }
+
+      &.clear-btn {
+        background-image: url("../../../../../assets/icons/eraser.png");
+
+        &:hover {
+          background-image: url("../../../../../assets/icons/eraser-hover.png");
+        }
+      }
+    }
+
+    &.disabled {
+      display: none;
+    }
+  }
+
+  .button-window {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: 90%;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    z-index: 50;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    box-sizing: border-box;
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: flex-start;
+    }
+
+    .dynamic-button {
+      width: 25px;
+      height: 25px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: "Latin Modern Math", "Cambria Math", "STIX Two Math", serif;
+      font-size: 18px;
+      font-weight: 400;
+      background: none;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: border 0.2s ease;
+      border-radius: 4px;
+
+      &:hover {
+        border: 1px solid #666;
+      }
+    }
+  }
+
+  .latex-input-window {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 700px;
+    height: 200px;
+    background-color: rgba(255, 255, 255, 0.8);
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    padding: 12px;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.25);
+    z-index: 50;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+
+    .latex-textarea {
+      flex: 1;
+      width: 100%;
+      resize: none;
+      font-size: 16px;
+      font-family: "Courier New", Courier, monospace;
+      border: 1px solid #bbb;
+      border-radius: 6px;
+      padding: 10px;
+      outline: none;
+      background-color: #fafafa;
+      box-sizing: border-box;
+    }
+  }
+
+  .placeholder-edit-banner {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeeba;
+    padding: 12px 16px;
+    border-radius: 6px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 240px;
+
+    .placeholder-text {
+      text-align: left;
+    }
+
+    .exit-btn {
+      align-self: flex-end;
+      padding: 6px 12px;
+      background-color: #ffe8a1;
+      border: 1px solid #ffd75d;
+      border-radius: 4px;
+      color: #856404;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+
+      &:hover {
+        background-color: #ffd865;
+      }
+    }
+  }
+
+  .submit-task-btn {
+    position: absolute;
+    bottom: 20px;
+    left: 10px;
+    background-color: black;
+    color: white;
+    border: none;
+    width: 150px;
+    height: 48px;
+    border-radius: 10px;
+    font-size: 20px;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+    transition: background-color 0.3s ease;
+    z-index: 45;
+
+    &:hover {
+      background-color: #222;
+    }
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+  }
+}

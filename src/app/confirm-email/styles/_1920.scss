@@ -1,0 +1,63 @@
+.confirm-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100dvh;
+  background-color: #000;
+}
+
+.confirm-box {
+  padding: 2rem;
+  border-radius: 1rem;
+  background-color: #111;
+  box-shadow: 0 0 10px #b026ff, 0 0 20px #b026ff, 0 0 30px #b026ff;
+  text-align: center;
+  max-width: 500px;
+  width: 100%;
+  border: 2px solid #b026ff;
+}
+
+h2 {
+  color: #fff;
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  text-shadow: 0 0 5px #b026ff, 0 0 10px #b026ff;
+}
+
+p {
+  color: #fff;
+  font-size: 1.2rem;
+  animation: fadeIn 0.6s ease-in-out;
+  display: flex;
+  align-items: center;
+}
+
+.spinner {
+  border: 4px solid transparent;
+  border-top: 4px solid #b026ff;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

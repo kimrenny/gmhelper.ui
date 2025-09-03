@@ -1,9 +1,9 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { WelcomeComponent } from '../home/welcome/welcome.component';
-import { AboutComponent } from '../home/about/about.component';
-import { FeaturesComponent } from '../home/features/features.component';
-import { ContactComponent } from '../home/contact/contact.component';
+import { WelcomeComponent } from './welcome/welcome.component';
+import { AboutComponent } from './about/about.component';
+import { FeaturesComponent } from './features/features.component';
+import { ContactComponent } from './contact/contact.component';
 import { StartComponent } from './start/start.component';
 
 @Component({

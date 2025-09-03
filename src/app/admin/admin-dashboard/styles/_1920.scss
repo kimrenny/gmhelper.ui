@@ -1,0 +1,26 @@
+.admin-dashboard-container {
+  height: calc(100vh - 55px);
+  width: calc(100vw - 2 * 75px);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  column-gap: 20px;
+  padding: 20px;
+  position: relative;
+  top: 55px;
+  left: 55px;
+  color: #ffffff;
+  text-align: center;
+  background: linear-gradient(120deg, #000000, #1a1a1a, #000000);
+  background-size: 200% 200%;
+  z-index: 1;
+
+  .dashboard-item {
+    background: #222;
+    padding: 20px;
+    border-radius: 10px;
+    height: 350px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}

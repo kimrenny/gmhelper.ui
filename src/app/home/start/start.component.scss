@@ -1,30 +1,4 @@
-.start-section {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  background: #292929;
-  height: 100vh;
-  text-align: center;
-  color: #ffffff;
-  overflow: hidden;
-
-  h2,
-  p,
-  a,
-  span {
-    position: relative;
-    font-family: "Courier New", Courier, monospace;
-    overflow: hidden;
-    white-space: nowrap;
-    color: inherit;
-  }
-
-  h2 {
-    font-size: 2rem;
-  }
-
-  span {
-    font-size: 1rem;
-  }
-}
+@use "./styles/1920" as *;
+@use "./styles/1366" as *;
+@use "./styles/1600" as *;
+@use "./styles/2560" as *;

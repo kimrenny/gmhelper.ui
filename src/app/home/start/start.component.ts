@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
-import { CanvasComponent } from '../canvas/canvas.component';
+import { CanvasComponent } from '../canvas/component/canvas.component';
 
 @Component({
   selector: 'app-start',

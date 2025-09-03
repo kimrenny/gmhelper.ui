@@ -1,18 +1,4 @@
-.admin-container {
-  scroll-snap-type: y mandatory;
-  overflow-y: hidden;
-  overflow-x: hidden;
-  scrollbar-width: none;
-  height: 100vh;
-  margin: 0;
-  padding: 0;
-}
-
-.home-container > * {
-  scroll-snap-align: start;
-  height: 100vh;
-}
-
-.home-container::-webkit-scrollbar {
-  display: none;
-}
+@use "./styles/1920" as *;
+@use "./styles/1366" as *;
+@use "./styles/1600" as *;
+@use "./styles/2560" as *;

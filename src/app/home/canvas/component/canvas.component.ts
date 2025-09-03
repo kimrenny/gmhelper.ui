@@ -3,13 +3,13 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
-import { GeoCanvasComponent } from './geometry-canvas/geometry-canvas.component';
-import { MathCanvasComponent } from './math-canvas/math-canvas.component';
-import { SubjectService } from './services/subject.service';
-import { CanvasService as GeometryCanvasService } from './services/geometry-canvas/canvas.service';
-import { CanvasService as MathCanvasService } from './services/math-canvas/canvas.service';
-import { GeoSolutionCanvasComponent } from './geometry-solution-canvas/geometry-solution-canvas.component';
-import { MathSolutionCanvasComponent } from './math-solution-canvas/math-solution-canvas.component';
+import { GeoCanvasComponent } from '../geometry-canvas/geometry-canvas.component';
+import { MathCanvasComponent } from '../math-canvas/math-canvas.component';
+import { SubjectService } from '../services/subject.service';
+import { CanvasService as GeometryCanvasService } from '../services/geometry-canvas/canvas.service';
+import { CanvasService as MathCanvasService } from '../services/math-canvas/canvas.service';
+import { GeoSolutionCanvasComponent } from '../geometry-solution-canvas/geometry-solution-canvas.component';
+import { MathSolutionCanvasComponent } from '../math-solution-canvas/math-solution-canvas.component';
 
 @Component({
   selector: 'app-canvas',
@@ -36,28 +36,7 @@ export class CanvasComponent implements OnInit {
   geoLoading: boolean = false;
   mathLoading: boolean = false;
 
-  loadingKeys: string[] = [
-    'CANVAS.PROCESSING.MESSAGE_1',
-    'CANVAS.PROCESSING.MESSAGE_2',
-    'CANVAS.PROCESSING.MESSAGE_3',
-    'CANVAS.PROCESSING.MESSAGE_4',
-    'CANVAS.PROCESSING.MESSAGE_5',
-    'CANVAS.PROCESSING.MESSAGE_6',
-    'CANVAS.PROCESSING.MESSAGE_7',
-    'CANVAS.PROCESSING.MESSAGE_8',
-    'CANVAS.PROCESSING.MESSAGE_9',
-    'CANVAS.PROCESSING.MESSAGE_10',
-    'CANVAS.PROCESSING.MESSAGE_11',
-    'CANVAS.PROCESSING.MESSAGE_12',
-    'CANVAS.PROCESSING.MESSAGE_13',
-    'CANVAS.PROCESSING.MESSAGE_14',
-    'CANVAS.PROCESSING.MESSAGE_15',
-    'CANVAS.PROCESSING.MESSAGE_16',
-    'CANVAS.PROCESSING.MESSAGE_17',
-    'CANVAS.PROCESSING.MESSAGE_18',
-    'CANVAS.PROCESSING.MESSAGE_19',
-    'CANVAS.PROCESSING.MESSAGE_20',
-  ];
+  readonly TOTAL_LOADING_MESSAGES: number = 20;
 
   currentLoadingMessage: string = '';
 
@@ -109,8 +88,8 @@ export class CanvasComponent implements OnInit {
   }
 
   pickRandomMessage(): void {
-    const index = Math.floor(Math.random() * this.loadingKeys.length);
-    const key = this.loadingKeys[index];
+    const index = Math.floor(Math.random() * this.TOTAL_LOADING_MESSAGES) + 1;
+    const key = `CANVAS.PROCESSING.MESSAGE_${index}`;
 
     this.translate.get(key).subscribe((res: string) => {
       this.currentLoadingMessage = res;

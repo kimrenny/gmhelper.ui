@@ -1,0 +1,57 @@
+.features-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: #000000;
+  animation: gradientAnimationFeatures 12s ease infinite;
+  height: 100vh;
+  text-align: center;
+  color: #ffffff;
+  overflow: hidden;
+  transition: background-color 1s ease;
+
+  h2,
+  p {
+    position: relative;
+    font-family: "Courier New", Courier, monospace;
+    font-size: 2rem;
+    overflow: hidden;
+    white-space: nowrap;
+    color: inherit;
+    animation: colorAnimationFeatures 12s ease infinite;
+  }
+
+  li {
+    position: relative;
+    font-family: "Courier New", Courier, monospace;
+    font-size: 1rem;
+    overflow: hidden;
+    color: inherit;
+    animation: colorAnimationFeatures 12s ease infinite;
+  }
+}
+
+@keyframes gradientAnimationFeatures {
+  0% {
+    background-color: #000000;
+  }
+  50% {
+    background-color: #575757;
+  }
+  100% {
+    background-color: #000000;
+  }
+}
+
+@keyframes colorAnimationFeatures {
+  0% {
+    color: #ffffff;
+  }
+  50% {
+    color: #b9b9b9;
+  }
+  100% {
+    color: #ffffff;
+  }
+}

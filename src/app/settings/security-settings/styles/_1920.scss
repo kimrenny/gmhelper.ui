@@ -1,0 +1,162 @@
+.settings-section {
+  margin-top: 20px;
+  min-height: 400px;
+  height: 745px;
+  max-height: 745px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  scroll-behavior: smooth;
+
+  .twofactor-selection {
+    padding: 15px;
+    width: 95%;
+
+    .bind-button,
+    .verify-button,
+    .unbind-button {
+      background-color: #555;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      text-align: center;
+      border-radius: 5px;
+      transition: 0.3s;
+      width: 100%;
+
+      &:hover {
+        background-color: #0066d3;
+      }
+    }
+
+    .twofactor-setup {
+      margin-top: 20px;
+      text-align: center;
+
+      img {
+        margin: 10px auto;
+        display: block;
+        border: 1px solid #444;
+        border-radius: 8px;
+
+        max-width: 180px;
+        max-height: 180px;
+        width: 100%;
+        height: auto;
+      }
+
+      .secret-box {
+        margin: 10px auto;
+        padding: 10px;
+        background: #222;
+        color: #fff;
+        border: 1px dashed #666;
+        border-radius: 5px;
+        display: inline-block;
+      }
+
+      input {
+        margin-top: 15px;
+        padding: 10px;
+        width: 100%;
+        text-align: center;
+        font-size: 18px;
+        letter-spacing: 5px;
+      }
+    }
+
+    .twofactor-options {
+      margin: 20px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+
+      .option-card {
+        padding: 12px;
+        border-radius: 8px;
+        background: #333;
+        color: #fff;
+        cursor: pointer;
+        text-align: center;
+        transition: 0.3s;
+        border: 1px solid white;
+        flex: 1 1 auto;
+
+        &.active {
+          background: #0066d3;
+        }
+
+        &.pending {
+          position: relative;
+          background: linear-gradient(270deg, #9800df, #4c04c0);
+          background-size: 400% 400%;
+          animation: shimmer 10s ease infinite;
+        }
+      }
+
+      .cancel-button {
+        margin-top: 10px;
+        background: #444;
+        color: #fff;
+        padding: 10px 20px;
+        width: 100%;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+
+        &:hover {
+          background: #666;
+        }
+      }
+    }
+
+    .mode-verify,
+    .disable-verify {
+      margin-top: 15px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+
+      input,
+      .verify-button {
+        flex: 1 1 auto;
+        padding: 12px 20px;
+        font-size: 16px;
+        text-align: center;
+        letter-spacing: 5px;
+        border-radius: 5px;
+        box-sizing: border-box;
+      }
+    }
+
+    .section-title {
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: #ccc;
+      text-align: left;
+    }
+
+    .section-divider {
+      height: 1px;
+      background-color: #444;
+      margin: 20px 0;
+    }
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
