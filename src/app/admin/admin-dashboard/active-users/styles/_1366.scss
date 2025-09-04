@@ -1,2 +1,28 @@
 @media screen and (max-width: 1366px) {
+  .active-users-container {
+    max-width: 500px;
+    max-height: 280px;
+    padding: 25px 15px 15px 15px;
+
+    .title {
+      font-size: 18px;
+      margin-bottom: 15px;
+    }
+
+    .token-stats {
+      gap: 12px;
+
+      .token-block {
+        padding: 12px;
+
+        .count-title {
+          font-size: 13px;
+        }
+
+        .count {
+          font-size: 15px;
+        }
+      }
+    }
+  }
 }

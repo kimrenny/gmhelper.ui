@@ -1,2 +1,27 @@
 @media screen and (max-width: 1366px) {
+  .chart-container {
+    max-width: 700px;
+    height: 280px;
+    padding: 15px 15px 30px 15px;
+
+    canvas {
+      height: 300px;
+      margin-top: 50px;
+    }
+
+    .chart-header {
+      top: 15px;
+      right: 15px;
+
+      label {
+        font-size: 13px;
+        margin-right: 8px;
+      }
+
+      select {
+        padding: 6px 12px;
+        font-size: 13px;
+      }
+    }
+  }
 }

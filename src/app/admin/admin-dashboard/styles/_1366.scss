@@ -1,2 +1,16 @@
 @media screen and (max-width: 1366px) {
+  .admin-dashboard-container {
+    width: calc(100vw - 2 * 60px);
+    padding: 15px;
+    grid-template-columns: repeat(3, 1fr);
+    column-gap: 15px;
+    row-gap: 15px;
+    top: 50px;
+    left: 45px;
+
+    .dashboard-item {
+      height: 300px;
+      padding: 15px;
+    }
+  }
 }

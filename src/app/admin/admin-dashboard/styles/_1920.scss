@@ -1,8 +1,9 @@
 .admin-dashboard-container {
   height: calc(100vh - 55px);
-  width: calc(100vw - 2 * 75px);
+  width: calc(100vw - 2 * 73px);
   display: grid;
   grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
   column-gap: 20px;
   padding: 20px;
   position: relative;
@@ -13,6 +14,36 @@
   background: linear-gradient(120deg, #000000, #1a1a1a, #000000);
   background-size: 200% 200%;
   z-index: 1;
+
+  app-registration-chart {
+    grid-column: 1 / 2;
+    grid-row: 1 / 2;
+  }
+
+  app-requests-chart {
+    grid-column: 1 / 2;
+    grid-row: 2 / 3;
+  }
+
+  app-active-users {
+    grid-column: 2 / 3;
+    grid-row: 1 / 2;
+  }
+
+  app-country-stats {
+    grid-column: 2 / 3;
+    grid-row: 2 / 3;
+  }
+
+  app-role-stats {
+    grid-column: 3 / 4;
+    grid-row: 1 / 2;
+  }
+
+  app-block-stats {
+    grid-column: 3 / 4;
+    grid-row: 2 / 3;
+  }
 
   .dashboard-item {
     background: #222;

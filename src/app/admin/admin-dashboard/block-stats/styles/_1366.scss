@@ -1,2 +1,18 @@
 @media screen and (max-width: 1366px) {
+  .block-stats-container {
+    padding: 25px 15px 15px 15px;
+    max-height: 280px;
+
+    .title {
+      font-size: 18px;
+    }
+
+    .stats-table {
+      th,
+      td {
+        padding: 8px;
+        font-size: 13px;
+      }
+    }
+  }
 }

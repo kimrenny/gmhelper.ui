@@ -1,2 +1,24 @@
 @media screen and (max-width: 1366px) {
+  .country-stats-container {
+    max-width: 550px;
+    max-height: 280px;
+    padding: 25px 15px 15px 15px;
+
+    .title {
+      font-size: 18px;
+      margin-bottom: 12px;
+    }
+
+    .stats-table {
+      th,
+      td {
+        padding: 8px;
+        font-size: 13px;
+      }
+
+      th {
+        font-size: 14px;
+      }
+    }
+  }
 }
