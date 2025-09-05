@@ -1,2 +1,86 @@
-@media screen and (min-width: 1921px) {
+@media (min-width: 1921px) {
+  .admin-tokens-container {
+    padding: 40px;
+  }
+
+  .tokens-table {
+    width: 85%;
+    max-width: 2200px;
+    top: 100px;
+    border-radius: 14px;
+    box-shadow: 0 0 28px 8px rgba(189, 0, 214, 0.6);
+  }
+
+  .table-header,
+  .table-row {
+    padding: 30px;
+    font-size: 18px;
+  }
+
+  .column {
+    min-width: 200px;
+    flex-basis: 260px;
+    font-size: 17px;
+  }
+
+  .status {
+    font-size: 18px;
+  }
+
+  .toggle-btn {
+    padding: 12px 18px;
+    font-size: 16px;
+  }
+
+  .token-modal {
+    padding: 30px;
+
+    h4 {
+      font-size: 22px;
+    }
+
+    li {
+      font-size: 18px;
+    }
+  }
+
+  .modal-overlay {
+    .modal-content {
+      padding: 30px;
+      max-width: 700px;
+
+      h3 {
+        font-size: 28px;
+      }
+
+      p {
+        font-size: 18px;
+      }
+
+      button {
+        padding: 14px 24px;
+        font-size: 18px;
+      }
+    }
+  }
+
+  .pagination {
+    gap: 14px;
+    bottom: 60px;
+
+    button {
+      padding: 12px 18px;
+      font-size: 16px;
+    }
+
+    .page-input {
+      width: 45px;
+      font-size: 18px;
+    }
+
+    .slash,
+    .total-pages {
+      font-size: 18px;
+    }
+  }
 }

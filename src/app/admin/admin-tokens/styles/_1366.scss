@@ -1,2 +1,89 @@
 @media screen and (max-width: 1366px) {
+  .tokens-table {
+    width: 95%;
+    max-width: 1100px;
+    top: 55px;
+  }
+
+  .table-header,
+  .table-row {
+    padding: 12px;
+    font-size: 14px;
+  }
+
+  .table-header {
+    .sort-arrow {
+      right: 20px;
+      font-size: 12px;
+    }
+  }
+
+  .column {
+    min-width: 120px;
+    flex-basis: 180px;
+    padding-right: 15px;
+    font-size: 14px;
+  }
+
+  .toggle-btn {
+    padding: 6px 10px;
+    font-size: 14px;
+  }
+
+  .pagination {
+    bottom: 40px;
+    gap: 8px;
+
+    button {
+      padding: 6px 10px;
+      font-size: 14px;
+    }
+
+    .page-input {
+      width: 30px;
+      font-size: 14px;
+    }
+
+    .slash,
+    .total-pages {
+      font-size: 14px;
+    }
+  }
+
+  .token-modal {
+    padding: 15px;
+
+    h4 {
+      font-size: 16px;
+    }
+
+    .modal-content {
+      gap: 8px;
+
+      button {
+        font-size: 14px;
+        padding: 8px 16px;
+      }
+    }
+  }
+
+  .modal-overlay {
+    .modal-content {
+      padding: 15px;
+      max-width: 450px;
+
+      h3 {
+        font-size: 20px;
+      }
+
+      p {
+        font-size: 14px;
+      }
+
+      button {
+        font-size: 14px;
+        padding: 8px 16px;
+      }
+    }
+  }
 }

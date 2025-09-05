@@ -99,7 +99,9 @@
         <div class="column" *ngIf="showExp">
           {{ token.refreshTokenExpiration | date : "short" }} UTC
         </div>
-        <div class="column" *ngIf="showUserId">{{ token.userId }}</div>
+        <div class="column" *ngIf="showUserId">
+          {{ token.userId | slice : 0 : 4 }}...{{ token.userId | slice : -4 }}
+        </div>
         <div class="column">{{ token.ipAddress }}</div>
         <div class="column">
           <span

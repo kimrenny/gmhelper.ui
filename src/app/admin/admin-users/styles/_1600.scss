@@ -1,2 +1,61 @@
 @media screen and (min-width: 1367px) and (max-width: 1600px) {
+  .users-table {
+    width: 92%;
+    max-width: 1100px;
+    top: 50px;
+  }
+
+  .table-header,
+  .table-row {
+    padding: 12px;
+  }
+
+  .column {
+    min-width: 130px;
+    flex-basis: 220px;
+    padding-right: 15px;
+    font-size: 15px;
+  }
+
+  .toggle-btn {
+    padding: 7px 11px;
+    font-size: 15px;
+  }
+
+  .pagination {
+    bottom: 40px;
+    gap: 9px;
+
+    button {
+      padding: 7px 11px;
+      font-size: 15px;
+    }
+
+    .page-input {
+      width: 32px;
+      font-size: 15px;
+    }
+
+    .slash,
+    .total-pages {
+      font-size: 15px;
+    }
+  }
+
+  .user-modal {
+    padding: 18px;
+
+    h4 {
+      font-size: 17px;
+    }
+
+    .modal-content {
+      gap: 9px;
+
+      button {
+        font-size: 15px;
+        padding: 9px 18px;
+      }
+    }
+  }
 }
