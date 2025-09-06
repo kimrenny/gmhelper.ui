@@ -1,2 +1,26 @@
 @media screen and (min-width: 1367px) and (max-width: 1600px) {
+  .admin-sidebar {
+    height: calc(100vh - 50px);
+    top: 50px;
+    width: 50px;
+
+    &:hover {
+      width: 180px;
+    }
+
+    ul li a {
+      height: 50px;
+      padding: 0 0.65rem;
+
+      img {
+        width: 26px;
+        height: 26px;
+        margin-right: 20px;
+      }
+
+      span {
+        font-size: 15px;
+      }
+    }
+  }
 }

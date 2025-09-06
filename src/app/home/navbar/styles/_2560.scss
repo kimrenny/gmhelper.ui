@@ -1,2 +1,30 @@
 @media screen and (min-width: 1921px) {
+  .sidebar {
+    height: calc(100vh - 65px);
+    top: 65px;
+    width: 65px;
+
+    &:hover {
+      width: 220px;
+    }
+
+    ul {
+      li {
+        a {
+          height: 65px;
+          padding: 0 1rem;
+
+          img {
+            width: 34px;
+            height: 34px;
+            margin-right: 30px;
+          }
+
+          span {
+            font-size: 17px;
+          }
+        }
+      }
+    }
+  }
 }
