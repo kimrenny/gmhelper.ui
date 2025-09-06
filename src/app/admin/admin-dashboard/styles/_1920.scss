@@ -1,57 +1,73 @@
-.admin-dashboard-container {
-  height: calc(100vh - 55px);
-  width: calc(100vw - 2 * 73px);
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(2, 1fr);
-  column-gap: 20px;
-  padding: 20px;
-  position: relative;
-  top: 55px;
-  left: 55px;
-  color: #ffffff;
-  text-align: center;
+.admin-dashboard-wrapper {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   background: linear-gradient(120deg, #000000, #1a1a1a, #000000);
   background-size: 200% 200%;
-  z-index: 1;
+}
 
-  app-registration-chart {
-    grid-column: 1 / 2;
-    grid-row: 1 / 2;
-  }
-
-  app-requests-chart {
-    grid-column: 1 / 2;
-    grid-row: 2 / 3;
-  }
-
-  app-active-users {
-    grid-column: 2 / 3;
-    grid-row: 1 / 2;
-  }
-
-  app-country-stats {
-    grid-column: 2 / 3;
-    grid-row: 2 / 3;
-  }
-
-  app-role-stats {
-    grid-column: 3 / 4;
-    grid-row: 1 / 2;
-  }
-
-  app-block-stats {
-    grid-column: 3 / 4;
-    grid-row: 2 / 3;
-  }
+.admin-dashboard-container {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 29vw));
+  grid-template-rows: repeat(2, minmax(0, 40vh));
+  column-gap: 30px;
+  row-gap: 30px;
+  color: #ffffff;
+  text-align: center;
+  place-items: center;
 
   .dashboard-item {
+    max-width: calc(29vw - 10px);
+    max-height: 40vh;
+    width: 90%;
+    height: 90%;
     background: #222;
     padding: 20px;
     border-radius: 10px;
-    height: 350px;
+    box-shadow: 0 0 20px 5px rgba(189, 0, 214, 0.6);
     display: flex;
-    justify-content: center;
-    align-items: center;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    overflow: hidden;
+
+    app-registration-chart {
+      grid-column: 1 / 2;
+      grid-row: 1 / 2;
+    }
+
+    app-requests-chart {
+      grid-column: 1 / 2;
+      grid-row: 2 / 3;
+    }
+
+    app-active-users {
+      grid-column: 2 / 3;
+      grid-row: 1 / 2;
+    }
+
+    app-country-stats {
+      grid-column: 2 / 3;
+      grid-row: 2 / 3;
+    }
+
+    app-role-stats {
+      grid-column: 3 / 4;
+      grid-row: 1 / 2;
+    }
+
+    app-block-stats {
+      grid-column: 3 / 4;
+      grid-row: 2 / 3;
+    }
+
+    canvas,
+    app-registration-chart,
+    app-requests-chart {
+      flex: 1;
+      width: 100%;
+    }
   }
 }

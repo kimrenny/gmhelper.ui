@@ -1,15 +1,22 @@
 @media screen and (max-width: 1366px) {
+  .admin-dashboard-wrapper {
+    width: calc(100vw - 45px);
+    height: calc(100vh - 45px);
+    margin-left: 22.5px;
+    padding-top: 45px;
+  }
+
   .admin-dashboard-container {
-    width: calc(100vw - 2 * 60px);
-    padding: 15px;
-    grid-template-columns: repeat(3, 1fr);
-    column-gap: 15px;
-    row-gap: 15px;
-    top: 50px;
-    left: 45px;
+    grid-template-columns: repeat(3, minmax(0, 27vw));
+    grid-template-rows: repeat(2, minmax(0, 37vh));
+    column-gap: 50px;
+    row-gap: 50px;
 
     .dashboard-item {
-      height: 300px;
+      max-width: calc(27vw - 10px);
+      max-height: 37vh;
+      width: 100%;
+      height: 100%;
       padding: 15px;
     }
   }
