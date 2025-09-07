@@ -103,3 +103,8 @@ export interface ErrorLog {
   endpoint: string;
   exceptionDetails: string;
 }
+
+export interface SwitchItem {
+  label: string;
+  value: boolean;
+}

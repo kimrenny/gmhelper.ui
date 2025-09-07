@@ -5,6 +5,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { ReplaceColonPipe } from 'src/app/pipes/replace-colon.pipe';
 import { ReplaceSpacesPipe } from 'src/app/pipes/replace-spaces.pipe';
+import { SwitchItem } from 'src/app/models/admin.model';
 
 @Component({
   selector: 'app-admin-settings',
@@ -14,7 +15,7 @@ import { ReplaceSpacesPipe } from 'src/app/pipes/replace-spaces.pipe';
   styleUrls: ['./admin-settings.component.scss'],
 })
 export class AdminSettingsComponent implements OnInit {
-  sections = [
+  sections: { title: string; switches: SwitchItem[] }[] = [
     {
       title: 'Dashboard',
       switches: [
@@ -88,11 +89,13 @@ export class AdminSettingsComponent implements OnInit {
     });
   }
 
-  handleSwitchChange(switchItem: any, sectionTitle: string) {
+  handleSwitchChange(switchItem: SwitchItem, sectionTitle: string) {
     switchItem.value = !switchItem.value;
+    const title = sectionTitle.toLowerCase();
+    const label = switchItem.label.toLowerCase();
 
     this.settingsService
-      .updateSwitch(sectionTitle, switchItem.label, switchItem.value)
+      .updateSwitch(title, label, switchItem.value)
       .subscribe({
         next: () => {
           this.showAlert('ADMIN.SETTINGS.SUCCESS');

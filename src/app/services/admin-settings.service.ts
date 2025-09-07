@@ -50,18 +50,16 @@ export class AdminSettingsService {
       });
     }
 
-    const body = {
-      sectionTitle: sectionTitle,
-      switchLabel: switchLabel,
-      newValue: newValue,
-    };
-
     return this.tokenService.userRole$.pipe(
       switchMap((role) => {
         if (this.checkAdminPermissions(role)) {
-          return this.http.patch<void>(`${this.apiUrl}/settings`, body, {
-            headers: this.tokenService.createAuthHeaders(authToken),
-          });
+          return this.http.patch<void>(
+            `${this.apiUrl}/settings/${sectionTitle}/${switchLabel}`,
+            { newValue },
+            {
+              headers: this.tokenService.createAuthHeaders(authToken),
+            }
+          );
         } else {
           return new Observable<void>((observer) => {
             observer.complete();
