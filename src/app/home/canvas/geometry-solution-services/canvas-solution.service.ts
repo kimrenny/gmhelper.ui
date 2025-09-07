@@ -60,23 +60,21 @@ export class GeoCanvasSolutionService implements CanvasServiceInterface {
   ) {}
 
   public getTaskFromApi(id: string): Observable<boolean> {
-    return this.http
-      .get<ApiResponse<any>>(`${this.api}/api/taskprocessing/geo/get/${id}`)
-      .pipe(
-        tap((res) => {
-          if (res.success) {
-            this.deserializeTaskJson(res.data.task);
-            this.givenService.setGiven(res.data.given);
-          } else {
-            console.warn('Server rejected request:', res.message);
-          }
-        }),
-        map((res) => res.success),
-        catchError((err) => {
-          console.error('HTTP error while sending task:', err);
-          return of(false);
-        })
-      );
+    return this.http.get<ApiResponse<any>>(`${this.api}/tasks/geo/${id}`).pipe(
+      tap((res) => {
+        if (res.success) {
+          this.deserializeTaskJson(res.data.task);
+          this.givenService.setGiven(res.data.given);
+        } else {
+          console.warn('Server rejected request:', res.message);
+        }
+      }),
+      map((res) => res.success),
+      catchError((err) => {
+        console.error('HTTP error while sending task:', err);
+        return of(false);
+      })
+    );
   }
 
   deserializeTaskJson(data: any) {
@@ -144,8 +142,8 @@ export class GeoCanvasSolutionService implements CanvasServiceInterface {
         if (!taskId) {
           return throwError(() => new Error('taskId is empty'));
         }
-        const url = `${this.api}/api/taskprocessing/geo/rate`;
-        const body = { taskId, isCorrect };
+        const url = `${this.api}/tasks/geo/${taskId}/rating`;
+        const body = { isCorrect };
         const headers = this.tokenService.createAuthHeaders(token);
         return this.http.post(url, body, { headers });
       })

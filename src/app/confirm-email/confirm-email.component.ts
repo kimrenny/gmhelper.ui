@@ -7,6 +7,7 @@ import { NgxCaptchaModule } from 'ngx-captcha';
 import { Subscription } from 'rxjs';
 import { UserService } from '../services/user.service';
 import { environment } from 'src/environments/environment';
+import { RegisterService } from '../services/register.service';
 
 @Component({
   standalone: true,
@@ -32,7 +33,10 @@ export class ConfirmEmailComponent implements OnInit, OnDestroy {
   captchaPassed = false;
   captchaToken: string | null = null;
 
-  constructor(private userService: UserService) {}
+  constructor(
+    private userService: UserService,
+    private registerService: RegisterService
+  ) {}
 
   ngOnInit() {
     this.userSubscription = this.userService.user$.subscribe((user) => {
@@ -60,42 +64,37 @@ export class ConfirmEmailComponent implements OnInit, OnDestroy {
 
     this.message = 'AUTH.EMAIL.CONFIRM.PROCESSING';
 
-    this.http
-      .post(`${this.api}/api/auth/confirm`, {
-        token,
-        captchaToken: this.captchaToken,
-      })
-      .subscribe({
-        next: () => {
-          this.message = 'AUTH.EMAIL.CONFIRM.SUCCESS';
-          this.startCountdown();
-        },
-        error: (error) => {
-          if (error.status === 400) {
-            const message = error.error?.message;
+    this.registerService.confirmEmail(token, this.captchaToken).subscribe({
+      next: () => {
+        this.message = 'AUTH.EMAIL.CONFIRM.SUCCESS';
+        this.startCountdown();
+      },
+      error: (error) => {
+        if (error.status === 400) {
+          const message = error.error?.message;
 
-            switch (message) {
-              case 'Invalid confirmation token.':
-                this.message = 'AUTH.EMAIL.CONFIRM.INVALID';
-                break;
-              case 'This confirmation link has already been used.':
-                this.message = 'AUTH.EMAIL.CONFIRM.ALREADY_USED';
-                break;
-              case 'Token expired. A new confirmation link has been sent to your email.':
-                this.message = 'AUTH.EMAIL.CONFIRM.NEW_LINK_SENT';
-                break;
-              case 'Invalid CAPTCHA token.':
-              default:
-                this.message = 'AUTH.EMAIL.CONFIRM.ERROR';
-                break;
-            }
-          } else {
-            this.message = 'AUTH.EMAIL.CONFIRM.ERROR';
+          switch (message) {
+            case 'Invalid confirmation token.':
+              this.message = 'AUTH.EMAIL.CONFIRM.INVALID';
+              break;
+            case 'This confirmation link has already been used.':
+              this.message = 'AUTH.EMAIL.CONFIRM.ALREADY_USED';
+              break;
+            case 'Token expired. A new confirmation link has been sent to your email.':
+              this.message = 'AUTH.EMAIL.CONFIRM.NEW_LINK_SENT';
+              break;
+            case 'Invalid CAPTCHA token.':
+            default:
+              this.message = 'AUTH.EMAIL.CONFIRM.ERROR';
+              break;
           }
+        } else {
+          this.message = 'AUTH.EMAIL.CONFIRM.ERROR';
+        }
 
-          this.startCountdown();
-        },
-      });
+        this.startCountdown();
+      },
+    });
   }
 
   private startCountdown() {

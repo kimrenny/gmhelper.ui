@@ -35,22 +35,20 @@ export class MathCanvasSolutionService {
   ) {}
 
   public getTaskFromApi(id: string): Observable<boolean> {
-    return this.http
-      .get<ApiResponse<any>>(`${this.api}/api/taskprocessing/math/get/${id}`)
-      .pipe(
-        tap((res) => {
-          if (res.success) {
-            this.latexSolution = res.data.data;
-          } else {
-            console.warn('Server rejected request:', res.message);
-          }
-        }),
-        map((res) => res.success),
-        catchError((err) => {
-          console.error('HTTP error while sending task:', err);
-          return of(false);
-        })
-      );
+    return this.http.get<ApiResponse<any>>(`${this.api}/tasks/math/${id}`).pipe(
+      tap((res) => {
+        if (res.success) {
+          this.latexSolution = res.data.data;
+        } else {
+          console.warn('Server rejected request:', res.message);
+        }
+      }),
+      map((res) => res.success),
+      catchError((err) => {
+        console.error('HTTP error while sending task:', err);
+        return of(false);
+      })
+    );
   }
 
   getLatexSolution(): string {
@@ -68,8 +66,8 @@ export class MathCanvasSolutionService {
         if (!taskId) {
           return throwError(() => new Error('taskId is empty'));
         }
-        const url = `${this.api}/api/taskprocessing/math/rate`;
-        const body = { taskId, isCorrect };
+        const url = `${this.api}/tasks/math/${taskId}/rating`;
+        const body = { isCorrect };
         const headers = this.tokenService.createAuthHeaders(token);
         return this.http.post(url, body, { headers });
       })

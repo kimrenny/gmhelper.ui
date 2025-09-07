@@ -54,7 +54,7 @@ export class CanvasService {
 
     if (data) {
       return this.http.post<ApiResponse<string>>(
-        `${this.api}/api/taskprocessing/math/process`,
+        `${this.api}/tasks/math`,
         data,
         options
       );

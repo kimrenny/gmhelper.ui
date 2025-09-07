@@ -98,7 +98,7 @@ export class TokenService {
 
     return this.http
       .post<{ accessToken: string; refreshToken: string }>(
-        `${this.api}/api/auth/refresh-token`,
+        `${this.api}/auth/refresh-token`,
         JSON.stringify({ refreshToken }),
         { headers }
       )

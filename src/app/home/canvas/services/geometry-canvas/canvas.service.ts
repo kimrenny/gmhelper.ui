@@ -69,7 +69,7 @@ export class CanvasService implements CanvasServiceInterface {
       : {};
 
     return this.http.post<ApiResponse<string>>(
-      `${this.api}/api/taskprocessing/geo/process`,
+      `${this.api}/tasks/geo`,
       data,
       options
     );

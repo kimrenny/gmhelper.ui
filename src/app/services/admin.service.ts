@@ -27,7 +27,7 @@ import {
 
 @Injectable({ providedIn: 'root' })
 export class AdminService {
-  private readonly apiUrl = `${environment.apiUrl}/api/admin`;
+  private readonly apiUrl = `${environment.apiUrl}/admin`;
   private usersSubject = new BehaviorSubject<User[] | null>(null);
   users$ = this.usersSubject.asObservable();
 
@@ -144,11 +144,10 @@ export class AdminService {
     }
 
     const body = {
-      id: userId,
-      action: action,
+      action,
     };
 
-    return this.http.put(`${this.apiUrl}/users/action`, body, {
+    return this.http.put(`${this.apiUrl}/users/${userId}/action`, body, {
       headers: this.tokenService.createAuthHeaders(token),
     });
   }
@@ -186,11 +185,10 @@ export class AdminService {
     }
 
     const body = {
-      id: token,
-      action: action,
+      action,
     };
 
-    return this.http.put(`${this.apiUrl}/tokens/action`, body, {
+    return this.http.put(`${this.apiUrl}/tokens/${token}/action`, body, {
       headers: this.tokenService.createAuthHeaders(authToken),
     });
   }
@@ -282,7 +280,7 @@ export class AdminService {
     }
 
     this.http
-      .get<ApiResponse<CombinedRequestsData>>(`${this.apiUrl}/logs/requests`, {
+      .get<ApiResponse<CombinedRequestsData>>(`${this.apiUrl}/logs/stats`, {
         headers: this.tokenService.createAuthHeaders(authToken),
       })
       .pipe(map((response) => response.data))
@@ -307,7 +305,7 @@ export class AdminService {
     }
 
     this.http
-      .get<ApiResponse<CountryStats[]>>(`${this.apiUrl}/country-rating`, {
+      .get<ApiResponse<CountryStats[]>>(`${this.apiUrl}/stats/country`, {
         headers: this.tokenService.createAuthHeaders(authToken),
       })
       .pipe(map((response) => response.data))
@@ -332,7 +330,7 @@ export class AdminService {
     }
 
     this.http
-      .get<ApiResponse<RoleStats[]>>(`${this.apiUrl}/role-stats`, {
+      .get<ApiResponse<RoleStats[]>>(`${this.apiUrl}/stats/roles`, {
         headers: this.tokenService.createAuthHeaders(authToken),
       })
       .pipe(map((response) => response.data))
@@ -358,7 +356,7 @@ export class AdminService {
     }
 
     this.http
-      .get<ApiResponse<BlockStats[]>>(`${this.apiUrl}/block-stats`, {
+      .get<ApiResponse<BlockStats[]>>(`${this.apiUrl}/stats/blocked`, {
         headers: this.tokenService.createAuthHeaders(authToken),
       })
       .pipe(map((response) => response.data))
@@ -383,7 +381,7 @@ export class AdminService {
     }
 
     this.http
-      .get<ApiResponse<RequestLog[]>>(`${this.apiUrl}/logs/all`, {
+      .get<ApiResponse<RequestLog[]>>(`${this.apiUrl}/logs`, {
         headers: this.tokenService.createAuthHeaders(authToken),
       })
       .pipe(map((response) => response.data))
@@ -409,7 +407,7 @@ export class AdminService {
     }
 
     this.http
-      .get<ApiResponse<AuthLog[]>>(`${this.apiUrl}/logs/auth/all`, {
+      .get<ApiResponse<AuthLog[]>>(`${this.apiUrl}/logs/auth`, {
         headers: this.tokenService.createAuthHeaders(authToken),
       })
       .pipe(map((response) => response.data))
@@ -435,7 +433,7 @@ export class AdminService {
     }
 
     this.http
-      .get<ApiResponse<ErrorLog[]>>(`${this.apiUrl}/logs/errors/all`, {
+      .get<ApiResponse<ErrorLog[]>>(`${this.apiUrl}/logs/errors`, {
         headers: this.tokenService.createAuthHeaders(authToken),
       })
       .pipe(map((response) => response.data))

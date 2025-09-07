@@ -56,7 +56,7 @@ export class UserService {
 
   private readonly errors = new Set<string>(Object.values(Errors));
 
-  private readonly api = `${environment.apiUrl}/api`;
+  private readonly api = `${environment.apiUrl}`;
 
   constructor(private http: HttpClient, private tokenService: TokenService) {
     this.initializeAuthentication();
@@ -218,7 +218,7 @@ export class UserService {
       return throwError(() => new Error('Token does not exist'));
     }
 
-    return this.http.patch(`${this.api}/user/update-user`, formData, {
+    return this.http.patch(`${this.api}/user/profile`, formData, {
       headers: this.tokenService.createAuthHeaders(token),
     });
   }
@@ -233,7 +233,7 @@ export class UserService {
     const formData = new FormData();
     formData.append('avatar', avatar);
 
-    return this.http.post(`${this.api}/user/upload-avatar`, formData, {
+    return this.http.post(`${this.api}/user/avatar`, formData, {
       headers: this.tokenService.createAuthHeaders(token),
     });
   }
@@ -247,7 +247,7 @@ export class UserService {
       return throwError(() => new Error('Token does not exist'));
     }
 
-    const url = `${this.api}/user/update-language`;
+    const url = `${this.api}/user/profile/language`;
     const body = { language: language.toUpperCase() };
     const headers = this.tokenService.createAuthHeaders(token);
 

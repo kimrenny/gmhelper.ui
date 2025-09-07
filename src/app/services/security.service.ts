@@ -14,7 +14,7 @@ interface TwoFactorResponse {
   providedIn: 'root',
 })
 export class SecurityService {
-  private api = `${environment.apiUrl}/api/security`;
+  private api = `${environment.apiUrl}/security`;
 
   constructor(private http: HttpClient, private tokenService: TokenService) {}
 
@@ -23,7 +23,7 @@ export class SecurityService {
     if (!token) return throwError(() => new Error('No auth token found'));
 
     return this.http.post<ApiResponse<TwoFactorResponse>>(
-      `${this.api}/2fa/generate`,
+      `${this.api}/2fa`,
       { type: 'totp' },
       { headers: this.tokenService.createAuthHeaders(token) }
     );
@@ -48,8 +48,8 @@ export class SecurityService {
 
     const alwaysAsk = mode === 'always';
 
-    return this.http.post<any>(
-      `${this.api}/2fa/change-mode`,
+    return this.http.patch<any>(
+      `${this.api}/2fa`,
       { type: 'totp', alwaysAsk, code },
       { headers: this.tokenService.createAuthHeaders(token) }
     );
@@ -61,10 +61,9 @@ export class SecurityService {
       return throwError(() => new Error('No token'));
     }
 
-    return this.http.post<any>(
-      `${this.api}/2fa/remove`,
-      { type: 'totp', code },
-      { headers: this.tokenService.createAuthHeaders(token) }
-    );
+    return this.http.delete<any>(`${this.api}/2fa`, {
+      headers: this.tokenService.createAuthHeaders(token),
+      body: { type: 'totp', code },
+    });
   }
 }

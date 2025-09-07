@@ -10,7 +10,7 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root',
 })
 export class AdminSettingsService {
-  private apiUrl = `${environment.apiUrl}/api/admin`;
+  private apiUrl = `${environment.apiUrl}/admin`;
   private settingsSubject = new BehaviorSubject<boolean[][] | null>(null);
   settings$ = this.settingsSubject.asObservable();
 

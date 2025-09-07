@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { ApiResponse } from '../models/api-response.model';
 import { environment } from 'src/environments/environment';
 
@@ -144,13 +144,9 @@ export class RegisterService {
       captchaToken,
     };
 
-    return this.http.post<ApiResponse<any>>(
-      `${this.api}/api/auth/register`,
-      body,
-      {
-        headers,
-      }
-    );
+    return this.http.post<ApiResponse<any>>(`${this.api}/auth/register`, body, {
+      headers,
+    });
   }
 
   validateLoginPassword(password: string): string {
@@ -176,13 +172,9 @@ export class RegisterService {
       captchaToken,
       remember: rememberMe,
     };
-    return this.http.post<ApiResponse<any>>(
-      `${this.api}/api/auth/login`,
-      body,
-      {
-        headers,
-      }
-    );
+    return this.http.post<ApiResponse<any>>(`${this.api}/auth/login`, body, {
+      headers,
+    });
   }
 
   confirmEmailCode(code: string, sessionKey: string) {
@@ -193,10 +185,21 @@ export class RegisterService {
     };
 
     return this.http.post<ApiResponse<any>>(
-      `${this.api}/api/auth/confirm-email-code`,
+      `${this.api}/auth/email/confirm/code`,
       body,
       { headers }
     );
+  }
+
+  confirmEmail(token: string, captchaToken: string): Observable<any> {
+    if (!token || !captchaToken) {
+      return throwError(() => new Error('Token or CAPTCHA missing'));
+    }
+
+    return this.http.post<ApiResponse<any>>(`${this.api}/auth/email/confirm`, {
+      token,
+      captchaToken,
+    });
   }
 
   confirmTwoFACode(code: string, sessionKey: string) {
@@ -207,7 +210,7 @@ export class RegisterService {
     };
 
     return this.http.post<ApiResponse<any>>(
-      `${this.api}/api/auth/confirm-2fa-code`,
+      `${this.api}/auth/2fa/confirm`,
       body,
       { headers }
     );
@@ -220,7 +223,7 @@ export class RegisterService {
       captchaToken: captchaToken,
     };
 
-    return this.http.post(`${this.api}/api/mail/password-recovery`, body, {
+    return this.http.post(`${this.api}/mail/password/recover`, body, {
       headers,
     });
   }
