@@ -1,2 +1,79 @@
 @media screen and (min-width: 1921px) {
+  .admin-all-logs-container {
+    padding: 27px;
+    min-height: 100vh;
+  }
+
+  .logs-table {
+    width: 95%;
+    max-width: 2000px;
+    top: 200px;
+    border-radius: 13px;
+    box-shadow: 0 0 27px 6.5px rgba(189, 0, 214, 0.6);
+  }
+
+  .table-header {
+    font-size: 21px;
+    padding: 27px;
+
+    .sort-arrow {
+      font-size: 19px;
+      padding-left: 20px;
+    }
+  }
+
+  .table-row {
+    font-size: 25px;
+  }
+
+  .column {
+    min-width: 100px;
+    padding: 0 13px;
+  }
+
+  .pagination {
+    margin-top: auto;
+    bottom: 66px;
+    gap: 13px;
+
+    button {
+      padding: 11px 16px;
+      font-size: 20px;
+    }
+
+    .page-input {
+      width: 46px;
+      font-size: 21px;
+    }
+
+    .slash,
+    .total-pages {
+      font-size: 21px;
+    }
+  }
+
+  .log-modal {
+    max-width: 70%;
+    max-height: 90%;
+    padding: 27px;
+
+    h4 {
+      font-size: 28px;
+      margin-bottom: 13px;
+    }
+
+    ul li {
+      margin: 13px 0;
+      font-size: 25px;
+    }
+
+    .modal-content {
+      gap: 2px;
+    }
+  }
+
+  button {
+    padding: 13px;
+    font-size: 20px;
+  }
 }

@@ -1,7 +1,7 @@
 @media screen and (min-width: 1921px) {
   .users-table {
     width: 85%;
-    max-width: 1500px;
+    max-width: 1800px;
     top: 80px;
   }
 
@@ -12,15 +12,15 @@
   }
 
   .column {
-    min-width: 180px;
+    min-width: 240px;
     flex-basis: 300px;
     padding-right: 25px;
-    font-size: 18px;
+    font-size: 24px;
   }
 
   .toggle-btn {
     padding: 12px 18px;
-    font-size: 18px;
+    font-size: 24px;
   }
 
   .pagination {
@@ -29,7 +29,7 @@
 
     button {
       padding: 12px 18px;
-      font-size: 18px;
+      font-size: 24px;
     }
 
     .page-input {
@@ -47,14 +47,14 @@
     padding: 25px;
 
     h4 {
-      font-size: 20px;
+      font-size: 32px;
     }
 
     .modal-content {
       gap: 15px;
 
       button {
-        font-size: 18px;
+        font-size: 24px;
         padding: 12px 22px;
       }
     }

@@ -1,2 +1,71 @@
 @media screen and (max-width: 1366px) {
+  .admin-settings-container {
+    padding: 15px;
+    box-sizing: border-box;
+  }
+
+  .settings-container {
+    top: 35px;
+    width: 85%;
+    max-width: 1050px;
+    gap: 10px;
+    grid-template-columns: 1fr;
+    justify-items: center;
+    box-sizing: border-box;
+  }
+
+  .settings-section {
+    width: 100%;
+    max-width: 450px;
+    padding: 10px !important;
+    height: auto;
+    max-height: 325px;
+    min-height: 150px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+
+    h2 {
+      font-size: 17px;
+      margin-bottom: 12px;
+    }
+
+    .switches-container {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+
+      .switch {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 3px 5px;
+        box-sizing: border-box;
+
+        label {
+          font-size: 13px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          flex-shrink: 1;
+          margin-right: 6px;
+        }
+
+        input[type="checkbox"] {
+          width: 26px !important;
+          height: 16px !important;
+          flex-shrink: 0;
+        }
+
+        input[type="checkbox"]:before {
+          width: 14px !important;
+          height: 14px !important;
+        }
+
+        input[type="checkbox"]:checked:before {
+          transform: translateX(14px) !important;
+        }
+      }
+    }
+  }
 }

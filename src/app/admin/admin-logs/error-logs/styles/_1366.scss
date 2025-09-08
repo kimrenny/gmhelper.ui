@@ -1,2 +1,71 @@
 @media screen and (max-width: 1366px) {
+  .admin-error-logs-container {
+    padding: 10px;
+    min-height: 100vh;
+  }
+
+  .logs-table {
+    width: 90%;
+    max-width: 1150px;
+    top: 80px;
+    border-radius: 8px;
+    box-shadow: 0 0 15px 4px rgba(189, 0, 214, 0.6);
+  }
+
+  .table-header {
+    font-size: 12px;
+    padding: 10px 30px 10px 0;
+
+    .sort-arrow {
+      right: 15px;
+      font-size: 12px;
+    }
+  }
+
+  .table-row {
+    font-size: 13px;
+  }
+
+  .column {
+    min-width: 125px;
+    flex-basis: 200px;
+    padding-right: 10px;
+  }
+
+  .pagination {
+    bottom: 40px;
+    gap: 8px;
+
+    button {
+      padding: 6px 10px;
+      font-size: 14px;
+    }
+
+    .page-input {
+      width: 30px;
+      font-size: 14px;
+    }
+
+    .slash,
+    .total-pages {
+      font-size: 14px;
+    }
+  }
+
+  .log-modal {
+    padding: 15px;
+
+    h4 {
+      font-size: 11px;
+    }
+
+    ul li {
+      margin: 8px 0;
+    }
+  }
+
+  button {
+    padding: 8px;
+    font-size: 14px;
+  }
 }
