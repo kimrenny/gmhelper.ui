@@ -1,2 +1,31 @@
 @media screen and (max-width: 1366px) {
+  .confirm-wrapper {
+    height: 100dvh;
+    padding: 1rem;
+  }
+
+  .confirm-box {
+    padding: 1.5rem;
+    border-radius: 0.8rem;
+    max-width: 400px;
+    width: 90%;
+    border: 2px solid #b026ff;
+    box-shadow: 0 0 8px #b026ff, 0 0 16px #b026ff, 0 0 24px #b026ff;
+  }
+
+  h2 {
+    font-size: 1.8rem;
+    margin-bottom: 0.8rem;
+    text-shadow: 0 0 4px #b026ff, 0 0 8px #b026ff;
+  }
+
+  p {
+    font-size: 1rem;
+  }
+
+  .spinner {
+    width: 18px;
+    height: 18px;
+    border-width: 3px;
+  }
 }

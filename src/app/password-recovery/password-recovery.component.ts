@@ -105,7 +105,7 @@ export class PasswordRecoveryComponent implements OnInit, OnDestroy {
     this.message = 'AUTH.RECOVERY.PROCESSING';
 
     this.http
-      .patch(`${this.api}/api/auth/password`, {
+      .post(`${this.api}/auth/password/recover`, {
         password: this.password,
         recoveryToken: token,
         captchaToken: this.captchaToken,
@@ -116,31 +116,27 @@ export class PasswordRecoveryComponent implements OnInit, OnDestroy {
           this.startCountdown();
         },
         error: (error) => {
-          if (error.status === 400) {
-            const message = error.error?.message;
+          const message = error.error?.message;
 
-            switch (message) {
-              case 'Failed to change user password.':
-                this.message = 'AUTH.RECOVERY.MESSAGE.FAIL';
-                break;
-              case 'User not found.':
-                this.message = 'AUTH.RECOVERY.MESSAGE.USER_NOT_FOUND';
-                break;
-              case 'Invalid recovery token.':
-                this.message = 'AUTH.RECOVERY.MESSAGE.INVALID_TOKEN';
-                break;
-              case 'This link has already been used.':
-                this.message = 'AUTH.RECOVERY.MESSAGE.USED_TOKEN';
-                break;
-              case 'Token expired.':
-                this.message = 'AUTH.RECOVERY.MESSAGE.EXPIRED_TOKEN';
-                break;
-              default:
-                this.message = 'AUTH.RECOVERY.MESSAGE.ERROR';
-                break;
-            }
-          } else {
-            this.message = 'AUTH.RECOVERY.MESSAGE.ERROR';
+          switch (message) {
+            case 'Failed to change user password.':
+              this.message = 'AUTH.RECOVERY.MESSAGE.FAIL';
+              break;
+            case 'User not found.':
+              this.message = 'AUTH.RECOVERY.MESSAGE.USER_NOT_FOUND';
+              break;
+            case 'Invalid recovery token.':
+              this.message = 'AUTH.RECOVERY.MESSAGE.INVALID_TOKEN';
+              break;
+            case 'This link has already been used.':
+              this.message = 'AUTH.RECOVERY.MESSAGE.USED_TOKEN';
+              break;
+            case 'Token expired.':
+              this.message = 'AUTH.RECOVERY.MESSAGE.EXPIRED_TOKEN';
+              break;
+            default:
+              this.message = 'AUTH.RECOVERY.MESSAGE.ERROR';
+              break;
           }
 
           this.startCountdown();

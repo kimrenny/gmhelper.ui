@@ -1,2 +1,37 @@
 @media screen and (min-width: 1921px) {
+  .devices-section {
+    height: 950px;
+    max-height: 950px;
+
+    h3 {
+      font-size: 18px;
+      padding: 12px 0;
+    }
+
+    ul {
+      padding: 0 24px;
+
+      .device-item {
+        padding: 18px;
+        margin-bottom: 18px;
+
+        .device-info {
+          gap: 6px;
+        }
+
+        .authorization-date {
+          font-size: 16px;
+        }
+
+        .device-details {
+          font-size: 15px;
+        }
+
+        .delete-button {
+          font-size: 16px;
+          padding: 12px 18px;
+        }
+      }
+    }
+  }
 }

@@ -1,2 +1,48 @@
 @media screen and (max-width: 1366px) {
+  .settings-section {
+    height: 520px;
+    max-height: 520px;
+
+    .twofactor-selection {
+      padding: 12px;
+
+      .bind-button,
+      .verify-button,
+      .unbind-button {
+        font-size: 14px;
+        padding: 10px 16px;
+      }
+
+      .twofactor-setup {
+        img {
+          max-width: 140px;
+          max-height: 140px;
+        }
+
+        input {
+          width: calc(100% - 24px) !important;
+          font-size: 16px;
+          letter-spacing: 4px;
+        }
+      }
+
+      .twofactor-options {
+        gap: 10px;
+
+        .option-card {
+          padding: 10px;
+        }
+      }
+
+      .mode-verify,
+      .disable-verify {
+        input,
+        .verify-button {
+          font-size: 14px;
+          padding: 10px 16px;
+          letter-spacing: 4px;
+        }
+      }
+    }
+  }
 }

@@ -1,2 +1,39 @@
 @media screen and (min-width: 1367px) and (max-width: 1600px) {
+  .settings-section {
+    height: 720px;
+    max-height: 720px;
+
+    .language-selection {
+      padding: 12px;
+      gap: 12px;
+      width: 95%;
+
+      .language-dropdown {
+        padding: 9px;
+        font-size: 15px;
+
+        .selected-lang {
+          font-size: 15px;
+        }
+
+        .dropdown-icon {
+          margin-left: 8px;
+        }
+      }
+
+      .language-options {
+        max-height: 280px;
+
+        .language-option {
+          padding: 8px;
+          font-size: 15px;
+        }
+      }
+
+      .save-button {
+        padding: 9px 18px;
+        font-size: 15px;
+      }
+    }
+  }
 }

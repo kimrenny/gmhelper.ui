@@ -1,2 +1,20 @@
 @media screen and (max-width: 1366px) {
+  .devices-section {
+    height: 520px;
+    max-height: 520px;
+
+    ul .device-item {
+      padding: 12px;
+      margin-bottom: 10px;
+
+      .device-info {
+        max-width: 75%;
+      }
+
+      .delete-button {
+        font-size: 12px;
+        padding: 8px 12px;
+      }
+    }
+  }
 }

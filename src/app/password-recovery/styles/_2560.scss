@@ -1,2 +1,47 @@
 @media screen and (min-width: 1921px) {
+  .recovery-wrapper {
+    height: 100dvh;
+    padding: 2rem;
+  }
+
+  .recovery-box {
+    padding: 2.5rem;
+    border-radius: 1.2rem;
+    max-width: 550px;
+    width: 50%;
+    border: 2px solid #b026ff;
+    box-shadow: 0 0 12px #b026ff, 0 0 24px #b026ff, 0 0 36px #b026ff;
+  }
+
+  h2 {
+    font-size: 2.2rem;
+    margin-bottom: 1.2rem;
+    text-shadow: 0 0 6px #b026ff, 0 0 12px #b026ff;
+  }
+
+  p {
+    font-size: 1.3rem;
+  }
+
+  .spinner {
+    width: 22px;
+    height: 22px;
+    border-width: 4.5px;
+  }
+
+  .password-container input {
+    padding-right: 4rem;
+    padding-left: 1.2rem;
+  }
+
+  .password-hint {
+    left: 100% !important;
+    min-width: 260px;
+    max-width: 450px;
+    font-size: 13px;
+  }
+
+  .password-strength .strength-bar {
+    height: 9px;
+  }
 }

@@ -103,7 +103,9 @@ export class ConfirmEmailComponent implements OnInit, OnDestroy {
       this.countdown--;
       if (this.countdown === 0) {
         clearInterval(this.intervalId);
-        this.router.navigateByUrl('/');
+        if (this.router.url.startsWith('/confirm')) {
+          this.router.navigateByUrl('/');
+        }
       }
     }, 1000);
   }
