@@ -228,7 +228,23 @@ export class ExampleAnimationComponent implements OnInit, OnDestroy {
       this.renderer.setStyle(square, 'height', '5px');
       this.renderer.setStyle(square, 'background-color', '#ffffff');
 
-      const top = Math.random() * 320;
+      let neonHeight = 300;
+      switch (true) {
+        case window.innerWidth < 1367:
+          neonHeight = 250;
+          break;
+        case window.innerWidth < 1600:
+          neonHeight = 280;
+          break;
+        case window.innerWidth <= 1920:
+          neonHeight = 320;
+          break;
+        case window.innerWidth > 1920:
+          neonHeight = 460;
+          break;
+      }
+
+      const top = Math.random() * neonHeight;
       this.renderer.setStyle(square, 'top', `${top}px`);
       this.renderer.setStyle(square, 'left', '0px');
 
@@ -236,7 +252,7 @@ export class ExampleAnimationComponent implements OnInit, OnDestroy {
       const randomY =
         Math.random() > 0.5
           ? -(Math.random() * top - paddingY)
-          : Math.random() * (320 - top - paddingY);
+          : Math.random() * (neonHeight - top - paddingY);
 
       const delay = Math.random() * (maxDelay - minDelay) + minDelay;
 

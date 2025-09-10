@@ -1,0 +1,75 @@
+@media screen and (max-width: 1366px) {
+  .example-canvas-animation {
+    left: 200px;
+    top: 80px;
+
+    &.animate {
+      animation: moveAndClip-1366 10s linear forwards;
+    }
+  }
+
+  .binary-animation {
+    left: 500px;
+    top: 80px;
+
+    &.animate {
+      animation: expandAndMove-1366 25s linear forwards;
+    }
+  }
+
+  .example-response {
+    left: 800px;
+    top: 80px;
+  }
+
+  .neon-line {
+    height: 250px;
+    top: 70px;
+  }
+
+  .neon-canvas {
+    left: 499px;
+  }
+
+  .neon-response {
+    left: 799px;
+  }
+}
+
+@keyframes moveAndClip-1366 {
+  0% {
+    transform: translateX(0);
+    clip-path: inset(0 0 0 0);
+  }
+  25% {
+    transform: translateX(80px);
+    clip-path: inset(0 0 0 0);
+  }
+  100% {
+    transform: translateX(300px);
+    clip-path: inset(0 100% 0 0);
+  }
+}
+
+@keyframes expandAndMove-1366 {
+  0% {
+    transform: translateX(0);
+    clip-path: inset(0 100% 0 0);
+  }
+  30% {
+    transform: translateX(0);
+    clip-path: inset(0 0 0 0);
+  }
+  60% {
+    transform: translateX(0);
+    clip-path: inset(0 0 0 0);
+  }
+  70% {
+    transform: translateX(80px);
+    clip-path: inset(0 0 0 0);
+  }
+  100% {
+    transform: translateX(300px);
+    clip-path: inset(0 100% 0 0);
+  }
+}

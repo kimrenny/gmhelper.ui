@@ -10,7 +10,7 @@
   top: 100px;
 
   &.animate {
-    animation: moveAndClip 10s linear forwards;
+    animation: moveAndClip-1920 10s linear forwards;
   }
 }
 
@@ -22,7 +22,7 @@
   overflow: hidden;
 
   &.animate {
-    animation: expandAndMove 25s linear forwards;
+    animation: expandAndMove-1920 25s linear forwards;
   }
 }
 
@@ -67,7 +67,7 @@
   }
 }
 
-@keyframes moveAndClip {
+@keyframes moveAndClip-1920 {
   0% {
     transform: translateX(0);
     clip-path: inset(0 0 0 0);
@@ -82,7 +82,7 @@
   }
 }
 
-@keyframes expandAndMove {
+@keyframes expandAndMove-1920 {
   0% {
     transform: translateX(0);
     clip-path: inset(0 100% 0 0);

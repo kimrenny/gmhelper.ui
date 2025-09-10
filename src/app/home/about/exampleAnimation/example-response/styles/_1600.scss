@@ -1,0 +1,12 @@
+@media screen and (min-width: 1367px) and (max-width: 1600px) {
+  .example-response {
+    width: 260px;
+    height: 260px;
+    background-size: 18px 18px;
+  }
+
+  .draw-line {
+    stroke-dasharray: 260;
+    stroke-dashoffset: 260;
+  }
+}

@@ -1,0 +1,17 @@
+@media screen and (max-width: 1366px) {
+  .example-canvas {
+    width: 220px;
+    height: 220px;
+    background-size: 15px 15px;
+    border: 1px solid #a0a0a0;
+  }
+
+  .draw-line {
+    stroke-dasharray: 220;
+    stroke-dashoffset: 220;
+  }
+
+  .typewriter {
+    font-size: 0.9rem;
+  }
+}

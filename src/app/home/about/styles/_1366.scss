@@ -1,0 +1,29 @@
+@media screen and (max-width: 1366px) {
+  .about-section {
+    height: 100vh;
+
+    &:before {
+      height: 10vh;
+      clip-path: polygon(0% 100%, 100% 100%, 85% 0%, 0% 0%);
+    }
+  }
+
+  .app-example-animation {
+    top: 45px;
+    left: 45px;
+    width: calc(100% - 45px);
+    height: calc(100% - 160px);
+  }
+
+  h2,
+  p {
+    font-size: 1.6rem;
+  }
+
+  span,
+  a {
+    margin-top: 8vh;
+    font-size: 0.9rem;
+    width: 65vh;
+  }
+}

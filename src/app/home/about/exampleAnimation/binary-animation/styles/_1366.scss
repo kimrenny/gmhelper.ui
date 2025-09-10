@@ -1,0 +1,15 @@
+@media screen and (max-width: 1366px) {
+  .binary-animation-container {
+    width: 220px;
+    height: 220px;
+
+    .binary-column {
+      gap: 3px;
+
+      .binary-bit {
+        font-size: 12px;
+        line-height: 16px;
+      }
+    }
+  }
+}

@@ -143,12 +143,11 @@ export class ExampleResponseComponent {
   }
 
   private appendShape(shape: SVGElement, container: HTMLElement) {
-    const width = 300;
-    const height = 300;
+    const size = window.innerWidth >= 1921 ? 420 : 300;
     const svg = this.renderer.createElement('svg', 'svg');
-    this.renderer.setAttribute(svg, 'viewBox', `0 0 ${width} ${height}`);
-    this.renderer.setAttribute(svg, 'width', '300');
-    this.renderer.setAttribute(svg, 'height', '300');
+    this.renderer.setAttribute(svg, 'viewBox', `0 0 ${size} ${size}`);
+    this.renderer.setAttribute(svg, 'width', size.toString());
+    this.renderer.setAttribute(svg, 'height', size.toString());
     this.renderer.appendChild(svg, shape);
     this.renderer.appendChild(container, svg);
   }
@@ -328,12 +327,18 @@ export class ExampleResponseComponent {
   ) {
     const svgContainer = container.querySelector('svg');
     if (svgContainer) {
+      const isLargeScreen = window.innerWidth >= 1921;
+
       const labelElement = this.renderer.createElement('text', 'svg');
       this.renderer.setAttribute(labelElement, 'x', (x + 40).toString());
       this.renderer.setAttribute(labelElement, 'y', (y + 40).toString());
       this.renderer.setAttribute(labelElement, 'fill', '#000');
       labelElement.textContent = label;
-      this.renderer.setAttribute(labelElement, 'font-size', '12');
+      this.renderer.setAttribute(
+        labelElement,
+        'font-size',
+        isLargeScreen ? '16' : '12'
+      );
       this.renderer.setAttribute(labelElement, 'text-anchor', 'middle');
       this.renderer.setAttribute(labelElement, 'dominant-baseline', 'central');
       this.renderer.setStyle(labelElement, 'position', 'absolute');
@@ -350,11 +355,17 @@ export class ExampleResponseComponent {
   ) {
     const svgContainer = container.querySelector('svg');
     if (svgContainer) {
+      const isLargeScreen = window.innerWidth >= 1921;
+
       const labelElement = this.renderer.createElement('text', 'svg');
       this.renderer.setAttribute(labelElement, 'x', (x + 40).toString());
       this.renderer.setAttribute(labelElement, 'y', (y + 40).toString());
       this.renderer.setAttribute(labelElement, 'fill', '#000');
-      this.renderer.setAttribute(labelElement, 'font-size', '12');
+      this.renderer.setAttribute(
+        labelElement,
+        'font-size',
+        isLargeScreen ? '16' : '12'
+      );
       this.renderer.setAttribute(labelElement, 'text-anchor', 'middle');
       this.renderer.setAttribute(labelElement, 'dominant-baseline', 'central');
       this.renderer.setStyle(labelElement, 'position', 'absolute');
@@ -413,11 +424,13 @@ export class ExampleResponseComponent {
   }
 
   private addText(svg: SVGElement, line: string, x: number, y: number) {
+    const isLargeScreen = window.innerWidth >= 1921;
+
     const textElement = this.createSVGElement('text', {
       x: x.toString(),
       y: y.toString(),
       fill: 'black',
-      'font-size': '16',
+      'font-size': isLargeScreen ? '24' : '16',
       'text-anchor': 'start',
       class: 'typewriter',
     });
