@@ -1,2 +1,45 @@
 @media screen and (max-width: 1366px) {
+  .geo-solution-canvas-container {
+    .close-button {
+      font-size: 32px;
+    }
+
+    .rating-container {
+      right: 20px;
+      width: 80px;
+      padding: 8px 10px;
+
+      .rating-text {
+        font-size: 10px;
+        margin-bottom: 6px;
+      }
+
+      .rating-buttons {
+        gap: 4px;
+
+        button {
+          height: 32px;
+          font-size: 18px;
+          border-radius: 4px;
+        }
+      }
+    }
+
+    .scale-controls {
+      top: 90px;
+      right: 150px;
+      width: 120px;
+
+      button {
+        padding: 6px 8px;
+        font-size: 14px;
+        border-radius: 3px;
+      }
+
+      .scale-value {
+        width: 60px;
+        font-size: 12px;
+      }
+    }
+  }
 }

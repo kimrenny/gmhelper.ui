@@ -1,2 +1,76 @@
 @media screen and (max-width: 1366px) {
+  .geo-canvas-container {
+    .shape-tools {
+      left: 35px;
+      top: 105px;
+      gap: 5px;
+    }
+
+    .tool-buttons {
+      width: 30px;
+      left: 10px;
+      top: 33%;
+      gap: 5px;
+
+      button {
+        width: 20px;
+        height: 20px;
+      }
+    }
+
+    .color-palette {
+      top: 50%;
+      left: 35px;
+      gap: 5px;
+      width: 90px;
+      padding: 5px;
+
+      .color-option {
+        width: 12px;
+        height: 12px;
+      }
+    }
+
+    .figure-color-palette {
+      top: 77%;
+      right: 45px;
+      gap: 5px;
+      width: 90px;
+      padding: 5px;
+
+      .color-option {
+        width: 12px;
+        height: 12px;
+      }
+    }
+
+    .figure-action-panel {
+      width: 30px;
+      right: 10px;
+      top: 20%;
+      gap: 5px;
+
+      button {
+        width: 20px;
+        height: 20px;
+      }
+    }
+
+    .figure-tool-buttons {
+      width: 30px;
+      right: 10px;
+      bottom: 10%;
+      gap: 5px;
+
+      button {
+        width: 20px;
+        height: 20px;
+      }
+    }
+
+    .submit-task-btn {
+      bottom: 10px;
+      left: 10px;
+    }
+  }
 }

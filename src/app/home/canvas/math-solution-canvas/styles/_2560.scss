@@ -1,2 +1,28 @@
 @media screen and (min-width: 1921px) {
+  .math-solution-canvas-container {
+    .close-button {
+      font-size: 72px;
+    }
+
+    .rating-container {
+      right: 60px;
+      width: 120px;
+      padding: 14px 18px;
+
+      .rating-text {
+        font-size: 14px;
+        margin-bottom: 12px;
+      }
+
+      .rating-buttons {
+        gap: 8px;
+
+        button {
+          height: 48px;
+          font-size: 26px;
+          border-radius: 8px;
+        }
+      }
+    }
+  }
 }

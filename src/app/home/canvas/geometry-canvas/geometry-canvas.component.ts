@@ -544,9 +544,9 @@ export class GeoCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
     this.isColorPaletteVisible = !this.isColorPaletteVisible;
   }
 
-  toggleFigureColorPalette(manual?: boolean): void {
-    if (!this.isFigureSelected) return;
-    if (manual) {
+  toggleFigureColorPalette(manual?: boolean | null): void {
+    if (!this.isFigureSelected && manual != null) return;
+    if (manual != null) {
       this.isFigureColorPaletteVisible = manual;
     } else {
       this.isFigureColorPaletteVisible = !this.isFigureColorPaletteVisible;
@@ -625,6 +625,7 @@ export class GeoCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
     this.selectionService.setSelectedFigure(null);
     this.isFigureSelection = false;
     this.selectedFigure = null;
+    this.isFigureColorPaletteVisible = false;
     this.clearPreviewCanvas();
   }
 
@@ -734,6 +735,7 @@ export class GeoCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
     this.selectedFigure = null;
     this.clearPreviewCanvas();
     this.isFigureSelection = false;
+    this.isFigureColorPaletteVisible = false;
     this.redraw();
   }
 

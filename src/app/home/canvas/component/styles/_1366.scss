@@ -1,181 +1,39 @@
 @media screen and (max-width: 1366px) {
-  .canvas-container {
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 30px;
-
-    .blurred-placeholder {
-      position: relative;
-      width: 50vw;
-      height: 50vh;
-
-      &::before,
-      &::after {
-        content: "";
-        position: absolute;
-        pointer-events: none;
-        background: white;
-        box-shadow: 0 0 10px 2px white, 0 0 20px 4px rgba(255, 255, 255, 0.8);
-        z-index: 40;
-        transform: translateY(7.5px);
-      }
-
-      &::before {
-        animation: first-line-animation 5s linear infinite;
-      }
-
-      &::after {
-        animation: second-line-animation 5s linear infinite;
-      }
-
-      canvas {
-        width: 50vw;
-        height: 50vh;
-        margin-top: 20px;
-        background-color: #f0f0f0;
-        background-image: linear-gradient(
-            to right,
-            #c0c0c0 1px,
-            transparent 1px
-          ),
-          linear-gradient(to bottom, #c0c0c0 1px, transparent 1px);
-        background-size: 20px 20px;
-        filter: blur(5px);
-        pointer-events: none;
-        border: 2px solid transparent;
-      }
-    }
-  }
-
-  .canvas-solution-container {
-    display: block;
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: 999;
-  }
-
-  .loading-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-
-    background: rgba(255, 255, 255, 0.4);
-    backdrop-filter: blur(6px);
-    z-index: 9999;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .loading-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1.5rem;
-  }
-
   .spinner {
-    width: 60px;
-    height: 60px;
-    border: 8px solid transparent;
-    border-top: 8px solid #c444ff;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
+    width: 45px;
+    height: 45px;
+    border: 6px solid transparent;
+    border-top: 6px solid #c444ff;
   }
 
   .loading-message {
-    background: rgba(0, 0, 0, 0.4);
-    color: #fff;
-    padding: 0.75rem 1.5rem;
-    border-radius: 8px;
-    font-size: 1.2rem;
-    text-align: center;
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
   }
 
   .subject-change {
-    position: absolute;
     top: 60px;
-    left: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 150px;
-    z-index: 40;
+    left: 5px;
+    width: 120px;
 
     select {
-      background-color: rgba(#333, 0.5);
-      color: #fff;
-      border: 1px solid #444;
-      border-radius: 4px;
-      padding: 10px;
-      cursor: pointer;
-      appearance: none;
-      width: 100%;
-      font-size: 16px;
-      outline: none;
-      transition: border-color 0.3s ease;
-
-      &:focus {
-        border-color: #666;
-      }
+      padding: 8px;
+      font-size: 14px;
     }
 
     &::after {
-      content: "▼";
-      position: absolute;
-      top: 50%;
-      right: 10px;
-      transform: translateY(-50%);
-      color: #fff;
-      pointer-events: none;
-    }
-    &.disabled {
-      display: none;
+      right: 8px;
+      font-size: 12px;
     }
   }
 
   .subject-controls {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    display: flex;
-    gap: 10px;
-    z-index: 40;
+    gap: 8px;
 
     button {
-      background-color: rgba(#444, 0.3);
-      color: #fff;
-      border: none;
-      height: 60px;
-      width: 250px;
-      cursor: pointer;
-      border-radius: 8px;
-      transition: background-color 0.3s ease;
-      font-size: 28px;
-      font-family: "Courier New", Courier, monospace;
-      text-shadow: 1px;
-
-      &:hover {
-        background-color: rgba(#666, 0.7);
-      }
-    }
-  }
-
-  @keyframes spin {
-    0% {
-      transform: rotate(0deg);
-    }
-    100% {
-      transform: rotate(360deg);
+      height: 50px;
+      width: 200px;
+      font-size: 22px;
     }
   }
 }

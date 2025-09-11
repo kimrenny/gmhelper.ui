@@ -1,2 +1,49 @@
 @media screen and (min-width: 1921px) {
+  .tool-buttons {
+    width: 46px !important;
+    left: 15px !important;
+    top: 33%;
+    gap: 10px;
+
+    button {
+      width: 36px !important;
+      height: 36px !important;
+    }
+  }
+
+  .button-window {
+    padding: 14px;
+    box-shadow: 0 0 14px rgba(0, 0, 0, 0.2);
+    gap: 12px;
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: flex-start;
+    }
+
+    .dynamic-button {
+      width: 30px !important;
+      height: 30px !important;
+      font-size: 25px !important;
+    }
+  }
+
+  .latex-input-window {
+    width: 85% !important;
+    max-width: 1250px !important;
+    height: 300px !important;
+    padding: 8px !important;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.25);
+
+    .latex-textarea {
+      font-size: 14px;
+    }
+  }
+
+  .submit-task-btn {
+    bottom: 10px;
+    left: 10px;
+  }
 }
