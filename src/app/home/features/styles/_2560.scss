@@ -1,2 +1,45 @@
-@media screen and (min-width: 1921px) {
+@media (min-width: 1921px) {
+  .features-section {
+    h2 {
+      font-size: 3rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .cards-container {
+      gap: 2.5rem;
+    }
+
+    .card {
+      width: 280px;
+      height: 350px;
+
+      .card-front {
+        h3 {
+          font-size: 1.3rem;
+        }
+
+        .icon {
+          width: 72px;
+          height: 72px;
+          font-size: 3.5rem;
+        }
+
+        .badge {
+          top: 44px;
+          right: -55px;
+          padding: 5px 60px;
+          font-size: 0.75rem;
+          height: 14px;
+        }
+      }
+
+      .card-back {
+        font-size: 1.1rem;
+
+        .card-back-content {
+          padding: 1.2rem;
+        }
+      }
+    }
+  }
 }

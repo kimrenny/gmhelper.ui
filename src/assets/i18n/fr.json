@@ -11,10 +11,27 @@
     },
     "FEATURES": {
       "TITLE": "Caractéristiques",
-      "FIRST": "Interface conviviale",
-      "SECOND": "Résolution rapide de problèmes",
-      "THIRD": "Support de nombreuses formes géométriques",
-      "FOURTH": "Résolution de nombreux problèmes algébriques"
+      "INPROGRESS": "En cours",
+      "FIRST": {
+        "TITLE": "Calcul Automatique",
+        "DESCRIPTION": "Résolvez instantanément des problèmes complexes de mathématiques et de géométrie avec des résultats précis, vous faisant gagner du temps et des efforts."
+      },
+      "SECOND": {
+        "TITLE": "Support Algèbre & Géométrie",
+        "DESCRIPTION": "Travaillez facilement avec les équations algébriques, les constructions géométriques et les formules avancées en un seul endroit."
+      },
+      "THIRD": {
+        "TITLE": "Solutions Étape par Étape",
+        "DESCRIPTION": "Apprenez comment les problèmes sont résolus avec des explications détaillées étape par étape. Suivez facilement votre progression."
+      },
+      "FOURTH": {
+        "TITLE": "Interface Conviviale",
+        "DESCRIPTION": "Un design intuitif et élégant permet une navigation fluide et un accès rapide à toutes les fonctionnalités sans distractions."
+      },
+      "FIFTH": {
+        "TITLE": "Open-Source & Personnalisable",
+        "DESCRIPTION": "Complètement open-source, permettant aux développeurs de contribuer, personnaliser et étendre les fonctionnalités pour tout usage."
+      }
     },
     "CONTACT": {
       "TITLE": "Contacts",

@@ -11,10 +11,27 @@
     },
     "FEATURES": {
       "TITLE": "Features",
-      "FIRST": "User-Friendly Interface",
-      "SECOND": "Quick problem solving",
-      "THIRD": "Support for many geometric shapes",
-      "FOURTH": "Solving many algebra problems"
+      "INPROGRESS": "In progress",
+      "FIRST": {
+        "TITLE": "Automatic Calculation",
+        "DESCRIPTION": "Solve complex math and geometry problems instantly with accurate results, saving you time and effort."
+      },
+      "SECOND": {
+        "TITLE": "Algebra & Geometry Support",
+        "DESCRIPTION": "Work seamlessly with algebraic equations, geometric constructions, and advanced formulas all in one place."
+      },
+      "THIRD": {
+        "TITLE": "Step-by-Step Solutions",
+        "DESCRIPTION": "Learn how problems are solved with detailed step-by-step explanations. Track your learning progress easily."
+      },
+      "FOURTH": {
+        "TITLE": "User-Friendly Interface",
+        "DESCRIPTION": "Intuitive and sleek design allows smooth navigation and quick access to all features without distractions."
+      },
+      "FIFTH": {
+        "TITLE": "Open-Source & Customizable",
+        "DESCRIPTION": "Fully open-source, allowing developers to contribute, customize, and extend functionality for any purpose."
+      }
     },
     "CONTACT": {
       "TITLE": "Contacts",

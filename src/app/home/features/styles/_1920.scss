@@ -11,24 +11,124 @@
   overflow: hidden;
   transition: background-color 1s ease;
 
-  h2,
-  p {
-    position: relative;
+  h2 {
     font-family: "Courier New", Courier, monospace;
-    font-size: 2rem;
-    overflow: hidden;
-    white-space: nowrap;
-    color: inherit;
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
     animation: colorAnimationFeatures 12s ease infinite;
   }
 
-  li {
-    position: relative;
-    font-family: "Courier New", Courier, monospace;
-    font-size: 1rem;
-    overflow: hidden;
-    color: inherit;
-    animation: colorAnimationFeatures 12s ease infinite;
+  .cards-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .cards-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .card {
+    width: 250px;
+    height: 300px;
+    perspective: 1000px;
+    cursor: pointer;
+    flex-shrink: 0;
+
+    .card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+      transform-style: preserve-3d;
+      transform-origin: center center;
+      will-change: transform;
+    }
+
+    &:hover .card-inner {
+      transform: rotateY(180deg);
+    }
+
+    .card-front,
+    .card-back {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      font-family: "Courier New", Courier, monospace;
+    }
+
+    .card-front {
+      background: #1a0a2a;
+      color: #f0f0f0;
+      font-size: 1.3rem;
+      border: 2px solid #c444ff;
+      box-shadow: 0 0 12px #c444ff, 0 0 24px #c444ff40;
+      overflow: hidden;
+
+      h3 {
+        margin-top: 1rem;
+        font-size: 1.3rem;
+        color: #c444ff;
+      }
+
+      .icon {
+        font-size: 3rem;
+        width: 64px;
+        height: 64px;
+        color: #c444ff;
+      }
+
+      .badge {
+        position: absolute;
+        top: 40px;
+        right: -40px;
+        background: #c444ff;
+        color: #fff;
+        font-size: 0.7rem;
+        padding: 4px 50px;
+        width: 100px;
+        height: 12px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        transform: rotate(45deg);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        pointer-events: none;
+
+        span {
+          display: inline-block;
+          width: 100%;
+          text-align: center;
+        }
+      }
+    }
+
+    .card-back {
+      background: #2a1a3d;
+      color: #f0f0f0;
+      transform: rotateY(180deg);
+      font-size: 1rem;
+      border: 2px solid #c444ff;
+      box-shadow: 0 0 12px #c444ff, 0 0 24px #c444ff40;
+
+      .card-back-content {
+        padding: 1rem;
+        text-align: center;
+      }
+    }
   }
 }
 
@@ -37,7 +137,7 @@
     background-color: #000000;
   }
   50% {
-    background-color: #575757;
+    background-color: #222222;
   }
   100% {
     background-color: #000000;

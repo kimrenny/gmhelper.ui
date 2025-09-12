@@ -11,10 +11,27 @@
     },
     "FEATURES": {
       "TITLE": "Funktionen",
-      "FIRST": "Benutzerfreundliche Oberfläche",
-      "SECOND": "Schnelle Problemlösung",
-      "THIRD": "Unterstützung für viele geometrische Formen",
-      "FOURTH": "Lösung vieler Algebra-Probleme"
+      "INPROGRESS": "In Bearbeitung",
+      "FIRST": {
+        "TITLE": "Automatische Berechnung",
+        "DESCRIPTION": "Löse komplexe Mathematik- und Geometrieaufgaben sofort mit genauen Ergebnissen und spare Zeit und Mühe."
+      },
+      "SECOND": {
+        "TITLE": "Algebra- & Geometrie-Unterstützung",
+        "DESCRIPTION": "Arbeiten Sie nahtlos mit algebraischen Gleichungen, geometrischen Konstruktionen und fortgeschrittenen Formeln an einem Ort."
+      },
+      "THIRD": {
+        "TITLE": "Schritt-für-Schritt-Lösungen",
+        "DESCRIPTION": "Lernen Sie, wie Probleme mit detaillierten Schritt-für-Schritt-Erklärungen gelöst werden. Verfolgen Sie Ihren Lernfortschritt einfach."
+      },
+      "FOURTH": {
+        "TITLE": "Benutzerfreundliche Oberfläche",
+        "DESCRIPTION": "Intuitives und elegantes Design ermöglicht eine reibungslose Navigation und schnellen Zugriff auf alle Funktionen ohne Ablenkungen."
+      },
+      "FIFTH": {
+        "TITLE": "Open-Source & Anpassbar",
+        "DESCRIPTION": "Vollständig Open-Source, ermöglicht Entwicklern Beiträge, Anpassungen und Erweiterungen für jeden Zweck."
+      }
     },
     "CONTACT": {
       "TITLE": "Kontakte",

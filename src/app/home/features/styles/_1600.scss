@@ -1,2 +1,45 @@
-@media screen and (min-width: 1367px) and (max-width: 1600px) {
+@media (min-width: 1367px) and (max-width: 1600px) {
+  .features-section {
+    h2 {
+      font-size: 2.3rem;
+      margin-bottom: 1.8rem;
+    }
+
+    .cards-container {
+      gap: 1.5rem;
+    }
+
+    .card {
+      width: 220px;
+      height: 280px;
+
+      .card-front {
+        h3 {
+          font-size: 1.1rem;
+        }
+
+        .icon {
+          width: 56px;
+          height: 56px;
+          font-size: 2.8rem;
+        }
+
+        .badge {
+          top: 36px;
+          right: -36px;
+          padding: 3px 45px;
+          font-size: 0.65rem;
+          height: 11px;
+        }
+      }
+
+      .card-back {
+        font-size: 0.95rem;
+
+        .card-back-content {
+          padding: 0.9rem;
+        }
+      }
+    }
+  }
 }
