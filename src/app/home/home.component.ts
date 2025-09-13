@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { WelcomeComponent } from './welcome/welcome.component';
 import { AboutComponent } from './about/about.component';
 import { FeaturesComponent } from './features/features.component';
-import { ContactComponent } from './contact/contact.component';
+import { RoadmapComponent } from './contact/roadmap.component';
 import { StartComponent } from './start/start.component';
 
 @Component({
@@ -14,7 +14,7 @@ import { StartComponent } from './start/start.component';
     WelcomeComponent,
     AboutComponent,
     FeaturesComponent,
-    ContactComponent,
+    RoadmapComponent,
     StartComponent,
   ],
   templateUrl: './home.component.html',

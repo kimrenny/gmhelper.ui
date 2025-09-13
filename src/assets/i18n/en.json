@@ -33,9 +33,31 @@
         "DESCRIPTION": "Fully open-source, allowing developers to contribute, customize, and extend functionality for any purpose."
       }
     },
-    "CONTACT": {
-      "TITLE": "Contacts",
-      "EMAIL": "Please contact us by email if you have any questions:"
+    "ROADMAP": {
+      "TITLE": "Roadmap",
+      "PHASE_1": {
+        "FIRST": "Geometric & math canvases (LaTeX, built-in buttons)",
+        "SECOND": "Adaptive layout (non-mobile)",
+        "THIRD": "Two-factor authentication",
+        "FOURTH": "Main interface & documentation",
+        "FIFTH": "Source code on GitHub"
+      },
+      "PHASE_2": {
+        "FIRST": "User status system",
+        "SECOND": "More auth options (socials)",
+        "THIRD": "Simple AI/algorithm tasks"
+      },
+      "PHASE_3": {
+        "FIRST": "Payment services",
+        "SECOND": "Paid subscriptions",
+        "THIRD": "Advanced AI/algorithm tasks"
+      },
+      "PHASE_4": {
+        "FIRST": "Crypto wallet login",
+        "SECOND": "Polygon payments",
+        "THIRD": "Text-to-geometry drawing",
+        "FOURTH": "Mobile version"
+      }
     },
     "START": {
       "TITLE": "Try our app",
@@ -45,7 +67,7 @@
       "WELCOME": "Welcome",
       "ABOUT": "About",
       "FEATURES": "Features",
-      "CONTACT": "Contacts",
+      "ROADMAP": "Roadmap",
       "START": "Start"
     },
     "LOREM": "Lorem Ipsum is simply dummy text of the printing and typesetting industry..."

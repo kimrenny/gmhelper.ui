@@ -1,49 +1,132 @@
-.contact-section {
+.roadmap-section {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   background: #000000;
-  animation: gradientAnimationContact 12s ease infinite;
   height: 100vh;
+  color: #fff;
   text-align: center;
-  color: #ffffff;
-  overflow: hidden;
-  transition: background-color 1s ease;
+  padding: 4rem 2rem;
 
-  h2,
-  p,
-  a {
-    position: relative;
+  h2 {
     font-family: "Courier New", Courier, monospace;
-    font-size: 2rem;
-    overflow: hidden;
-    white-space: nowrap;
-    color: inherit;
-    animation: colorAnimationContact 12s ease infinite;
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+    color: #c444ff;
+    text-shadow: 0 0 8px #c444ff;
+  }
+
+  .roadmap-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+
+  .roadmap-card {
+    width: 260px;
+    min-height: 200px;
+    max-height: 300px;
+    border-radius: 12px;
+    padding: 1rem 1.5rem 1.5rem;
+    background: #1a0a2a;
+    border: 2px solid #c444ff;
+    box-shadow: 0 0 12px #c444ff, 0 0 24px #c444ff40;
+    transition: transform 0.5s ease, box-shadow 0.5s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+
+    &:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 0 20px #c444ff, 0 0 40px #c444ff60;
+    }
+
+    h3 {
+      font-size: 1.2rem;
+      margin: 0;
+      margin-bottom: 0.5rem;
+      color: #c444ff;
+      text-shadow: 0 0 6px #c444ff;
+      text-align: center;
+    }
+
+    .roadmap-list {
+      width: 100%;
+      text-align: left;
+      margin: 0;
+
+      ul {
+        list-style: disc;
+        padding-left: 1.2rem;
+
+        li {
+          margin-bottom: 0.5rem;
+          word-break: break-word;
+          white-space: normal;
+
+          &.completed {
+            color: #3a3a3a;
+            font-weight: 600;
+            text-decoration: line-through;
+          }
+
+          &.progress {
+            color: #ffffff;
+            font-weight: 600;
+            animation: pulse-text 1.5s infinite alternate;
+          }
+
+          &.upcoming {
+            color: #bbbbbb;
+            opacity: 0.7;
+          }
+        }
+      }
+    }
+
+    &.completed {
+      background: #2a1a3d;
+      border-color: #7fff7f;
+      box-shadow: 0 0 12px #7fff7f, 0 0 24px #7fff7f40;
+
+      h3 {
+        color: #7fff7f;
+        text-shadow: 0 0 8px #7fff7f;
+      }
+    }
+
+    &.progress {
+      background: #2a0a4d;
+      border-color: #ff6aff;
+      box-shadow: 0 0 12px #ff6aff, 0 0 24px #ff6aff40;
+      animation: pulse 1.5s infinite alternate;
+
+      h3 {
+        color: #ff6aff;
+        text-shadow: 0 0 8px #ff6aff;
+      }
+    }
   }
 }
 
-@keyframes gradientAnimationContact {
+@keyframes pulse {
   0% {
-    background-color: #000000;
-  }
-  50% {
-    background-color: #979797;
+    box-shadow: 0 0 12px #ff6aff, 0 0 24px #ff6aff40;
   }
   100% {
-    background-color: #000000;
+    box-shadow: 0 0 20px #ff6aff, 0 0 40px #ff6aff60;
   }
 }
 
-@keyframes colorAnimationContact {
+@keyframes pulse-text {
   0% {
     color: #ffffff;
   }
-  50% {
-    color: #000000;
-  }
   100% {
-    color: #ffffff;
+    color: #fff0ff;
   }
 }

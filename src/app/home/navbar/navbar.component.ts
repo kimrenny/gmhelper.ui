@@ -22,7 +22,7 @@ import { filter } from 'rxjs';
   imports: [TranslateModule, RouterModule],
 })
 export class NavbarComponent implements AfterViewInit, OnDestroy {
-  sections: string[] = ['welcome', 'about', 'features', 'contact', 'start'];
+  sections: string[] = ['welcome', 'about', 'features', 'roadmap', 'start'];
   activeSection: string = 'welcome';
   userClicked: boolean = false;
   scrolling: boolean = false;

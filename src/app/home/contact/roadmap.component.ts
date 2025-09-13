@@ -2,10 +2,10 @@ import { Component } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
-  selector: 'app-contact',
+  selector: 'app-roadmap',
   standalone: true,
-  templateUrl: './contact.component.html',
-  styleUrls: ['./contact.component.scss'],
+  templateUrl: './roadmap.component.html',
+  styleUrls: ['./roadmap.component.scss'],
   imports: [TranslateModule],
 })
-export class ContactComponent {}
+export class RoadmapComponent {}
