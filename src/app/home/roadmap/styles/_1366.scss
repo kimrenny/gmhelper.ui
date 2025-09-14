@@ -1,0 +1,29 @@
+@media screen and (max-width: 1366px) {
+  .roadmap-section {
+    padding: 2rem 1rem;
+
+    h2 {
+      font-size: 2rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .roadmap-container {
+      gap: 1rem;
+    }
+
+    .roadmap-card {
+      width: 220px;
+      min-height: 260px;
+      max-height: 260px;
+      padding: 0.8rem 1rem 1rem;
+
+      h3 {
+        font-size: 1rem;
+      }
+
+      .roadmap-list ul li {
+        font-size: 0.9rem;
+      }
+    }
+  }
+}
