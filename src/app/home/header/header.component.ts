@@ -15,6 +15,7 @@ import { LanguageService } from 'src/app/services/language.service';
 import { ToastrService } from 'ngx-toastr';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { HeaderService } from 'src/app/services/header.service';
+import { NavigationService } from 'src/app/services/navigation.service';
 
 @Component({
   selector: 'app-header',
@@ -42,6 +43,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private headerService: HeaderService,
     private languageService: LanguageService,
     private translate: TranslateService,
+    private navigation: NavigationService,
     private toastr: ToastrService,
     private router: Router
   ) {}
@@ -123,6 +125,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
     if (userMenu && !userMenu.contains(targetElement)) {
       this.showUserMenu = false;
     }
+  }
+
+  navigateToHome() {
+    this.navigation.scrollToSection('welcome');
   }
 
   navigateToRegistration(type: 'signup' | 'login') {

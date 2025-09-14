@@ -13,6 +13,7 @@ import {
 import { TranslateModule } from '@ngx-translate/core';
 import { ChangeDetectorRef } from '@angular/core';
 import { filter } from 'rxjs';
+import { NavigationService } from 'src/app/services/navigation.service';
 
 @Component({
   selector: 'app-navbar',
@@ -22,105 +23,63 @@ import { filter } from 'rxjs';
   imports: [TranslateModule, RouterModule],
 })
 export class NavbarComponent implements AfterViewInit, OnDestroy {
-  sections: string[] = ['welcome', 'about', 'features', 'roadmap', 'start'];
   activeSection: string = 'welcome';
   userClicked: boolean = false;
-  scrolling: boolean = false;
   lastScrollY: number = 0;
   isHomeComponentActive: boolean = false;
   private boundOnScroll = this.onScroll.bind(this);
 
   constructor(
+    private navigationService: NavigationService,
     private router: Router,
     private route: ActivatedRoute,
     private cdr: ChangeDetectorRef
   ) {}
 
   ngAfterViewInit() {
+    this.navigationService.activeSection$.subscribe((section) => {
+      this.activeSection = section;
+    });
+
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
-      .subscribe(() => {
-        this.checkHomeComponent();
+      .subscribe((event) => {
+        const url = this.router.url;
+        const hasSection = this.navigationService.sections.some((section) =>
+          url.includes(`section=${section}`)
+        );
+        this.isHomeComponentActive = url === '/' || hasSection;
+
+        if (!this.isHomeComponentActive) {
+          this.activeSection = '';
+        }
       });
 
     this.route.queryParams.subscribe((params) => {
       const section = params['section'];
-      if (section && this.sections.includes(section)) {
-        setTimeout(() => this.scrollToSection(section, false), 100);
+      if (section && this.navigationService.sections.includes(section)) {
+        setTimeout(
+          () => this.navigationService.scrollToSection(section, false),
+          100
+        );
       }
     });
 
-    document.body.style.overflow = 'hidden';
-
-    window.addEventListener('wheel', this.boundOnScroll, {
+    window.addEventListener('wheel', (e) => this.onScroll(e), {
       passive: false,
     });
   }
 
+  scrollToSection(section: string) {
+    this.userClicked = true;
+    this.navigationService.scrollToSection(section);
+    setTimeout(() => {
+      this.userClicked = false;
+    }, 1000);
+  }
+
   ngOnDestroy() {
-    window.removeEventListener('wheel', this.boundOnScroll);
-  }
-
-  private checkHomeComponent() {
-    const url = this.router.url;
-    const hasSection = this.sections.some((section) =>
-      url.includes(`section=${section}`)
-    );
-    this.isHomeComponentActive = url === '/' || hasSection;
-    if (!this.isHomeComponentActive) {
-      this.activeSection = 'welcome';
-    }
-  }
-
-  public scrollToSection(sectionId: string, updateUrl: boolean = true) {
-    const targetElement = document.getElementById(sectionId);
-
-    if (!targetElement) {
-      const currentUrl = this.router.url;
-      if (
-        currentUrl.includes('settings') ||
-        currentUrl.includes('register') ||
-        currentUrl.includes('admin')
-      ) {
-        this.router.navigate(['']).then(() => {
-          this.scrollToSection(sectionId, true);
-        });
-      }
-    }
-
-    if (targetElement) {
-      this.scrolling = true;
-      targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-      setTimeout(() => {
-        this.scrolling = false;
-        this.activeSection = sectionId;
-        this.userClicked = false;
-        this.cdr.detectChanges();
-
-        if (updateUrl) {
-          this.router.navigate([], {
-            queryParams: { section: sectionId },
-            replaceUrl: true,
-          });
-        }
-      }, 500);
-    }
-  }
-
-  private scrollToNextSection(direction: 'up' | 'down') {
-    const currentIndex = this.sections.indexOf(this.activeSection);
-    let nextIndex = currentIndex;
-
-    if (direction === 'down' && currentIndex < this.sections.length - 1) {
-      nextIndex++;
-    } else if (direction === 'up' && currentIndex > 0) {
-      nextIndex--;
-    }
-
-    if (nextIndex !== currentIndex) {
-      this.scrollToSection(this.sections[nextIndex]);
-    }
+    window.removeEventListener('wheel', (e) => this.onScroll(e));
   }
 
   onScroll(event: WheelEvent) {
@@ -131,20 +90,12 @@ export class NavbarComponent implements AfterViewInit, OnDestroy {
 
     event.preventDefault();
 
-    if (this.scrolling) return;
-
     if (!this.isHomeComponentActive) return;
+    if (this.userClicked) return;
+    if (this.navigationService.isScrolling()) return;
 
     const direction = event.deltaY > 0 ? 'down' : 'up';
 
-    if (
-      direction === 'down' &&
-      this.activeSection === this.sections[this.sections.length - 1]
-    )
-      return;
-
-    if (direction === 'up' && this.activeSection === this.sections[0]) return;
-
-    this.scrollToNextSection(direction);
+    this.navigationService.scrollToNext(direction);
   }
 }
