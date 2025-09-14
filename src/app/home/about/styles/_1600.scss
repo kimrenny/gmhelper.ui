@@ -1,11 +1,6 @@
 @media screen and (min-width: 1367px) and (max-width: 1600px) {
   .about-section {
     height: 100vh;
-
-    &:before {
-      height: 12vh;
-      clip-path: polygon(0% 100%, 100% 100%, 85% 0%, 0% 0%);
-    }
   }
 
   .app-example-animation {
