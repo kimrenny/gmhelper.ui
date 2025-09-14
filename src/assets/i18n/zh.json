@@ -33,9 +33,31 @@
         "DESCRIPTION": "完全开源，允许开发人员贡献、定制和扩展功能以满足各种用途。"
       }
     },
-    "CONTACT": {
-      "TITLE": "联系方式",
-      "EMAIL": "如果您有任何问题，请通过电子邮件与我们联系："
+    "ROADMAP": {
+      "TITLE": "路线图",
+      "PHASE_1": {
+        "FIRST": "几何与数学画布 (LaTeX, 内置按钮)",
+        "SECOND": "自适应布局 (不含移动端)",
+        "THIRD": "双重身份验证",
+        "FOURTH": "主界面与文档",
+        "FIFTH": "GitHub 上的源代码"
+      },
+      "PHASE_2": {
+        "FIRST": "用户状态系统",
+        "SECOND": "更多登录选项 (社交网络)",
+        "THIRD": "简单的 AI/算法任务"
+      },
+      "PHASE_3": {
+        "FIRST": "支付服务",
+        "SECOND": "付费订阅",
+        "THIRD": "高级 AI/算法任务"
+      },
+      "PHASE_4": {
+        "FIRST": "加密钱包登录",
+        "SECOND": "Polygon 支付",
+        "THIRD": "文本生成几何图形",
+        "FOURTH": "移动版"
+      }
     },
     "START": {
       "TITLE": "试用我们的应用程序",

@@ -33,9 +33,31 @@
         "DESCRIPTION": "완전히 오픈소스로 개발자가 기능을 추가, 맞춤화 및 확장할 수 있습니다."
       }
     },
-    "CONTACT": {
-      "TITLE": "연락처",
-      "EMAIL": "질문이 있으시면 이메일로 문의해 주세요:"
+    "ROADMAP": {
+      "TITLE": "로드맵",
+      "PHASE_1": {
+        "FIRST": "기하학 & 수학 캔버스 (LaTeX, 내장 버튼)",
+        "SECOND": "반응형 레이아웃 (모바일 제외)",
+        "THIRD": "2단계 인증",
+        "FOURTH": "메인 인터페이스 & 문서",
+        "FIFTH": "GitHub에 소스 코드 공개"
+      },
+      "PHASE_2": {
+        "FIRST": "사용자 상태 시스템",
+        "SECOND": "추가 인증 옵션 (소셜 네트워크)",
+        "THIRD": "간단한 AI/알고리즘 과제"
+      },
+      "PHASE_3": {
+        "FIRST": "결제 서비스",
+        "SECOND": "유료 구독",
+        "THIRD": "고급 AI/알고리즘 과제"
+      },
+      "PHASE_4": {
+        "FIRST": "암호화폐 지갑 로그인",
+        "SECOND": "Polygon 결제",
+        "THIRD": "텍스트 기반 기하학 그림",
+        "FOURTH": "모바일 버전"
+      }
     },
     "START": {
       "TITLE": "앱을 사용해 보세요",

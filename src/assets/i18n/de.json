@@ -33,9 +33,31 @@
         "DESCRIPTION": "Vollständig Open-Source, ermöglicht Entwicklern Beiträge, Anpassungen und Erweiterungen für jeden Zweck."
       }
     },
-    "CONTACT": {
-      "TITLE": "Kontakte",
-      "EMAIL": "Bitte kontaktieren Sie uns per E-Mail, wenn Sie Fragen haben:"
+    "ROADMAP": {
+      "TITLE": "Fahrplan",
+      "PHASE_1": {
+        "FIRST": "Geometrische & mathematische Leinwände (LaTeX, integrierte Buttons)",
+        "SECOND": "Adaptives Layout (außer mobil)",
+        "THIRD": "Zwei-Faktor-Authentifizierung",
+        "FOURTH": "Hauptoberfläche & Dokumentation",
+        "FIFTH": "Quellcode auf GitHub"
+      },
+      "PHASE_2": {
+        "FIRST": "Benutzerstatus-System",
+        "SECOND": "Mehr Anmeldeoptionen (soziale Netzwerke)",
+        "THIRD": "Einfache KI/Algorithmus-Aufgaben"
+      },
+      "PHASE_3": {
+        "FIRST": "Zahlungsdienste",
+        "SECOND": "Kostenpflichtige Abonnements",
+        "THIRD": "Fortgeschrittene KI/Algorithmus-Aufgaben"
+      },
+      "PHASE_4": {
+        "FIRST": "Login mit Krypto-Wallet",
+        "SECOND": "Polygon-Zahlungen",
+        "THIRD": "Geometriezeichnen aus Text",
+        "FOURTH": "Mobile Version"
+      }
     },
     "START": {
       "TITLE": "Probieren Sie unsere App aus",

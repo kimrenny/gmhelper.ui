@@ -33,9 +33,31 @@
         "DESCRIPTION": "Complètement open-source, permettant aux développeurs de contribuer, personnaliser et étendre les fonctionnalités pour tout usage."
       }
     },
-    "CONTACT": {
-      "TITLE": "Contacts",
-      "EMAIL": "Veuillez nous contacter par e-mail si vous avez des questions :"
+    "ROADMAP": {
+      "TITLE": "Feuille de route",
+      "PHASE_1": {
+        "FIRST": "Toiles géométriques & mathématiques (LaTeX, boutons intégrés)",
+        "SECOND": "Mise en page adaptative (hors mobile)",
+        "THIRD": "Authentification à deux facteurs",
+        "FOURTH": "Interface principale & documentation",
+        "FIFTH": "Code source sur GitHub"
+      },
+      "PHASE_2": {
+        "FIRST": "Système de statuts utilisateurs",
+        "SECOND": "Plus d’options d’authentification (réseaux sociaux)",
+        "THIRD": "Tâches simples via IA/algorithmes"
+      },
+      "PHASE_3": {
+        "FIRST": "Services de paiement",
+        "SECOND": "Abonnements payants",
+        "THIRD": "Tâches avancées via IA/algorithmes"
+      },
+      "PHASE_4": {
+        "FIRST": "Connexion par portefeuille crypto",
+        "SECOND": "Paiements Polygon",
+        "THIRD": "Dessin géométrique par texte",
+        "FOURTH": "Version mobile"
+      }
     },
     "START": {
       "TITLE": "Essayez notre application",
