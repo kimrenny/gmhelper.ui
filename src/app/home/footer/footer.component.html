@@ -1,0 +1,27 @@
+<footer class="app-footer" [class.collapsed]="collapsed">
+  <div class="footer-left">
+    <span>© 2025 GMHelper. Licensed under MIT</span>
+  </div>
+
+  <div class="footer-links">
+    <a [routerLink]="['/privacy']">Privacy Policy</a>
+    <a [routerLink]="['/terms']">Terms of Service</a>
+    <a (click)="goToSection('roadmap')">Roadmap</a>
+  </div>
+
+  <div class="footer-right">
+    <a href="https://github.com/kimrenny/gmhelper.ui" target="_blank">
+      <img src="assets/icons/github.svg" alt="GitHub" />
+    </a>
+  </div>
+</footer>
+
+<button
+  class="footer-toggle-btn"
+  [class.collapsed]="collapsed"
+  [class.expanded]="!collapsed"
+  (click)="toggleFooter()"
+>
+  <span *ngIf="!collapsed">↓</span>
+  <span *ngIf="collapsed">↑</span>
+</button>

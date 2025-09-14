@@ -1,0 +1,36 @@
+@media screen and (max-width: 1366px) {
+  .app-footer {
+    height: 30px;
+
+    .footer-right {
+      img {
+        width: 22px;
+        height: 22px;
+      }
+    }
+  }
+
+  .footer-toggle-btn {
+    bottom: 0;
+    width: 50px;
+    height: 20px;
+    right: 70px;
+    font-size: 14px;
+  }
+
+  .footer-toggle-btn {
+    position: fixed;
+    right: 70px;
+    width: 50px;
+    height: 20px;
+    font-size: 14px;
+
+    &.collapsed {
+      bottom: 0;
+    }
+
+    &.expanded {
+      bottom: 30px;
+    }
+  }
+}
