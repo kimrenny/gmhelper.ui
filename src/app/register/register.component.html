@@ -93,6 +93,31 @@
       </div>
     </div>
 
+    <div class="terms-agreement">
+      <label class="checkbox-label">
+        <input
+          type="checkbox"
+          [(ngModel)]="agreeTerms"
+          name="agreeTerms"
+          required
+        />
+        <span>
+          {{ "REGISTER.AGREE_TERMS.PREFIX" | translate }}
+          <a href="/terms" target="_blank">{{
+            "REGISTER.AGREE_TERMS.TERMS" | translate
+          }}</a>
+          {{ "REGISTER.AGREE_TERMS.AND" | translate }}
+          <a href="/privacy" target="_blank">{{
+            "REGISTER.AGREE_TERMS.PRIVACY" | translate
+          }}</a
+          >.
+        </span>
+      </label>
+      <div *ngIf="agreeTermsError" class="error-text">
+        {{ "REGISTER.ERRORS.AGREE_TERMS" | translate }}
+      </div>
+    </div>
+
     <div class="recaptcha-container" *ngIf="isRegisterMode && isCaptchaLoaded">
       <ngx-recaptcha2
         [siteKey]="'6LdH7qIqAAAAAGivcgrDnNnpaIj_GNRwy_CTu95X'"

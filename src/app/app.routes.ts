@@ -7,6 +7,8 @@ import { AdminGuard } from './guards/admin.guard';
 import { ConfirmEmailComponent } from './confirm-email/confirm-email.component';
 import { emailTokenGuard } from './guards/email-token.guard';
 import { PasswordRecoveryComponent } from './password-recovery/password-recovery.component';
+import { PrivacyComponent } from './legal/privacy/privacy.component';
+import { TermsComponent } from './legal/terms/terms.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -26,6 +28,14 @@ export const routes: Routes = [
     path: 'recover',
     component: PasswordRecoveryComponent,
     canActivate: [emailTokenGuard],
+  },
+  {
+    path: 'privacy',
+    component: PrivacyComponent,
+  },
+  {
+    path: 'terms',
+    component: TermsComponent,
   },
   { path: '**', redirectTo: '' },
 ];

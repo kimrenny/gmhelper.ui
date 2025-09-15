@@ -272,7 +272,14 @@
         "CLOSE": "Close"
       }
     },
+    "AGREE_TERMS": {
+      "PREFIX": "I agree to the",
+      "TERMS": "Terms of Service",
+      "AND": "and",
+      "PRIVACY": "Privacy Policy"
+    },
     "ERRORS": {
+      "AGREE_TERMS": "You must agree to the Terms of Service and Privacy Policy to register.",
       "USERNAME": {
         "REQUIRED": "Username is required.",
         "INVALID": "Username must be 4-24 characters long, start with a letter, and contain only letters and numbers."
@@ -670,5 +677,82 @@
       },
       "TIMER": "Redirecting to the homepage in:"
     }
+  },
+  "FOOTER": {
+    "COPYRIGHT": "© 2025 GMHelper. Licensed under MIT",
+    "PRIVACY": "Privacy Policy",
+    "TERMS": "Terms of Service",
+    "ROADMAP": "Roadmap"
+  },
+  "PRIVACY": {
+    "TITLE": "Privacy Policy",
+    "INTRO": "This Privacy Policy explains how we collect, use, and protect your personal information when you use our application.",
+
+    "COLLECTED_DATA": "Collected Data",
+    "COLLECTED_DATA_TEXT": "We collect various types of information from you, including your email address, login credentials, geolocation data, and user-provided images (avatars). This helps us personalize your experience and provide our services effectively.",
+
+    "USE_OF_DATA": "Use of Data",
+    "USE_OF_DATA_TEXT": "Your data is used to operate and improve the application, including enabling account management, customizing content, providing customer support, analyzing usage trends, and ensuring compliance with applicable laws.",
+
+    "DATA_SHARING": "Data Sharing",
+    "DATA_SHARING_TEXT": "We do not sell your personal data. We only share it with third parties where strictly necessary for technical purposes (e.g., determining location by IP for localization, hosting, analytics).",
+
+    "STORAGE_DURATION": "Storage Duration",
+    "STORAGE_DURATION_TEXT": "We store your data only for as long as it is necessary to provide our services or as required by law. You can request deletion of your data at any time.",
+
+    "INTERNATIONAL": "International Data Transfers",
+    "INTERNATIONAL_TEXT": "Your information may be stored and processed on servers located outside your country of residence. By using the application, you consent to such transfers, which may be subject to different data protection laws.",
+
+    "COOKIES": "Cookies and Tracking",
+    "COOKIES_TEXT": "We may use cookies or similar technologies to enhance your user experience, analyze usage, and provide personalized features. You can manage or disable cookies in your browser settings.",
+
+    "USER_RIGHTS": "Your Rights",
+    "USER_RIGHTS_TEXT": "You have the right to access, correct, or delete your personal data. You can also withdraw consent for processing at any time. To exercise these rights, contact us at the email below.",
+
+    "SECURITY": "Data Security",
+    "SECURITY_TEXT": "We implement industry-standard security measures, including encryption and restricted access, to protect your information against unauthorized access, alteration, or disclosure.",
+
+    "CHILDREN": "Children's Privacy",
+    "CHILDREN_TEXT": "Our application is not intended for children under 13 years of age. We do not knowingly collect personal data from children. If we become aware of such data, it will be deleted immediately.",
+
+    "CHANGES": "Changes to this Policy",
+    "CHANGES_TEXT": "We may update this Privacy Policy from time to time. Changes will be posted on this page, and significant changes will be communicated where appropriate.",
+
+    "CONTACT": "Contact Us",
+    "CONTACT_TEXT": "For questions or concerns about your data, please contact us at kimrenny.tech@gmail.com."
+  },
+  "TERMS": {
+    "TITLE": "Terms of Service",
+    "INTRO": "Welcome to GMHelper. By using this application, you agree to the following Terms. If you do not agree with them, please stop using the application.",
+
+    "GENERAL": "General Provisions",
+    "GENERAL_TEXT": "GMHelper is intended to help users with various tasks related to its functionality. The application may only be used in accordance with these Terms and applicable law.",
+
+    "AGE": "Age Restrictions",
+    "AGE_TEXT": "The application may be used by individuals over the age of 13. If you are between 13 and 18 years old, usage is allowed only with the consent of a parent or legal guardian. Users under the age of 13 are not allowed to use the application.",
+
+    "ACCOUNTS": "Accounts",
+    "ACCOUNTS_TEXT": "No more than 2 accounts may be registered on a single device. It is prohibited to use someone else's account or attempt to gain access to it. Users are responsible for keeping their account credentials safe. GMHelper reserves the right to suspend or permanently delete accounts that violate these rules.",
+
+    "CONTENT": "User Content",
+    "CONTENT_TEXT": "Users are responsible for the content they upload (e.g., profile images). Any illegal, offensive, or harmful content is strictly prohibited and may result in account termination without refund.",
+
+    "SUBSCRIPTIONS": "Subscriptions and Payments",
+    "SUBSCRIPTIONS_TEXT": "GMHelper is provided free of charge, but may offer optional paid features or subscriptions. All paid features are optional and not required to use the application. Refunds are only possible in cases provided by applicable law. Accounts terminated due to serious violations are not eligible for refunds.",
+
+    "PROHIBITED": "Prohibited Actions",
+    "PROHIBITED_TEXT": "You are prohibited from engaging in illegal activities while using the application, attempting to bypass security systems, using the application for purposes that violate the laws of your country of residence, or distributing malicious software through the application.",
+
+    "LIABILITY": "Liability",
+    "LIABILITY_TEXT": "Users are responsible for all actions performed through their accounts. GMHelper is not liable for failures caused by third-party services, technical issues beyond our control, or actions of other users.",
+
+    "JURISDICTION": "Governing Law and Jurisdiction",
+    "JURISDICTION_TEXT": "These Terms are governed by applicable international standards and, where necessary, the laws of the country of the application's owner. Any disputes shall be resolved under the jurisdiction chosen by the owner of GMHelper.",
+
+    "CHANGES": "Changes to the Terms",
+    "CHANGES_TEXT": "GMHelper reserves the right to modify these Terms at any time. Users will be notified of changes through the application or by other available means.",
+
+    "CONTACT": "Contact Us",
+    "CONTACT_TEXT": "For any questions, please contact GMHelper support at kimrenny.tech@gmail.com."
   }
 }

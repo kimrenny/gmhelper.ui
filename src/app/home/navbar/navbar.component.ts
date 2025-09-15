@@ -83,6 +83,8 @@ export class NavbarComponent implements AfterViewInit, OnDestroy {
   }
 
   onScroll(event: WheelEvent) {
+    if (!this.isHomeComponentActive) return;
+
     if (event.ctrlKey) {
       event.preventDefault();
       return;
@@ -90,7 +92,6 @@ export class NavbarComponent implements AfterViewInit, OnDestroy {
 
     event.preventDefault();
 
-    if (!this.isHomeComponentActive) return;
     if (this.userClicked) return;
     if (this.navigationService.isScrolling()) return;
 

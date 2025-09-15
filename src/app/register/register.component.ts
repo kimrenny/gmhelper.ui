@@ -28,6 +28,7 @@ export class RegisterComponent {
   formType: 'signup' | 'login' = 'signup';
   isRegisterMode: boolean = true;
   rememberMe: boolean = false;
+  agreeTerms: boolean = false;
   showForgotPassword: boolean = false;
   recoveryEmail: string = '';
   username: string = '';
@@ -64,6 +65,7 @@ export class RegisterComponent {
   registerCaptchaError: string = '';
   loginCaptchaError: string = '';
   recoveryCaptchaError: string = '';
+  agreeTermsError: boolean = false;
 
   isCaptchaLoaded: boolean = false;
 
@@ -130,6 +132,13 @@ export class RegisterComponent {
   }
 
   register(): void {
+    this.agreeTermsError = false;
+
+    if (!this.agreeTerms) {
+      this.agreeTermsError = true;
+      return;
+    }
+
     this.validateUsername();
     this.validateEmail();
     this.validatePassword();

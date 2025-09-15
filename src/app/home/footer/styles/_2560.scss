@@ -2,6 +2,16 @@
   .app-footer {
     height: 45px;
 
+    .footer-left {
+      font-size: 18px;
+    }
+
+    .footer-links {
+      a {
+        font-size: 18px;
+      }
+    }
+
     .footer-right {
       img {
         width: 34px;

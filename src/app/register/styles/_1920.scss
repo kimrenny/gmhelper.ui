@@ -175,6 +175,39 @@
       }
     }
 
+    .terms-agreement {
+      margin: 15px 0;
+      font-size: 14px;
+      color: #fff;
+
+      .checkbox-label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        input[type="checkbox"] {
+          accent-color: #c444ff;
+          flex-shrink: 0;
+        }
+
+        span {
+          display: inline;
+          line-height: 1.4;
+
+          a {
+            color: #c444ff;
+            text-decoration: underline;
+          }
+        }
+      }
+
+      .error-text {
+        margin-top: 5px;
+        font-size: 12px;
+        color: #ff4c4c;
+      }
+    }
+
     .remember-me-container {
       display: flex;
       align-items: center;

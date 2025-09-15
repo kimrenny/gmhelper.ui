@@ -272,7 +272,14 @@
         "CLOSE": "Fermer"
       }
     },
+    "AGREE_TERMS": {
+      "PREFIX": "J'accepte les",
+      "TERMS": "Conditions d'utilisation",
+      "AND": "et",
+      "PRIVACY": "Politique de confidentialité"
+    },
     "ERRORS": {
+      "AGREE_TERMS": "Vous devez accepter les Conditions d'utilisation et la Politique de confidentialité pour vous inscrire.",
       "USERNAME": {
         "REQUIRED": "Le nom d'utilisateur est requis.",
         "INVALID": "Le nom d'utilisateur doit comporter entre 4 et 24 caractères, commencer par une lettre et contenir uniquement des lettres et des chiffres."
@@ -670,5 +677,82 @@
       },
       "TIMER": "Redirection vers la page d'accueil dans:"
     }
+  },
+  "FOOTER": {
+    "COPYRIGHT": "© 2025 GMHelper. Licence MIT",
+    "PRIVACY": "Politique de confidentialité",
+    "TERMS": "Conditions d'utilisation",
+    "ROADMAP": "Feuille de route"
+  },
+  "PRIVACY": {
+    "TITLE": "Politique de confidentialité",
+    "INTRO": "Cette politique de confidentialité explique comment nous recueillons, utilisons et protégeons vos informations personnelles lorsque vous utilisez notre application.",
+
+    "COLLECTED_DATA": "Données collectées",
+    "COLLECTED_DATA_TEXT": "Nous collectons différents types d'informations vous concernant, y compris votre adresse e-mail, vos identifiants de connexion, vos données de géolocalisation et les images fournies par l'utilisateur (avatars). Cela nous aide à personnaliser votre expérience et à fournir nos services efficacement.",
+
+    "USE_OF_DATA": "Utilisation des données",
+    "USE_OF_DATA_TEXT": "Vos données sont utilisées pour faire fonctionner et améliorer l'application, y compris pour la gestion des comptes, la personnalisation du contenu, la fourniture d'assistance client, l'analyse des tendances d'utilisation et le respect des lois applicables.",
+
+    "DATA_SHARING": "Partage des données",
+    "DATA_SHARING_TEXT": "Nous ne vendons pas vos données personnelles. Nous ne les partageons avec des tiers que lorsque cela est strictement nécessaire à des fins techniques (par exemple, déterminer l'emplacement via l'IP pour la localisation, l'hébergement, les analyses).",
+
+    "STORAGE_DURATION": "Durée de conservation",
+    "STORAGE_DURATION_TEXT": "Nous conservons vos données uniquement aussi longtemps que nécessaire pour fournir nos services ou selon les exigences légales. Vous pouvez demander la suppression de vos données à tout moment.",
+
+    "INTERNATIONAL": "Transferts internationaux de données",
+    "INTERNATIONAL_TEXT": "Vos informations peuvent être stockées et traitées sur des serveurs situés en dehors de votre pays de résidence. En utilisant l'application, vous consentez à ces transferts, qui peuvent être soumis à des lois sur la protection des données différentes.",
+
+    "COOKIES": "Cookies et suivi",
+    "COOKIES_TEXT": "Nous pouvons utiliser des cookies ou des technologies similaires pour améliorer votre expérience utilisateur, analyser l'utilisation et fournir des fonctionnalités personnalisées. Vous pouvez gérer ou désactiver les cookies dans les paramètres de votre navigateur.",
+
+    "USER_RIGHTS": "Vos droits",
+    "USER_RIGHTS_TEXT": "Vous avez le droit d'accéder, de corriger ou de supprimer vos données personnelles. Vous pouvez également retirer votre consentement au traitement à tout moment. Pour exercer ces droits, contactez-nous à l'adresse e-mail ci-dessous.",
+
+    "SECURITY": "Sécurité des données",
+    "SECURITY_TEXT": "Nous mettons en œuvre des mesures de sécurité standard dans l'industrie, y compris le chiffrement et un accès restreint, pour protéger vos informations contre tout accès, modification ou divulgation non autorisés.",
+
+    "CHILDREN": "Confidentialité des enfants",
+    "CHILDREN_TEXT": "Notre application n'est pas destinée aux enfants de moins de 13 ans. Nous ne collectons pas sciemment de données personnelles auprès d'enfants. Si nous en prenons connaissance, elles seront supprimées immédiatement.",
+
+    "CHANGES": "Modifications de cette politique",
+    "CHANGES_TEXT": "Nous pouvons mettre à jour cette politique de confidentialité de temps à autre. Les modifications seront publiées sur cette page et les changements significatifs seront communiqués si nécessaire.",
+
+    "CONTACT": "Nous contacter",
+    "CONTACT_TEXT": "Pour toute question ou préoccupation concernant vos données, veuillez nous contacter à kimrenny.tech@gmail.com."
+  },
+  "TERMS": {
+    "TITLE": "Conditions d'utilisation",
+    "INTRO": "Bienvenue sur GMHelper. En utilisant cette application, vous acceptez les présentes conditions. Si vous n'êtes pas d'accord, veuillez cesser d'utiliser l'application.",
+
+    "GENERAL": "Dispositions générales",
+    "GENERAL_TEXT": "GMHelper est destiné à aider les utilisateurs dans diverses tâches liées à sa fonctionnalité. L'application ne peut être utilisée qu'en conformité avec ces conditions et la loi applicable.",
+
+    "AGE": "Restrictions d'âge",
+    "AGE_TEXT": "L'application peut être utilisée par des personnes de plus de 13 ans. Si vous avez entre 13 et 18 ans, l'utilisation n'est autorisée qu'avec le consentement d'un parent ou tuteur légal. Les utilisateurs de moins de 13 ans ne sont pas autorisés à utiliser l'application.",
+
+    "ACCOUNTS": "Comptes",
+    "ACCOUNTS_TEXT": "Pas plus de 2 comptes ne peuvent être enregistrés sur un seul appareil. Il est interdit d'utiliser le compte d'une autre personne ou de tenter d'y accéder. Les utilisateurs sont responsables de la sécurité de leurs informations de compte. GMHelper se réserve le droit de suspendre ou de supprimer définitivement les comptes qui enfreignent ces règles.",
+
+    "CONTENT": "Contenu utilisateur",
+    "CONTENT_TEXT": "Les utilisateurs sont responsables du contenu qu'ils téléchargent (par exemple, images de profil). Tout contenu illégal, offensant ou nuisible est strictement interdit et peut entraîner la suppression du compte sans remboursement.",
+
+    "SUBSCRIPTIONS": "Abonnements et paiements",
+    "SUBSCRIPTIONS_TEXT": "GMHelper est fourni gratuitement, mais peut proposer des fonctionnalités ou abonnements payants optionnels. Toutes les fonctionnalités payantes sont facultatives et non obligatoires pour utiliser l'application. Les remboursements ne sont possibles que dans les cas prévus par la loi applicable. Les comptes supprimés pour violations graves ne sont pas éligibles aux remboursements.",
+
+    "PROHIBITED": "Actions interdites",
+    "PROHIBITED_TEXT": "Il est interdit de s'engager dans des activités illégales lors de l'utilisation de l'application, de contourner les systèmes de sécurité, d'utiliser l'application à des fins contraires aux lois de votre pays de résidence ou de distribuer des logiciels malveillants via l'application.",
+
+    "LIABILITY": "Responsabilité",
+    "LIABILITY_TEXT": "Les utilisateurs sont responsables de toutes les actions effectuées via leurs comptes. GMHelper n'est pas responsable des défaillances causées par des services tiers, des problèmes techniques hors de notre contrôle ou les actions d'autres utilisateurs.",
+
+    "JURISDICTION": "Droit applicable et juridiction",
+    "JURISDICTION_TEXT": "Ces conditions sont régies par les normes internationales applicables et, si nécessaire, par les lois du pays du propriétaire de l'application. Tout litige sera résolu selon la juridiction choisie par le propriétaire de GMHelper.",
+
+    "CHANGES": "Modifications des conditions",
+    "CHANGES_TEXT": "GMHelper se réserve le droit de modifier ces conditions à tout moment. Les utilisateurs seront informés des modifications via l'application ou par d'autres moyens disponibles.",
+
+    "CONTACT": "Nous contacter",
+    "CONTACT_TEXT": "Pour toute question, veuillez contacter le support GMHelper à kimrenny.tech@gmail.com."
   }
 }

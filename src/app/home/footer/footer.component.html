@@ -1,12 +1,12 @@
-<footer class="app-footer" [class.collapsed]="collapsed">
+<footer class="app-footer select-none" [class.collapsed]="collapsed">
   <div class="footer-left">
-    <span>© 2025 GMHelper. Licensed under MIT</span>
+    <span>{{ "FOOTER.COPYRIGHT" | translate }}</span>
   </div>
 
   <div class="footer-links">
-    <a [routerLink]="['/privacy']">Privacy Policy</a>
-    <a [routerLink]="['/terms']">Terms of Service</a>
-    <a (click)="goToSection('roadmap')">Roadmap</a>
+    <a [routerLink]="['/privacy']">{{ "FOOTER.PRIVACY" | translate }}</a>
+    <a [routerLink]="['/terms']">{{ "FOOTER.TERMS" | translate }}</a>
+    <a (click)="goToSection('roadmap')">{{ "FOOTER.ROADMAP" | translate }}</a>
   </div>
 
   <div class="footer-right">
