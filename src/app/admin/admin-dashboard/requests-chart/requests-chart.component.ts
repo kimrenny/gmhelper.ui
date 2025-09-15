@@ -1,4 +1,10 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BaseChartDirective } from 'ng2-charts';
 import { AdminService } from 'src/app/services/admin.service';
@@ -45,7 +51,9 @@ interface RequestsData {
   templateUrl: './requests-chart.component.html',
   styleUrls: ['./requests-chart.component.scss'],
 })
-export class RequestsChartComponent implements OnInit, OnDestroy {
+export class RequestsChartComponent
+  implements OnInit, OnDestroy, AfterViewInit
+{
   userRole: string | any;
   selectedPeriod: string = 'week';
 
@@ -86,14 +94,20 @@ export class RequestsChartComponent implements OnInit, OnDestroy {
         },
         ticks: {
           beginAtZero: true,
-          stepSize: 1,
           precision: 0,
         },
       },
     },
   };
 
+  private currentDataRegular: any[] = [];
+  private currentDataAdmin: any[] = [];
+  private isDaily: boolean = true;
+  private isMonthly: boolean = false;
+
   private subscriptions = new Subscription();
+
+  @ViewChild(BaseChartDirective) chart?: BaseChartDirective;
 
   constructor(
     private adminService: AdminService,
@@ -122,10 +136,23 @@ export class RequestsChartComponent implements OnInit, OnDestroy {
 
     const langSub = this.translateService.onLangChange.subscribe(() => {
       this.applyTranslations();
+      this.updateChartData(
+        this.currentDataRegular,
+        this.currentDataAdmin,
+        this.isDaily,
+        this.isMonthly
+      );
     });
 
     this.subscriptions.add(roleSub);
     this.subscriptions.add(langSub);
+  }
+
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      window.dispatchEvent(new Event('resize'));
+      this.chart?.update();
+    }, 0);
   }
 
   private applyTranslations(): void {
@@ -285,6 +312,11 @@ export class RequestsChartComponent implements OnInit, OnDestroy {
     isDaily: boolean,
     isMonthly: boolean
   ): void {
+    this.currentDataRegular = filteredDataRegular;
+    this.currentDataAdmin = filteredDataAdmin;
+    this.isDaily = isDaily;
+    this.isMonthly = isMonthly;
+
     const startDateRegular = isDaily
       ? new Date(filteredDataRegular[0]?.date || new Date())
       : new Date(
@@ -363,12 +395,24 @@ export class RequestsChartComponent implements OnInit, OnDestroy {
     const chartDataAdmin = completeDataAdmin.map((data) => data.count);
     const chartLabels = completeDataRegular.map((data) => data.date);
 
+    const regularLabel = this.translateService.instant(
+      'ADMIN.DASHBOARD.REQUESTS.CHART.REGULAR.TITLE'
+    );
+    const adminLabel = this.translateService.instant(
+      'ADMIN.DASHBOARD.REQUESTS.CHART.ADMIN.TITLE'
+    );
+
+    this.requestsChartOptions.scales.x.title.text =
+      this.translateService.instant('ADMIN.DASHBOARD.REQUESTS.CHART.X_AXIS');
+    this.requestsChartOptions.scales.y.title.text =
+      this.translateService.instant('ADMIN.DASHBOARD.REQUESTS.CHART.Y_AXIS');
+
     this.requestsChartData = {
       labels: chartLabels,
       datasets: [
         {
           data: chartDataRegular,
-          label: this.requestsChartData.datasets[0].label,
+          label: regularLabel,
           fill: false,
           borderColor: '#4bc0c0',
           tension: 0.1,
@@ -376,7 +420,7 @@ export class RequestsChartComponent implements OnInit, OnDestroy {
         },
         {
           data: chartDataAdmin,
-          label: this.requestsChartData.datasets[1].label,
+          label: adminLabel,
           fill: false,
           borderColor: '#9b51e0',
           tension: 0.1,

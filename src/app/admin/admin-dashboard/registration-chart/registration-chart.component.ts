@@ -1,4 +1,10 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BaseChartDirective } from 'ng2-charts';
 import { AdminService } from 'src/app/services/admin.service';
@@ -43,7 +49,9 @@ interface RegistrationData {
   templateUrl: './registration-chart.component.html',
   styleUrls: ['./registration-chart.component.scss'],
 })
-export class RegistrationChartComponent implements OnInit, OnDestroy {
+export class RegistrationChartComponent
+  implements OnInit, OnDestroy, AfterViewInit
+{
   userRole: string | any;
   selectedPeriod: string = 'week';
 
@@ -76,14 +84,19 @@ export class RegistrationChartComponent implements OnInit, OnDestroy {
         },
         ticks: {
           beginAtZero: true,
-          stepSize: 1,
           precision: 0,
         },
       },
     },
   };
 
+  private currentData: RegistrationData[] = [];
+  private isDaily: boolean = true;
+  private isMonthly: boolean = false;
+
   private subscriptions = new Subscription();
+
+  @ViewChild(BaseChartDirective) chart?: BaseChartDirective;
 
   constructor(
     private adminService: AdminService,
@@ -109,10 +122,19 @@ export class RegistrationChartComponent implements OnInit, OnDestroy {
 
     const langSub = this.translateService.onLangChange.subscribe(() => {
       this.applyTranslations();
+
+      this.updateChartData(this.currentData, this.isDaily, this.isMonthly);
     });
 
     this.subscriptions.add(roleSub);
     this.subscriptions.add(langSub);
+  }
+
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      window.dispatchEvent(new Event('resize'));
+      this.chart?.update();
+    }, 0);
   }
 
   private applyTranslations(): void {
@@ -304,6 +326,10 @@ export class RegistrationChartComponent implements OnInit, OnDestroy {
     isDaily: boolean,
     isMonthly: boolean
   ): void {
+    this.currentData = filteredData;
+    this.isDaily = isDaily;
+    this.isMonthly = isMonthly;
+
     const startDate = isDaily
       ? new Date(filteredData[0]?.date || new Date())
       : new Date(
