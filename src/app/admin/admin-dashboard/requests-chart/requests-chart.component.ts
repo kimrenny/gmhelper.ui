@@ -4,9 +4,9 @@ import {
   OnDestroy,
   OnInit,
   ViewChild,
+  ElementRef,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { BaseChartDirective } from 'ng2-charts';
 import { AdminService } from 'src/app/services/admin.service';
 import { TokenService } from 'src/app/services/token.service';
 import { Subscription } from 'rxjs';
@@ -22,8 +22,7 @@ import {
   BarElement,
   LineController,
 } from 'chart.js';
-import { TranslateModule } from '@ngx-translate/core';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { filterDataByDays } from './filter/filter';
 import { processData } from './process/process';
 
@@ -47,67 +46,26 @@ interface RequestsData {
 @Component({
   selector: 'app-requests-chart',
   standalone: true,
-  imports: [CommonModule, BaseChartDirective, TranslateModule],
+  imports: [CommonModule, TranslateModule],
   templateUrl: './requests-chart.component.html',
   styleUrls: ['./requests-chart.component.scss'],
 })
 export class RequestsChartComponent
   implements OnInit, OnDestroy, AfterViewInit
 {
+  @ViewChild('chartCanvas') chartCanvas?: ElementRef<HTMLCanvasElement>;
+
+  private chart?: Chart;
+
   userRole: string | any;
   selectedPeriod: string = 'week';
 
-  requestsChartData: any = {
-    datasets: [
-      {
-        data: [],
-        label: 'Regular Requests',
-        fill: false,
-        borderColor: '#4bc0c0',
-        tension: 0.1,
-        type: 'line',
-      },
-      {
-        data: [],
-        label: 'Admin Requests',
-        fill: false,
-        borderColor: '#9b51e0',
-        tension: 0.1,
-        type: 'line',
-      },
-    ],
-  };
-
-  requestsChartOptions: any = {
-    responsive: true,
-    scales: {
-      x: {
-        title: {
-          display: false,
-          text: '',
-        },
-      },
-      y: {
-        title: {
-          display: false,
-          text: '',
-        },
-        ticks: {
-          beginAtZero: true,
-          precision: 0,
-        },
-      },
-    },
-  };
-
-  private currentDataRegular: any[] = [];
-  private currentDataAdmin: any[] = [];
+  private currentDataRegular: RequestsData[] = [];
+  private currentDataAdmin: RequestsData[] = [];
   private isDaily: boolean = true;
   private isMonthly: boolean = false;
 
   private subscriptions = new Subscription();
-
-  @ViewChild(BaseChartDirective) chart?: BaseChartDirective;
 
   constructor(
     private adminService: AdminService,
@@ -116,8 +74,6 @@ export class RequestsChartComponent
   ) {}
 
   ngOnInit(): void {
-    this.applyTranslations();
-
     const roleSub = this.tokenService.userRole$.subscribe((role) => {
       this.userRole = role;
       if (this.userRole === 'Admin' || this.userRole === 'Owner') {
@@ -135,7 +91,6 @@ export class RequestsChartComponent
     });
 
     const langSub = this.translateService.onLangChange.subscribe(() => {
-      this.applyTranslations();
       this.updateChartData(
         this.currentDataRegular,
         this.currentDataAdmin,
@@ -149,27 +104,61 @@ export class RequestsChartComponent
   }
 
   ngAfterViewInit(): void {
-    setTimeout(() => {
-      window.dispatchEvent(new Event('resize'));
-      this.chart?.update();
-    }, 0);
-  }
+    if (!this.chartCanvas) return;
 
-  private applyTranslations(): void {
-    this.requestsChartOptions.scales.x.title.text =
-      this.translateService.instant('ADMIN.DASHBOARD.REQUESTS.CHART.X_AXIS');
-    this.requestsChartOptions.scales.y.title.text =
-      this.translateService.instant('ADMIN.DASHBOARD.REQUESTS.CHART.Y_AXIS');
-    this.requestsChartData.datasets[0].label = this.translateService.instant(
-      'ADMIN.DASHBOARD.REQUESTS.CHART.REGULAR.TITLE'
-    );
-    this.requestsChartData.datasets[1].label = this.translateService.instant(
-      'ADMIN.DASHBOARD.REQUESTS.CHART.ADMIN.TITLE'
-    );
+    this.chart = new Chart(this.chartCanvas.nativeElement, {
+      type: 'line',
+      data: {
+        labels: [],
+        datasets: [
+          {
+            data: [],
+            label: this.translateService.instant(
+              'ADMIN.DASHBOARD.REQUESTS.CHART.REGULAR.TITLE'
+            ),
+            borderColor: '#4bc0c0',
+            tension: 0.1,
+            fill: false,
+          },
+          {
+            data: [],
+            label: this.translateService.instant(
+              'ADMIN.DASHBOARD.REQUESTS.CHART.ADMIN.TITLE'
+            ),
+            borderColor: '#9b51e0',
+            tension: 0.1,
+            fill: false,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        scales: {
+          x: {
+            title: {
+              display: true,
+              text: this.translateService.instant(
+                'ADMIN.DASHBOARD.REQUESTS.CHART.X_AXIS'
+              ),
+            },
+          },
+          y: {
+            title: {
+              display: true,
+              text: this.translateService.instant(
+                'ADMIN.DASHBOARD.REQUESTS.CHART.Y_AXIS'
+              ),
+            },
+            beginAtZero: true,
+          },
+        },
+      },
+    });
   }
 
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
+    this.chart?.destroy();
   }
 
   onPeriodChange(event: Event): void {
@@ -185,6 +174,41 @@ export class RequestsChartComponent
         );
       }
     });
+  }
+
+  private updateChartData(
+    filteredDataRegular: RequestsData[],
+    filteredDataAdmin: RequestsData[],
+    isDaily: boolean,
+    isMonthly: boolean
+  ): void {
+    this.currentDataRegular = filteredDataRegular;
+    this.currentDataAdmin = filteredDataAdmin;
+    this.isDaily = isDaily;
+    this.isMonthly = isMonthly;
+
+    if (!this.chart) return;
+
+    const labels = filteredDataRegular.map((d) => d.date);
+    const dataRegular = filteredDataRegular.map((d) => d.count);
+    const dataAdmin = filteredDataAdmin.map((d) => d.count);
+
+    this.chart.data.labels = labels;
+    this.chart.data.datasets[0].data = dataRegular;
+    this.chart.data.datasets[0].label = this.translateService.instant(
+      'ADMIN.DASHBOARD.REQUESTS.CHART.REGULAR.TITLE'
+    );
+    this.chart.data.datasets[1].data = dataAdmin;
+    this.chart.data.datasets[1].label = this.translateService.instant(
+      'ADMIN.DASHBOARD.REQUESTS.CHART.ADMIN.TITLE'
+    );
+
+    (this.chart.options.scales!['x'] as any).title!.text =
+      this.translateService.instant('ADMIN.DASHBOARD.REQUESTS.CHART.X_AXIS');
+    (this.chart.options.scales!['y'] as any).title!.text =
+      this.translateService.instant('ADMIN.DASHBOARD.REQUESTS.CHART.Y_AXIS');
+
+    this.chart.update();
   }
 
   private filterDataBySixMonths(
@@ -304,129 +328,5 @@ export class RequestsChartComponent
           false
         );
     }
-  }
-
-  private updateChartData(
-    filteredDataRegular: any[],
-    filteredDataAdmin: any[],
-    isDaily: boolean,
-    isMonthly: boolean
-  ): void {
-    this.currentDataRegular = filteredDataRegular;
-    this.currentDataAdmin = filteredDataAdmin;
-    this.isDaily = isDaily;
-    this.isMonthly = isMonthly;
-
-    const startDateRegular = isDaily
-      ? new Date(filteredDataRegular[0]?.date || new Date())
-      : new Date(
-          filteredDataRegular[0]?.date + (isMonthly ? '-01' : '-01-01') ||
-            new Date()
-        );
-    const startDateAdmin = isDaily
-      ? new Date(filteredDataAdmin[0]?.date || new Date())
-      : new Date(
-          filteredDataAdmin[0]?.date + (isMonthly ? '-01' : '-01-01') ||
-            new Date()
-        );
-
-    const endDate = new Date();
-
-    const allDatesRegular: string[] = [];
-    const allDatesAdmin: string[] = [];
-    const dateCursorRegular = new Date(startDateRegular);
-    const dateCursorAdmin = new Date(startDateAdmin);
-
-    if (isDaily) {
-      while (dateCursorRegular <= endDate) {
-        allDatesRegular.push(dateCursorRegular.toISOString().split('T')[0]);
-        dateCursorRegular.setDate(dateCursorRegular.getDate() + 1);
-      }
-
-      while (dateCursorAdmin <= endDate) {
-        allDatesAdmin.push(dateCursorAdmin.toISOString().split('T')[0]);
-        dateCursorAdmin.setDate(dateCursorAdmin.getDate() + 1);
-      }
-    } else {
-      while (dateCursorRegular <= endDate) {
-        const periodKey = isMonthly
-          ? `${dateCursorRegular.getFullYear()}-${(
-              dateCursorRegular.getMonth() + 1
-            )
-              .toString()
-              .padStart(2, '0')}`
-          : `${dateCursorRegular.getFullYear()}`;
-
-        allDatesRegular.push(periodKey);
-        if (isMonthly) {
-          dateCursorRegular.setMonth(dateCursorRegular.getMonth() + 1);
-        } else {
-          dateCursorRegular.setFullYear(dateCursorRegular.getFullYear() + 1);
-        }
-      }
-
-      while (dateCursorAdmin <= endDate) {
-        const periodKey = isMonthly
-          ? `${dateCursorAdmin.getFullYear()}-${(dateCursorAdmin.getMonth() + 1)
-              .toString()
-              .padStart(2, '0')}`
-          : `${dateCursorAdmin.getFullYear()}`;
-
-        allDatesAdmin.push(periodKey);
-        if (isMonthly) {
-          dateCursorAdmin.setMonth(dateCursorAdmin.getMonth() + 1);
-        } else {
-          dateCursorAdmin.setFullYear(dateCursorAdmin.getFullYear() + 1);
-        }
-      }
-    }
-
-    const completeDataRegular = allDatesRegular.map((date) => {
-      const existingRegular = filteredDataRegular.find((d) => d.date === date);
-      return existingRegular ? existingRegular : { date, count: 0 };
-    });
-
-    const completeDataAdmin = allDatesAdmin.map((date) => {
-      const existingAdmin = filteredDataAdmin.find((d) => d.date === date);
-      return existingAdmin ? existingAdmin : { date, count: 0 };
-    });
-
-    const chartDataRegular = completeDataRegular.map((data) => data.count);
-    const chartDataAdmin = completeDataAdmin.map((data) => data.count);
-    const chartLabels = completeDataRegular.map((data) => data.date);
-
-    const regularLabel = this.translateService.instant(
-      'ADMIN.DASHBOARD.REQUESTS.CHART.REGULAR.TITLE'
-    );
-    const adminLabel = this.translateService.instant(
-      'ADMIN.DASHBOARD.REQUESTS.CHART.ADMIN.TITLE'
-    );
-
-    this.requestsChartOptions.scales.x.title.text =
-      this.translateService.instant('ADMIN.DASHBOARD.REQUESTS.CHART.X_AXIS');
-    this.requestsChartOptions.scales.y.title.text =
-      this.translateService.instant('ADMIN.DASHBOARD.REQUESTS.CHART.Y_AXIS');
-
-    this.requestsChartData = {
-      labels: chartLabels,
-      datasets: [
-        {
-          data: chartDataRegular,
-          label: regularLabel,
-          fill: false,
-          borderColor: '#4bc0c0',
-          tension: 0.1,
-          type: 'line',
-        },
-        {
-          data: chartDataAdmin,
-          label: adminLabel,
-          fill: false,
-          borderColor: '#9b51e0',
-          tension: 0.1,
-          type: 'line',
-        },
-      ],
-    };
   }
 }

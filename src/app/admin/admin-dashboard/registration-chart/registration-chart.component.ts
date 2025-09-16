@@ -1,12 +1,12 @@
 import {
   AfterViewInit,
   Component,
+  ElementRef,
   OnDestroy,
   OnInit,
   ViewChild,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { BaseChartDirective } from 'ng2-charts';
 import { AdminService } from 'src/app/services/admin.service';
 import { TokenService } from 'src/app/services/token.service';
 import { Subscription } from 'rxjs';
@@ -16,14 +16,13 @@ import {
   LinearScale,
   PointElement,
   LineElement,
+  LineController,
+  BarElement,
   Title,
   Tooltip,
   Legend,
-  BarElement,
-  LineController,
 } from 'chart.js';
-import { TranslateModule } from '@ngx-translate/core';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 Chart.register(
   CategoryScale,
@@ -45,58 +44,23 @@ interface RegistrationData {
 @Component({
   selector: 'app-registration-chart',
   standalone: true,
-  imports: [CommonModule, BaseChartDirective, TranslateModule],
+  imports: [CommonModule, TranslateModule],
   templateUrl: './registration-chart.component.html',
   styleUrls: ['./registration-chart.component.scss'],
 })
 export class RegistrationChartComponent
   implements OnInit, OnDestroy, AfterViewInit
 {
+  @ViewChild('chartCanvas', { static: true })
+  canvas!: ElementRef<HTMLCanvasElement>;
+  private chart?: Chart;
+
   userRole: string | any;
   selectedPeriod: string = 'week';
-
-  registrationChartData: any = {
-    datasets: [
-      {
-        data: [],
-        label: 'Registrations',
-        fill: false,
-        borderColor: '#4bc0c0',
-        tension: 0.1,
-        type: 'line',
-      },
-    ],
-  };
-
-  registrationChartOptions: any = {
-    responsive: true,
-    scales: {
-      x: {
-        title: {
-          display: false,
-          text: '',
-        },
-      },
-      y: {
-        title: {
-          display: false,
-          text: '',
-        },
-        ticks: {
-          beginAtZero: true,
-          precision: 0,
-        },
-      },
-    },
-  };
-
   private currentData: RegistrationData[] = [];
   private isDaily: boolean = true;
   private isMonthly: boolean = false;
-
   private subscriptions = new Subscription();
-
-  @ViewChild(BaseChartDirective) chart?: BaseChartDirective;
 
   constructor(
     private adminService: AdminService,
@@ -105,24 +69,18 @@ export class RegistrationChartComponent
   ) {}
 
   ngOnInit(): void {
-    this.applyTranslations();
-
     const roleSub = this.tokenService.userRole$.subscribe((role) => {
       this.userRole = role;
       if (this.userRole === 'Admin' || this.userRole === 'Owner') {
         this.adminService
           .getRegistrationDataObservable()
           .subscribe((registrations) => {
-            if (registrations) {
-              this.filterDataByDays(registrations, 7);
-            }
+            if (registrations) this.filterDataByDays(registrations, 7);
           });
       }
     });
 
     const langSub = this.translateService.onLangChange.subscribe(() => {
-      this.applyTranslations();
-
       this.updateChartData(this.currentData, this.isDaily, this.isMonthly);
     });
 
@@ -131,42 +89,135 @@ export class RegistrationChartComponent
   }
 
   ngAfterViewInit(): void {
-    setTimeout(() => {
-      window.dispatchEvent(new Event('resize'));
-      this.chart?.update();
-    }, 0);
-  }
-
-  private applyTranslations(): void {
-    this.registrationChartOptions.scales.x.title.text =
-      this.translateService.instant(
-        'ADMIN.DASHBOARD.REGISTRATIONS.CHART.X_AXIS'
-      );
-    this.registrationChartOptions.scales.y.title.text =
-      this.translateService.instant(
-        'ADMIN.DASHBOARD.REGISTRATIONS.CHART.Y_AXIS'
-      );
-    this.registrationChartData.datasets[0].label =
-      this.translateService.instant(
-        'ADMIN.DASHBOARD.REGISTRATIONS.CHART.TITLE'
-      );
+    this.createChart();
   }
 
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
+    this.chart?.destroy();
   }
 
   onPeriodChange(event: Event): void {
-    const selectedPeriod = (event.target as HTMLSelectElement).value;
-    this.selectedPeriod = selectedPeriod;
+    const period = (event.target as HTMLSelectElement).value;
+    this.selectedPeriod = period;
 
     this.adminService
       .getRegistrationDataObservable()
       .subscribe((registrations) => {
-        if (registrations) {
-          this.filterDataByPeriod(registrations, this.selectedPeriod);
-        }
+        if (registrations) this.filterDataByPeriod(registrations, period);
       });
+  }
+
+  private createChart(): void {
+    if (!this.canvas) return;
+
+    this.chart = new Chart(this.canvas.nativeElement, {
+      type: 'line',
+      data: {
+        labels: [],
+        datasets: [
+          {
+            data: [],
+            label: '',
+            borderColor: '#4bc0c0',
+            fill: false,
+            tension: 0.1,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        scales: {
+          x: {
+            type: 'category',
+            title: {
+              display: true,
+              text: this.translateService.instant(
+                'ADMIN.DASHBOARD.REGISTRATIONS.CHART.X_AXIS'
+              ),
+            },
+          },
+          y: {
+            type: 'linear',
+            min: 0,
+            title: {
+              display: true,
+              text: this.translateService.instant(
+                'ADMIN.DASHBOARD.REGISTRATIONS.CHART.Y_AXIS'
+              ),
+            },
+            ticks: {
+              precision: 0,
+            },
+          },
+        },
+      },
+    });
+  }
+
+  private updateChartData(
+    filteredData: RegistrationData[],
+    isDaily: boolean,
+    isMonthly: boolean
+  ): void {
+    this.currentData = filteredData;
+    this.isDaily = isDaily;
+    this.isMonthly = isMonthly;
+
+    if (!this.chart) return;
+
+    const startDate = isDaily
+      ? new Date(filteredData[0]?.date || new Date())
+      : new Date(
+          filteredData[0]?.date + (isMonthly ? '-01' : '-01-01') || new Date()
+        );
+
+    const endDate = new Date();
+    const allDates: string[] = [];
+    const dateCursor = new Date(startDate);
+
+    if (isDaily) {
+      while (dateCursor <= endDate) {
+        allDates.push(dateCursor.toISOString().split('T')[0]);
+        dateCursor.setDate(dateCursor.getDate() + 1);
+      }
+    } else {
+      while (dateCursor <= endDate) {
+        const periodKey = isMonthly
+          ? `${dateCursor.getFullYear()}-${(dateCursor.getMonth() + 1)
+              .toString()
+              .padStart(2, '0')}`
+          : `${dateCursor.getFullYear()}`;
+        allDates.push(periodKey);
+        if (isMonthly) dateCursor.setMonth(dateCursor.getMonth() + 1);
+        else dateCursor.setFullYear(dateCursor.getFullYear() + 1);
+      }
+    }
+
+    const completeData = allDates.map((date) => {
+      const existing = filteredData.find((d) => d.date === date);
+      return existing ? existing.registrations : 0;
+    });
+
+    if (!this.chart.data.datasets[0])
+      this.chart.data.datasets[0] = { data: [], label: '' };
+
+    this.chart.data.labels = allDates;
+    this.chart.data.datasets[0].data = completeData;
+    this.chart.data.datasets[0].label = this.translateService.instant(
+      'ADMIN.DASHBOARD.REGISTRATIONS.CHART.TITLE'
+    );
+    (this.chart.options!.scales!['x'] as any).title!.text =
+      this.translateService.instant(
+        'ADMIN.DASHBOARD.REGISTRATIONS.CHART.X_AXIS'
+      );
+
+    (this.chart.options!.scales!['y'] as any).title!.text =
+      this.translateService.instant(
+        'ADMIN.DASHBOARD.REGISTRATIONS.CHART.Y_AXIS'
+      );
+
+    this.chart.update();
   }
 
   private filterDataByDays(data: RegistrationData[], days: number): void {
@@ -319,70 +370,5 @@ export class RegistrationChartComponent
     result.sort((a, b) => a.date.localeCompare(b.date));
 
     return result;
-  }
-
-  private updateChartData(
-    filteredData: any[],
-    isDaily: boolean,
-    isMonthly: boolean
-  ): void {
-    this.currentData = filteredData;
-    this.isDaily = isDaily;
-    this.isMonthly = isMonthly;
-
-    const startDate = isDaily
-      ? new Date(filteredData[0]?.date || new Date())
-      : new Date(
-          filteredData[0]?.date + (isMonthly ? '-01' : '-01-01') || new Date()
-        );
-
-    const endDate = new Date();
-
-    const allDates: string[] = [];
-    const dateCursor = new Date(startDate);
-
-    if (isDaily) {
-      while (dateCursor <= endDate) {
-        allDates.push(dateCursor.toISOString().split('T')[0]);
-        dateCursor.setDate(dateCursor.getDate() + 1);
-      }
-    } else {
-      while (dateCursor <= endDate) {
-        const periodKey = isMonthly
-          ? `${dateCursor.getFullYear()}-${(dateCursor.getMonth() + 1)
-              .toString()
-              .padStart(2, '0')}`
-          : `${dateCursor.getFullYear()}`;
-
-        allDates.push(periodKey);
-        if (isMonthly) {
-          dateCursor.setMonth(dateCursor.getMonth() + 1);
-        } else {
-          dateCursor.setFullYear(dateCursor.getFullYear() + 1);
-        }
-      }
-    }
-
-    const completeData = allDates.map((date) => {
-      const existing = filteredData.find((d) => d.date === date);
-      return existing ? existing : { date, registrations: 0 };
-    });
-
-    const chartData = completeData.map((data) => data.registrations);
-    const chartLabels = completeData.map((data) => data.date);
-
-    this.registrationChartData = {
-      labels: chartLabels,
-      datasets: [
-        {
-          data: chartData,
-          label: this.registrationChartData.datasets[0].label,
-          fill: false,
-          borderColor: '#4bc0c0',
-          tension: 0.1,
-          type: 'line',
-        },
-      ],
-    };
   }
 }
