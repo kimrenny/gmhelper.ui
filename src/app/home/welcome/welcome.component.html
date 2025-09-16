@@ -1,8 +1,15 @@
 <div class="welcome-section select-none">
   <app-welcome-stars></app-welcome-stars>
-  <h1>{{ "HOME.WELCOME.TITLE" | translate }}</h1>
-  <p>{{ "HOME.WELCOME.DESCRIPTION" | translate }}</p>
-  <span>
-    {{ "HOME.LOREM" | translate }}
-  </span>
+  <h1>GMHelper</h1>
+  <p *ngIf="nickname; else guest">
+    {{ "HOME.WELCOME.HELLO_USER" | translate : { nickname: nickname } }}
+  </p>
+  <ng-template #guest>
+    <p>{{ guestText }}</p>
+  </ng-template>
+  <span>{{ currentText }}</span>
+
+  <button class="welcome-button" (click)="navigateToStart()">
+    {{ buttonText }}
+  </button>
 </div>

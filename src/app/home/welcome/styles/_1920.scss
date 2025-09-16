@@ -9,26 +9,45 @@
   color: #ffffff;
   position: relative;
   z-index: 50;
-}
 
-h1,
-p {
-  position: relative;
-  font-family: "Courier New", Courier, monospace;
-  font-size: 2rem;
-  overflow: hidden;
-  white-space: nowrap;
-  color: inherit;
-}
+  h1,
+  p {
+    position: relative;
+    font-family: "Courier New", Courier, monospace;
+    font-size: 2rem;
+    overflow: hidden;
+    white-space: nowrap;
+    color: inherit;
+  }
 
-span {
-  margin-top: 10vh;
-  display: flex;
-  flex-direction: column;
-  font-family: "Courier New", Courier, monospace;
-  font-size: 1rem;
-  width: 75vh;
-  color: inherit;
+  span {
+    display: flex;
+    flex-direction: column;
+    font-family: "Courier New", Courier, monospace;
+    font-size: 1rem;
+    width: 75vh;
+    color: inherit;
+    min-height: 1.5rem;
+  }
+
+  .welcome-button {
+    margin-top: 10vh;
+    padding: 1rem 2rem;
+    background-color: transparent;
+    border: 2px solid #ffffff;
+    border-radius: 8px;
+    color: #ffffff;
+    font-family: "Courier New", Courier, monospace;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 60;
+
+    &:hover {
+      background-color: #ffffff;
+      color: black;
+    }
+  }
 }
 
 @keyframes colorAnimationWelcome {

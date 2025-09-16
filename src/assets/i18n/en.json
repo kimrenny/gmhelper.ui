@@ -1,8 +1,32 @@
 {
   "HOME": {
     "WELCOME": {
-      "TITLE": "Welcome!",
-      "DESCRIPTION": "We are glad to see you in our application."
+      "HELLO_GUEST": {
+        "1": "Welcome! Join us today.",
+        "2": "Welcome! Start exploring now.",
+        "3": "Welcome! Be part of the experience.",
+        "4": "Welcome! Let's begin the journey.",
+        "5": "Welcome! Discover what's possible."
+      },
+      "HELLO_USER": "Welcome back, {{nickname}}!",
+      "PHRASES": {
+        "1": "Draw shapes, we’ll solve them for you.",
+        "2": "Turn geometry into answers instantly.",
+        "3": "Latex formulas? We’ll handle the math.",
+        "4": "Your ideas → our calculations.",
+        "5": "AI and algorithms do the hard work.",
+        "6": "Create. Explore. Solve.",
+        "7": "From sketch to solution in seconds.",
+        "8": "Focus on creativity, not on solving."
+      },
+      "BUTTONS": {
+        "1": "Get Started",
+        "2": "Try Now",
+        "3": "Start Solving",
+        "4": "Begin Now",
+        "5": "Explore Features",
+        "6": "Try It Free"
+      }
     },
     "ABOUT": {
       "TITLE": "About Us",

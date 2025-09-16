@@ -1,8 +1,32 @@
 {
   "HOME": {
     "WELCOME": {
-      "TITLE": "Willkommen!",
-      "DESCRIPTION": "Wir freuen uns, Sie in unserer Anwendung zu sehen."
+      "HELLO_GUEST": {
+        "1": "Willkommen! Treten Sie uns noch heute bei.",
+        "2": "Willkommen! Beginnen Sie jetzt mit der Erkundung.",
+        "3": "Willkommen! Seien Sie Teil der Erfahrung.",
+        "4": "Willkommen! Lassen Sie uns die Reise beginnen.",
+        "5": "Willkommen! Entdecken Sie, was möglich ist."
+      },
+      "HELLO_USER": "Willkommen zurück, {{nickname}}!",
+      "PHRASES": {
+        "1": "Zeichnen Sie Formen, wir lösen sie für Sie.",
+        "2": "Verwandeln Sie Geometrie sofort in Antworten.",
+        "3": "LaTeX-Formeln? Wir übernehmen die Berechnungen.",
+        "4": "Ihre Ideen → unsere Berechnungen.",
+        "5": "KI und Algorithmen übernehmen die harte Arbeit.",
+        "6": "Erstellen. Erkunden. Lösen.",
+        "7": "Von der Skizze zur Lösung in Sekunden.",
+        "8": "Konzentrieren Sie sich auf Kreativität, nicht auf das Lösen."
+      },
+      "BUTTONS": {
+        "1": "Jetzt beginnen",
+        "2": "Jetzt ausprobieren",
+        "3": "Beginnen Sie mit dem Lösen",
+        "4": "Jetzt starten",
+        "5": "Funktionen erkunden",
+        "6": "Kostenlos ausprobieren"
+      }
     },
     "ABOUT": {
       "TITLE": "Über uns",

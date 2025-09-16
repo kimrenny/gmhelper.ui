@@ -1,2 +1,18 @@
 @media screen and (min-width: 1367px) and (max-width: 1600px) {
+  .welcome-section {
+    h1,
+    p {
+      font-size: 1.8rem;
+    }
+
+    span {
+      font-size: 0.95rem;
+      width: 70vh;
+    }
+
+    .welcome-button {
+      padding: 0.9rem 1.8rem;
+      font-size: 1.1rem;
+    }
+  }
 }

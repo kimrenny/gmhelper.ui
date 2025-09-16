@@ -1,8 +1,32 @@
 {
   "HOME": {
     "WELCOME": {
-      "TITLE": "Bienvenue !",
-      "DESCRIPTION": "Nous sommes ravis de vous voir dans notre application."
+      "HELLO_GUEST": {
+        "1": "Bienvenue ! Rejoignez-nous dès aujourd'hui.",
+        "2": "Bienvenue ! Commencez à explorer dès maintenant.",
+        "3": "Bienvenue ! Faites partie de l’expérience.",
+        "4": "Bienvenue ! Commençons le voyage.",
+        "5": "Bienvenue ! Découvrez ce qui est possible."
+      },
+      "HELLO_USER": "Bon retour, {{nickname}} !",
+      "PHRASES": {
+        "1": "Dessinez des formes, nous les résolvons pour vous.",
+        "2": "Transformez la géométrie en réponses instantanées.",
+        "3": "Formules LaTeX ? Nous nous occupons des calculs.",
+        "4": "Vos idées → nos calculs.",
+        "5": "L’IA et les algorithmes font le travail difficile.",
+        "6": "Créez. Explorez. Résolvez.",
+        "7": "De l’esquisse à la solution en quelques secondes.",
+        "8": "Concentrez-vous sur la créativité, pas sur la résolution."
+      },
+      "BUTTONS": {
+        "1": "Commencez maintenant",
+        "2": "Essayez dès maintenant",
+        "3": "Commencez à résoudre",
+        "4": "Démarrez maintenant",
+        "5": "Explorez les fonctionnalités",
+        "6": "Essayez gratuitement"
+      }
     },
     "ABOUT": {
       "TITLE": "À propos de nous",
