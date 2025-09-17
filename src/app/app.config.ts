@@ -11,11 +11,14 @@ import { ErrorHandler } from '@angular/core';
 import { UserService } from './services/user.service';
 import { ToastrModule } from 'ngx-toastr';
 import { provideAnimations } from '@angular/platform-browser/animations';
+import { provideStore } from '@ngrx/store';
+import { userReducer } from './store/user/user.reducer';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
     provideHttpClient(),
+    provideStore({ user: userReducer }),
     importProvidersFrom(
       TranslateModule.forRoot({
         loader: {

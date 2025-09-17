@@ -8,6 +8,9 @@ import { Subscription } from 'rxjs';
 import { UserService } from '../services/user.service';
 import { environment } from 'src/environments/environment';
 import { RegisterService } from '../services/register.service';
+import { Store } from '@ngrx/store';
+import * as UserState from '../store/user/user.state';
+import * as UserSelectors from '../store/user/user.selectors';
 
 @Component({
   standalone: true,
@@ -34,16 +37,18 @@ export class ConfirmEmailComponent implements OnInit, OnDestroy {
   captchaToken: string | null = null;
 
   constructor(
-    private userService: UserService,
-    private registerService: RegisterService
+    private registerService: RegisterService,
+    private store: Store<UserState.UserState>
   ) {}
 
   ngOnInit() {
-    this.userSubscription = this.userService.user$.subscribe((user) => {
-      if (!(user.nickname === 'Guest' && user.avatar === null)) {
-        this.router.navigateByUrl('/');
-      }
-    });
+    this.userSubscription = this.store
+      .select(UserSelectors.selectUser)
+      .subscribe((user) => {
+        if (!(user.nickname === 'Guest' && user.avatar === null)) {
+          this.router.navigateByUrl('/');
+        }
+      });
   }
 
   ngOnDestroy() {

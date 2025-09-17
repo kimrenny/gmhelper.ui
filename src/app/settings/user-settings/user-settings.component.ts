@@ -9,6 +9,9 @@ import { CommonModule } from '@angular/common';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { UserService } from '../../services/user.service';
 import { ToastrService } from 'ngx-toastr';
+import { Store } from '@ngrx/store';
+import * as UserState from '../../store/user/user.state';
+import * as UserSelectors from '../../store/user/user.selectors';
 
 @Component({
   selector: 'app-user-settings',
@@ -43,7 +46,7 @@ export class UserSettingsComponent implements OnInit {
     private userService: UserService,
     private toastr: ToastrService,
     private translate: TranslateService,
-    private cdr: ChangeDetectorRef
+    private store: Store<UserState.UserState>
   ) {}
 
   ngOnInit(): void {
@@ -56,7 +59,8 @@ export class UserSettingsComponent implements OnInit {
       avatar: [null],
     });
 
-    this.userService.user$.subscribe((userDetails) => {
+    this.store.select(UserSelectors.selectUser).subscribe((userDetails) => {
+      if (!userDetails) return;
       this.userNickname = userDetails.nickname;
       this.userAvatarUrl =
         userDetails.avatar || 'assets/icons/default-avatar.png';
@@ -75,7 +79,6 @@ export class UserSettingsComponent implements OnInit {
           this.userNickname = userDetails.nickname;
           this.userAvatarUrl =
             userDetails.avatar || 'assets/icons/default-avatar.png';
-          this.cdr.detectChanges();
         },
         error: (err) => {
           console.error('Error loading user details:', err);
@@ -218,15 +221,12 @@ export class UserSettingsComponent implements OnInit {
     );
     if (this.passwordStrength < 3) {
       this.changePasswordError = 'REGISTER.ERRORS.PASSWORD.TOO_WEAK';
-      this.cdr.detectChanges();
       return false;
     } else if (this.passwordStrength < 5) {
       this.changePasswordError = 'REGISTER.ERRORS.PASSWORD.WEAK';
-      this.cdr.detectChanges();
       return false;
     } else {
       this.changePasswordError = '';
-      this.cdr.detectChanges();
       return true;
     }
   }

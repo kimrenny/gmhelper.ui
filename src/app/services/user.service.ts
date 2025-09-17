@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import {
   BehaviorSubject,
   catchError,
@@ -10,18 +10,17 @@ import {
   timer,
   of,
   map,
+  take,
+  first,
 } from 'rxjs';
 import { TokenService } from './token.service';
 import { ApiResponse } from '../models/api-response.model';
 import { environment } from 'src/environments/environment';
-
-interface UserDetails {
-  avatar: string | null;
-  nickname: string;
-  language: 'de' | 'en' | 'fr' | 'ja' | 'ko' | 'ru' | 'ua' | 'zh';
-  twoFactor: boolean;
-  alwaysAsk: boolean;
-}
+import { UserDetails } from '../models/user.model';
+import { Store } from '@ngrx/store';
+import * as UserActions from '../store/user/user.actions';
+import * as UserSelectors from '../store/user/user.selectors';
+import * as UserState from '../store/user/user.state';
 
 enum Errors {
   UserBlocked = 'User is blocked.',
@@ -36,29 +35,15 @@ enum Errors {
   providedIn: 'root',
 })
 export class UserService {
-  private userSubject = new BehaviorSubject<UserDetails>({
-    avatar: null,
-    nickname: 'Guest',
-    language: 'en',
-    twoFactor: false,
-    alwaysAsk: true,
-  });
-  user$ = this.userSubject.asObservable();
-
-  private isAuthorizedSubject = new BehaviorSubject<boolean>(false);
-  isAuthorized$ = this.isAuthorizedSubject.asObservable();
-
-  private isServerAvailableSubject = new BehaviorSubject<boolean>(false);
-  isServerAvailable$ = this.isServerAvailableSubject.asObservable();
-
-  private isUserLoadingSubject = new BehaviorSubject<boolean>(false);
-  isUserLoading$ = this.isUserLoadingSubject.asObservable();
-
   private readonly errors = new Set<string>(Object.values(Errors));
 
   private readonly api = `${environment.apiUrl}`;
 
-  constructor(private http: HttpClient, private tokenService: TokenService) {
+  constructor(
+    private http: HttpClient,
+    private tokenService: TokenService,
+    private store: Store<UserState.UserState>
+  ) {
     this.initializeAuthentication();
   }
 
@@ -83,27 +68,17 @@ export class UserService {
       .ensureTokenValidity(authToken, refreshToken)
       .pipe(
         switchMap((accessToken) => this.loadUserDetails(accessToken)),
-        catchError((err) => {
-          console.warn(
-            `Failed to load user details during initialization.`,
-            err
-          );
-          return of(null);
-        })
+        catchError(() => of(null))
       )
       .subscribe();
   }
 
-  getUserDetailsAsObservable(): Observable<UserDetails> {
-    return this.userSubject.asObservable();
-  }
-
-  getUserDetails(): UserDetails {
-    return this.userSubject.getValue();
+  getUserDetails(): Observable<UserDetails> {
+    return this.store.select(UserSelectors.selectUser);
   }
 
   loadUserDetails(token: string, attempts = 0): Observable<UserDetails> {
-    this.isUserLoadingSubject.next(true);
+    this.store.dispatch(UserActions.setUserLoading({ isLoading: true }));
 
     return this.http
       .get<ApiResponse<UserDetails>>(`${this.api}/user/details`, {
@@ -115,15 +90,19 @@ export class UserService {
           if (userDetails.avatar) {
             userDetails.avatar = `data:image/jpeg;base64,${userDetails.avatar}`;
           }
-
           userDetails.language = this.normalizeLanguage(userDetails.language);
-          this.userSubject.next(userDetails);
-          this.isAuthorizedSubject.next(true);
-          this.isServerAvailableSubject.next(true);
-          this.isUserLoadingSubject.next(false);
+
+          this.store.dispatch(UserActions.setUser({ user: userDetails }));
+          this.store.dispatch(
+            UserActions.setAuthorized({ isAuthorized: true })
+          );
+          this.store.dispatch(
+            UserActions.setServerAvailable({ isAvailable: true })
+          );
+          this.store.dispatch(UserActions.setUserLoading({ isLoading: false }));
         }),
         catchError((error) => {
-          this.isUserLoadingSubject.next(false);
+          this.store.dispatch(UserActions.setUserLoading({ isLoading: false }));
           return this.handleLoadUserError(error, token, attempts);
         })
       );
@@ -135,10 +114,12 @@ export class UserService {
     attempts: number
   ): Observable<UserDetails | never> {
     console.error('Error loading user details', error);
-    this.isAuthorizedSubject.next(false);
+    this.store.dispatch(UserActions.setAuthorized({ isAuthorized: false }));
 
     if (error.status === 0) {
-      this.isServerAvailableSubject.next(false);
+      this.store.dispatch(
+        UserActions.setServerAvailable({ isAvailable: false })
+      );
       if (attempts < 2) {
         const retryDelay = Math.pow(2, attempts) * 10000;
         console.warn(`Retrying in ${retryDelay / 1000} sec...`);
@@ -155,49 +136,58 @@ export class UserService {
       this.clearUser();
     }
 
-    this.isServerAvailableSubject.next(true);
+    this.store.dispatch(UserActions.setServerAvailable({ isAvailable: true }));
     return throwError(() => new Error('Failed to load user details'));
   }
 
   updateUser(userDetails: UserDetails) {
-    this.userSubject.next(userDetails);
+    this.store.dispatch(UserActions.setUser({ user: userDetails }));
   }
 
   checkAuthentication(callback?: () => void): void {
-    if (this.isUserLoadingSubject.getValue()) {
-      return;
-    }
+    this.store
+      .select(UserSelectors.selectIsUserLoading)
+      .pipe(take(1))
+      .subscribe((isLoading) => {
+        if (isLoading) return;
 
-    const currentUser = this.userSubject.getValue();
-    const isDefaultUser =
-      currentUser.avatar === null &&
-      currentUser.nickname === 'Guest' &&
-      currentUser.language === 'en';
+        this.store
+          .select(UserSelectors.selectUser)
+          .pipe(first())
+          .subscribe((currentUser) => {
+            const isDefaultUser =
+              currentUser.avatar === null &&
+              currentUser.nickname === 'Guest' &&
+              currentUser.language === 'en';
 
-    if (!isDefaultUser) {
-      return;
-    }
+            if (!isDefaultUser) return;
 
-    const authToken = this.tokenService.getTokenFromStorage('authToken');
-    const refreshToken = this.tokenService.getTokenFromStorage('refreshToken');
+            const authToken =
+              this.tokenService.getTokenFromStorage('authToken');
+            const refreshToken =
+              this.tokenService.getTokenFromStorage('refreshToken');
 
-    this.tokenService.ensureTokenValidity(authToken, refreshToken).subscribe({
-      next: (accessToken) => {
-        this.loadUserDetails(accessToken).subscribe({
-          next: () => {
-            if (callback) callback();
-          },
-          error: (err) => {
-            console.warn('Failed to load user details:', err);
-            this.clearUser();
-          },
-        });
-      },
-      error: (err) => {
-        console.warn('Authentication failed:', err);
-        this.clearUser();
-      },
-    });
+            this.tokenService
+              .ensureTokenValidity(authToken, refreshToken)
+              .subscribe({
+                next: (accessToken) => {
+                  this.loadUserDetails(accessToken).subscribe({
+                    next: () => {
+                      if (callback) callback();
+                    },
+                    error: (err) => {
+                      console.warn('Failed to load user details:', err);
+                      this.clearUser();
+                    },
+                  });
+                },
+                error: (err) => {
+                  console.warn('Authentication failed:', err);
+                  this.clearUser();
+                },
+              });
+          });
+      });
   }
 
   getLoggedDevices(): Observable<any> {
@@ -279,14 +269,7 @@ export class UserService {
 
   clearUser(): void {
     this.tokenService.clearTokens();
-    this.isAuthorizedSubject.next(false);
-    this.userSubject.next({
-      avatar: null,
-      nickname: 'Guest',
-      language: 'en',
-      twoFactor: false,
-      alwaysAsk: true,
-    });
+    this.store.dispatch(UserActions.clearUser());
   }
 
   private normalizeLanguage(lang: string): UserDetails['language'] {

@@ -11,7 +11,7 @@ bootstrapApplication(AppComponent, appConfig)
 
     languageService.initializeLanguage();
 
-    userService.getUserDetailsAsObservable().subscribe((userDetails) => {
+    userService.getUserDetails().subscribe((userDetails) => {
       languageService.updateLanguageFromUser(userDetails.language);
     });
   })

@@ -17,6 +17,10 @@ import { RegisterService } from '../services/register.service';
 import { Subscription } from 'rxjs';
 import { UserService } from '../services/user.service';
 import { environment } from 'src/environments/environment';
+import * as UserSelectors from '../store/user/user.selectors';
+import { Store } from '@ngrx/store';
+import * as UserState from '../store/user/user.state';
+import { first } from 'rxjs/operators';
 
 @Component({
   standalone: true,
@@ -65,15 +69,19 @@ export class PasswordRecoveryComponent implements OnInit, OnDestroy {
     @Inject(ChangeDetectorRef) private cdr: ChangeDetectorRef,
     private registerService: RegisterService,
     private userService: UserService,
-    private router: Router
+    private router: Router,
+    private store: Store<UserState.UserState>
   ) {}
 
   ngOnInit() {
-    this.userSubscription = this.userService.user$.subscribe((user) => {
-      if (!(user.nickname === 'Guest' && user.avatar === null)) {
-        this.router.navigateByUrl('/');
-      }
-    });
+    this.userSubscription = this.store
+      .select(UserSelectors.selectUser)
+      .pipe(first())
+      .subscribe((user) => {
+        if (user.nickname !== 'Guest' || user.avatar !== null) {
+          this.router.navigateByUrl('/');
+        }
+      });
   }
 
   ngOnDestroy() {

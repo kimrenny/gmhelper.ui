@@ -1,27 +1,22 @@
 import {
-  ChangeDetectorRef,
   Component,
   ElementRef,
   Inject,
   OnInit,
   ViewChild,
 } from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 import { UserService } from '../services/user.service';
-import { Observable } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 import { DevicesSettingsComponent } from './devices-settings/devices-settings.component';
 import { LanguageSettingsComponent } from './app-settings/app-settings.component';
 import { UserSettingsComponent } from './user-settings/user-settings.component';
 import { SecuritySettingsComponent } from './security-settings/security-settings.component';
+import { Store } from '@ngrx/store';
+import * as UserState from '../store/user/user.state';
+import * as UserSelectors from '../store/user/user.selectors';
 
 @Component({
   selector: 'app-settings',
@@ -45,17 +40,15 @@ export class SettingsComponent implements OnInit {
   selectedSection: 'user' | 'settings' | 'security' | 'devices' = 'user';
   menuOpen = false;
 
-  isAuthorized!: Observable<boolean>;
-  isServerAvailable!: Observable<boolean>;
+  isAuthorized$ = this.store.select(UserSelectors.selectIsAuthorized);
+  isServerAvailable$ = this.store.select(UserSelectors.selectIsServerAvailable);
 
   constructor(
     @Inject(UserService) private userService: UserService,
     private toastr: ToastrService,
-    private translate: TranslateService
-  ) {
-    this.isAuthorized = this.userService.isAuthorized$;
-    this.isServerAvailable = this.userService.isServerAvailable$;
-  }
+    private translate: TranslateService,
+    private store: Store<UserState.UserState>
+  ) {}
 
   ngOnInit(): void {
     this.userService.checkAuthentication();

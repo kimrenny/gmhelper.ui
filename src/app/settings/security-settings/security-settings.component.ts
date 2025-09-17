@@ -5,6 +5,9 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { SecurityService } from 'src/app/services/security.service';
 import { UserService } from 'src/app/services/user.service';
+import { Store } from '@ngrx/store';
+import * as UserState from '../../store/user/user.state';
+import * as UserSelectors from '../../store/user/user.selectors';
 
 @Component({
   selector: 'app-security-settings',
@@ -27,11 +30,13 @@ export class SecuritySettingsComponent implements OnInit {
     private userService: UserService,
     private securityService: SecurityService,
     private toastr: ToastrService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private store: Store<UserState.UserState>
   ) {}
 
   ngOnInit(): void {
-    this.userService.user$.subscribe((user) => {
+    this.store.select(UserSelectors.selectUser).subscribe((user) => {
+      if (!user) return;
       this.twoFactorEnabled = user.twoFactor;
       if (user.twoFactor) {
         this.twoFactorMode = user.alwaysAsk ? 'always' : 'ip_only';

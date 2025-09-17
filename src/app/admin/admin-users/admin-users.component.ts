@@ -17,6 +17,9 @@ import {
 import { AdminSettingsService } from 'src/app/services/admin-settings.service';
 import { FormsModule } from '@angular/forms';
 import { TooltipDirective } from 'src/app/shared/directives/tooltip/tooltip.directive';
+import { Store } from '@ngrx/store';
+import * as UserActions from '../../store/user/user.actions';
+import * as UserSelectors from '../../store/user/user.selectors';
 
 interface DeviceInfo {
   userAgent: string;
@@ -90,7 +93,8 @@ export class AdminUsersComponent implements OnInit, OnDestroy {
     private tokenService: TokenService,
     private userService: UserService,
     private toastr: ToastrService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private store: Store
   ) {}
 
   ngOnInit(): void {
@@ -108,9 +112,11 @@ export class AdminUsersComponent implements OnInit, OnDestroy {
       }
     });
 
-    const userSub = this.userService.user$.subscribe((userDetails) => {
-      this.currentUsername = userDetails.nickname;
-    });
+    const userSub = this.store
+      .select(UserSelectors.selectUser)
+      .subscribe((userDetails) => {
+        this.currentUsername = userDetails.nickname;
+      });
 
     const settingsSub = this.adminSettingsService
       .getSettingsData()

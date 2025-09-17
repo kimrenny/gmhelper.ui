@@ -11,9 +11,10 @@ export class LanguageService {
   ) {}
 
   initializeLanguage(): void {
-    const language = this.userService.getUserDetails().language || 'en';
-
-    this.translate.use(this.isLanguageCode(language) ? language : 'en');
+    this.userService.getUserDetails().subscribe((user) => {
+      const language = user.language.toLowerCase();
+      this.translate.use(this.isLanguageCode(language) ? language : 'en');
+    });
   }
 
   updateLanguageFromUser(userLang: string): boolean {
