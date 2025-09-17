@@ -72,11 +72,7 @@ export class RegistrationChartComponent
     const roleSub = this.tokenService.userRole$.subscribe((role) => {
       this.userRole = role;
       if (this.userRole === 'Admin' || this.userRole === 'Owner') {
-        this.adminService
-          .getRegistrationDataObservable()
-          .subscribe((registrations) => {
-            if (registrations) this.filterDataByDays(registrations, 7);
-          });
+        this.loadRegistrationData();
       }
     });
 
@@ -88,8 +84,22 @@ export class RegistrationChartComponent
     this.subscriptions.add(langSub);
   }
 
+  private loadRegistrationData(): void {
+    const dataSub = this.adminService
+      .getRegistrationDataObservable()
+      .subscribe((registrations) => {
+        if (registrations)
+          this.filterDataByPeriod(registrations, this.selectedPeriod);
+      });
+
+    this.subscriptions.add(dataSub);
+  }
+
   ngAfterViewInit(): void {
     this.createChart();
+    if (this.currentData.length) {
+      this.updateChartData(this.currentData, this.isDaily, this.isMonthly);
+    }
   }
 
   ngOnDestroy(): void {
