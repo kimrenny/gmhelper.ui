@@ -16,6 +16,11 @@ import { ToastrService } from 'ngx-toastr';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { HeaderService } from 'src/app/services/header.service';
 import { NavigationService } from 'src/app/services/navigation.service';
+import * as UserState from 'src/app/store/user/user.state';
+import * as UserSelectors from 'src/app/store/user/user.selectors';
+import { UserDetails } from 'src/app/models/user.model';
+import { Store } from '@ngrx/store';
+import * as UserActions from 'src/app/store/user/user.actions';
 
 @Component({
   selector: 'app-header',
@@ -39,6 +44,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   constructor(
     @Inject(UserService) private userService: UserService,
+    private store: Store<UserState.UserState>,
     private tokenService: TokenService,
     private headerService: HeaderService,
     private languageService: LanguageService,
@@ -49,17 +55,19 @@ export class HeaderComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    const authSub = this.userService.isAuthorized$.subscribe(
-      (isAuthenticated) => {
+    const authSub = this.store
+      .select(UserSelectors.selectIsAuthorized)
+      .subscribe((isAuthenticated: boolean) => {
         this.userIsAuthenticated = isAuthenticated;
-      }
-    );
+      });
 
-    const userSub = this.userService.user$.subscribe((userDetails) => {
-      this.userNickname = userDetails.nickname;
-      this.userAvatarUrl =
-        userDetails.avatar || 'assets/icons/default-avatar.png';
-    });
+    const userSub = this.store
+      .select(UserSelectors.selectUser)
+      .subscribe((userDetails: UserDetails) => {
+        this.userNickname = userDetails.nickname;
+        this.userAvatarUrl =
+          userDetails.avatar || 'assets/icons/default-avatar.png';
+      });
 
     const routerSub = this.router.events.subscribe((event) => {
       if (event instanceof NavigationStart && event.url === '/') {
@@ -71,11 +79,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
       this.userRole = role;
     });
 
-    const loadingSub = this.userService.isUserLoading$.subscribe(
-      (isLoading) => {
+    const loadingSub = this.store
+      .select(UserSelectors.selectIsUserLoading)
+      .subscribe((isLoading: boolean) => {
         this.isUserLoading = isLoading;
-      }
-    );
+      });
 
     const highlightSub = this.headerService.showAuthHighlight$.subscribe(
       (showHighlight) => {
@@ -137,6 +145,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   logout() {
     this.userService.clearUser();
+    this.store.dispatch(UserActions.clearUser());
     this.showUserMenu = false;
     this.router.navigate(['/']);
   }

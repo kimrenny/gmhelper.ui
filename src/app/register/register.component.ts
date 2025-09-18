@@ -10,6 +10,10 @@ import { Observable } from 'rxjs';
 import { ApiResponse } from '../models/api-response.model';
 import { CodeInputComponent } from './code-input/code-input.component';
 import { LoginResponse } from '../models/login-response.model';
+import { Store } from '@ngrx/store';
+import * as UserState from '../store/user/user.state';
+import * as UserSelectors from '../store/user/user.selectors';
+import * as UserActions from '../store/user/user.actions';
 
 @Component({
   selector: 'app-register',
@@ -79,9 +83,10 @@ export class RegisterComponent {
     private registerService: RegisterService,
     private route: ActivatedRoute,
     private router: Router,
-    @Inject(UserService) private userService: UserService
+    @Inject(UserService) private userService: UserService,
+    private store: Store<UserState.UserState>
   ) {
-    this.isAuthorized = this.userService.isAuthorized$;
+    this.isAuthorized = this.store.select(UserSelectors.selectIsAuthorized);
   }
 
   ngOnInit(): void {
@@ -100,13 +105,15 @@ export class RegisterComponent {
       }
     });
 
-    this.userService.isAuthorized$.subscribe((authorized) => {
-      if (authorized && this.router.url.startsWith('/register')) {
-        setTimeout(() => {
-          this.router.navigate(['/']);
-        }, 100);
-      }
-    });
+    this.store
+      .select(UserSelectors.selectIsAuthorized)
+      .subscribe((authorized: boolean) => {
+        if (authorized && this.router.url.startsWith('/register')) {
+          setTimeout(() => {
+            this.router.navigate(['/']);
+          }, 100);
+        }
+      });
   }
 
   ngAfterViewInit(): void {
@@ -256,7 +263,7 @@ export class RegisterComponent {
             if (response.data.accessToken && response.data.refreshToken) {
               localStorage.setItem('authToken', response.data.accessToken);
               localStorage.setItem('refreshToken', response.data.refreshToken);
-              this.userService.checkAuthentication();
+              this.store.dispatch(UserActions.initUser());
               this.loginFeedbackMessage = 'REGISTER.ERRORS.LOGIN.SUCCESS';
               this.clearMessageAfterDelay('login');
               // setTimeout(() => {
@@ -320,7 +327,7 @@ export class RegisterComponent {
               localStorage.setItem('authToken', response.data.accessToken);
               localStorage.setItem('refreshToken', response.data.refreshToken);
               this.showCodeInput = false;
-              this.userService.checkAuthentication();
+              this.store.dispatch(UserActions.initUser());
               this.loginFeedbackMessage = 'REGISTER.ERRORS.LOGIN.SUCCESS';
               this.clearMessageAfterDelay('login');
               setTimeout(() => this.router.navigate(['/']), 1000);
@@ -350,7 +357,7 @@ export class RegisterComponent {
               localStorage.setItem('authToken', response.data.accessToken);
               localStorage.setItem('refreshToken', response.data.refreshToken);
               this.showCodeInput = false;
-              this.userService.checkAuthentication();
+              this.store.dispatch(UserActions.initUser());
               this.loginFeedbackMessage = 'REGISTER.ERRORS.LOGIN.SUCCESS';
               this.clearMessageAfterDelay('login');
               setTimeout(() => this.router.navigate(['/']), 1000);

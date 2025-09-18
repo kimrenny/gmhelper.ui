@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
-import { UserService } from 'src/app/services/user.service';
+import { DeviceService } from 'src/app/services/device.service';
 
 @Component({
   selector: 'app-devices-settings',
@@ -16,7 +16,7 @@ export class DevicesSettingsComponent implements OnInit {
   devicesLoaded = false;
 
   constructor(
-    private userService: UserService,
+    private deviceService: DeviceService,
     private toastr: ToastrService,
     private translate: TranslateService
   ) {}
@@ -26,7 +26,7 @@ export class DevicesSettingsComponent implements OnInit {
   }
 
   loadDevices() {
-    this.userService.getLoggedDevices().subscribe({
+    this.deviceService.getLoggedDevices().subscribe({
       next: (devices) => {
         this.devices = devices || [];
         this.devicesLoaded = true;
@@ -36,7 +36,7 @@ export class DevicesSettingsComponent implements OnInit {
   }
 
   deactivateDevice(device: any) {
-    this.userService.deactivateDevice(device).subscribe({
+    this.deviceService.deactivateDevice(device).subscribe({
       next: () => {
         this.loadDevices();
       },

@@ -1,17 +1,17 @@
 <div class="settings-container">
-  <div class="unauthorized-message" *ngIf="!(isAuthorized | async)">
+  <div class="unauthorized-message" *ngIf="!(isAuthorized$ | async)">
     {{ "SETTINGS.UNAUTHORIZED_MESSAGE" | translate }}
   </div>
   <div
     class="unauthorized-message"
-    *ngIf="(isAuthorized | async) && !(isServerAvailable | async)"
+    *ngIf="(isAuthorized$ | async) && !(isServerAvailable$ | async)"
   >
     {{ "SETTINGS.SERVER_UNAVAILABLE" | translate }}
   </div>
   <div
     class="settings-content"
     [class.unauthorized]="
-      !(isAuthorized | async) || !(isServerAvailable | async)
+      !(isAuthorized$ | async) || !(isServerAvailable$ | async)
     "
   >
     <div class="settings-sidebar" [class.open]="menuOpen">

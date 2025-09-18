@@ -4,6 +4,10 @@ import { CommonModule } from '@angular/common';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { UserService } from 'src/app/services/user.service';
 import { NavigationService } from 'src/app/services/navigation.service';
+import { Store } from '@ngrx/store';
+import * as UserState from 'src/app/store/user/user.state';
+import * as UserSelectors from 'src/app/store/user/user.selectors';
+import { first } from 'rxjs/operators';
 
 @Component({
   selector: 'app-welcome',
@@ -27,15 +31,18 @@ export class WelcomeComponent implements OnInit {
 
   constructor(
     private translate: TranslateService,
-    private userService: UserService,
+    private store: Store<UserState.UserState>,
     private navigation: NavigationService
   ) {}
 
   ngOnInit(): void {
-    this.userService.user$.subscribe((user) => {
-      this.nickname =
-        user.nickname && user.nickname !== 'Guest' ? user.nickname : null;
-    });
+    this.store
+      .select(UserSelectors.selectUser)
+      .pipe(first())
+      .subscribe((user) => {
+        this.nickname =
+          user.nickname && user.nickname !== 'Guest' ? user.nickname : null;
+      });
 
     this.phrases = [
       'HOME.WELCOME.PHRASES.1',
@@ -65,20 +72,12 @@ export class WelcomeComponent implements OnInit {
       'HOME.WELCOME.HELLO_GUEST.5',
     ];
 
-    this.translate.onLangChange.subscribe(() => {
-      const randomIndex = Math.floor(Math.random() * this.buttonPhrases.length);
-      this.translate
-        .get(this.buttonPhrases[randomIndex])
-        .subscribe((res: string) => {
-          this.buttonText = res;
-        });
+    this.setRandomButtonText();
+    this.setRandomGuestText();
 
-      const randomIdx = Math.floor(Math.random() * this.guestPhrases.length);
-      this.translate
-        .get(this.guestPhrases[randomIdx])
-        .subscribe((res: string) => {
-          this.guestText = res;
-        });
+    this.translate.onLangChange.subscribe(() => {
+      this.setRandomButtonText();
+      this.setRandomGuestText();
     });
 
     this.startTyping();
@@ -102,6 +101,24 @@ export class WelcomeComponent implements OnInit {
     }
 
     setTimeout(() => this.startTyping(), this.isDeleting ? 50 : 100);
+  }
+
+  private setRandomButtonText() {
+    const randomIndex = Math.floor(Math.random() * this.buttonPhrases.length);
+    this.translate
+      .get(this.buttonPhrases[randomIndex])
+      .subscribe((res: string) => {
+        this.buttonText = res;
+      });
+  }
+
+  private setRandomGuestText() {
+    const randomIdx = Math.floor(Math.random() * this.guestPhrases.length);
+    this.translate
+      .get(this.guestPhrases[randomIdx])
+      .subscribe((res: string) => {
+        this.guestText = res;
+      });
   }
 
   navigateToStart() {

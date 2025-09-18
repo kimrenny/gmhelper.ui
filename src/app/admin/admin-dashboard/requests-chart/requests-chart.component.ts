@@ -77,16 +77,7 @@ export class RequestsChartComponent
     const roleSub = this.tokenService.userRole$.subscribe((role) => {
       this.userRole = role;
       if (this.userRole === 'Admin' || this.userRole === 'Owner') {
-        this.adminService.getRequestsDataObservable().subscribe((data) => {
-          if (data?.regular && data?.admin) {
-            this.updateChartData(
-              filterDataByDays(data?.regular, 7),
-              filterDataByDays(data?.admin, 7),
-              true,
-              false
-            );
-          }
-        });
+        this.loadRequestsData();
       }
     });
 
@@ -103,7 +94,33 @@ export class RequestsChartComponent
     this.subscriptions.add(langSub);
   }
 
+  private loadRequestsData() {
+    this.adminService.getRequestsDataObservable().subscribe((data) => {
+      if (data?.regular && data?.admin) {
+        this.updateChartData(
+          filterDataByDays(data?.regular, 7),
+          filterDataByDays(data?.admin, 7),
+          true,
+          false
+        );
+      }
+    });
+  }
+
   ngAfterViewInit(): void {
+    this.createChart();
+
+    if (this.currentDataRegular.length && this.currentDataAdmin.length) {
+      this.updateChartData(
+        this.currentDataRegular,
+        this.currentDataAdmin,
+        this.isDaily,
+        this.isMonthly
+      );
+    }
+  }
+
+  private createChart(): void {
     if (!this.chartCanvas) return;
 
     this.chart = new Chart(this.chartCanvas.nativeElement, {

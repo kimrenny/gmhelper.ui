@@ -9,6 +9,10 @@ import {
 } from 'src/app/models/languages.model';
 import { LanguageService } from 'src/app/services/language.service';
 import { UserService } from 'src/app/services/user.service';
+import { Store } from '@ngrx/store';
+import * as UserState from '../../store/user/user.state';
+import * as UserSelectors from '../../store/user/user.selectors';
+import * as UserActions from '../../store/user/user.actions';
 
 @Component({
   selector: 'app-settings-app',
@@ -27,13 +31,15 @@ export class LanguageSettingsComponent implements OnInit {
     private userService: UserService,
     private toastr: ToastrService,
     private translate: TranslateService,
-    private languageService: LanguageService
+    private languageService: LanguageService,
+    private store: Store<UserState.UserState>
   ) {}
 
   ngOnInit(): void {
-    this.userService.user$.subscribe((user) => {
-      const langCode = user.language.toLowerCase();
+    this.store.select(UserSelectors.selectUser).subscribe((user) => {
+      if (!user) return;
 
+      const langCode = user.language.toLowerCase();
       if (this.languageService.isLanguageCode(langCode)) {
         const langObj = languages.find((l) => l.code === langCode)!;
         this.selectedLanguage = langObj.code;
@@ -53,20 +59,12 @@ export class LanguageSettingsComponent implements OnInit {
   }
 
   saveLanguage() {
-    this.userService.updateLanguage(this.selectedLanguage).subscribe({
-      next: () => {
-        this.toastr.success(
-          this.translate.instant('SETTINGS.SUCCESS.MESSAGE'),
-          this.translate.instant('SETTINGS.SUCCESS.TITLE')
-        );
-      },
-      error: (err) => {
-        console.error('Error: ', err);
-        this.toastr.error(
-          this.translate.instant('SETTINGS.ERROR.MESSAGE'),
-          this.translate.instant('SETTINGS.ERROR.TITLE')
-        );
-      },
-    });
+    this.store.dispatch(
+      UserActions.updateUserLanguage({ language: this.selectedLanguage })
+    );
+    this.toastr.success(
+      this.translate.instant('SETTINGS.SUCCESS.MESSAGE'),
+      this.translate.instant('SETTINGS.SUCCESS.TITLE')
+    );
   }
 }

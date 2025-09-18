@@ -2,18 +2,22 @@ import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { UserService } from './user.service';
 import { LanguageCode } from '../models/languages.model';
+import { Store } from '@ngrx/store';
+import * as UserSelectors from '../store/user/user.selectors';
+import { first } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class LanguageService {
-  constructor(
-    private translate: TranslateService,
-    private userService: UserService
-  ) {}
+  constructor(private translate: TranslateService, private store: Store) {}
 
   initializeLanguage(): void {
-    const language = this.userService.getUserDetails().language || 'en';
-
-    this.translate.use(this.isLanguageCode(language) ? language : 'en');
+    this.store
+      .select(UserSelectors.selectUser)
+      .pipe(first((user) => !!user))
+      .subscribe((user) => {
+        const language = user.language.toLowerCase();
+        this.translate.use(this.isLanguageCode(language) ? language : 'en');
+      });
   }
 
   updateLanguageFromUser(userLang: string): boolean {

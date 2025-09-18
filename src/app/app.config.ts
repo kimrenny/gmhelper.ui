@@ -11,11 +11,19 @@ import { ErrorHandler } from '@angular/core';
 import { UserService } from './services/user.service';
 import { ToastrModule } from 'ngx-toastr';
 import { provideAnimations } from '@angular/platform-browser/animations';
+import { provideStore } from '@ngrx/store';
+import { userReducer } from './store/user/user.reducer';
+import { provideStoreDevtools } from '@ngrx/store-devtools';
+import { environment } from 'src/environments/environment';
+import { provideEffects } from '@ngrx/effects';
+import { UserEffects } from './store/user/user.effects';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
     provideHttpClient(),
+    provideStore({ user: userReducer }),
+    provideEffects([UserEffects]),
     importProvidersFrom(
       TranslateModule.forRoot({
         loader: {
@@ -31,6 +39,10 @@ export const appConfig: ApplicationConfig = {
       })
     ),
     provideAnimations(),
+    provideStoreDevtools({
+      maxAge: 25,
+      logOnly: environment.production,
+    }),
     { provide: LocationStrategy, useClass: PathLocationStrategy },
     { provide: ErrorHandler, useClass: GlobalErrorHandler },
     UserService,
