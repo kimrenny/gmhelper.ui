@@ -8,6 +8,7 @@ import { UserService } from 'src/app/services/user.service';
 import { Store } from '@ngrx/store';
 import * as UserState from '../../store/user/user.state';
 import * as UserSelectors from '../../store/user/user.selectors';
+import * as UserActions from '../../store/user/user.actions';
 
 @Component({
   selector: 'app-security-settings',
@@ -66,7 +67,7 @@ export class SecuritySettingsComponent implements OnInit {
     this.securityService.verify2FA(this.verificationCode).subscribe({
       next: () => {
         this.twoFactorEnabled = true;
-        this.userService.getUserDetails();
+        this.store.dispatch(UserActions.loadUser());
         this.toastr.success(
           this.translate.instant('SETTINGS.SUCCESS.MESSAGE'),
           this.translate.instant('SETTINGS.SUCCESS.TITLE')

@@ -12,6 +12,7 @@ import { UserService } from 'src/app/services/user.service';
 import { Store } from '@ngrx/store';
 import * as UserState from '../../store/user/user.state';
 import * as UserSelectors from '../../store/user/user.selectors';
+import * as UserActions from '../../store/user/user.actions';
 
 @Component({
   selector: 'app-settings-app',
@@ -58,20 +59,12 @@ export class LanguageSettingsComponent implements OnInit {
   }
 
   saveLanguage() {
-    this.userService.updateLanguage(this.selectedLanguage).subscribe({
-      next: () => {
-        this.toastr.success(
-          this.translate.instant('SETTINGS.SUCCESS.MESSAGE'),
-          this.translate.instant('SETTINGS.SUCCESS.TITLE')
-        );
-      },
-      error: (err) => {
-        console.error('Error: ', err);
-        this.toastr.error(
-          this.translate.instant('SETTINGS.ERROR.MESSAGE'),
-          this.translate.instant('SETTINGS.ERROR.TITLE')
-        );
-      },
-    });
+    this.store.dispatch(
+      UserActions.updateUserLanguage({ language: this.selectedLanguage })
+    );
+    this.toastr.success(
+      this.translate.instant('SETTINGS.SUCCESS.MESSAGE'),
+      this.translate.instant('SETTINGS.SUCCESS.TITLE')
+    );
   }
 }

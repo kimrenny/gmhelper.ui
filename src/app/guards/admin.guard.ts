@@ -9,7 +9,7 @@ import {
 } from '@angular/router';
 import { AdminService } from '../services/admin.service';
 import { TokenService } from '../services/token.service';
-import { map, switchMap } from 'rxjs';
+import { catchError, map, of, switchMap } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class AdminGuard implements CanActivate {
@@ -19,17 +19,28 @@ export class AdminGuard implements CanActivate {
     private router: Router
   ) {}
 
-  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    return this.tokenService.userRole$.pipe(
-      switchMap((role) => {
+  canActivate() {
+    const authToken = this.tokenService.getTokenFromStorage('authToken');
+    const refreshToken = this.tokenService.getTokenFromStorage('refreshToken');
+
+    return this.tokenService.ensureTokenValidity(authToken, refreshToken).pipe(
+      map(() => {
+        const role = this.tokenService.getUserRole();
         if (role === 'Admin' || role === 'Owner') {
-          return [true];
+          return true;
         }
         this.router.navigate(['/'], {
           queryParams: { section: 'welcome' },
           replaceUrl: true,
         });
-        return [false];
+        return false;
+      }),
+      catchError(() => {
+        this.router.navigate(['/'], {
+          queryParams: { section: 'welcome' },
+          replaceUrl: true,
+        });
+        return of(false);
       })
     );
   }

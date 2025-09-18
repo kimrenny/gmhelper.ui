@@ -17,6 +17,7 @@ import { SecuritySettingsComponent } from './security-settings/security-settings
 import { Store } from '@ngrx/store';
 import * as UserState from '../store/user/user.state';
 import * as UserSelectors from '../store/user/user.selectors';
+import * as UserActions from '../store/user/user.actions';
 
 @Component({
   selector: 'app-settings',
@@ -34,7 +35,7 @@ import * as UserSelectors from '../store/user/user.selectors';
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.scss'],
 })
-export class SettingsComponent implements OnInit {
+export class SettingsComponent {
   @ViewChild('dropdown') dropdownRef!: ElementRef;
 
   selectedSection: 'user' | 'settings' | 'security' | 'devices' = 'user';
@@ -44,15 +45,10 @@ export class SettingsComponent implements OnInit {
   isServerAvailable$ = this.store.select(UserSelectors.selectIsServerAvailable);
 
   constructor(
-    @Inject(UserService) private userService: UserService,
     private toastr: ToastrService,
     private translate: TranslateService,
     private store: Store<UserState.UserState>
   ) {}
-
-  ngOnInit(): void {
-    this.userService.checkAuthentication();
-  }
 
   toggleMenu() {
     this.menuOpen = !this.menuOpen;

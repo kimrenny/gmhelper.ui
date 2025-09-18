@@ -13,6 +13,7 @@ import { LoginResponse } from '../models/login-response.model';
 import { Store } from '@ngrx/store';
 import * as UserState from '../store/user/user.state';
 import * as UserSelectors from '../store/user/user.selectors';
+import * as UserActions from '../store/user/user.actions';
 
 @Component({
   selector: 'app-register',
@@ -262,7 +263,7 @@ export class RegisterComponent {
             if (response.data.accessToken && response.data.refreshToken) {
               localStorage.setItem('authToken', response.data.accessToken);
               localStorage.setItem('refreshToken', response.data.refreshToken);
-              this.userService.checkAuthentication();
+              this.store.dispatch(UserActions.initUser());
               this.loginFeedbackMessage = 'REGISTER.ERRORS.LOGIN.SUCCESS';
               this.clearMessageAfterDelay('login');
               // setTimeout(() => {
@@ -326,7 +327,7 @@ export class RegisterComponent {
               localStorage.setItem('authToken', response.data.accessToken);
               localStorage.setItem('refreshToken', response.data.refreshToken);
               this.showCodeInput = false;
-              this.userService.checkAuthentication();
+              this.store.dispatch(UserActions.initUser());
               this.loginFeedbackMessage = 'REGISTER.ERRORS.LOGIN.SUCCESS';
               this.clearMessageAfterDelay('login');
               setTimeout(() => this.router.navigate(['/']), 1000);
@@ -356,7 +357,7 @@ export class RegisterComponent {
               localStorage.setItem('authToken', response.data.accessToken);
               localStorage.setItem('refreshToken', response.data.refreshToken);
               this.showCodeInput = false;
-              this.userService.checkAuthentication();
+              this.store.dispatch(UserActions.initUser());
               this.loginFeedbackMessage = 'REGISTER.ERRORS.LOGIN.SUCCESS';
               this.clearMessageAfterDelay('login');
               setTimeout(() => this.router.navigate(['/']), 1000);

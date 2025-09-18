@@ -20,6 +20,7 @@ import * as UserState from 'src/app/store/user/user.state';
 import * as UserSelectors from 'src/app/store/user/user.selectors';
 import { UserDetails } from 'src/app/models/user.model';
 import { Store } from '@ngrx/store';
+import * as UserActions from 'src/app/store/user/user.actions';
 
 @Component({
   selector: 'app-header',
@@ -144,6 +145,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   logout() {
     this.userService.clearUser();
+    this.store.dispatch(UserActions.clearUser());
     this.showUserMenu = false;
     this.router.navigate(['/']);
   }
