@@ -4,7 +4,9 @@ import {
   BehaviorSubject,
   map,
   Observable,
+  of,
   switchMap,
+  take,
   tap,
   throwError,
 } from 'rxjs';
@@ -84,48 +86,53 @@ export class AdminService {
   constructor(private http: HttpClient, private tokenService: TokenService) {}
 
   loadAdminData(): void {
-    const token = this.tokenService.getTokenFromStorage('authToken');
-    const role = this.tokenService.getUserRole();
+    this.tokenService
+      .getToken$()
+      .pipe(take(1))
+      .subscribe((token) => {
+        if (!token || !this.checkAdminPermissions(token)) {
+          console.warn('Insufficient permissions to load admin data.');
+          return;
+        }
 
-    if (!token || !role || !this.checkAdminPermissions()) {
-      console.warn(
-        'No valid token or insufficient permissions to load admin data.'
-      );
-      return;
-    }
+        if (this.isDataLoaded) return;
 
-    if (this.isDataLoaded) return;
+        this.getAllUsers();
+        this.getAllTokens();
+        this.getRegistrationData();
+        this.getCreatedTokens();
+        this.getRequestsData();
+        this.getUsersByCountry();
+        this.getRoleStats();
+        this.getBlockStats();
+        this.getRequestLogData();
+        this.getAuthLogData();
+        this.getErrorLogData();
 
-    this.getAllUsers();
-    this.getAllTokens();
-    this.getRegistrationData();
-    this.getCreatedTokens();
-    this.getRequestsData();
-    this.getUsersByCountry();
-    this.getRoleStats();
-    this.getBlockStats();
-    this.getRequestLogData();
-    this.getAuthLogData();
-    this.getErrorLogData();
-
-    this.isDataLoaded = true;
+        this.isDataLoaded = true;
+      });
   }
 
   private getAllUsers(): void {
-    const token = this.tokenService.getTokenFromStorage('authToken');
+    this.tokenService
+      .getToken$()
+      .pipe(
+        take(1),
+        switchMap((token) => {
+          if (!token || !this.checkAdminPermissions(token)) {
+            this.usersSubject.next(null);
+            return of(null);
+          }
 
-    if (!token || !this.checkAdminPermissions()) {
-      this.usersSubject.next(null);
-      return;
-    }
-
-    this.http
-      .get<ApiResponse<User[]>>(`${this.apiUrl}/users`, {
-        headers: this.tokenService.createAuthHeaders(token),
-      })
-      .pipe(map((response) => response.data))
+          return this.http
+            .get<ApiResponse<User[]>>(`${this.apiUrl}/users`, {
+              headers: this.tokenService.createAuthHeaders(token),
+            })
+            .pipe(map((response) => response.data));
+        })
+      )
       .subscribe((users) => {
-        this.usersSubject.next(users);
+        if (users) this.usersSubject.next(users);
       });
   }
 
@@ -137,36 +144,40 @@ export class AdminService {
   }
 
   actionUser(userId: string, action: 'ban' | 'unban'): Observable<any> {
-    const token = this.tokenService.getTokenFromStorage('authToken');
-
-    if (!token) {
-      return throwError(() => new Error('Token does not exist'));
-    }
-
-    const body = {
-      action,
-    };
-
-    return this.http.put(`${this.apiUrl}/users/${userId}/action`, body, {
-      headers: this.tokenService.createAuthHeaders(token),
-    });
+    return this.tokenService.getToken$().pipe(
+      take(1),
+      switchMap((token) => {
+        if (!token) return throwError(() => new Error('Token does not exist'));
+        return this.http.put(
+          `${this.apiUrl}/users/${userId}/action`,
+          { action },
+          {
+            headers: this.tokenService.createAuthHeaders(token),
+          }
+        );
+      })
+    );
   }
 
   private getAllTokens(): void {
-    const token = this.tokenService.getTokenFromStorage('authToken');
-
-    if (!token || !this.checkAdminPermissions()) {
-      this.tokensSubject.next(null);
-      return;
-    }
-
-    this.http
-      .get<ApiResponse<Token[]>>(`${this.apiUrl}/tokens`, {
-        headers: this.tokenService.createAuthHeaders(token),
-      })
-      .pipe(map((response) => response.data))
+    this.tokenService
+      .getToken$()
+      .pipe(
+        take(1),
+        switchMap((token) => {
+          if (!token || !this.checkAdminPermissions(token)) {
+            this.tokensSubject.next(null);
+            return of(null);
+          }
+          return this.http
+            .get<ApiResponse<Token[]>>(`${this.apiUrl}/tokens`, {
+              headers: this.tokenService.createAuthHeaders(token),
+            })
+            .pipe(map((res) => res.data));
+        })
+      )
       .subscribe((tokens) => {
-        this.tokensSubject.next(tokens);
+        if (tokens) this.tokensSubject.next(tokens);
       });
   }
 
@@ -177,38 +188,47 @@ export class AdminService {
     return this.tokens$;
   }
 
-  actionToken(token: string, action: 'activate' | 'disable'): Observable<any> {
-    const authToken = this.tokenService.getTokenFromStorage('authToken');
-
-    if (!authToken) {
-      return throwError(() => new Error('Token does not exist'));
-    }
-
-    const body = {
-      action,
-    };
-
-    return this.http.put(`${this.apiUrl}/tokens/${token}/action`, body, {
-      headers: this.tokenService.createAuthHeaders(authToken),
-    });
+  actionToken(
+    tokenStr: string,
+    action: 'activate' | 'disable'
+  ): Observable<any> {
+    return this.tokenService.getToken$().pipe(
+      take(1),
+      switchMap((token) => {
+        if (!token) return throwError(() => new Error('Token does not exist'));
+        return this.http.put(
+          `${this.apiUrl}/tokens/${tokenStr}/action`,
+          { action },
+          {
+            headers: this.tokenService.createAuthHeaders(token),
+          }
+        );
+      })
+    );
   }
 
   private getRegistrationData(): void {
-    const authToken = this.tokenService.getTokenFromStorage('authToken');
-
-    if (!authToken || !this.checkAdminPermissions()) {
-      this.registrationDataSubject.next(null);
-      return;
-    }
-
-    this.http
-      .get<ApiResponse<RegistrationData[]>>(
-        `${this.apiUrl}/dashboard/registrations`,
-        { headers: this.tokenService.createAuthHeaders(authToken) }
+    this.tokenService
+      .getToken$()
+      .pipe(
+        take(1),
+        switchMap((token) => {
+          if (!token || !this.checkAdminPermissions(token)) {
+            this.registrationDataSubject.next(null);
+            return of(null);
+          }
+          return this.http
+            .get<ApiResponse<RegistrationData[]>>(
+              `${this.apiUrl}/dashboard/registrations`,
+              {
+                headers: this.tokenService.createAuthHeaders(token),
+              }
+            )
+            .pipe(map((res) => res.data));
+        })
       )
-      .pipe(map((response) => response.data))
       .subscribe((data) => {
-        this.registrationDataSubject.next(data);
+        if (data) this.registrationDataSubject.next(data);
       });
   }
 
@@ -220,26 +240,35 @@ export class AdminService {
   }
 
   private getCreatedTokens(): void {
-    const authToken = this.tokenService.getTokenFromStorage('authToken');
-
-    if (!authToken || !this.checkAdminPermissions()) {
-      this.activeTokensSubject.next(null);
-      this.totalTokensSubject.next(null);
-      this.activeAdminTokensSubject.next(null);
-      this.totalAdminTokensSubject.next(null);
-      return;
-    }
-
-    this.http
-      .get<ApiResponse<CreatedTokens>>(`${this.apiUrl}/dashboard/tokens`, {
-        headers: this.tokenService.createAuthHeaders(authToken),
-      })
-      .pipe(map((response) => response.data))
+    this.tokenService
+      .getToken$()
+      .pipe(
+        take(1),
+        switchMap((token) => {
+          if (!token || !this.checkAdminPermissions(token)) {
+            this.activeTokensSubject.next(null);
+            this.totalTokensSubject.next(null);
+            this.activeAdminTokensSubject.next(null);
+            this.totalAdminTokensSubject.next(null);
+            return of(null);
+          }
+          return this.http
+            .get<ApiResponse<CreatedTokens>>(
+              `${this.apiUrl}/dashboard/tokens`,
+              {
+                headers: this.tokenService.createAuthHeaders(token),
+              }
+            )
+            .pipe(map((res) => res.data));
+        })
+      )
       .subscribe((data) => {
-        this.activeTokensSubject.next(data?.activeTokens ?? 0);
-        this.totalTokensSubject.next(data?.totalTokens ?? 0);
-        this.activeAdminTokensSubject.next(data?.activeAdminTokens ?? 0);
-        this.totalAdminTokensSubject.next(data?.totalAdminTokens ?? 0);
+        if (data) {
+          this.activeTokensSubject.next(data?.activeTokens ?? 0);
+          this.totalTokensSubject.next(data?.totalTokens ?? 0);
+          this.activeAdminTokensSubject.next(data?.activeAdminTokens ?? 0);
+          this.totalAdminTokensSubject.next(data?.totalAdminTokens ?? 0);
+        }
       });
   }
 
@@ -272,20 +301,27 @@ export class AdminService {
   }
 
   private getRequestsData(): void {
-    const authToken = this.tokenService.getTokenFromStorage('authToken');
-
-    if (!authToken || !this.checkAdminPermissions()) {
-      this.requestsDataSubject.next(null);
-      return;
-    }
-
-    this.http
-      .get<ApiResponse<CombinedRequestsData>>(`${this.apiUrl}/logs/stats`, {
-        headers: this.tokenService.createAuthHeaders(authToken),
-      })
-      .pipe(map((response) => response.data))
+    this.tokenService
+      .getToken$()
+      .pipe(
+        take(1),
+        switchMap((token) => {
+          if (!token || !this.checkAdminPermissions(token)) {
+            this.requestsDataSubject.next(null);
+            return of(null);
+          }
+          return this.http
+            .get<ApiResponse<CombinedRequestsData>>(
+              `${this.apiUrl}/logs/stats`,
+              {
+                headers: this.tokenService.createAuthHeaders(token),
+              }
+            )
+            .pipe(map((res) => res.data));
+        })
+      )
       .subscribe((data) => {
-        this.requestsDataSubject.next(data);
+        if (data) this.requestsDataSubject.next(data);
       });
   }
 
@@ -297,20 +333,24 @@ export class AdminService {
   }
 
   private getUsersByCountry(): void {
-    const authToken = this.tokenService.getTokenFromStorage('authToken');
-
-    if (!authToken || !this.checkAdminPermissions()) {
-      this.userCountryStatsSubject.next(null);
-      return;
-    }
-
-    this.http
-      .get<ApiResponse<CountryStats[]>>(`${this.apiUrl}/stats/country`, {
-        headers: this.tokenService.createAuthHeaders(authToken),
-      })
-      .pipe(map((response) => response.data))
+    this.tokenService
+      .getToken$()
+      .pipe(
+        take(1),
+        switchMap((token) => {
+          if (!token || !this.checkAdminPermissions(token)) {
+            this.userCountryStatsSubject.next(null);
+            return of(null);
+          }
+          return this.http
+            .get<ApiResponse<CountryStats[]>>(`${this.apiUrl}/stats/country`, {
+              headers: this.tokenService.createAuthHeaders(token),
+            })
+            .pipe(map((res) => res.data));
+        })
+      )
       .subscribe((data) => {
-        this.userCountryStatsSubject.next(data);
+        if (data) this.userCountryStatsSubject.next(data);
       });
   }
 
@@ -322,20 +362,24 @@ export class AdminService {
   }
 
   private getRoleStats(): void {
-    const authToken = this.tokenService.getTokenFromStorage('authToken');
-
-    if (!authToken || !this.checkAdminPermissions()) {
-      this.userRoleStatsSubject.next(null);
-      return;
-    }
-
-    this.http
-      .get<ApiResponse<RoleStats[]>>(`${this.apiUrl}/stats/roles`, {
-        headers: this.tokenService.createAuthHeaders(authToken),
-      })
-      .pipe(map((response) => response.data))
+    this.tokenService
+      .getToken$()
+      .pipe(
+        take(1),
+        switchMap((token) => {
+          if (!token || !this.checkAdminPermissions(token)) {
+            this.userRoleStatsSubject.next(null);
+            return of(null);
+          }
+          return this.http
+            .get<ApiResponse<RoleStats[]>>(`${this.apiUrl}/stats/roles`, {
+              headers: this.tokenService.createAuthHeaders(token),
+            })
+            .pipe(map((res) => res.data));
+        })
+      )
       .subscribe((data) => {
-        this.userRoleStatsSubject.next(data);
+        if (data) this.userRoleStatsSubject.next(data);
       });
   }
 
@@ -348,20 +392,24 @@ export class AdminService {
   }
 
   private getBlockStats(): void {
-    const authToken = this.tokenService.getTokenFromStorage('authToken');
-
-    if (!authToken || !this.checkAdminPermissions()) {
-      this.userBlockStatsSubject.next(null);
-      return;
-    }
-
-    this.http
-      .get<ApiResponse<BlockStats[]>>(`${this.apiUrl}/stats/blocked`, {
-        headers: this.tokenService.createAuthHeaders(authToken),
-      })
-      .pipe(map((response) => response.data))
+    this.tokenService
+      .getToken$()
+      .pipe(
+        take(1),
+        switchMap((token) => {
+          if (!token || !this.checkAdminPermissions(token)) {
+            this.userBlockStatsSubject.next(null);
+            return of(null);
+          }
+          return this.http
+            .get<ApiResponse<BlockStats[]>>(`${this.apiUrl}/stats/blocked`, {
+              headers: this.tokenService.createAuthHeaders(token),
+            })
+            .pipe(map((res) => res.data));
+        })
+      )
       .subscribe((data) => {
-        this.userBlockStatsSubject.next(data);
+        if (data) this.userBlockStatsSubject.next(data);
       });
   }
 
@@ -373,20 +421,24 @@ export class AdminService {
   }
 
   private getRequestLogData(): void {
-    const authToken = this.tokenService.getTokenFromStorage('authToken');
-
-    if (!authToken || !this.checkAdminPermissions()) {
-      this.requestLogsDataSubject.next(null);
-      return;
-    }
-
-    this.http
-      .get<ApiResponse<RequestLog[]>>(`${this.apiUrl}/logs`, {
-        headers: this.tokenService.createAuthHeaders(authToken),
-      })
-      .pipe(map((response) => response.data))
+    this.tokenService
+      .getToken$()
+      .pipe(
+        take(1),
+        switchMap((token) => {
+          if (!token || !this.checkAdminPermissions(token)) {
+            this.requestLogsDataSubject.next(null);
+            return of(null);
+          }
+          return this.http
+            .get<ApiResponse<RequestLog[]>>(`${this.apiUrl}/logs`, {
+              headers: this.tokenService.createAuthHeaders(token),
+            })
+            .pipe(map((res) => res.data));
+        })
+      )
       .subscribe((data) => {
-        this.requestLogsDataSubject.next(data);
+        if (data) this.requestLogsDataSubject.next(data);
       });
   }
 
@@ -399,20 +451,24 @@ export class AdminService {
   }
 
   private getAuthLogData(): void {
-    const authToken = this.tokenService.getTokenFromStorage('authToken');
-
-    if (!authToken || !this.checkAdminPermissions()) {
-      this.authLogsDataSubject.next(null);
-      return;
-    }
-
-    this.http
-      .get<ApiResponse<AuthLog[]>>(`${this.apiUrl}/logs/auth`, {
-        headers: this.tokenService.createAuthHeaders(authToken),
-      })
-      .pipe(map((response) => response.data))
+    this.tokenService
+      .getToken$()
+      .pipe(
+        take(1),
+        switchMap((token) => {
+          if (!token || !this.checkAdminPermissions(token)) {
+            this.authLogsDataSubject.next(null);
+            return of(null);
+          }
+          return this.http
+            .get<ApiResponse<AuthLog[]>>(`${this.apiUrl}/logs/auth`, {
+              headers: this.tokenService.createAuthHeaders(token),
+            })
+            .pipe(map((res) => res.data));
+        })
+      )
       .subscribe((data) => {
-        this.authLogsDataSubject.next(data);
+        if (data) this.authLogsDataSubject.next(data);
       });
   }
 
@@ -425,20 +481,24 @@ export class AdminService {
   }
 
   private getErrorLogData(): void {
-    const authToken = this.tokenService.getTokenFromStorage('authToken');
-
-    if (!authToken || !this.checkAdminPermissions()) {
-      this.errorLogsDataSubject.next(null);
-      return;
-    }
-
-    this.http
-      .get<ApiResponse<ErrorLog[]>>(`${this.apiUrl}/logs/errors`, {
-        headers: this.tokenService.createAuthHeaders(authToken),
-      })
-      .pipe(map((response) => response.data))
+    this.tokenService
+      .getToken$()
+      .pipe(
+        take(1),
+        switchMap((token) => {
+          if (!token || !this.checkAdminPermissions(token)) {
+            this.errorLogsDataSubject.next(null);
+            return of(null);
+          }
+          return this.http
+            .get<ApiResponse<ErrorLog[]>>(`${this.apiUrl}/logs/errors`, {
+              headers: this.tokenService.createAuthHeaders(token),
+            })
+            .pipe(map((res) => res.data));
+        })
+      )
       .subscribe((data) => {
-        this.errorLogsDataSubject.next(data);
+        if (data) this.errorLogsDataSubject.next(data);
       });
   }
 
@@ -450,8 +510,9 @@ export class AdminService {
     return this.errorLogsData$;
   }
 
-  checkAdminPermissions(): boolean {
-    const role = this.tokenService.getUserRole();
+  checkAdminPermissions(token: string | null): boolean {
+    if (!token) return false;
+    const role = this.tokenService.extractUserRole(token);
     return role == 'Admin' || role == 'Owner';
   }
 }

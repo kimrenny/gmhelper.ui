@@ -19,7 +19,6 @@ interface BlockStats {
 })
 export class BlockStatsComponent implements OnInit, OnDestroy {
   blockStats: BlockStats[] = [];
-  private userRole: string | null = null;
   private subscriptions = new Subscription();
 
   constructor(
@@ -28,18 +27,11 @@ export class BlockStatsComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    const roleSub = this.tokenService.userRole$.subscribe((role) => {
-      this.userRole = role;
-      if (this.userRole === 'Admin' || this.userRole === 'Owner') {
-        this.adminService.getBlockStatsDataObservable().subscribe((stats) => {
-          if (stats) {
-            this.blockStats = stats;
-          }
-        });
+    this.adminService.getBlockStatsDataObservable().subscribe((stats) => {
+      if (stats) {
+        this.blockStats = stats;
       }
     });
-
-    this.subscriptions.add(roleSub);
   }
 
   ngOnDestroy(): void {

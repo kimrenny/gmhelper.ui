@@ -3,9 +3,7 @@ import { appConfig } from './app/app.config';
 import { AppComponent } from './app/app.component';
 import { LanguageService } from './app/services/language.service';
 import { Store } from '@ngrx/store';
-import * as UserActions from './app/store/user/user.actions';
-import * as UserSelectors from './app/store/user/user.selectors';
-import { first } from 'rxjs';
+import * as AuthActions from './app/store/auth/auth.actions';
 
 bootstrapApplication(AppComponent, appConfig)
   .then((appRef) => {
@@ -14,7 +12,7 @@ bootstrapApplication(AppComponent, appConfig)
 
     languageService.initializeLanguage();
 
-    store.dispatch(UserActions.initUser());
+    store.dispatch(AuthActions.restoreAuthFromStorage());
 
     store
       .select((state) => state.user.user)

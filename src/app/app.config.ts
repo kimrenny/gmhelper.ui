@@ -17,13 +17,15 @@ import { provideStoreDevtools } from '@ngrx/store-devtools';
 import { environment } from 'src/environments/environment';
 import { provideEffects } from '@ngrx/effects';
 import { UserEffects } from './store/user/user.effects';
+import { AuthEffects } from './store/auth/auth.effects';
+import { authReducer } from './store/auth/auth.reducer';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
     provideHttpClient(),
-    provideStore({ user: userReducer }),
-    provideEffects([UserEffects]),
+    provideStore({ user: userReducer, auth: authReducer }),
+    provideEffects([UserEffects, AuthEffects]),
     importProvidersFrom(
       TranslateModule.forRoot({
         loader: {
@@ -45,6 +47,5 @@ export const appConfig: ApplicationConfig = {
     }),
     { provide: LocationStrategy, useClass: PathLocationStrategy },
     { provide: ErrorHandler, useClass: GlobalErrorHandler },
-    UserService,
   ],
 };

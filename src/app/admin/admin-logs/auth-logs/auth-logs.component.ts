@@ -35,8 +35,6 @@ interface AuthLog {
   styleUrls: ['./auth-logs.component.scss'],
 })
 export class AdminAuthLogsComponent implements OnInit, OnDestroy {
-  userRole!: string | null;
-
   logs: AuthLog[] = [];
 
   selectedLog: AuthLog | null = null;
@@ -69,14 +67,9 @@ export class AdminAuthLogsComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    const roleSub = this.tokenService.userRole$.subscribe((role) => {
-      this.userRole = role;
-      if (this.userRole === 'Admin' || this.userRole === 'Owner') {
-        this.adminService.getAuthLogDataObservable().subscribe((logs) => {
-          if (logs) {
-            this.logs = logs;
-          }
-        });
+    this.adminService.getAuthLogDataObservable().subscribe((logs) => {
+      if (logs) {
+        this.logs = logs;
       }
     });
 
@@ -94,7 +87,6 @@ export class AdminAuthLogsComponent implements OnInit, OnDestroy {
         }
       });
 
-    this.subscriptions.add(roleSub);
     this.subscriptions.add(settingsSub);
   }
 

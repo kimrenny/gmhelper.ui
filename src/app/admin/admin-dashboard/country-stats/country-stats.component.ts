@@ -19,7 +19,6 @@ interface CountryStats {
 })
 export class CountryStatsComponent implements OnInit, OnDestroy {
   countryStats: CountryStats[] = [];
-  private userRole: string | null = null;
   private subscriptions = new Subscription();
 
   constructor(
@@ -28,18 +27,11 @@ export class CountryStatsComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    const roleSub = this.tokenService.userRole$.subscribe((role) => {
-      this.userRole = role;
-      if (this.userRole === 'Admin' || this.userRole === 'Owner') {
-        this.adminService.getCountryUsersDataObservable().subscribe((stats) => {
-          if (stats) {
-            this.processCountryStats(stats);
-          }
-        });
+    this.adminService.getCountryUsersDataObservable().subscribe((stats) => {
+      if (stats) {
+        this.processCountryStats(stats);
       }
     });
-
-    this.subscriptions.add(roleSub);
   }
 
   processCountryStats(stats: CountryStats[]): void {

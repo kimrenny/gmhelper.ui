@@ -57,7 +57,6 @@ export class RequestsChartComponent
 
   private chart?: Chart;
 
-  userRole: string | any;
   selectedPeriod: string = 'week';
 
   private currentDataRegular: RequestsData[] = [];
@@ -74,12 +73,7 @@ export class RequestsChartComponent
   ) {}
 
   ngOnInit(): void {
-    const roleSub = this.tokenService.userRole$.subscribe((role) => {
-      this.userRole = role;
-      if (this.userRole === 'Admin' || this.userRole === 'Owner') {
-        this.loadRequestsData();
-      }
-    });
+    this.loadRequestsData();
 
     const langSub = this.translateService.onLangChange.subscribe(() => {
       this.updateChartData(
@@ -90,7 +84,6 @@ export class RequestsChartComponent
       );
     });
 
-    this.subscriptions.add(roleSub);
     this.subscriptions.add(langSub);
   }
 

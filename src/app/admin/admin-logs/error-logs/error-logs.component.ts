@@ -34,8 +34,6 @@ interface ErrorLog {
   styleUrls: ['./error-logs.component.scss'],
 })
 export class AdminErrorLogsComponent implements OnInit, OnDestroy {
-  userRole!: string | null;
-
   logs: ErrorLog[] = [];
 
   selectedLog: ErrorLog | null = null;
@@ -66,14 +64,9 @@ export class AdminErrorLogsComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    const roleSub = this.tokenService.userRole$.subscribe((role) => {
-      this.userRole = role;
-      if (this.userRole === 'Admin' || this.userRole === 'Owner') {
-        this.adminService.getErrorLogDataObservable().subscribe((logs) => {
-          if (logs) {
-            this.logs = logs;
-          }
-        });
+    this.adminService.getErrorLogDataObservable().subscribe((logs) => {
+      if (logs) {
+        this.logs = logs;
       }
     });
 
@@ -91,7 +84,6 @@ export class AdminErrorLogsComponent implements OnInit, OnDestroy {
         }
       });
 
-    this.subscriptions.add(roleSub);
     this.subscriptions.add(settingsSub);
   }
 

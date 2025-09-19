@@ -9,6 +9,10 @@ import { TranslateModule } from '@ngx-translate/core';
 import { AdminSettingsService } from 'src/app/services/admin-settings.service';
 import { FormsModule } from '@angular/forms';
 import { TooltipDirective } from 'src/app/shared/directives/tooltip/tooltip.directive';
+import * as AuthSelectors from '../../store/auth/auth.selectors';
+import * as UserState from 'src/app/store/user/user.state';
+import * as AuthState from 'src/app/store/auth/auth.state';
+import { Store } from '@ngrx/store';
 
 interface DeviceInfo {
   userAgent: string;
@@ -35,7 +39,6 @@ interface Token {
 })
 export class AdminTokensComponent implements OnInit, OnDestroy {
   currentToken!: string | null;
-  userRole!: string | null;
 
   tokens: Token[] = [];
 
@@ -65,23 +68,23 @@ export class AdminTokensComponent implements OnInit, OnDestroy {
     private adminSettingsService: AdminSettingsService,
     private tokenService: TokenService,
     private toastr: ToastrService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private store: Store<AuthState.AuthState>
   ) {}
 
   ngOnInit(): void {
-    this.currentToken = this.tokenService.getTokenFromStorage('authToken');
+    const tokenSub = this.store
+      .select(AuthSelectors.selectAccessToken)
+      .subscribe((token) => {
+        this.currentToken = token;
+      });
 
-    const roleSub = this.tokenService.userRole$.subscribe((role) => {
-      this.userRole = role;
-      if (this.userRole === 'Admin' || this.userRole === 'Owner') {
-        this.adminService.getTokens().subscribe((tokens) => {
-          if (tokens) {
-            this.tokens = tokens;
-            if (!this.sortColumn) {
-              this.sortByColumn('expiration');
-            }
-          }
-        });
+    this.adminService.getTokens().subscribe((tokens) => {
+      if (tokens) {
+        this.tokens = tokens;
+        if (!this.sortColumn) {
+          this.sortByColumn('expiration');
+        }
       }
     });
 
@@ -99,7 +102,6 @@ export class AdminTokensComponent implements OnInit, OnDestroy {
         }
       });
 
-    this.subscriptions.add(roleSub);
     this.subscriptions.add(settingsSub);
   }
 

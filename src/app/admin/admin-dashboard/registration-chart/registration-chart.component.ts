@@ -55,7 +55,6 @@ export class RegistrationChartComponent
   canvas!: ElementRef<HTMLCanvasElement>;
   private chart?: Chart;
 
-  userRole: string | any;
   selectedPeriod: string = 'week';
   private currentData: RegistrationData[] = [];
   private isDaily: boolean = true;
@@ -69,18 +68,12 @@ export class RegistrationChartComponent
   ) {}
 
   ngOnInit(): void {
-    const roleSub = this.tokenService.userRole$.subscribe((role) => {
-      this.userRole = role;
-      if (this.userRole === 'Admin' || this.userRole === 'Owner') {
-        this.loadRegistrationData();
-      }
-    });
+    this.loadRegistrationData();
 
     const langSub = this.translateService.onLangChange.subscribe(() => {
       this.updateChartData(this.currentData, this.isDaily, this.isMonthly);
     });
 
-    this.subscriptions.add(roleSub);
     this.subscriptions.add(langSub);
   }
 

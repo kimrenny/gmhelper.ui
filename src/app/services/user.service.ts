@@ -1,26 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import {
-  BehaviorSubject,
-  catchError,
-  Observable,
-  throwError,
-  tap,
-  switchMap,
-  timer,
-  of,
-  map,
-  take,
-  first,
-} from 'rxjs';
+import { Observable, switchMap, map } from 'rxjs';
 import { TokenService } from './token.service';
 import { ApiResponse } from '../models/api-response.model';
 import { environment } from 'src/environments/environment';
 import { UserDetails } from '../models/user.model';
-import { Store } from '@ngrx/store';
-import * as UserActions from '../store/user/user.actions';
-import * as UserSelectors from '../store/user/user.selectors';
-import * as UserState from '../store/user/user.state';
 import { LanguageCode } from '../models/languages.model';
 
 enum Errors {
@@ -63,48 +47,37 @@ export class UserService {
   }
 
   updateUserData(formData: FormData): Observable<any> {
-    const token = this.tokenService.getTokenFromStorage('authToken');
-
-    if (!token) {
-      return throwError(() => new Error('Token does not exist'));
-    }
-
-    return this.http.patch(`${this.api}/user/profile`, formData, {
-      headers: this.tokenService.createAuthHeaders(token),
-    });
+    return this.tokenService.getToken$().pipe(
+      switchMap((token) =>
+        this.http.patch(`${this.api}/user/profile`, formData, {
+          headers: this.tokenService.createAuthHeaders(token),
+        })
+      )
+    );
   }
 
   uploadAvatar(avatar: File): Observable<any> {
-    const token = this.tokenService.getTokenFromStorage('authToken');
+    return this.tokenService.getToken$().pipe(
+      switchMap((token) => {
+        const formData = new FormData();
+        formData.append('avatar', avatar);
 
-    if (!token) {
-      return throwError(() => new Error('Token does not exist'));
-    }
-
-    const formData = new FormData();
-    formData.append('avatar', avatar);
-
-    return this.http.post(`${this.api}/user/avatar`, formData, {
-      headers: this.tokenService.createAuthHeaders(token),
-    });
+        return this.http.post(`${this.api}/user/avatar`, formData, {
+          headers: this.tokenService.createAuthHeaders(token),
+        });
+      })
+    );
   }
 
   updateLanguage(language: LanguageCode): Observable<any> {
-    const token = this.tokenService.getTokenFromStorage('authToken');
-
-    if (!token) {
-      return throwError(() => new Error('Token does not exist'));
-    }
-
-    const url = `${this.api}/user/profile/language`;
-    const body = { language: language.toUpperCase() };
-    const headers = this.tokenService.createAuthHeaders(token);
-
-    return this.http.patch(url, body, { headers });
-  }
-
-  clearUser(): void {
-    this.tokenService.clearTokens();
+    return this.tokenService.getToken$().pipe(
+      switchMap((token) => {
+        const url = `${this.api}/user/profile/language`;
+        const body = { language: language.toUpperCase() };
+        const headers = this.tokenService.createAuthHeaders(token);
+        return this.http.patch(url, body, { headers });
+      })
+    );
   }
 
   private normalizeLanguage(lang: string): UserDetails['language'] {

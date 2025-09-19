@@ -9,11 +9,14 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
-import { Subscription } from 'rxjs';
+import { Subscription, take } from 'rxjs';
 import { TokenService } from 'src/app/services/token.service';
 import { MathCanvasSolutionService } from '../math-solution-services/canvas-solution.service';
 import { CanvasService } from '../services/math-canvas/canvas.service';
 import { LatexRendererService } from '../services/math-canvas/latex-renderer.service';
+import { Store } from '@ngrx/store';
+import * as AuthState from '../../../store/auth/auth.state';
+import * as AuthSelectors from '../../../store/auth/auth.selectors';
 
 @Component({
   selector: 'app-math-solution-canvas',
@@ -40,7 +43,8 @@ export class MathSolutionCanvasComponent implements OnInit, OnDestroy {
     private mathCanvasSolutionService: MathCanvasSolutionService,
     private latexRenderer: LatexRendererService,
     private toastr: ToastrService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private store: Store<AuthState.AuthState>
   ) {}
 
   ngOnInit(): void {
@@ -60,9 +64,12 @@ export class MathSolutionCanvasComponent implements OnInit, OnDestroy {
       }
     );
 
-    this.sub = this.tokenService.userRole$.subscribe((role) => {
-      this.isAuthorized = !!role;
-    });
+    this.sub = this.store
+      .select(AuthSelectors.selectUserRole)
+      .pipe(take(1))
+      .subscribe((role: string | null) => {
+        this.isAuthorized = role === 'Admin' || role === 'Owner';
+      });
   }
 
   renderLatex(latex: string) {

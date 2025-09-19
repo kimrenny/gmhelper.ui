@@ -11,7 +11,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { GeoCanvasSolutionService } from '../geometry-solution-services/canvas-solution.service';
 import { SubjectService } from '../services/subject.service';
-import { Observable, Subscription, throwError } from 'rxjs';
+import { Observable, Subscription, take, throwError } from 'rxjs';
 import { PointsSolutionService } from '../geometry-solution-services/points-solution.service';
 import { LinesSolutionService } from '../geometry-solution-services/lines-solution.service';
 import { StackSolutionService } from '../geometry-solution-services/stack-solution.service';
@@ -20,6 +20,9 @@ import { FigureElementsSolutionService } from '../geometry-solution-services/fig
 import { CanvasService } from '../services/geometry-canvas/canvas.service';
 import { TokenService } from 'src/app/services/token.service';
 import { GivenSolutionService } from '../geometry-solution-services/given-solution.service';
+import { Store } from '@ngrx/store';
+import * as AuthState from '../../../store/auth/auth.state';
+import * as AuthSelectors from '../../../store/auth/auth.selectors';
 
 @Component({
   selector: 'app-geometry-solution-canvas',
@@ -58,6 +61,7 @@ export class GeoSolutionCanvasComponent implements OnInit, OnDestroy {
   constructor(
     private canvasService: CanvasService,
     private tokenService: TokenService,
+    private store: Store<AuthState.AuthState>,
     private geoCanvasSolutionService: GeoCanvasSolutionService,
     private pointsService: PointsSolutionService,
     private linesService: LinesSolutionService,
@@ -88,9 +92,12 @@ export class GeoSolutionCanvasComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.sub = this.tokenService.userRole$.subscribe((role) => {
-      this.isAuthorized = !!role;
-    });
+    this.sub = this.store
+      .select(AuthSelectors.selectUserRole)
+      .pipe(take(1))
+      .subscribe((role: string | null) => {
+        this.isAuthorized = role === 'Admin' || role === 'Owner';
+      });
   }
 
   preventPageZoom = (e: WheelEvent) => {

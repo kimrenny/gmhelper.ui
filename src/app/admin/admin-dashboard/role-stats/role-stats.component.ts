@@ -19,7 +19,6 @@ interface RoleStats {
 })
 export class RoleStatsComponent implements OnInit, OnDestroy {
   roleStats: RoleStats[] = [];
-  private userRole: string | null = null;
   private subscriptions = new Subscription();
 
   constructor(
@@ -28,18 +27,11 @@ export class RoleStatsComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    const roleSub = this.tokenService.userRole$.subscribe((role) => {
-      this.userRole = role;
-      if (this.userRole === 'Admin' || this.userRole === 'Owner') {
-        this.adminService.getRoleStatsDataObservable().subscribe((stats) => {
-          if (stats) {
-            this.roleStats = stats;
-          }
-        });
+    this.adminService.getRoleStatsDataObservable().subscribe((stats) => {
+      if (stats) {
+        this.roleStats = stats;
       }
     });
-
-    this.subscriptions.add(roleSub);
   }
 
   ngOnDestroy(): void {

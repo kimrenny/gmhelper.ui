@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, BehaviorSubject } from 'rxjs';
-import { map, switchMap, tap } from 'rxjs/operators';
+import { Observable, BehaviorSubject, of } from 'rxjs';
+import { map, switchMap, take, tap } from 'rxjs/operators';
 import { ApiResponse } from '../models/api-response.model';
 import { TokenService } from './token.service';
 import { environment } from 'src/environments/environment';
@@ -17,20 +17,26 @@ export class AdminSettingsService {
   constructor(private http: HttpClient, private tokenService: TokenService) {}
 
   loadSettings(): void {
-    const token = this.tokenService.getTokenFromStorage('authToken');
-    const role = this.tokenService.getUserRole();
+    this.tokenService
+      .getToken$()
+      .pipe(
+        take(1),
+        switchMap((token) => {
+          if (!token || !this.checkAdminPermissions(token)) {
+            this.settingsSubject.next(null);
+            return of(null);
+          }
 
-    if (!token || !this.checkAdminPermissions(role)) {
-      this.settingsSubject.next(null);
-      return;
-    }
-
-    this.http
-      .get<ApiResponse<boolean[][]>>(`${this.apiUrl}/settings`, {
-        headers: this.tokenService.createAuthHeaders(token),
-      })
-      .pipe(map((response) => response.data))
-      .subscribe((settings) => this.settingsSubject.next(settings));
+          return this.http
+            .get<ApiResponse<boolean[][]>>(`${this.apiUrl}/settings`, {
+              headers: this.tokenService.createAuthHeaders(token),
+            })
+            .pipe(map((response) => response.data));
+        })
+      )
+      .subscribe((settings) => {
+        if (settings) this.settingsSubject.next(settings);
+      });
   }
 
   getSettingsData(): Observable<boolean[][] | null> {
@@ -42,29 +48,16 @@ export class AdminSettingsService {
     switchLabel: string,
     newValue: boolean
   ): Observable<void> {
-    const authToken = this.tokenService.getTokenFromStorage('authToken');
+    return this.tokenService.getToken$().pipe(
+      take(1),
+      switchMap((token) => {
+        if (!token || !this.checkAdminPermissions(token)) return of(void 0);
 
-    if (!authToken) {
-      return new Observable<void>((observer) => {
-        observer.complete();
-      });
-    }
-
-    return this.tokenService.userRole$.pipe(
-      switchMap((role) => {
-        if (this.checkAdminPermissions(role)) {
-          return this.http.patch<void>(
-            `${this.apiUrl}/settings/${sectionTitle}/${switchLabel}`,
-            { newValue },
-            {
-              headers: this.tokenService.createAuthHeaders(authToken),
-            }
-          );
-        } else {
-          return new Observable<void>((observer) => {
-            observer.complete();
-          });
-        }
+        return this.http.patch<void>(
+          `${this.apiUrl}/settings/${sectionTitle}/${switchLabel}`,
+          { newValue },
+          { headers: this.tokenService.createAuthHeaders(token) }
+        );
       })
     );
   }
@@ -147,7 +140,8 @@ export class AdminSettingsService {
     return -1;
   }
 
-  checkAdminPermissions(role: string | null): boolean {
+  checkAdminPermissions(token: string): boolean {
+    const role = this.tokenService.extractUserRole(token);
     return role == 'Admin' || role == 'Owner';
   }
 }

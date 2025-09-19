@@ -9,6 +9,7 @@ import {
   Observable,
   of,
   switchMap,
+  take,
   tap,
   throwError,
 } from 'rxjs';
@@ -56,20 +57,23 @@ export class MathCanvasSolutionService {
   }
 
   rateSolution(isCorrect: boolean): Observable<any> {
-    const token = this.tokenService.getTokenFromStorage('authToken');
-    if (!token) {
-      return throwError(() => new Error('USER_NOT_AUTHORIZED_CLIENT'));
-    }
-
-    return from(firstValueFrom(this.taskId$)).pipe(
-      switchMap((taskId) => {
-        if (!taskId) {
-          return throwError(() => new Error('taskId is empty'));
+    return this.tokenService.getToken$().pipe(
+      take(1),
+      switchMap((token) => {
+        if (!token) {
+          return throwError(() => new Error('USER_NOT_AUTHORIZED_CLIENT'));
         }
-        const url = `${this.api}/tasks/math/${taskId}/rating`;
-        const body = { isCorrect };
-        const headers = this.tokenService.createAuthHeaders(token);
-        return this.http.post(url, body, { headers });
+        return from(firstValueFrom(this.taskId$)).pipe(
+          switchMap((taskId) => {
+            if (!taskId) {
+              return throwError(() => new Error('taskId is empty'));
+            }
+            const url = `${this.api}/tasks/math/${taskId}/rating`;
+            const body = { isCorrect };
+            const headers = this.tokenService.createAuthHeaders(token);
+            return this.http.post(url, body, { headers });
+          })
+        );
       })
     );
   }

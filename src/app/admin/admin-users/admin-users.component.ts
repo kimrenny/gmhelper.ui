@@ -20,6 +20,9 @@ import { TooltipDirective } from 'src/app/shared/directives/tooltip/tooltip.dire
 import { Store } from '@ngrx/store';
 import * as UserActions from '../../store/user/user.actions';
 import * as UserSelectors from '../../store/user/user.selectors';
+import * as AuthSelectors from '../../store/auth/auth.selectors';
+import * as UserState from 'src/app/store/user/user.state';
+import * as AuthState from 'src/app/store/auth/auth.state';
 
 interface DeviceInfo {
   userAgent: string;
@@ -94,23 +97,26 @@ export class AdminUsersComponent implements OnInit, OnDestroy {
     private userService: UserService,
     private toastr: ToastrService,
     private translate: TranslateService,
-    private store: Store
+    private store: Store<UserState.UserState>,
+    private authStore: Store<AuthState.AuthState>
   ) {}
 
   ngOnInit(): void {
-    const roleSub = this.tokenService.userRole$.subscribe((role) => {
-      this.userRole = role;
-      if (this.userRole === 'Admin' || this.userRole === 'Owner') {
-        this.adminService.getUsers().subscribe((users) => {
-          if (users) {
-            this.users = users;
-            if (!this.sortColumn) {
-              this.sortByColumn('registrationDate');
+    const roleSub = this.authStore
+      .select(AuthSelectors.selectUserRole)
+      .subscribe((role) => {
+        this.userRole = role;
+        if (this.userRole === 'Admin' || this.userRole === 'Owner') {
+          this.adminService.getUsers().subscribe((users) => {
+            if (users) {
+              this.users = users;
+              if (!this.sortColumn) {
+                this.sortByColumn('registrationDate');
+              }
             }
-          }
-        });
-      }
-    });
+          });
+        }
+      });
 
     const userSub = this.store
       .select(UserSelectors.selectUser)
