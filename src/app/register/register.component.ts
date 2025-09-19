@@ -14,6 +14,9 @@ import { Store } from '@ngrx/store';
 import * as UserState from '../store/user/user.state';
 import * as UserSelectors from '../store/user/user.selectors';
 import * as UserActions from '../store/user/user.actions';
+import * as AuthState from '../store/auth/auth.state';
+import * as AuthActions from '../store/auth/auth.actions';
+import { TokenService } from '../services/token.service';
 
 @Component({
   selector: 'app-register',
@@ -83,8 +86,9 @@ export class RegisterComponent {
     private registerService: RegisterService,
     private route: ActivatedRoute,
     private router: Router,
-    @Inject(UserService) private userService: UserService,
-    private store: Store<UserState.UserState>
+    private authStore: Store<AuthState.AuthState>,
+    private store: Store<UserState.UserState>,
+    private tokenService: TokenService
   ) {
     this.isAuthorized = this.store.select(UserSelectors.selectIsAuthorized);
   }
@@ -261,9 +265,16 @@ export class RegisterComponent {
               return;
             }
             if (response.data.accessToken && response.data.refreshToken) {
-              localStorage.setItem('authToken', response.data.accessToken);
-              localStorage.setItem('refreshToken', response.data.refreshToken);
-              this.store.dispatch(UserActions.initUser());
+              const role = this.tokenService.extractUserRole(
+                response.data.accessToken
+              );
+              this.authStore.dispatch(
+                AuthActions.loginSuccess({
+                  accessToken: response.data.accessToken,
+                  refreshToken: response.data.refreshToken,
+                  role: role,
+                })
+              );
               this.loginFeedbackMessage = 'REGISTER.ERRORS.LOGIN.SUCCESS';
               this.clearMessageAfterDelay('login');
               // setTimeout(() => {
@@ -324,10 +335,17 @@ export class RegisterComponent {
         next: (response: ApiResponse<LoginResponse>) => {
           if (response.success && response.data) {
             if (response.data.accessToken && response.data.refreshToken) {
-              localStorage.setItem('authToken', response.data.accessToken);
-              localStorage.setItem('refreshToken', response.data.refreshToken);
+              const role = this.tokenService.extractUserRole(
+                response.data.accessToken
+              );
+              this.authStore.dispatch(
+                AuthActions.loginSuccess({
+                  accessToken: response.data.accessToken,
+                  refreshToken: response.data.refreshToken,
+                  role: role,
+                })
+              );
               this.showCodeInput = false;
-              this.store.dispatch(UserActions.initUser());
               this.loginFeedbackMessage = 'REGISTER.ERRORS.LOGIN.SUCCESS';
               this.clearMessageAfterDelay('login');
               setTimeout(() => this.router.navigate(['/']), 1000);
@@ -354,10 +372,17 @@ export class RegisterComponent {
         next: (response: ApiResponse<LoginResponse>) => {
           if (response.success && response.data) {
             if (response.data.accessToken && response.data.refreshToken) {
-              localStorage.setItem('authToken', response.data.accessToken);
-              localStorage.setItem('refreshToken', response.data.refreshToken);
+              const role = this.tokenService.extractUserRole(
+                response.data.accessToken
+              );
+              this.authStore.dispatch(
+                AuthActions.loginSuccess({
+                  accessToken: response.data.accessToken,
+                  refreshToken: response.data.refreshToken,
+                  role: role,
+                })
+              );
               this.showCodeInput = false;
-              this.store.dispatch(UserActions.initUser());
               this.loginFeedbackMessage = 'REGISTER.ERRORS.LOGIN.SUCCESS';
               this.clearMessageAfterDelay('login');
               setTimeout(() => this.router.navigate(['/']), 1000);

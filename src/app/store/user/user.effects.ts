@@ -15,7 +15,9 @@ import { UserService } from 'src/app/services/user.service';
 import { TokenService } from 'src/app/services/token.service';
 import * as UserState from '../../store/user/user.state';
 import { Store } from '@ngrx/store';
-import { selectUser } from './user.selectors';
+import * as UserSelectors from './user.selectors';
+import * as AuthState from '../../store/auth/auth.state';
+import * as AuthSelectors from '../../store/auth/auth.selectors';
 
 @Injectable()
 export class UserEffects {
@@ -23,28 +25,19 @@ export class UserEffects {
     this.actions$.pipe(
       ofType(UserActions.initUser),
       withLatestFrom(
-        this.store.select(selectUser),
-        this.store.select((state: UserState.UserState) => state.isUserLoading)
+        this.store.select(UserSelectors.selectUser),
+        this.store.select((state: UserState.UserState) => state.isUserLoading),
+        this.authStore.select(AuthSelectors.selectAccessToken),
+        this.authStore.select(AuthSelectors.selectRefreshToken)
       ),
-      switchMap(([action, user, isLoading]) => {
+      switchMap(([action, user, isLoading, authToken, refreshToken]) => {
         if (user.nickname !== 'Guest' || isLoading) {
           return of(UserActions.loadUserSuccess({ user }));
         }
 
-        const authToken = this.tokenService.getTokenFromStorage('authToken');
-        const refreshToken =
-          this.tokenService.getTokenFromStorage('refreshToken');
-
-        if (!authToken && !refreshToken) {
-          return of(UserActions.loadUserFailure());
-        }
-
-        return this.tokenService
-          .ensureTokenValidity(authToken, refreshToken)
-          .pipe(
-            switchMap((validToken) => this.tryLoadUser(validToken, 0)),
-            catchError(() => of(UserActions.loadUserFailure()))
-          );
+        return authToken
+          ? this.tryLoadUser(authToken, 0)
+          : of(UserActions.loadUserFailure());
       })
     )
   );
@@ -52,8 +45,8 @@ export class UserEffects {
   loadUser$ = createEffect(() =>
     this.actions$.pipe(
       ofType(UserActions.loadUser),
-      switchMap(() => {
-        const token = this.tokenService.getTokenFromStorage('authToken');
+      withLatestFrom(this.authStore.select(AuthSelectors.selectAccessToken)),
+      switchMap(([action, token]) => {
         if (!token) return of(UserActions.loadUserFailure());
 
         return this.tryLoadUser(token, 0);
@@ -80,12 +73,6 @@ export class UserEffects {
         if (error.status === 0 || error.status === 429) {
           if (attempt < 3) {
             const delayTime = Math.pow(2, attempt) * 5000;
-            console.log(
-              `%c[NgRx] Retry loading user in ${delayTime / 1000}s (attempt ${
-                attempt + 1
-              })`,
-              'color: orange;'
-            );
             return timer(delayTime).pipe(
               switchMap(() => this.tryLoadUser(token, attempt + 1))
             );
@@ -114,8 +101,8 @@ export class UserEffects {
   updateUserLanguage$ = createEffect(() =>
     this.actions$.pipe(
       ofType(UserActions.updateUserLanguage),
-      switchMap(({ language }) => {
-        const token = this.tokenService.getTokenFromStorage('authToken');
+      withLatestFrom(this.authStore.select(AuthSelectors.selectAccessToken)),
+      switchMap(([{ language }, token]) => {
         if (!token) return of(UserActions.loadUserFailure());
 
         return this.userService.updateLanguage(language).pipe(
@@ -130,6 +117,7 @@ export class UserEffects {
     private actions$: Actions,
     private userService: UserService,
     private tokenService: TokenService,
-    private store: Store<UserState.UserState>
+    private store: Store<UserState.UserState>,
+    private authStore: Store<AuthState.AuthState>
   ) {}
 }

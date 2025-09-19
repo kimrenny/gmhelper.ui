@@ -14,6 +14,7 @@ import {
   Observable,
   of,
   switchMap,
+  take,
   tap,
   throwError,
 } from 'rxjs';
@@ -36,6 +37,7 @@ import { environment } from 'src/environments/environment';
 import { TokenService } from 'src/app/services/token.service';
 import { GivenSolutionService } from './given-solution.service';
 import { Pencil } from '../drawing-tools/pencil.tool';
+import * as AuthSelectors from '../../../store/auth/auth.selectors';
 
 @Injectable({
   providedIn: 'root',
@@ -132,20 +134,23 @@ export class GeoCanvasSolutionService implements CanvasServiceInterface {
   }
 
   rateSolution(isCorrect: boolean): Observable<any> {
-    const token = this.tokenService.getTokenFromStorage('authToken');
-    if (!token) {
-      return throwError(() => new Error('USER_NOT_AUTHORIZED_CLIENT'));
-    }
-
-    return from(firstValueFrom(this.taskId$)).pipe(
-      switchMap((taskId) => {
-        if (!taskId) {
-          return throwError(() => new Error('taskId is empty'));
+    return this.tokenService.getToken$().pipe(
+      take(1),
+      switchMap((token) => {
+        if (!token) {
+          return throwError(() => new Error('USER_NOT_AUTHORIZED_CLIENT'));
         }
-        const url = `${this.api}/tasks/geo/${taskId}/rating`;
-        const body = { isCorrect };
-        const headers = this.tokenService.createAuthHeaders(token);
-        return this.http.post(url, body, { headers });
+        return from(firstValueFrom(this.taskId$)).pipe(
+          switchMap((taskId) => {
+            if (!taskId) {
+              return throwError(() => new Error('taskId is empty'));
+            }
+            const url = `${this.api}/tasks/geo/${taskId}/rating`;
+            const body = { isCorrect };
+            const headers = this.tokenService.createAuthHeaders(token);
+            return this.http.post(url, body, { headers });
+          })
+        );
       })
     );
   }

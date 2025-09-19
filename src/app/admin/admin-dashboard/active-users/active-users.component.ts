@@ -17,7 +17,6 @@ export class ActiveUsersComponent implements OnInit, OnDestroy {
   totalTokens: number | any;
   activeAdminTokens: number | any;
   totalAdminTokens: number | any;
-  userRole: string | any;
   private subscriptions = new Subscription();
 
   constructor(
@@ -26,40 +25,29 @@ export class ActiveUsersComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    const roleSub = this.tokenService.userRole$.subscribe((role) => {
-      this.userRole = role;
-      if (this.userRole === 'Admin' || this.userRole === 'Owner') {
-        this.adminService.getActiveTokensObservable().subscribe((tokens) => {
-          if (tokens) {
-            this.activeTokens = tokens;
-          }
-        });
-
-        this.adminService.getTotalTokensObservable().subscribe((tokens) => {
-          if (tokens) {
-            this.totalTokens = tokens;
-          }
-        });
-
-        this.adminService
-          .getActiveAdminTokensObservable()
-          .subscribe((tokens) => {
-            if (tokens) {
-              this.activeAdminTokens = tokens;
-            }
-          });
-
-        this.adminService
-          .getTotalAdminTokensObservable()
-          .subscribe((tokens) => {
-            if (tokens) {
-              this.totalAdminTokens = tokens;
-            }
-          });
+    this.adminService.getActiveTokensObservable().subscribe((tokens) => {
+      if (tokens) {
+        this.activeTokens = tokens;
       }
     });
 
-    this.subscriptions.add(roleSub);
+    this.adminService.getTotalTokensObservable().subscribe((tokens) => {
+      if (tokens) {
+        this.totalTokens = tokens;
+      }
+    });
+
+    this.adminService.getActiveAdminTokensObservable().subscribe((tokens) => {
+      if (tokens) {
+        this.activeAdminTokens = tokens;
+      }
+    });
+
+    this.adminService.getTotalAdminTokensObservable().subscribe((tokens) => {
+      if (tokens) {
+        this.totalAdminTokens = tokens;
+      }
+    });
   }
 
   ngOnDestroy(): void {

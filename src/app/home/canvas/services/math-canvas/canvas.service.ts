@@ -1,6 +1,14 @@
 import { inject, Injectable } from '@angular/core';
 import { Coords2d } from '../../drawing-tools/types/coords.type';
-import { BehaviorSubject, catchError, Observable, tap, throwError } from 'rxjs';
+import {
+  BehaviorSubject,
+  catchError,
+  Observable,
+  switchMap,
+  take,
+  tap,
+  throwError,
+} from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { ApiResponse } from 'src/app/models/api-response.model';
 import { environment } from 'src/environments/environment';
@@ -44,23 +52,25 @@ export class CanvasService {
   }
 
   private sendTaskToApi() {
-    const token = this.tokenService.getTokenFromStorage('authToken');
-
-    const options = token
-      ? { headers: this.tokenService.createAuthHeaders(token) }
-      : {};
-
     const data = this.serializeTaskJson();
 
-    if (data) {
-      return this.http.post<ApiResponse<string>>(
-        `${this.api}/tasks/math`,
-        data,
-        options
-      );
+    if (!data) {
+      return throwError(() => new Error('LaTeX is not valid.'));
     }
 
-    return throwError('LaTeX is not valid.');
+    return this.tokenService.getToken$().pipe(
+      take(1),
+      switchMap((token) => {
+        const options = token
+          ? { headers: this.tokenService.createAuthHeaders(token) }
+          : {};
+        return this.http.post<ApiResponse<string>>(
+          `${this.api}/tasks/math`,
+          data,
+          options
+        );
+      })
+    );
   }
 
   serializeTaskJson(): any {

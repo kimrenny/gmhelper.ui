@@ -1,11 +1,18 @@
 import { inject, Injectable } from '@angular/core';
-import { Coords2d } from '../../drawing-tools/types/coords.type';
 import { PointsService } from './points.service';
 import { StackService } from './stack.service';
 import { AnglesService } from './angles.service';
 import { FigureElementsService } from './figure-elements.service';
 import { LinesService } from './lines.service';
-import { BehaviorSubject, catchError, Observable, tap, throwError } from 'rxjs';
+import {
+  BehaviorSubject,
+  catchError,
+  Observable,
+  switchMap,
+  take,
+  tap,
+  throwError,
+} from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { ApiResponse } from 'src/app/models/api-response.model';
 import { CanvasServiceInterface } from '../../interfaces/canvas-service.interface';
@@ -62,16 +69,18 @@ export class CanvasService implements CanvasServiceInterface {
   }
 
   private sendTaskToApi(data: any) {
-    const token = this.tokenService.getTokenFromStorage('authToken');
-
-    const options = token
-      ? { headers: this.tokenService.createAuthHeaders(token) }
-      : {};
-
-    return this.http.post<ApiResponse<string>>(
-      `${this.api}/tasks/geo`,
-      data,
-      options
+    return this.tokenService.getToken$().pipe(
+      take(1),
+      switchMap((token) => {
+        const options = token
+          ? { headers: this.tokenService.createAuthHeaders(token) }
+          : {};
+        return this.http.post<ApiResponse<string>>(
+          `${this.api}/tasks/geo`,
+          data,
+          options
+        );
+      })
     );
   }
 

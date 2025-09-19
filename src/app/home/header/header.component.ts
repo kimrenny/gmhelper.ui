@@ -21,6 +21,9 @@ import * as UserSelectors from 'src/app/store/user/user.selectors';
 import { UserDetails } from 'src/app/models/user.model';
 import { Store } from '@ngrx/store';
 import * as UserActions from 'src/app/store/user/user.actions';
+import * as AuthActions from 'src/app/store/auth/auth.actions';
+import * as AuthSelectors from 'src/app/store/auth/auth.selectors';
+import * as AuthState from 'src/app/store/auth/auth.state';
 
 @Component({
   selector: 'app-header',
@@ -43,8 +46,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
   private subscriptions = new Subscription();
 
   constructor(
-    @Inject(UserService) private userService: UserService,
     private store: Store<UserState.UserState>,
+    private authStore: Store<AuthState.AuthState>,
     private tokenService: TokenService,
     private headerService: HeaderService,
     private languageService: LanguageService,
@@ -75,9 +78,15 @@ export class HeaderComponent implements OnInit, OnDestroy {
       }
     });
 
-    const roleSub = this.tokenService.userRole$.subscribe((role) => {
-      this.userRole = role;
-    });
+    const roleSub = this.authStore
+      .select(AuthSelectors.selectAccessToken)
+      .subscribe((token) => {
+        if (token) {
+          this.userRole = this.tokenService.extractUserRole(token);
+        } else {
+          this.userRole = 'Guest';
+        }
+      });
 
     const loadingSub = this.store
       .select(UserSelectors.selectIsUserLoading)
@@ -144,8 +153,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   logout() {
-    this.userService.clearUser();
-    this.store.dispatch(UserActions.clearUser());
+    this.authStore.dispatch(AuthActions.logout());
     this.showUserMenu = false;
     this.router.navigate(['/']);
   }

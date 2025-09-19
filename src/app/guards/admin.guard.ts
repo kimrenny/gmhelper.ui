@@ -1,46 +1,61 @@
 import { Injectable } from '@angular/core';
-import {
-  CanActivate,
-  ActivatedRouteSnapshot,
-  RouterStateSnapshot,
-  GuardResult,
-  MaybeAsync,
-  Router,
-} from '@angular/router';
+import { CanActivate, Router } from '@angular/router';
 import { AdminService } from '../services/admin.service';
 import { TokenService } from '../services/token.service';
-import { catchError, map, of, switchMap } from 'rxjs';
+import { catchError, filter, map, Observable, of, switchMap, take } from 'rxjs';
+import { Store } from '@ngrx/store';
+import * as AuthSelectors from '../store/auth/auth.selectors';
+import * as UserActions from '../store/user/user.actions';
+import * as AuthActions from '../store/auth/auth.actions';
+import * as AuthState from '../store/auth/auth.state';
 
 @Injectable({ providedIn: 'root' })
 export class AdminGuard implements CanActivate {
   constructor(
-    private adminService: AdminService,
+    private store: Store<AuthState.AuthState>,
     private tokenService: TokenService,
     private router: Router
   ) {}
 
-  canActivate() {
-    const authToken = this.tokenService.getTokenFromStorage('authToken');
-    const refreshToken = this.tokenService.getTokenFromStorage('refreshToken');
-
-    return this.tokenService.ensureTokenValidity(authToken, refreshToken).pipe(
-      map(() => {
-        const role = this.tokenService.getUserRole();
-        if (role === 'Admin' || role === 'Owner') {
-          return true;
+  canActivate(): Observable<boolean> {
+    return this.store.select(AuthSelectors.selectIsAuthChecked).pipe(
+      switchMap((checked) => {
+        if (!checked) {
+          return this.store.select(AuthSelectors.selectIsAuthChecked).pipe(
+            filter((c) => c === true),
+            take(1),
+            switchMap(() => this.checkRoleAndToken())
+          );
         }
-        this.router.navigate(['/'], {
-          queryParams: { section: 'welcome' },
-          replaceUrl: true,
-        });
-        return false;
-      }),
-      catchError(() => {
-        this.router.navigate(['/'], {
-          queryParams: { section: 'welcome' },
-          replaceUrl: true,
-        });
-        return of(false);
+        return this.checkRoleAndToken();
+      })
+    );
+  }
+
+  private checkRoleAndToken(): Observable<boolean> {
+    return this.store.select(AuthSelectors.selectAccessToken).pipe(
+      take(1),
+      switchMap((token) => {
+        if (!token) {
+          this.router.navigate(['/'], {
+            queryParams: { section: 'welcome' },
+            replaceUrl: true,
+          });
+          return of(false);
+        }
+
+        return this.store.select(AuthSelectors.selectUserRole).pipe(
+          take(1),
+          map((role) => {
+            if (role === 'Admin' || role === 'Owner') return true;
+
+            this.router.navigate(['/'], {
+              queryParams: { section: 'welcome' },
+              replaceUrl: true,
+            });
+            return false;
+          })
+        );
       })
     );
   }

@@ -42,8 +42,6 @@ interface RequestLog {
   styleUrls: ['./all-logs.component.scss'],
 })
 export class AdminAllLogsComponent implements OnInit, OnDestroy {
-  userRole!: string | null;
-
   logs: RequestLog[] = [];
 
   selectedLog: RequestLog | null = null;
@@ -76,14 +74,9 @@ export class AdminAllLogsComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    const roleSub = this.tokenService.userRole$.subscribe((role) => {
-      this.userRole = role;
-      if (this.userRole === 'Admin' || this.userRole === 'Owner') {
-        this.adminService.getRequestLogsDataObservable().subscribe((logs) => {
-          if (logs) {
-            this.logs = logs;
-          }
-        });
+    this.adminService.getRequestLogsDataObservable().subscribe((logs) => {
+      if (logs) {
+        this.logs = logs;
       }
     });
 
@@ -101,7 +94,6 @@ export class AdminAllLogsComponent implements OnInit, OnDestroy {
         }
       });
 
-    this.subscriptions.add(roleSub);
     this.subscriptions.add(settingsSub);
   }
 
