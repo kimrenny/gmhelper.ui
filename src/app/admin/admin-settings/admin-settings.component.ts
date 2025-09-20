@@ -1,11 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AdminSettingsService } from 'src/app/services/admin-settings.service';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { ReplaceColonPipe } from 'src/app/pipes/replace-colon.pipe';
 import { ReplaceSpacesPipe } from 'src/app/pipes/replace-spaces.pipe';
-import { SwitchItem } from 'src/app/models/admin.model';
+import { AdminSettings, SwitchItem } from 'src/app/models/admin.model';
+import * as AdminState from 'src/app/store/admin/admin.state';
+import * as AdminActions from 'src/app/store/admin/admin.actions';
+import { select, Store } from '@ngrx/store';
+import { selectAdminSettings } from 'src/app/store/admin/admin.selectors';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-admin-settings',
@@ -14,7 +18,7 @@ import { SwitchItem } from 'src/app/models/admin.model';
   templateUrl: './admin-settings.component.html',
   styleUrls: ['./admin-settings.component.scss'],
 })
-export class AdminSettingsComponent implements OnInit {
+export class AdminSettingsComponent implements OnInit, OnDestroy {
   sections: { title: string; switches: SwitchItem[] }[] = [
     {
       title: 'Dashboard',
@@ -58,30 +62,37 @@ export class AdminSettingsComponent implements OnInit {
     },
   ];
 
+  private subscriptions = new Subscription();
+
   constructor(
-    private settingsService: AdminSettingsService,
+    private store: Store<AdminState.AdminState>,
     private translate: TranslateService,
     private toastr: ToastrService
   ) {}
 
   ngOnInit() {
-    this.settingsService.settings$.subscribe((settings) => {
-      if (settings && Array.isArray(settings) && settings.length > 0) {
-        this.initSwitches(settings);
-      }
-    });
+    const dataSub = this.store
+      .pipe(select(selectAdminSettings))
+      .subscribe((settings) => {
+        if (settings.settings && Array.isArray(settings.settings)) {
+          this.initSwitches(settings.settings);
+        }
+      });
+
+    this.subscriptions.add(dataSub);
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.unsubscribe();
   }
 
   initSwitches(settings: boolean[][]) {
-    if (settings.length !== this.sections.length) {
-      console.error('Number of sections does not match settings.');
-      return;
-    }
+    if (!settings || !Array.isArray(settings)) return;
 
     settings.forEach((switchValues, sectionIndex) => {
-      if (this.sections[sectionIndex]) {
+      if (this.sections[sectionIndex] && Array.isArray(switchValues)) {
         switchValues.forEach((value, switchIndex) => {
-          if (this.sections[sectionIndex].switches[switchIndex]) {
+          if (this.sections[sectionIndex].switches[switchIndex] !== undefined) {
             this.sections[sectionIndex].switches[switchIndex].value = value;
           }
         });
@@ -89,35 +100,9 @@ export class AdminSettingsComponent implements OnInit {
     });
   }
 
-  handleSwitchChange(switchItem: SwitchItem, sectionTitle: string) {
-    switchItem.value = !switchItem.value;
-    const title = sectionTitle.toLowerCase();
-    const label = switchItem.label.toLowerCase();
-
-    this.settingsService
-      .updateSwitch(title, label, switchItem.value)
-      .subscribe({
-        next: () => {
-          this.showAlert('ADMIN.SETTINGS.SUCCESS');
-          this.settingsService.updateSettings(
-            sectionTitle,
-            switchItem.label,
-            switchItem.value
-          );
-        },
-        error: () => {
-          switchItem.value = !switchItem.value; // rollback changes in case of error
-          this.showAlert('ADMIN.SETTINGS.ERROR', true);
-        },
-      });
-  }
-
-  private showAlert(key: string, isError = false) {
-    const message = this.translate.instant(key);
-    if (isError) {
-      this.toastr.error(message);
-    } else {
-      this.toastr.success(message);
-    }
+  onToggle(sectionTitle: string, switchLabel: string, newValue: boolean) {
+    this.store.dispatch(
+      AdminActions.updateAdminSetting({ sectionTitle, switchLabel, newValue })
+    );
   }
 }

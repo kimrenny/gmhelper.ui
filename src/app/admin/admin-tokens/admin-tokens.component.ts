@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TokenService } from 'src/app/services/token.service';
-import { filter, Subscription } from 'rxjs';
+import { combineLatest, filter, Subscription } from 'rxjs';
 import { AdminService } from 'src/app/services/admin.service';
 import { ToastrService } from 'ngx-toastr';
 import { TranslateService } from '@ngx-translate/core';
@@ -10,9 +10,14 @@ import { AdminSettingsService } from 'src/app/services/admin-settings.service';
 import { FormsModule } from '@angular/forms';
 import { TooltipDirective } from 'src/app/shared/directives/tooltip/tooltip.directive';
 import * as AuthSelectors from '../../store/auth/auth.selectors';
-import * as UserState from 'src/app/store/user/user.state';
 import * as AuthState from 'src/app/store/auth/auth.state';
-import { Store } from '@ngrx/store';
+import { select, Store } from '@ngrx/store';
+import * as AdminActions from 'src/app/store/admin/admin.actions';
+import {
+  selectAdminSettings,
+  selectIsLoaded,
+  selectTokens,
+} from 'src/app/store/admin/admin.selectors';
 
 interface DeviceInfo {
   userAgent: string;
@@ -79,19 +84,30 @@ export class AdminTokensComponent implements OnInit, OnDestroy {
         this.currentToken = token;
       });
 
-    this.adminService.getTokens().subscribe((tokens) => {
-      if (tokens) {
-        this.tokens = tokens;
-        if (!this.sortColumn) {
-          this.sortByColumn('expiration');
+    this.subscriptions.add(
+      combineLatest([
+        this.store.pipe(select(selectTokens)),
+        this.store.pipe(select(selectIsLoaded)),
+      ]).subscribe(([tokens, isLoaded]) => {
+        if ((!tokens || tokens.length === 0) && isLoaded) {
+          this.store.dispatch(AdminActions.loadTokens());
+        } else if (tokens && tokens.length > 0) {
+          this.tokens = tokens;
+          if (!this.sortColumn) {
+            this.sortByColumn('expiration');
+          }
         }
-      }
-    });
+      })
+    );
 
-    const settingsSub = this.adminSettingsService
-      .getSettingsData()
-      .pipe(filter(Boolean))
+    const settingsSub = this.store
+      .pipe(select(selectAdminSettings))
       .subscribe((settings) => {
+        if (!settings) {
+          this.store.dispatch(AdminActions.loadAdminSettings());
+          return;
+        }
+
         if (Array.isArray(settings) && settings.length > 0) {
           const switches = settings[2];
           this.showToken = switches[0];
@@ -103,6 +119,7 @@ export class AdminTokensComponent implements OnInit, OnDestroy {
       });
 
     this.subscriptions.add(settingsSub);
+    this.subscriptions.add(tokenSub);
   }
 
   ngOnDestroy(): void {
@@ -213,7 +230,7 @@ export class AdminTokensComponent implements OnInit, OnDestroy {
       this.sortDirection = 'asc';
     }
 
-    this.tokens.sort((a, b) => {
+    this.tokens = [...this.tokens].sort((a, b) => {
       let valueA = a[column];
       let valueB = b[column];
 

@@ -463,6 +463,10 @@
         "CONFIRM": "사용자를 차단하시겠습니까?"
       }
     },
+    "SUCCESS": {
+      "TITLE": "성공",
+      "MESSAGE": "성공적으로 업데이트되었습니다"
+    },
     "ERRORS": {
       "NOPERMISSION": "이 작업을 수행할 권한이 없습니다.",
       "SELFBAN": "자신을 차단할 수 없습니다",

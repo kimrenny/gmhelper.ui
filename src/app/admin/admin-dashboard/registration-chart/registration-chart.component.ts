@@ -9,7 +9,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { AdminService } from 'src/app/services/admin.service';
 import { TokenService } from 'src/app/services/token.service';
-import { Subscription } from 'rxjs';
+import { combineLatest, Subscription } from 'rxjs';
 import {
   Chart,
   CategoryScale,
@@ -23,6 +23,13 @@ import {
   Legend,
 } from 'chart.js';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { select, Store } from '@ngrx/store';
+import * as AdminState from 'src/app/store/admin/admin.state';
+import * as AdminActions from 'src/app/store/admin/admin.actions';
+import {
+  selectIsLoaded,
+  selectRegistrations,
+} from 'src/app/store/admin/admin.selectors';
 
 Chart.register(
   CategoryScale,
@@ -62,30 +69,29 @@ export class RegistrationChartComponent
   private subscriptions = new Subscription();
 
   constructor(
-    private adminService: AdminService,
-    private tokenService: TokenService,
+    private store: Store<AdminState.AdminState>,
     private translateService: TranslateService
   ) {}
 
   ngOnInit(): void {
-    this.loadRegistrationData();
+    this.subscriptions.add(
+      combineLatest([
+        this.store.pipe(select(selectRegistrations)),
+        this.store.pipe(select(selectIsLoaded)),
+      ]).subscribe(([registrations, isLoaded]) => {
+        if (!registrations && isLoaded) {
+          this.store.dispatch(AdminActions.loadRegistrations());
+        } else if (registrations) {
+          this.filterDataByPeriod(registrations, this.selectedPeriod);
+        }
+      })
+    );
 
     const langSub = this.translateService.onLangChange.subscribe(() => {
       this.updateChartData(this.currentData, this.isDaily, this.isMonthly);
     });
 
     this.subscriptions.add(langSub);
-  }
-
-  private loadRegistrationData(): void {
-    const dataSub = this.adminService
-      .getRegistrationDataObservable()
-      .subscribe((registrations) => {
-        if (registrations)
-          this.filterDataByPeriod(registrations, this.selectedPeriod);
-      });
-
-    this.subscriptions.add(dataSub);
   }
 
   ngAfterViewInit(): void {
@@ -104,11 +110,16 @@ export class RegistrationChartComponent
     const period = (event.target as HTMLSelectElement).value;
     this.selectedPeriod = period;
 
-    this.adminService
-      .getRegistrationDataObservable()
-      .subscribe((registrations) => {
-        if (registrations) this.filterDataByPeriod(registrations, period);
-      });
+    combineLatest([
+      this.store.pipe(select(selectRegistrations)),
+      this.store.pipe(select(selectIsLoaded)),
+    ]).subscribe(([registrations, isLoaded]) => {
+      if (!registrations && isLoaded) {
+        this.store.dispatch(AdminActions.loadRegistrations());
+      } else if (registrations) {
+        this.filterDataByPeriod(registrations, this.selectedPeriod);
+      }
+    });
   }
 
   private createChart(): void {

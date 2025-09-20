@@ -18,7 +18,9 @@
           <input
             type="checkbox"
             [checked]="switchItem.value"
-            (change)="handleSwitchChange(switchItem, section.title)"
+            (change)="
+              onToggle(section.title, switchItem.label, $event.target.checked)
+            "
           />
         </div>
       </div>

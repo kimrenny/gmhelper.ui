@@ -463,6 +463,10 @@
         "CONFIRM": "Sind Sie sicher, dass Sie den Benutzer blockieren möchten?"
       }
     },
+    "SUCCESS": {
+      "TITLE": "Erfolg",
+      "MESSAGE": "Erfolgreich aktualisiert"
+    },
     "ERRORS": {
       "NOPERMISSION": "Sie haben keine Berechtigung, diese Aktion auszuführen.",
       "SELFBAN": "Sie können sich nicht selbst blockieren",

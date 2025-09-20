@@ -463,6 +463,10 @@
         "CONFIRM": "您确定要封锁用户吗？"
       }
     },
+    "SUCCESS": {
+      "TITLE": "成功",
+      "MESSAGE": "更新成功"
+    },
     "ERRORS": {
       "NOPERMISSION": "您没有权限执行此操作。",
       "SELFBAN": "您无法封锁自己",

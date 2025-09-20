@@ -7,7 +7,9 @@ import { CountryStatsComponent } from './country-stats/country-stats.component';
 import { RoleStatsComponent } from './role-stats/role-stats.component';
 import { BlockStatsComponent } from './block-stats/block-stats.component';
 import { filter, Subscription } from 'rxjs';
-import { AdminSettingsService } from 'src/app/services/admin-settings.service';
+import * as AdminState from 'src/app/store/admin/admin.state';
+import { select, Store } from '@ngrx/store';
+import { selectAdminSettings } from 'src/app/store/admin/admin.selectors';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -31,26 +33,28 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
   showRoleStats = true;
   showCountryStats = true;
 
-  private settingsSub!: Subscription;
+  private subscriptions = new Subscription();
 
-  constructor(private adminSettingsService: AdminSettingsService) {}
+  constructor(private store: Store<AdminState.AdminState>) {}
 
   ngOnInit(): void {
-    this.adminSettingsService.settings$.subscribe((settings) => {
-      if (Array.isArray(settings) && settings.length > 0) {
-        const switches = settings[0];
-        this.showRequests = switches[0];
-        this.showActiveUsers = switches[1];
-        this.showBlockStats = switches[2];
-        this.showRoleStats = switches[3];
-        this.showCountryStats = switches[4];
-      }
-    });
+    const settingsSub = this.store
+      .select(selectAdminSettings)
+      .subscribe((settings) => {
+        if (Array.isArray(settings) && settings.length > 0) {
+          const switches = settings[0];
+          this.showRequests = switches[0];
+          this.showActiveUsers = switches[1];
+          this.showBlockStats = switches[2];
+          this.showRoleStats = switches[3];
+          this.showCountryStats = switches[4];
+        }
+      });
+
+    this.subscriptions.add(settingsSub);
   }
 
   ngOnDestroy(): void {
-    if (this.settingsSub) {
-      this.settingsSub.unsubscribe();
-    }
+    this.subscriptions.unsubscribe();
   }
 }

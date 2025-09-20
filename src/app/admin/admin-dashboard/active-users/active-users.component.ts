@@ -1,9 +1,17 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
-import { AdminService } from 'src/app/services/admin.service';
-import { TokenService } from 'src/app/services/token.service';
+import { combineLatest, Subscription } from 'rxjs';
 import { TranslateModule } from '@ngx-translate/core';
+import { select, Store } from '@ngrx/store';
+import * as AdminState from 'src/app/store/admin/admin.state';
+import {
+  selectActiveAdminTokens,
+  selectActiveTokens,
+  selectIsLoaded,
+  selectTotalAdminTokens,
+  selectTotalTokens,
+} from 'src/app/store/admin/admin.selectors';
+import * as AdminActions from 'src/app/store/admin/admin.actions';
 
 @Component({
   selector: 'app-active-users',
@@ -19,35 +27,41 @@ export class ActiveUsersComponent implements OnInit, OnDestroy {
   totalAdminTokens: number | any;
   private subscriptions = new Subscription();
 
-  constructor(
-    private adminService: AdminService,
-    private tokenService: TokenService
-  ) {}
+  constructor(private store: Store<AdminState.AdminState>) {}
 
   ngOnInit(): void {
-    this.adminService.getActiveTokensObservable().subscribe((tokens) => {
-      if (tokens) {
-        this.activeTokens = tokens;
-      }
-    });
-
-    this.adminService.getTotalTokensObservable().subscribe((tokens) => {
-      if (tokens) {
-        this.totalTokens = tokens;
-      }
-    });
-
-    this.adminService.getActiveAdminTokensObservable().subscribe((tokens) => {
-      if (tokens) {
-        this.activeAdminTokens = tokens;
-      }
-    });
-
-    this.adminService.getTotalAdminTokensObservable().subscribe((tokens) => {
-      if (tokens) {
-        this.totalAdminTokens = tokens;
-      }
-    });
+    this.subscriptions.add(
+      combineLatest([
+        this.store.pipe(select(selectActiveTokens)),
+        this.store.pipe(select(selectTotalTokens)),
+        this.store.pipe(select(selectActiveAdminTokens)),
+        this.store.pipe(select(selectTotalAdminTokens)),
+        this.store.pipe(select(selectIsLoaded)),
+      ]).subscribe(
+        ([
+          activeTokens,
+          totalTokens,
+          activeAdminTokens,
+          totalAdminTokens,
+          isLoaded,
+        ]) => {
+          if (
+            (!activeTokens ||
+              !totalTokens ||
+              !activeAdminTokens ||
+              !totalAdminTokens) &&
+            isLoaded
+          ) {
+            this.store.dispatch(AdminActions.loadTokenStats());
+          } else {
+            this.activeTokens = activeTokens;
+            this.totalTokens = totalTokens;
+            this.activeAdminTokens = activeAdminTokens;
+            this.totalAdminTokens = totalAdminTokens;
+          }
+        }
+      )
+    );
   }
 
   ngOnDestroy(): void {

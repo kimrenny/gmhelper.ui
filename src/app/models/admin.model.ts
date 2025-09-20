@@ -46,11 +46,11 @@ export interface RegistrationData {
   registrations: number;
 }
 
-export interface CreatedTokens {
-  activeTokens: number;
-  totalTokens: number;
-  activeAdminTokens: number;
-  totalAdminTokens: number;
+export interface TokenStats {
+  activeTokens: number | null;
+  totalTokens: number | null;
+  activeAdminTokens: number | null;
+  totalAdminTokens: number | null;
 }
 
 export interface CountryStats {
@@ -103,6 +103,19 @@ export interface ErrorLog {
   endpoint: string;
   exceptionDetails: string;
 }
+
+export interface AdminSettings {
+  settings: boolean[][];
+}
+
+export const initialAdminSettings: AdminSettings = {
+  settings: [
+    [true, true, true, true, true],
+    [true, true, true, true, true],
+    [true, true, true, true, true],
+    [true, true, true, true, true],
+  ],
+};
 
 export interface SwitchItem {
   label: string;

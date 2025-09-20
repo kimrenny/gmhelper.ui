@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TokenService } from 'src/app/services/token.service';
-import { filter, Subscription } from 'rxjs';
+import { combineLatest, filter, Subscription } from 'rxjs';
 import { AdminService } from 'src/app/services/admin.service';
 import { ToastrService } from 'ngx-toastr';
 import { TranslateService } from '@ngx-translate/core';
@@ -10,6 +10,14 @@ import { AdminSettingsService } from 'src/app/services/admin-settings.service';
 import { TruncatePipe } from 'src/app/pipes/truncate.pipe';
 import { FormsModule } from '@angular/forms';
 import { TooltipDirective } from 'src/app/shared/directives/tooltip/tooltip.directive';
+import { select, Store } from '@ngrx/store';
+import * as AdminState from 'src/app/store/admin/admin.state';
+import * as AdminActions from 'src/app/store/admin/admin.actions';
+import {
+  selectAdminSettings,
+  selectIsLoaded,
+  selectRequestLogs,
+} from 'src/app/store/admin/admin.selectors';
 
 interface RequestLog {
   id: number;
@@ -66,22 +74,27 @@ export class AdminAllLogsComponent implements OnInit, OnDestroy {
   private subscriptions = new Subscription();
 
   constructor(
-    private adminService: AdminService,
-    private adminSettingsService: AdminSettingsService,
-    private tokenService: TokenService,
+    private store: Store<AdminState.AdminState>,
     private toastr: ToastrService,
     private translate: TranslateService
   ) {}
 
   ngOnInit(): void {
-    this.adminService.getRequestLogsDataObservable().subscribe((logs) => {
-      if (logs) {
-        this.logs = logs;
-      }
-    });
+    this.subscriptions.add(
+      combineLatest([
+        this.store.pipe(select(selectRequestLogs)),
+        this.store.pipe(select(selectIsLoaded)),
+      ]).subscribe(([logs, isLoaded]) => {
+        if ((!logs || logs.length === 0) && isLoaded) {
+          this.store.dispatch(AdminActions.loadRequestLogs());
+        } else if (logs) {
+          this.logs = logs;
+        }
+      })
+    );
 
-    const settingsSub = this.adminSettingsService
-      .getSettingsData()
+    const settingsSub = this.store
+      .select(selectAdminSettings)
       .pipe(filter(Boolean))
       .subscribe((settings) => {
         if (Array.isArray(settings) && settings.length > 0) {
