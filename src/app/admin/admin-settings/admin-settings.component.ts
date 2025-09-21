@@ -4,12 +4,13 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { ReplaceColonPipe } from 'src/app/pipes/replace-colon.pipe';
 import { ReplaceSpacesPipe } from 'src/app/pipes/replace-spaces.pipe';
-import { AdminSettings, SwitchItem } from 'src/app/models/admin.model';
+import { SwitchItem } from 'src/app/models/admin.model';
 import * as AdminState from 'src/app/store/admin/admin.state';
 import * as AdminActions from 'src/app/store/admin/admin.actions';
 import { select, Store } from '@ngrx/store';
 import { selectAdminSettings } from 'src/app/store/admin/admin.selectors';
-import { Subscription } from 'rxjs';
+import { Subject, Subscription, takeUntil } from 'rxjs';
+import { Actions, ofType } from '@ngrx/effects';
 
 @Component({
   selector: 'app-admin-settings',
@@ -23,49 +24,51 @@ export class AdminSettingsComponent implements OnInit, OnDestroy {
     {
       title: 'Dashboard',
       switches: [
-        { label: 'Requests', value: true },
-        { label: 'Tokens', value: true },
-        { label: 'Banned', value: true },
-        { label: 'Roles', value: true },
-        { label: 'Country', value: true },
+        { label: 'Requests', value: true, apiKey: 'Requests' },
+        { label: 'Tokens', value: true, apiKey: 'Tokens' },
+        { label: 'Banned', value: true, apiKey: 'Banned' },
+        { label: 'Roles', value: true, apiKey: 'Roles' },
+        { label: 'Country', value: true, apiKey: 'Country' },
       ],
     },
     {
       title: 'Users',
       switches: [
-        { label: 'Username', value: true },
-        { label: 'Email', value: true },
-        { label: 'Registration', value: true },
-        { label: 'Modal', value: true },
-        { label: 'Modal: Token', value: true },
+        { label: 'Username', value: true, apiKey: 'Username' },
+        { label: 'Email', value: true, apiKey: 'Email' },
+        { label: 'Registration', value: true, apiKey: 'Registration' },
+        { label: 'Modal', value: true, apiKey: 'Modal' },
+        { label: 'Modal: Token', value: true, apiKey: 'ModalToken' },
       ],
     },
     {
       title: 'Tokens',
       switches: [
-        { label: 'Token', value: true },
-        { label: 'Expirations', value: true },
-        { label: 'User ID', value: true },
-        { label: 'Modal', value: true },
-        { label: 'Actions', value: true },
+        { label: 'Token', value: true, apiKey: 'Token' },
+        { label: 'Expirations', value: true, apiKey: 'Expirations' },
+        { label: 'User ID', value: true, apiKey: 'UserID' },
+        { label: 'Modal', value: true, apiKey: 'Modal' },
+        { label: 'Actions', value: true, apiKey: 'Actions' },
       ],
     },
     {
       title: 'Logs',
       switches: [
-        { label: 'Timestamp', value: true },
-        { label: 'Duration', value: true },
-        { label: 'Request', value: true },
-        { label: 'User ID', value: true },
-        { label: 'Modal', value: true },
+        { label: 'Timestamp', value: true, apiKey: 'Timestamp' },
+        { label: 'Duration', value: true, apiKey: 'Duration' },
+        { label: 'Request', value: true, apiKey: 'Request' },
+        { label: 'User ID', value: true, apiKey: 'UserID' },
+        { label: 'Modal', value: true, apiKey: 'Modal' },
       ],
     },
   ];
 
   private subscriptions = new Subscription();
+  private destroy$ = new Subject<void>();
 
   constructor(
     private store: Store<AdminState.AdminState>,
+    private actions$: Actions,
     private translate: TranslateService,
     private toastr: ToastrService
   ) {}
@@ -74,12 +77,36 @@ export class AdminSettingsComponent implements OnInit, OnDestroy {
     const dataSub = this.store
       .pipe(select(selectAdminSettings))
       .subscribe((settings) => {
-        if (settings.settings && Array.isArray(settings.settings)) {
-          this.initSwitches(settings.settings);
+        if (settings && Array.isArray(settings)) {
+          this.initSwitches(settings);
         }
       });
 
     this.subscriptions.add(dataSub);
+
+    this.actions$
+      .pipe(
+        ofType(AdminActions.updateAdminSettingSuccess),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(() => {
+        this.toastr.success(
+          this.translate.instant('ADMIN.SUCCESS.MESSAGE'),
+          this.translate.instant('ADMIN.SUCCESS.TITLE')
+        );
+      });
+
+    this.actions$
+      .pipe(
+        ofType(AdminActions.updateAdminSettingFailure),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(() => {
+        this.toastr.error(
+          this.translate.instant('ADMIN.ERRORS.SETTINGS'),
+          this.translate.instant('ADMIN.ERRORS.ERROR')
+        );
+      });
   }
 
   ngOnDestroy() {
@@ -100,9 +127,13 @@ export class AdminSettingsComponent implements OnInit, OnDestroy {
     });
   }
 
-  onToggle(sectionTitle: string, switchLabel: string, newValue: boolean) {
+  onToggle(sectionTitle: string, switchItem: SwitchItem, newValue: boolean) {
     this.store.dispatch(
-      AdminActions.updateAdminSetting({ sectionTitle, switchLabel, newValue })
+      AdminActions.updateAdminSetting({
+        sectionTitle,
+        switchLabel: switchItem.apiKey,
+        newValue,
+      })
     );
   }
 }

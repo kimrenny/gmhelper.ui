@@ -471,7 +471,8 @@
       "NOPERMISSION": "您没有权限执行此操作。",
       "SELFBAN": "您无法封锁自己",
       "ERROR": "错误",
-      "DISABLED": "该功能已被用户设置禁用"
+      "DISABLED": "该功能已被用户设置禁用",
+      "SETTINGS": "更新设置失败。请重试。"
     },
     "TOKENS": {
       "ID": "ID",

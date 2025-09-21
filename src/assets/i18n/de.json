@@ -471,7 +471,8 @@
       "NOPERMISSION": "Sie haben keine Berechtigung, diese Aktion auszuführen.",
       "SELFBAN": "Sie können sich nicht selbst blockieren",
       "ERROR": "Fehler",
-      "DISABLED": "Die Funktion ist durch Benutzereinstellungen deaktiviert"
+      "DISABLED": "Die Funktion ist durch Benutzereinstellungen deaktiviert",
+      "SETTINGS": "Fehler beim Aktualisieren der Einstellungen. Bitte versuchen Sie es erneut."
     },
     "TOKENS": {
       "ID": "ID",

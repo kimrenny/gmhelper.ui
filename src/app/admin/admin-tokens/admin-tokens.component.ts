@@ -199,7 +199,11 @@ export class AdminTokensComponent implements OnInit, OnDestroy {
       .actionToken(token.token, !token.isActive ? 'activate' : 'disable')
       .subscribe({
         next: () => {
-          token.isActive = !token.isActive;
+          this.store.dispatch(AdminActions.loadTokens());
+          this.toastr.success(
+            this.translate.instant('ADMIN.SUCCESS.MESSAGE'),
+            this.translate.instant('ADMIN.SUCCESS.TITLE')
+          );
         },
         error: (error) => {
           console.error(error);

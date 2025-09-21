@@ -5,11 +5,8 @@ import { TranslateModule } from '@ngx-translate/core';
 import { select, Store } from '@ngrx/store';
 import * as AdminState from 'src/app/store/admin/admin.state';
 import {
-  selectActiveAdminTokens,
-  selectActiveTokens,
   selectIsLoaded,
-  selectTotalAdminTokens,
-  selectTotalTokens,
+  selectTokenStats,
 } from 'src/app/store/admin/admin.selectors';
 import * as AdminActions from 'src/app/store/admin/admin.actions';
 
@@ -32,35 +29,24 @@ export class ActiveUsersComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.subscriptions.add(
       combineLatest([
-        this.store.pipe(select(selectActiveTokens)),
-        this.store.pipe(select(selectTotalTokens)),
-        this.store.pipe(select(selectActiveAdminTokens)),
-        this.store.pipe(select(selectTotalAdminTokens)),
+        this.store.pipe(select(selectTokenStats)),
         this.store.pipe(select(selectIsLoaded)),
-      ]).subscribe(
-        ([
-          activeTokens,
-          totalTokens,
-          activeAdminTokens,
-          totalAdminTokens,
-          isLoaded,
-        ]) => {
-          if (
-            (!activeTokens ||
-              !totalTokens ||
-              !activeAdminTokens ||
-              !totalAdminTokens) &&
-            isLoaded
-          ) {
-            this.store.dispatch(AdminActions.loadTokenStats());
-          } else {
-            this.activeTokens = activeTokens;
-            this.totalTokens = totalTokens;
-            this.activeAdminTokens = activeAdminTokens;
-            this.totalAdminTokens = totalAdminTokens;
-          }
+      ]).subscribe(([tokenStats, isLoaded]) => {
+        if (
+          (!tokenStats.activeTokens ||
+            !tokenStats.totalTokens ||
+            !tokenStats.activeAdminTokens ||
+            !tokenStats.totalAdminTokens) &&
+          isLoaded
+        ) {
+          this.store.dispatch(AdminActions.loadTokenStats());
+        } else {
+          this.activeTokens = tokenStats.activeTokens;
+          this.totalTokens = tokenStats.totalTokens;
+          this.activeAdminTokens = tokenStats.activeAdminTokens;
+          this.totalAdminTokens = tokenStats.totalAdminTokens;
         }
-      )
+      })
     );
   }
 

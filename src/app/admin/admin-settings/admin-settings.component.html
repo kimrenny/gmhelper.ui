@@ -19,7 +19,7 @@
             type="checkbox"
             [checked]="switchItem.value"
             (change)="
-              onToggle(section.title, switchItem.label, $event.target.checked)
+              onToggle(section.title, switchItem, $event.target.checked)
             "
           />
         </div>

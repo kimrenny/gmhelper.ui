@@ -120,4 +120,5 @@ export const initialAdminSettings: AdminSettings = {
 export interface SwitchItem {
   label: string;
   value: boolean;
+  apiKey: string;
 }

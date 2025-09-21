@@ -42,8 +42,7 @@ export class AdminEffects {
     this.actions$.pipe(
       ofType(AdminActions.loadAdminData),
       mergeMap(() => {
-        AdminActions.loadAdminSettings(),
-          AdminActions.loadUsers(),
+        AdminActions.loadUsers(),
           AdminActions.loadTokens(),
           AdminActions.loadRegistrations(),
           AdminActions.loadRequestsData(),
@@ -68,7 +67,7 @@ export class AdminEffects {
       ),
       filter(([_, loading]) => !loading),
       switchMap(() => {
-        this.store.dispatch(AdminActions.setLoadingUsers({ loading: true }));
+        this.store.dispatch(AdminActions.setLoadingSettings({ loading: true }));
         return this.adminSettingsService.loadSettings().pipe(
           map((settings: AdminSettings) => {
             this.store.dispatch(

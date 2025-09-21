@@ -24,30 +24,8 @@ export const adminReducer = createReducer(
     loadingSettings: loading,
   })),
 
-  on(
-    AdminActions.updateAdminSettingSuccess,
-    (state, { sectionTitle, switchLabel, newValue }) => {
-      const sectionIndex = getSectionIndexByTitle(sectionTitle);
-      const switchIndex = getSwitchIndexByLabel(sectionTitle, switchLabel);
-
-      if (sectionIndex === -1 || switchIndex === -1) return state;
-
-      const currentSettings: boolean[][] = state.settings.settings;
-
-      //bug TypeError: Cannot read properties of undefined (reading 'map') at admin.reducer.ts:33:56
-      const newSettings: boolean[][] = currentSettings.map(
-        (section: boolean[], sIdx: number) =>
-          section.map((sw: boolean, swIdx: number) =>
-            sIdx === sectionIndex && swIdx === switchIndex ? newValue : sw
-          )
-      );
-
-      return {
-        ...state,
-        settings: { settings: newSettings },
-      };
-    }
-  ),
+  on(AdminActions.updateAdminSettingSuccess, (state) => state),
+  on(AdminActions.updateAdminSettingFailure, (error) => error),
 
   on(AdminActions.loadUsersSuccess, (state, { users }) => ({
     ...state,

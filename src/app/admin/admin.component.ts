@@ -40,6 +40,7 @@ export class AdminComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     if (this.router.url.startsWith('/admin')) {
       this.store.dispatch(AdminActions.loadAdminData());
+      this.store.dispatch(AdminActions.loadAdminSettings());
     }
   }
 

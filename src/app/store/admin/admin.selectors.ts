@@ -49,21 +49,9 @@ export const selectErrorLogs = createSelector(
   (state) => state.errorLogs
 );
 
-export const selectActiveTokens = createSelector(
+export const selectTokenStats = createSelector(
   selectAdminState,
-  (state) => state.tokenStats.activeTokens
-);
-export const selectTotalTokens = createSelector(
-  selectAdminState,
-  (state) => state.tokenStats.totalTokens
-);
-export const selectActiveAdminTokens = createSelector(
-  selectAdminState,
-  (state) => state.tokenStats.activeAdminTokens
-);
-export const selectTotalAdminTokens = createSelector(
-  selectAdminState,
-  (state) => state.tokenStats.totalAdminTokens
+  (state) => state.tokenStats
 );
 
 export const selectIsLoaded = createSelector(

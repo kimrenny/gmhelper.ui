@@ -43,7 +43,9 @@ export class AdminSettingsService {
         if (!token || !this.checkAdminPermissions(token)) return of(void 0);
 
         return this.http.patch<void>(
-          `${this.apiUrl}/settings/${sectionTitle}/${switchLabel}`,
+          `${
+            this.apiUrl
+          }/settings/${sectionTitle.toLowerCase()}/${switchLabel.toLowerCase()}`,
           { newValue },
           { headers: this.tokenService.createAuthHeaders(token) }
         );
