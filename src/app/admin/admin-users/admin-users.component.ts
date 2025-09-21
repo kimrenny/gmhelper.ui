@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { TranslateService } from '@ngx-translate/core';
 import { AdminService } from 'src/app/services/admin.service';
-import { filter, Subscription } from 'rxjs';
+import { combineLatest, filter, Subscription } from 'rxjs';
 import { TokenService } from 'src/app/services/token.service';
 import { UserService } from 'src/app/services/user.service';
 import { ToastrService } from 'ngx-toastr';
@@ -17,12 +17,18 @@ import {
 import { AdminSettingsService } from 'src/app/services/admin-settings.service';
 import { FormsModule } from '@angular/forms';
 import { TooltipDirective } from 'src/app/shared/directives/tooltip/tooltip.directive';
-import { Store } from '@ngrx/store';
-import * as UserActions from '../../store/user/user.actions';
+import { select, Store } from '@ngrx/store';
 import * as UserSelectors from '../../store/user/user.selectors';
 import * as AuthSelectors from '../../store/auth/auth.selectors';
 import * as UserState from 'src/app/store/user/user.state';
 import * as AuthState from 'src/app/store/auth/auth.state';
+import * as AdminState from 'src/app/store/admin/admin.state';
+import * as AdminActions from 'src/app/store/admin/admin.actions';
+import {
+  selectAdminSettings,
+  selectIsLoaded,
+  selectUsers,
+} from 'src/app/store/admin/admin.selectors';
 
 interface DeviceInfo {
   userAgent: string;
@@ -92,9 +98,6 @@ export class AdminUsersComponent implements OnInit, OnDestroy {
 
   constructor(
     private adminService: AdminService,
-    private adminSettingsService: AdminSettingsService,
-    private tokenService: TokenService,
-    private userService: UserService,
     private toastr: ToastrService,
     private translate: TranslateService,
     private store: Store<UserState.UserState>,
@@ -106,17 +109,23 @@ export class AdminUsersComponent implements OnInit, OnDestroy {
       .select(AuthSelectors.selectUserRole)
       .subscribe((role) => {
         this.userRole = role;
-        if (this.userRole === 'Admin' || this.userRole === 'Owner') {
-          this.adminService.getUsers().subscribe((users) => {
-            if (users) {
-              this.users = users;
-              if (!this.sortColumn) {
-                this.sortByColumn('registrationDate');
-              }
-            }
-          });
-        }
       });
+
+    this.subscriptions.add(
+      combineLatest([
+        this.store.pipe(select(selectUsers)),
+        this.store.pipe(select(selectIsLoaded)),
+      ]).subscribe(([users, isLoaded]) => {
+        if ((!users || users.length === 0) && isLoaded) {
+          this.store.dispatch(AdminActions.loadUsers());
+        } else if (users && users.length > 0) {
+          this.users = users;
+          if (!this.sortColumn) {
+            this.sortByColumn('registrationDate');
+          }
+        }
+      })
+    );
 
     const userSub = this.store
       .select(UserSelectors.selectUser)
@@ -124,8 +133,8 @@ export class AdminUsersComponent implements OnInit, OnDestroy {
         this.currentUsername = userDetails.nickname;
       });
 
-    const settingsSub = this.adminSettingsService
-      .getSettingsData()
+    const settingsSub = this.store
+      .select(selectAdminSettings)
       .pipe(filter(Boolean))
       .subscribe((settings) => {
         if (Array.isArray(settings) && settings.length > 0) {
@@ -267,7 +276,11 @@ export class AdminUsersComponent implements OnInit, OnDestroy {
       .actionUser(user.id, user.isBlocked ? 'unban' : 'ban')
       .subscribe({
         next: () => {
-          user.isBlocked = !user.isBlocked;
+          this.store.dispatch(AdminActions.loadUsers());
+          this.toastr.success(
+            this.translate.instant('ADMIN.SUCCESS.MESSAGE'),
+            this.translate.instant('ADMIN.SUCCESS.TITLE')
+          );
         },
         error: (error) => {
           console.error(error);
@@ -309,7 +322,7 @@ export class AdminUsersComponent implements OnInit, OnDestroy {
       this.sortDirection = 'asc';
     }
 
-    this.users.sort((a, b) => {
+    this.users = [...this.users].sort((a, b) => {
       let valueA = a[column];
       let valueB = b[column];
 

@@ -463,11 +463,16 @@
         "CONFIRM": "Are you sure you want to block the user"
       }
     },
+    "SUCCESS": {
+      "TITLE": "Success",
+      "MESSAGE": "Updated successfully"
+    },
     "ERRORS": {
       "NOPERMISSION": "You do not have permission to perform this action.",
       "SELFBAN": "You cannot block yourself",
       "ERROR": "Error",
-      "DISABLED": "The function is disabled by user settings"
+      "DISABLED": "The function is disabled by user settings",
+      "SETTINGS": "Failed to update settings. Please try again."
     },
     "TOKENS": {
       "ID": "ID",

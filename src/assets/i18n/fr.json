@@ -463,11 +463,16 @@
         "CONFIRM": "Êtes-vous sûr de vouloir bloquer l'utilisateur"
       }
     },
+    "SUCCESS": {
+      "TITLE": "Succès",
+      "MESSAGE": "Mis à jour avec succès"
+    },
     "ERRORS": {
       "NOPERMISSION": "Vous n'avez pas l'autorisation d'effectuer cette action.",
       "SELFBAN": "Vous ne pouvez pas vous bloquer",
       "ERROR": "Erreur",
-      "DISABLED": "La fonction est désactivée dans les paramètres de l'utilisateur"
+      "DISABLED": "La fonction est désactivée dans les paramètres de l'utilisateur",
+      "SETTINGS": "Échec de la mise à jour des paramètres. Veuillez réessayer."
     },
     "TOKENS": {
       "ID": "ID",

@@ -1,11 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AdminSettingsService } from 'src/app/services/admin-settings.service';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { ReplaceColonPipe } from 'src/app/pipes/replace-colon.pipe';
 import { ReplaceSpacesPipe } from 'src/app/pipes/replace-spaces.pipe';
 import { SwitchItem } from 'src/app/models/admin.model';
+import * as AdminState from 'src/app/store/admin/admin.state';
+import * as AdminActions from 'src/app/store/admin/admin.actions';
+import { select, Store } from '@ngrx/store';
+import { selectAdminSettings } from 'src/app/store/admin/admin.selectors';
+import { Subject, Subscription, takeUntil } from 'rxjs';
+import { Actions, ofType } from '@ngrx/effects';
 
 @Component({
   selector: 'app-admin-settings',
@@ -14,74 +19,107 @@ import { SwitchItem } from 'src/app/models/admin.model';
   templateUrl: './admin-settings.component.html',
   styleUrls: ['./admin-settings.component.scss'],
 })
-export class AdminSettingsComponent implements OnInit {
+export class AdminSettingsComponent implements OnInit, OnDestroy {
   sections: { title: string; switches: SwitchItem[] }[] = [
     {
       title: 'Dashboard',
       switches: [
-        { label: 'Requests', value: true },
-        { label: 'Tokens', value: true },
-        { label: 'Banned', value: true },
-        { label: 'Roles', value: true },
-        { label: 'Country', value: true },
+        { label: 'Requests', value: true, apiKey: 'Requests' },
+        { label: 'Tokens', value: true, apiKey: 'Tokens' },
+        { label: 'Banned', value: true, apiKey: 'Banned' },
+        { label: 'Roles', value: true, apiKey: 'Roles' },
+        { label: 'Country', value: true, apiKey: 'Country' },
       ],
     },
     {
       title: 'Users',
       switches: [
-        { label: 'Username', value: true },
-        { label: 'Email', value: true },
-        { label: 'Registration', value: true },
-        { label: 'Modal', value: true },
-        { label: 'Modal: Token', value: true },
+        { label: 'Username', value: true, apiKey: 'Username' },
+        { label: 'Email', value: true, apiKey: 'Email' },
+        { label: 'Registration', value: true, apiKey: 'Registration' },
+        { label: 'Modal', value: true, apiKey: 'Modal' },
+        { label: 'Modal: Token', value: true, apiKey: 'ModalToken' },
       ],
     },
     {
       title: 'Tokens',
       switches: [
-        { label: 'Token', value: true },
-        { label: 'Expirations', value: true },
-        { label: 'User ID', value: true },
-        { label: 'Modal', value: true },
-        { label: 'Actions', value: true },
+        { label: 'Token', value: true, apiKey: 'Token' },
+        { label: 'Expirations', value: true, apiKey: 'Expirations' },
+        { label: 'User ID', value: true, apiKey: 'UserID' },
+        { label: 'Modal', value: true, apiKey: 'Modal' },
+        { label: 'Actions', value: true, apiKey: 'Actions' },
       ],
     },
     {
       title: 'Logs',
       switches: [
-        { label: 'Timestamp', value: true },
-        { label: 'Duration', value: true },
-        { label: 'Request', value: true },
-        { label: 'User ID', value: true },
-        { label: 'Modal', value: true },
+        { label: 'Timestamp', value: true, apiKey: 'Timestamp' },
+        { label: 'Duration', value: true, apiKey: 'Duration' },
+        { label: 'Request', value: true, apiKey: 'Request' },
+        { label: 'User ID', value: true, apiKey: 'UserID' },
+        { label: 'Modal', value: true, apiKey: 'Modal' },
       ],
     },
   ];
 
+  private subscriptions = new Subscription();
+  private destroy$ = new Subject<void>();
+
   constructor(
-    private settingsService: AdminSettingsService,
+    private store: Store<AdminState.AdminState>,
+    private actions$: Actions,
     private translate: TranslateService,
     private toastr: ToastrService
   ) {}
 
   ngOnInit() {
-    this.settingsService.settings$.subscribe((settings) => {
-      if (settings && Array.isArray(settings) && settings.length > 0) {
-        this.initSwitches(settings);
-      }
-    });
+    const dataSub = this.store
+      .pipe(select(selectAdminSettings))
+      .subscribe((settings) => {
+        if (settings && Array.isArray(settings)) {
+          this.initSwitches(settings);
+        }
+      });
+
+    this.subscriptions.add(dataSub);
+
+    this.actions$
+      .pipe(
+        ofType(AdminActions.updateAdminSettingSuccess),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(() => {
+        this.toastr.success(
+          this.translate.instant('ADMIN.SUCCESS.MESSAGE'),
+          this.translate.instant('ADMIN.SUCCESS.TITLE')
+        );
+      });
+
+    this.actions$
+      .pipe(
+        ofType(AdminActions.updateAdminSettingFailure),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(() => {
+        this.toastr.error(
+          this.translate.instant('ADMIN.ERRORS.SETTINGS'),
+          this.translate.instant('ADMIN.ERRORS.ERROR')
+        );
+      });
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.unsubscribe();
   }
 
   initSwitches(settings: boolean[][]) {
-    if (settings.length !== this.sections.length) {
-      console.error('Number of sections does not match settings.');
-      return;
-    }
+    if (!settings || !Array.isArray(settings)) return;
 
     settings.forEach((switchValues, sectionIndex) => {
-      if (this.sections[sectionIndex]) {
+      if (this.sections[sectionIndex] && Array.isArray(switchValues)) {
         switchValues.forEach((value, switchIndex) => {
-          if (this.sections[sectionIndex].switches[switchIndex]) {
+          if (this.sections[sectionIndex].switches[switchIndex] !== undefined) {
             this.sections[sectionIndex].switches[switchIndex].value = value;
           }
         });
@@ -89,35 +127,13 @@ export class AdminSettingsComponent implements OnInit {
     });
   }
 
-  handleSwitchChange(switchItem: SwitchItem, sectionTitle: string) {
-    switchItem.value = !switchItem.value;
-    const title = sectionTitle.toLowerCase();
-    const label = switchItem.label.toLowerCase();
-
-    this.settingsService
-      .updateSwitch(title, label, switchItem.value)
-      .subscribe({
-        next: () => {
-          this.showAlert('ADMIN.SETTINGS.SUCCESS');
-          this.settingsService.updateSettings(
-            sectionTitle,
-            switchItem.label,
-            switchItem.value
-          );
-        },
-        error: () => {
-          switchItem.value = !switchItem.value; // rollback changes in case of error
-          this.showAlert('ADMIN.SETTINGS.ERROR', true);
-        },
-      });
-  }
-
-  private showAlert(key: string, isError = false) {
-    const message = this.translate.instant(key);
-    if (isError) {
-      this.toastr.error(message);
-    } else {
-      this.toastr.success(message);
-    }
+  onToggle(sectionTitle: string, switchItem: SwitchItem, newValue: boolean) {
+    this.store.dispatch(
+      AdminActions.updateAdminSetting({
+        sectionTitle,
+        switchLabel: switchItem.apiKey,
+        newValue,
+      })
+    );
   }
 }

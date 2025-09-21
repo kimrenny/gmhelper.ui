@@ -1,9 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
-import { AdminService } from 'src/app/services/admin.service';
-import { TokenService } from 'src/app/services/token.service';
+import { combineLatest, Subscription } from 'rxjs';
 import { TranslateModule } from '@ngx-translate/core';
+import { select, Store } from '@ngrx/store';
+import * as AdminState from 'src/app/store/admin/admin.state';
+import {
+  selectIsLoaded,
+  selectTokenStats,
+} from 'src/app/store/admin/admin.selectors';
+import * as AdminActions from 'src/app/store/admin/admin.actions';
 
 @Component({
   selector: 'app-active-users',
@@ -19,35 +24,30 @@ export class ActiveUsersComponent implements OnInit, OnDestroy {
   totalAdminTokens: number | any;
   private subscriptions = new Subscription();
 
-  constructor(
-    private adminService: AdminService,
-    private tokenService: TokenService
-  ) {}
+  constructor(private store: Store<AdminState.AdminState>) {}
 
   ngOnInit(): void {
-    this.adminService.getActiveTokensObservable().subscribe((tokens) => {
-      if (tokens) {
-        this.activeTokens = tokens;
-      }
-    });
-
-    this.adminService.getTotalTokensObservable().subscribe((tokens) => {
-      if (tokens) {
-        this.totalTokens = tokens;
-      }
-    });
-
-    this.adminService.getActiveAdminTokensObservable().subscribe((tokens) => {
-      if (tokens) {
-        this.activeAdminTokens = tokens;
-      }
-    });
-
-    this.adminService.getTotalAdminTokensObservable().subscribe((tokens) => {
-      if (tokens) {
-        this.totalAdminTokens = tokens;
-      }
-    });
+    this.subscriptions.add(
+      combineLatest([
+        this.store.pipe(select(selectTokenStats)),
+        this.store.pipe(select(selectIsLoaded)),
+      ]).subscribe(([tokenStats, isLoaded]) => {
+        if (
+          (!tokenStats.activeTokens ||
+            !tokenStats.totalTokens ||
+            !tokenStats.activeAdminTokens ||
+            !tokenStats.totalAdminTokens) &&
+          isLoaded
+        ) {
+          this.store.dispatch(AdminActions.loadTokenStats());
+        } else {
+          this.activeTokens = tokenStats.activeTokens;
+          this.totalTokens = tokenStats.totalTokens;
+          this.activeAdminTokens = tokenStats.activeAdminTokens;
+          this.totalAdminTokens = tokenStats.totalAdminTokens;
+        }
+      })
+    );
   }
 
   ngOnDestroy(): void {

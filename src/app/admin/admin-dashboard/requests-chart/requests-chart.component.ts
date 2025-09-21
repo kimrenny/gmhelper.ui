@@ -7,9 +7,7 @@ import {
   ElementRef,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AdminService } from 'src/app/services/admin.service';
-import { TokenService } from 'src/app/services/token.service';
-import { Subscription } from 'rxjs';
+import { combineLatest, Subscription } from 'rxjs';
 import {
   Chart,
   CategoryScale,
@@ -25,6 +23,13 @@ import {
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { filterDataByDays } from './filter/filter';
 import { processData } from './process/process';
+import { select, Store } from '@ngrx/store';
+import * as AdminState from 'src/app/store/admin/admin.state';
+import * as AdminActions from 'src/app/store/admin/admin.actions';
+import {
+  selectIsLoaded,
+  selectRequestsData,
+} from 'src/app/store/admin/admin.selectors';
 
 Chart.register(
   CategoryScale,
@@ -67,13 +72,28 @@ export class RequestsChartComponent
   private subscriptions = new Subscription();
 
   constructor(
-    private adminService: AdminService,
-    private tokenService: TokenService,
+    private store: Store<AdminState.AdminState>,
     private translateService: TranslateService
   ) {}
 
   ngOnInit(): void {
-    this.loadRequestsData();
+    this.subscriptions.add(
+      combineLatest([
+        this.store.pipe(select(selectRequestsData)),
+        this.store.pipe(select(selectIsLoaded)),
+      ]).subscribe(([data, isLoaded]) => {
+        if (!data && isLoaded) {
+          this.store.dispatch(AdminActions.loadRequestsData());
+        } else if (data?.regular && data?.admin) {
+          this.updateChartData(
+            filterDataByDays(data.regular, 7),
+            filterDataByDays(data.admin, 7),
+            true,
+            false
+          );
+        }
+      })
+    );
 
     const langSub = this.translateService.onLangChange.subscribe(() => {
       this.updateChartData(
@@ -85,19 +105,6 @@ export class RequestsChartComponent
     });
 
     this.subscriptions.add(langSub);
-  }
-
-  private loadRequestsData() {
-    this.adminService.getRequestsDataObservable().subscribe((data) => {
-      if (data?.regular && data?.admin) {
-        this.updateChartData(
-          filterDataByDays(data?.regular, 7),
-          filterDataByDays(data?.admin, 7),
-          true,
-          false
-        );
-      }
-    });
   }
 
   ngAfterViewInit(): void {
@@ -175,7 +182,7 @@ export class RequestsChartComponent
     const selectedPeriod = (event.target as HTMLSelectElement).value;
     this.selectedPeriod = selectedPeriod;
 
-    this.adminService.getRequestsDataObservable().subscribe((data) => {
+    this.store.pipe(select(selectRequestsData)).subscribe((data) => {
       if (data) {
         this.filterDataByPeriod(
           data?.regular,

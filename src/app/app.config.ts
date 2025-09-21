@@ -19,13 +19,15 @@ import { provideEffects } from '@ngrx/effects';
 import { UserEffects } from './store/user/user.effects';
 import { AuthEffects } from './store/auth/auth.effects';
 import { authReducer } from './store/auth/auth.reducer';
+import { adminReducer } from './store/admin/admin.reducer';
+import { AdminEffects } from './store/admin/admin.effects';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
     provideHttpClient(),
-    provideStore({ user: userReducer, auth: authReducer }),
-    provideEffects([UserEffects, AuthEffects]),
+    provideStore({ user: userReducer, auth: authReducer, admin: adminReducer }),
+    provideEffects([UserEffects, AuthEffects, AdminEffects]),
     importProvidersFrom(
       TranslateModule.forRoot({
         loader: {

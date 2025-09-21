@@ -8,10 +8,10 @@ import { AdminLogsComponent } from './admin-logs/admin-logs.component';
 import { AdminSettingsComponent } from './admin-settings/admin-settings.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
-import { TokenService } from '../services/token.service';
 import { Router } from '@angular/router';
-import { AdminService } from '../services/admin.service';
-import { AdminSettingsService } from '../services/admin-settings.service';
+import { Store } from '@ngrx/store';
+import * as AdminState from '../store/admin/admin.state';
+import * as AdminActions from '../store/admin/admin.actions';
 
 @Component({
   selector: 'app-admin',
@@ -33,16 +33,14 @@ export class AdminComponent implements OnInit, OnDestroy {
   private subscriptions = new Subscription();
 
   constructor(
-    private adminService: AdminService,
-    private adminSettings: AdminSettingsService,
-    private tokenService: TokenService,
+    private store: Store<AdminState.AdminState>,
     private router: Router
   ) {}
 
   ngOnInit(): void {
     if (this.router.url.startsWith('/admin')) {
-      this.adminService.loadAdminData();
-      this.adminSettings.loadSettings();
+      this.store.dispatch(AdminActions.loadAdminData());
+      this.store.dispatch(AdminActions.loadAdminSettings());
     }
   }
 
