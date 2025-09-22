@@ -1,27 +1,78 @@
-# Client
+# GMHelper Frontend
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.2.15.
+This is the frontend of the GMHelper application, built with Angular (standalone components).
 
-## Development server
+## Table of Contents
+- [Overview](#overview)
+- [Technologies](#technologies)
+- [Getting Started](#getting-started)
+  - [Running with Docker](#running-with-docker)
+  - [Running without Docker](#running-without-docker)
+- [Configuration](#configuration)
+- [Notes](#notes)
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+## Overview
+The frontend provides the user interface for the GMHelper application. 
+It communicates with the backend API for user authentication, data management, and admin functionalities.  
+GMHelper is intended to assist in solving mathematical and geometry problems with the help of AI. 
+This feature is planned for future implementation.
 
-## Code scaffolding
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+## Technologies
+- Angular (standalone components)
+- SCSS for styling
+- ngx-translate for translations
+- ngRx for state management
 
-## Build
+## Getting Started
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+### Running with Docker
+To run the full application (frontend + backend) using Docker:
 
-## Running unit tests
+1. Clone both repositories into the same folder:
+   - GMHelper UI: [https://github.com/kimrenny/gmhelper.ui](https://github.com/kimrenny/gmhelper.ui)
+   - GMHelper Backend: [https://github.com/kimrenny/gmhelper.backend](https://github.com/kimrenny/gmhelper.backend)
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+2. Open a terminal in the `backend` folder and run:
+```bash
+docker compose up --build
+```
+After the containers are running, the application will be available at:
 
-## Running end-to-end tests
+Frontend: [http://localhost:4200](http://localhost:4200)
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+Backend/API: [http://localhost:7057](http://localhost:7057)
 
-## Further help
+### Running without Docker
+To run the frontend locally without Docker:
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+1. Open a terminal in the frontend folder.
+
+2. Run the application:
+```bash
+ng serve
+```
+
+3. The frontend will be available at [http://localhost:4200](http://localhost:4200)
+
+**Note**: Backend must be running separately if you want the frontend to interact with it.
+
+### Configuration
+
+You can change the API URL the frontend connects to by modifying the `apiUrl` parameter in the following files:
+`src/environments/environment.ts`
+
+`src/environments/environment.prod.ts`
+
+
+### Notes
+
+- Make sure Node.js and Angular CLI are installed if running locally.
+
+- Docker and Docker Compose are required for running via containers.
+
+- Translations are handled via ngx-translate.
+
+- SCSS is used for all styling; no plain CSS is included.
+
+- Application state is managed using ngRx. Most data interactions are handled through the store.
