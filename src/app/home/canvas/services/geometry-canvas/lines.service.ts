@@ -27,18 +27,66 @@ export class LinesService implements LinesServiceInterface {
 
     if (!p1 || !p2) return;
 
-    const isPolygon =
-      p1.attachedToFigure &&
-      p1.attachedToFigure === p2.attachedToFigure &&
-      p1.attachedToFigure.toLowerCase().includes('polygon');
+    const figureName = p1.attachedToFigure || p2.attachedToFigure;
+    if (!figureName) {
+      this.setLine(point1 + point2, length);
+      return;
+    }
 
-    if (isPolygon) {
+    const lineName = point1 + point2;
+
+    const figureType = figureName.toLowerCase().split('_')[0];
+
+    if (figureType === 'polygon') {
       this.setPolygonLinesLength(p1, length);
-    } else {
-      const lineName = point1 + point2;
+      return;
+    }
+
+    if (figureType === 'rhombus') {
+      const lines = this.getLinesByFigureName(figureName);
+      lines.forEach((line) => {
+        if (line.name in this.lines) {
+          this.lines[line.name] = length;
+        }
+      });
+      return;
+    }
+
+    if (figureType.includes('rectangle')) {
+      const points = this.pointsService.getPointsByFigure(figureName);
+      const sides = [
+        this.calculateDistance(points[0], points[1]),
+        this.calculateDistance(points[1], points[2]),
+        this.calculateDistance(points[2], points[3]),
+        this.calculateDistance(points[3], points[0]),
+      ];
+
+      if (this.areLengthsEqual(sides)) {
+        const lines = this.getLinesByFigureName(figureName);
+        lines.forEach((line) => this.setLine(line.name, length));
+      } else {
+        if (lineName in this.lines) {
+          this.lines[lineName] = length;
+        }
+        const lines = this.getLinesByFigureName(figureName);
+        const parallel = this.getParallelLine({ a: p1, b: p2 }, lines);
+        if (parallel) this.setLine(parallel.name, length);
+      }
+      return;
+    }
+
+    if (figureType.includes('parallelogram')) {
       if (lineName in this.lines) {
         this.lines[lineName] = length;
       }
+      const lines = this.getLinesByFigureName(figureName);
+      const parallel = this.getParallelLine({ a: p1, b: p2 }, lines);
+      if (parallel) this.setLine(parallel.name, length);
+      return;
+    }
+
+    if (lineName in this.lines) {
+      this.lines[lineName] = length;
     }
   }
 
@@ -61,6 +109,50 @@ export class LinesService implements LinesServiceInterface {
         }
       }
     }
+  }
+
+  private calculateDistance(a: Coords2d, b: Coords2d): number {
+    const dx = a.x - b.x;
+    const dy = a.y - b.y;
+    return Math.sqrt(dx * dx + dy * dy);
+  }
+
+  private areLengthsEqual(lengths: number[], tolerance = 0.01): boolean {
+    if (lengths.length === 0) return true;
+    const first = lengths[0];
+    return lengths.every((len) => Math.abs(len - first) <= tolerance);
+  }
+
+  private getParallelLine(
+    currentLine: { a: Point; b: Point },
+    allLines: { name: string; a: Coords2d; b: Coords2d }[]
+  ): { name: string; a: Coords2d; b: Coords2d } | null {
+    const { a, b } = currentLine;
+    const dx1 = b.x - a.x;
+    const dy1 = b.y - a.y;
+
+    for (const line of allLines) {
+      if (
+        (line.a.x === a.x &&
+          line.a.y === a.y &&
+          line.b.x === b.x &&
+          line.b.y === b.y) ||
+        (line.a.x === b.x &&
+          line.a.y === b.y &&
+          line.b.x === a.x &&
+          line.b.y === a.y)
+      ) {
+        continue;
+      }
+
+      const dx2 = line.b.x - line.a.x;
+      const dy2 = line.b.y - line.a.y;
+
+      const cross = dx1 * dy2 - dy1 * dx2;
+      if (Math.abs(cross) < 0.01) return line;
+    }
+
+    return null;
   }
 
   getAllLines(): Record<string, LineLength> {
