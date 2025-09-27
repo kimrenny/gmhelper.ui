@@ -4,34 +4,26 @@ import * as AuthActions from './auth.actions';
 
 export const authReducer = createReducer(
   initialAuthState,
-  on(
-    AuthActions.loginSuccess,
-    (state, { accessToken, refreshToken, role }) => ({
-      ...state,
-      accessToken,
-      refreshToken,
-      userRole: role,
-      isServerAvailable: true,
-      error: null,
-      isAuthChecked: true,
-    })
-  ),
+  on(AuthActions.loginSuccess, (state, { accessToken, role }) => ({
+    ...state,
+    accessToken,
+    userRole: role,
+    isServerAvailable: true,
+    error: null,
+    isAuthChecked: true,
+  })),
   on(AuthActions.refreshToken, (state) => ({
     ...state,
     isRefreshing: true,
   })),
-  on(
-    AuthActions.refreshTokenSuccess,
-    (state, { accessToken, refreshToken }) => ({
-      ...state,
-      accessToken,
-      refreshToken,
-      isRefreshing: false,
-      isServerAvailable: true,
-      error: null,
-      isAuthChecked: true,
-    })
-  ),
+  on(AuthActions.refreshTokenSuccess, (state, { accessToken }) => ({
+    ...state,
+    accessToken,
+    isRefreshing: false,
+    isServerAvailable: true,
+    error: null,
+    isAuthChecked: true,
+  })),
   on(AuthActions.refreshTokenFailure, (state, { error }) => ({
     ...state,
     isRefreshing: false,

@@ -732,8 +732,8 @@
     "INTERNATIONAL": "International Data Transfers",
     "INTERNATIONAL_TEXT": "Your information may be stored and processed on servers located outside your country of residence. By using the application, you consent to such transfers, which may be subject to different data protection laws.",
 
-    "COOKIES": "Cookies and Tracking",
-    "COOKIES_TEXT": "We may use cookies or similar technologies to enhance your user experience, analyze usage, and provide personalized features. You can manage or disable cookies in your browser settings.",
+    "COOKIES": "Cookies and Authentication",
+    "COOKIES_TEXT": "GMHelper uses cookies to maintain user sessions and enable secure authentication. These cookies store information such as refresh tokens, which are necessary for logging in and keeping your session active. You can manage cookies in your browser settings, but disabling them may prevent you from using certain features.",
 
     "USER_RIGHTS": "Your Rights",
     "USER_RIGHTS_TEXT": "You have the right to access, correct, or delete your personal data. You can also withdraw consent for processing at any time. To exercise these rights, contact us at the email below.",

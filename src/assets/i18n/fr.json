@@ -732,8 +732,8 @@
     "INTERNATIONAL": "Transferts internationaux de données",
     "INTERNATIONAL_TEXT": "Vos informations peuvent être stockées et traitées sur des serveurs situés en dehors de votre pays de résidence. En utilisant l'application, vous consentez à ces transferts, qui peuvent être soumis à des lois sur la protection des données différentes.",
 
-    "COOKIES": "Cookies et suivi",
-    "COOKIES_TEXT": "Nous pouvons utiliser des cookies ou des technologies similaires pour améliorer votre expérience utilisateur, analyser l'utilisation et fournir des fonctionnalités personnalisées. Vous pouvez gérer ou désactiver les cookies dans les paramètres de votre navigateur.",
+    "COOKIES": "Cookies et authentification",
+    "COOKIES_TEXT": "GMHelper utilise des cookies pour maintenir les sessions utilisateur et permettre une authentification sécurisée. Ces cookies stockent des informations telles que les jetons de rafraîchissement, nécessaires pour se connecter et maintenir votre session active. Vous pouvez gérer les cookies dans les paramètres de votre navigateur, mais leur désactivation peut empêcher l'utilisation de certaines fonctionnalités.",
 
     "USER_RIGHTS": "Vos droits",
     "USER_RIGHTS_TEXT": "Vous avez le droit d'accéder, de corriger ou de supprimer vos données personnelles. Vous pouvez également retirer votre consentement au traitement à tout moment. Pour exercer ces droits, contactez-nous à l'adresse e-mail ci-dessous.",

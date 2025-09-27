@@ -271,7 +271,6 @@ export class RegisterComponent {
               this.authStore.dispatch(
                 AuthActions.loginSuccess({
                   accessToken: response.data.accessToken,
-                  refreshToken: response.data.refreshToken,
                   role: role,
                 })
               );
@@ -341,7 +340,6 @@ export class RegisterComponent {
               this.authStore.dispatch(
                 AuthActions.loginSuccess({
                   accessToken: response.data.accessToken,
-                  refreshToken: response.data.refreshToken,
                   role: role,
                 })
               );
@@ -378,7 +376,6 @@ export class RegisterComponent {
               this.authStore.dispatch(
                 AuthActions.loginSuccess({
                   accessToken: response.data.accessToken,
-                  refreshToken: response.data.refreshToken,
                   role: role,
                 })
               );

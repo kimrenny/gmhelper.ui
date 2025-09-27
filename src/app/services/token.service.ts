@@ -27,12 +27,19 @@ export class TokenService {
     );
   }
 
-  refreshToken(
-    refreshToken: string
-  ): Observable<{ accessToken: string; refreshToken: string }> {
-    return this.http.post<{ accessToken: string; refreshToken: string }>(
+  refreshToken(): Observable<{ accessToken: string }> {
+    return this.http.post<{ accessToken: string }>(
       `${this.api}/auth/token/refresh`,
-      { refreshToken }
+      { request: '' },
+      { withCredentials: true }
+    );
+  }
+
+  removeToken() {
+    return this.http.post(
+      `${this.api}/auth/logout`,
+      {},
+      { withCredentials: true }
     );
   }
 

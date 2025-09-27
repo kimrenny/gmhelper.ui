@@ -174,6 +174,7 @@ export class RegisterService {
     };
     return this.http.post<ApiResponse<any>>(`${this.api}/auth/login`, body, {
       headers,
+      withCredentials: true,
     });
   }
 

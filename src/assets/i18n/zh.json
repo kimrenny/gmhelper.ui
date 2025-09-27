@@ -732,9 +732,8 @@
     "INTERNATIONAL": "国际数据传输",
     "INTERNATIONAL_TEXT": "您的信息可能存储和处理于您居住国以外的服务器上。使用本应用程序即表示您同意此类传输，这些传输可能适用不同的数据保护法律。",
 
-    "COOKIES": "Cookies 与跟踪",
-    "COOKIES_TEXT": "我们可能使用 cookies 或类似技术以增强用户体验、分析使用情况并提供个性化功能。您可以在浏览器设置中管理或禁用 cookies。",
-
+    "COOKIES": "Cookies 与身份验证",
+    "COOKIES_TEXT": "GMHelper 使用 Cookies 来维护用户会话并实现安全身份验证。这些 Cookies 会存储诸如刷新令牌（refresh token）之类的信息，这些信息对于登录和保持会话活跃是必要的。您可以在浏览器设置中管理 Cookies，但禁用它们可能会导致某些功能无法使用。",
     "USER_RIGHTS": "您的权利",
     "USER_RIGHTS_TEXT": "您有权访问、更正或删除您的个人数据。您也可以随时撤回处理同意。要行使这些权利，请通过以下电子邮件与我们联系。",
 

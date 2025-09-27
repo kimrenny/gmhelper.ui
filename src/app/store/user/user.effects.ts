@@ -27,10 +27,9 @@ export class UserEffects {
       withLatestFrom(
         this.store.select(UserSelectors.selectUser),
         this.store.select((state: UserState.UserState) => state.isUserLoading),
-        this.authStore.select(AuthSelectors.selectAccessToken),
-        this.authStore.select(AuthSelectors.selectRefreshToken)
+        this.authStore.select(AuthSelectors.selectAccessToken)
       ),
-      switchMap(([action, user, isLoading, authToken, refreshToken]) => {
+      switchMap(([action, user, isLoading, authToken]) => {
         if (user.nickname !== 'Guest' || isLoading) {
           return of(UserActions.loadUserSuccess({ user }));
         }

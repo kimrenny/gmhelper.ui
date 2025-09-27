@@ -6,17 +6,14 @@ export const restoreAuthFromStorage = createAction(
 
 export const loginSuccess = createAction(
   '[Auth] Login Success',
-  props<{ accessToken: string; refreshToken: string; role: string | null }>()
+  props<{ accessToken: string; role: string | null }>()
 );
 
-export const refreshToken = createAction(
-  '[Auth] Refresh Token',
-  props<{ refreshToken: string }>()
-);
+export const refreshToken = createAction('[Auth] Refresh Token');
 
 export const refreshTokenSuccess = createAction(
   '[Auth] Refresh Token Success',
-  props<{ accessToken: string; refreshToken: string }>()
+  props<{ accessToken: string }>()
 );
 
 export const refreshTokenFailure = createAction(

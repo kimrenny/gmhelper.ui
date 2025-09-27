@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { of, timer } from 'rxjs';
+import { EMPTY, of, timer } from 'rxjs';
 import { catchError, map, mergeMap, switchMap, tap } from 'rxjs/operators';
 import * as AuthActions from './auth.actions';
 import * as UserActions from '../user/user.actions';
@@ -13,21 +13,21 @@ export class AuthEffects {
   restoreAuth$ = createEffect(() =>
     this.actions$.pipe(
       ofType(AuthActions.restoreAuthFromStorage),
-      map(() => {
+      switchMap(() => {
         const accessToken = localStorage.getItem('authToken');
-        const refreshToken = localStorage.getItem('refreshToken');
 
-        if (accessToken && refreshToken) {
-          const isExpired = this.tokenService.isTokenExpired(accessToken);
-
-          if (isExpired) {
-            return AuthActions.refreshToken({ refreshToken });
-          }
-
-          const role = this.tokenService.extractUserRole(accessToken);
-          return AuthActions.loginSuccess({ accessToken, refreshToken, role });
+        if (!accessToken) {
+          return EMPTY;
         }
-        return AuthActions.logout();
+
+        const isExpired = this.tokenService.isTokenExpired(accessToken);
+
+        if (isExpired) {
+          return of(AuthActions.refreshToken());
+        }
+
+        const role = this.tokenService.extractUserRole(accessToken);
+        return of(AuthActions.loginSuccess({ accessToken, role }));
       })
     )
   );
@@ -35,9 +35,8 @@ export class AuthEffects {
   loginSuccess$ = createEffect(() =>
     this.actions$.pipe(
       ofType(AuthActions.loginSuccess),
-      tap(({ accessToken, refreshToken }) => {
+      tap(({ accessToken }) => {
         localStorage.setItem('authToken', accessToken);
-        localStorage.setItem('refreshToken', refreshToken);
       }),
       switchMap(() => of(UserActions.initUser()))
     )
@@ -46,22 +45,19 @@ export class AuthEffects {
   refreshToken$ = createEffect(() =>
     this.actions$.pipe(
       ofType(AuthActions.refreshToken),
-      switchMap(({ refreshToken }) =>
-        this.tokenService.refreshToken(refreshToken).pipe(
+      switchMap(() =>
+        this.tokenService.refreshToken().pipe(
           mergeMap((response) => {
             localStorage.setItem('authToken', response.accessToken);
-            localStorage.setItem('refreshToken', response.refreshToken);
             const role = this.tokenService.extractUserRole(
               response.accessToken
             );
             return [
               AuthActions.refreshTokenSuccess({
                 accessToken: response.accessToken,
-                refreshToken: response.refreshToken,
               }),
               AuthActions.loginSuccess({
                 accessToken: response.accessToken,
-                refreshToken: response.refreshToken,
                 role,
               }),
             ];
@@ -69,11 +65,10 @@ export class AuthEffects {
           catchError((error) => {
             if (error.status === 0 || error.status === 429) {
               return timer(5000).pipe(
-                mergeMap(() => of(AuthActions.refreshToken({ refreshToken })))
+                mergeMap(() => of(AuthActions.refreshToken()))
               );
             }
             localStorage.removeItem('authToken');
-            localStorage.removeItem('refreshToken');
             return of(AuthActions.refreshTokenFailure({ error }));
           })
         )
@@ -85,11 +80,19 @@ export class AuthEffects {
     () =>
       this.actions$.pipe(
         ofType(AuthActions.logout),
-        tap(() => {
-          localStorage.removeItem('authToken');
-          localStorage.removeItem('refreshToken');
-        }),
-        map(() => UserActions.clearUser())
+        switchMap(() =>
+          this.tokenService.removeToken().pipe(
+            tap(() => {
+              console.trace();
+              localStorage.removeItem('authToken');
+            }),
+            map(() => UserActions.clearUser()),
+            catchError(() => {
+              localStorage.removeItem('authToken');
+              return of(UserActions.clearUser());
+            })
+          )
+        )
       ),
     { dispatch: true }
   );

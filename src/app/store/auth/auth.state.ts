@@ -1,6 +1,5 @@
 export interface AuthState {
   accessToken: string | null;
-  refreshToken: string | null;
   userRole: string | null;
   isRefreshing: boolean;
   isServerAvailable: boolean;
@@ -10,7 +9,6 @@ export interface AuthState {
 
 export const initialAuthState: AuthState = {
   accessToken: null,
-  refreshToken: null,
   userRole: null,
   isRefreshing: false,
   isServerAvailable: true,
