@@ -4,8 +4,6 @@ import { TranslateModule } from '@ngx-translate/core';
 import { TranslateService } from '@ngx-translate/core';
 import { AdminService } from 'src/app/services/admin.service';
 import { combineLatest, filter, Subscription } from 'rxjs';
-import { TokenService } from 'src/app/services/token.service';
-import { UserService } from 'src/app/services/user.service';
 import { ToastrService } from 'ngx-toastr';
 import {
   animate,
@@ -14,7 +12,6 @@ import {
   transition,
   trigger,
 } from '@angular/animations';
-import { AdminSettingsService } from 'src/app/services/admin-settings.service';
 import { FormsModule } from '@angular/forms';
 import { TooltipDirective } from 'src/app/shared/directives/tooltip/tooltip.directive';
 import { select, Store } from '@ngrx/store';
@@ -22,25 +19,14 @@ import * as UserSelectors from '../../store/user/user.selectors';
 import * as AuthSelectors from '../../store/auth/auth.selectors';
 import * as UserState from 'src/app/store/user/user.state';
 import * as AuthState from 'src/app/store/auth/auth.state';
-import * as AdminState from 'src/app/store/admin/admin.state';
 import * as AdminActions from 'src/app/store/admin/admin.actions';
 import {
   selectAdminSettings,
   selectIsLoaded,
   selectUsers,
+  selectUsersCount,
 } from 'src/app/store/admin/admin.selectors';
-
-interface DeviceInfo {
-  userAgent: string;
-  platform: string;
-}
-
-interface LoginToken {
-  expiration: string;
-  deviceInfo: DeviceInfo;
-  ipAddress: string;
-  isActive: boolean;
-}
+import { LoginToken } from 'src/app/models/admin.model';
 
 interface User {
   id: string;
@@ -69,7 +55,8 @@ export class AdminUsersComponent implements OnInit, OnDestroy {
   currentUsername!: string;
   userRole!: string | null;
 
-  users: User[] = [];
+  users$ = this.store.pipe(select(selectUsers));
+  totalUsersCount: number = 0;
 
   selectedUser: User | null = null;
   currentPage: number = 1;
@@ -87,6 +74,8 @@ export class AdminUsersComponent implements OnInit, OnDestroy {
 
   sortColumn: keyof User | null = null;
   sortDirection: 'asc' | 'desc' = 'asc';
+
+  maxRegistrationDate: string = new Date().toISOString();
 
   showUsername = true;
   showEmail = true;
@@ -117,14 +106,17 @@ export class AdminUsersComponent implements OnInit, OnDestroy {
         this.store.pipe(select(selectIsLoaded)),
       ]).subscribe(([users, isLoaded]) => {
         if ((!users || users.length === 0) && isLoaded) {
-          this.store.dispatch(AdminActions.loadUsers());
-        } else if (users && users.length > 0) {
-          this.users = users;
-          if (!this.sortColumn) {
-            this.sortByColumn('registrationDate');
-          }
+          this.loadUsersFromStore();
         }
       })
+    );
+
+    this.subscriptions.add(
+      this.store
+        .pipe(select(selectUsersCount))
+        .subscribe(
+          (count: number | null) => (this.totalUsersCount = count ?? 0)
+        )
     );
 
     const userSub = this.store
@@ -156,14 +148,20 @@ export class AdminUsersComponent implements OnInit, OnDestroy {
     this.subscriptions.unsubscribe();
   }
 
-  get totalPages(): number {
-    return Math.ceil(this.users.length / this.usersPerPage);
+  private loadUsersFromStore() {
+    this.store.dispatch(
+      AdminActions.loadUsers({
+        page: this.currentPage,
+        pageSize: this.usersPerPage,
+        sortColumn: this.sortColumn ?? 'registrationDate',
+        sortDirection: this.sortDirection,
+        maxRegistrationDate: this.maxRegistrationDate,
+      })
+    );
   }
 
-  get paginatedUsers() {
-    const start = (this.currentPage - 1) * this.usersPerPage;
-    const end = start + this.usersPerPage;
-    return this.users.slice(start, end);
+  get totalPages(): number {
+    return Math.ceil(this.totalUsersCount / this.usersPerPage);
   }
 
   get totalTokenPages(): number {
@@ -188,6 +186,7 @@ export class AdminUsersComponent implements OnInit, OnDestroy {
     if (this.currentPage > 1) {
       this.currentPage--;
       this.pageInput = this.currentPage;
+      this.loadUsersFromStore();
     }
   }
 
@@ -195,6 +194,7 @@ export class AdminUsersComponent implements OnInit, OnDestroy {
     if (this.currentPage < this.totalPages) {
       this.currentPage++;
       this.pageInput = this.currentPage;
+      this.loadUsersFromStore();
     }
   }
 
@@ -207,6 +207,7 @@ export class AdminUsersComponent implements OnInit, OnDestroy {
       this.currentPage = page;
     }
     this.pageInput = this.currentPage;
+    this.loadUsersFromStore();
   }
 
   prevTokenPage() {
@@ -276,7 +277,7 @@ export class AdminUsersComponent implements OnInit, OnDestroy {
       .actionUser(user.id, user.isBlocked ? 'unban' : 'ban')
       .subscribe({
         next: () => {
-          this.store.dispatch(AdminActions.loadUsers());
+          this.loadUsersFromStore();
           this.toastr.success(
             this.translate.instant('ADMIN.SUCCESS.MESSAGE'),
             this.translate.instant('ADMIN.SUCCESS.TITLE')
@@ -322,18 +323,6 @@ export class AdminUsersComponent implements OnInit, OnDestroy {
       this.sortDirection = 'asc';
     }
 
-    this.users = [...this.users].sort((a, b) => {
-      let valueA = a[column];
-      let valueB = b[column];
-
-      if (typeof valueA === 'string' && typeof valueB === 'string') {
-        valueA = valueA.toLowerCase();
-        valueB = valueB.toLowerCase();
-      }
-
-      if (valueA < valueB) return this.sortDirection === 'asc' ? -1 : 1;
-      if (valueA > valueB) return this.sortDirection === 'asc' ? 1 : -1;
-      return 0;
-    });
+    this.loadUsersFromStore();
   }
 }

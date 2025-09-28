@@ -31,7 +31,13 @@ export class AdminService {
     private store: Store<AdminState.AdminState>
   ) {}
 
-  getUsers(): Observable<User[]> {
+  getUsers(
+    page: number,
+    pageSize: number,
+    sortBy: keyof User = 'registrationDate',
+    descending: boolean = false,
+    maxRegistrationDate?: string
+  ): Observable<{ users: User[]; totalCount: number }> {
     return this.tokenService.getToken$().pipe(
       take(1),
       switchMap((token) => {
@@ -39,11 +45,31 @@ export class AdminService {
           return throwError(() => new Error('No permissions'));
         }
 
+        const params: any = {
+          page,
+          pageSize,
+          sortBy,
+          descending,
+        };
+
+        if (maxRegistrationDate) {
+          params.maxRegistrationDate = maxRegistrationDate;
+        }
+
         return this.http
-          .get<ApiResponse<User[]>>(`${this.apiUrl}/users`, {
-            headers: this.tokenService.createAuthHeaders(token),
-          })
-          .pipe(map((res) => res.data));
+          .get<ApiResponse<{ items: User[]; totalCount: number }>>(
+            `${this.apiUrl}/users`,
+            {
+              headers: this.tokenService.createAuthHeaders(token),
+              params,
+            }
+          )
+          .pipe(
+            map((res) => ({
+              users: res.data.items,
+              totalCount: res.data.totalCount,
+            }))
+          );
       })
     );
   }

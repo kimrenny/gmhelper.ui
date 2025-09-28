@@ -42,10 +42,19 @@ export const setLoadingSettings = createAction(
   props<{ loading: boolean }>()
 );
 
-export const loadUsers = createAction('[Admin] Load Users');
+export const loadUsers = createAction(
+  '[Admin] Load Users',
+  props<{
+    page?: number;
+    pageSize?: number;
+    sortColumn?: keyof User;
+    sortDirection?: 'asc' | 'desc';
+    maxRegistrationDate?: string;
+  }>()
+);
 export const loadUsersSuccess = createAction(
   '[Admin] Load Users Success',
-  props<{ users: User[] }>()
+  props<{ users: User[]; totalCount: number }>()
 );
 export const loadUsersFailure = createAction(
   '[Admin] Load Users Failure',

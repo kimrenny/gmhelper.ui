@@ -27,9 +27,10 @@ export const adminReducer = createReducer(
   on(AdminActions.updateAdminSettingSuccess, (state) => state),
   on(AdminActions.updateAdminSettingFailure, (error) => error),
 
-  on(AdminActions.loadUsersSuccess, (state, { users }) => ({
+  on(AdminActions.loadUsersSuccess, (state, { users, totalCount }) => ({
     ...state,
     users: users,
+    totalUsersCount: totalCount,
   })),
   on(AdminActions.loadUsersFailure, (state, { error }) => ({
     ...state,

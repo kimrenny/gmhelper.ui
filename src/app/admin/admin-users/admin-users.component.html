@@ -61,7 +61,7 @@
     <div class="table-body">
       <div
         class="table-row"
-        *ngFor="let user of paginatedUsers"
+        *ngFor="let user of users$ | async"
         (click)="openUserDetails(user)"
         [ngClass]="{ 'current-user': user.username === currentUsername }"
       >

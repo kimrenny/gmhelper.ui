@@ -42,7 +42,7 @@ export class AdminEffects {
     this.actions$.pipe(
       ofType(AdminActions.loadAdminData),
       mergeMap(() => {
-        AdminActions.loadUsers(),
+        AdminActions.loadUsers({}),
           AdminActions.loadTokens(),
           AdminActions.loadRegistrations(),
           AdminActions.loadRequestsData(),
@@ -118,22 +118,31 @@ export class AdminEffects {
         this.store.pipe(select((state: AdminState) => state.loadingUsers))
       ),
       filter(([_, loading]) => !loading),
-      switchMap(() => {
+      switchMap(([action, _]) => {
         this.store.dispatch(AdminActions.setLoadingUsers({ loading: true }));
-        return this.adminService.getUsers().pipe(
-          map((users: User[]) => {
-            this.store.dispatch(
-              AdminActions.setLoadingUsers({ loading: false })
-            );
-            return AdminActions.loadUsersSuccess({ users });
-          }),
-          catchError((error) => {
-            this.store.dispatch(
-              AdminActions.setLoadingUsers({ loading: false })
-            );
-            return of(AdminActions.loadUsersFailure({ error }));
-          })
-        );
+
+        return this.adminService
+          .getUsers(
+            action.page ?? 1,
+            action.pageSize ?? 10,
+            action.sortColumn ?? 'registrationDate',
+            action.sortDirection === 'desc',
+            action.maxRegistrationDate
+          )
+          .pipe(
+            map(({ users, totalCount }) => {
+              this.store.dispatch(
+                AdminActions.setLoadingUsers({ loading: false })
+              );
+              return AdminActions.loadUsersSuccess({ users, totalCount });
+            }),
+            catchError((error) => {
+              this.store.dispatch(
+                AdminActions.setLoadingUsers({ loading: false })
+              );
+              return of(AdminActions.loadUsersFailure({ error }));
+            })
+          );
       })
     )
   );

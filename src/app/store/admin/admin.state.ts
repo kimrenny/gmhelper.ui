@@ -17,6 +17,7 @@ import {
 export interface AdminState {
   settings: AdminSettings;
   users: User[] | null;
+  totalUsersCount: number | null;
   tokens: Token[] | null;
   registrations: RegistrationData[] | null;
   requestsData: CombinedRequestsData | null;
@@ -47,6 +48,7 @@ export interface AdminState {
 export const initialAdminState: AdminState = {
   settings: initialAdminSettings,
   users: null,
+  totalUsersCount: null,
   tokens: null,
   registrations: null,
   requestsData: null,
