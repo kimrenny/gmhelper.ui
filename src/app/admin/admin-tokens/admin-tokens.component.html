@@ -85,7 +85,7 @@
     <div class="table-body">
       <div
         class="table-row"
-        *ngFor="let token of paginatedTokens"
+        *ngFor="let token of tokens$ | async"
         (click)="openTokenDetails(token)"
         [ngClass]="{ 'current-token': token.token === currentToken }"
       >

@@ -74,7 +74,13 @@ export class AdminService {
     );
   }
 
-  getTokens(): Observable<Token[]> {
+  getTokens(
+    page: number,
+    pageSize: number,
+    sortBy: keyof Token = 'expiration',
+    descending: boolean = false,
+    maxExpirationDate?: string
+  ): Observable<{ tokens: Token[]; totalCount: number }> {
     return this.tokenService.getToken$().pipe(
       take(1),
       switchMap((token) => {
@@ -82,11 +88,31 @@ export class AdminService {
           return throwError(() => new Error('No permissions'));
         }
 
+        const params: any = {
+          page,
+          pageSize,
+          sortBy,
+          descending,
+        };
+
+        if (maxExpirationDate) {
+          params.maxExpirationDate = maxExpirationDate;
+        }
+
         return this.http
-          .get<ApiResponse<Token[]>>(`${this.apiUrl}/tokens`, {
-            headers: this.tokenService.createAuthHeaders(token),
-          })
-          .pipe(map((res) => res.data));
+          .get<ApiResponse<{ items: Token[]; totalCount: number }>>(
+            `${this.apiUrl}/tokens`,
+            {
+              headers: this.tokenService.createAuthHeaders(token),
+              params,
+            }
+          )
+          .pipe(
+            map((res) => ({
+              tokens: res.data.items,
+              totalCount: res.data.totalCount,
+            }))
+          );
       })
     );
   }

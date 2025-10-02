@@ -20,6 +20,10 @@ export const selectTokens = createSelector(
   selectAdminState,
   (state) => state.tokens
 );
+export const selectTokensCount = createSelector(
+  selectAdminState,
+  (state) => state.totalTokensCount
+);
 export const selectRegistrations = createSelector(
   selectAdminState,
   (state) => state.registrations

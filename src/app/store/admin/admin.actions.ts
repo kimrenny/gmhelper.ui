@@ -65,10 +65,19 @@ export const setLoadingUsers = createAction(
   props<{ loading: boolean }>()
 );
 
-export const loadTokens = createAction('[Admin] Load Tokens');
+export const loadTokens = createAction(
+  '[Admin] Load Tokens',
+  props<{
+    page?: number;
+    pageSize?: number;
+    sortColumn?: keyof Token;
+    sortDirection?: 'asc' | 'desc';
+    maxExpirationDate?: string;
+  }>()
+);
 export const loadTokensSuccess = createAction(
   '[Admin] Load Tokens Success',
-  props<{ tokens: Token[] }>()
+  props<{ tokens: Token[]; totalCount: number }>()
 );
 export const loadTokensFailure = createAction(
   '[Admin] Load Tokens Failure',

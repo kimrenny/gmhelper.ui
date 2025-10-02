@@ -41,9 +41,10 @@ export const adminReducer = createReducer(
     loadingUsers: loading,
   })),
 
-  on(AdminActions.loadTokensSuccess, (state, { tokens }) => ({
+  on(AdminActions.loadTokensSuccess, (state, { tokens, totalCount }) => ({
     ...state,
     tokens: tokens,
+    totalTokensCount: totalCount,
   })),
   on(AdminActions.loadTokensFailure, (state, { error }) => ({
     ...state,

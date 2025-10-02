@@ -19,6 +19,7 @@ export interface AdminState {
   users: User[] | null;
   totalUsersCount: number | null;
   tokens: Token[] | null;
+  totalTokensCount: number | null;
   registrations: RegistrationData[] | null;
   requestsData: CombinedRequestsData | null;
   countryStats: CountryStats[] | null;
@@ -50,6 +51,7 @@ export const initialAdminState: AdminState = {
   users: null,
   totalUsersCount: null,
   tokens: null,
+  totalTokensCount: null,
   registrations: null,
   requestsData: null,
   countryStats: null,

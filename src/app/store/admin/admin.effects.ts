@@ -43,7 +43,7 @@ export class AdminEffects {
       ofType(AdminActions.loadAdminData),
       mergeMap(() => {
         AdminActions.loadUsers({}),
-          AdminActions.loadTokens(),
+          AdminActions.loadTokens({}),
           AdminActions.loadRegistrations(),
           AdminActions.loadRequestsData(),
           AdminActions.loadCountryStats(),
@@ -154,22 +154,30 @@ export class AdminEffects {
         this.store.pipe(select((state: AdminState) => state.loadingTokens))
       ),
       filter(([_, loading]) => !loading),
-      switchMap(() => {
+      switchMap(([action, _]) => {
         this.store.dispatch(AdminActions.setLoadingTokens({ loading: true }));
-        return this.adminService.getTokens().pipe(
-          map((tokens: Token[]) => {
-            this.store.dispatch(
-              AdminActions.setLoadingTokens({ loading: false })
-            );
-            return AdminActions.loadTokensSuccess({ tokens });
-          }),
-          catchError((error) => {
-            this.store.dispatch(
-              AdminActions.setLoadingTokens({ loading: false })
-            );
-            return of(AdminActions.loadTokensFailure({ error }));
-          })
-        );
+        return this.adminService
+          .getTokens(
+            action.page ?? 1,
+            action.pageSize ?? 10,
+            action.sortColumn ?? 'expiration',
+            action.sortDirection === 'desc',
+            action.maxExpirationDate
+          )
+          .pipe(
+            map(({ tokens, totalCount }) => {
+              this.store.dispatch(
+                AdminActions.setLoadingTokens({ loading: false })
+              );
+              return AdminActions.loadTokensSuccess({ tokens, totalCount });
+            }),
+            catchError((error) => {
+              this.store.dispatch(
+                AdminActions.setLoadingTokens({ loading: false })
+              );
+              return of(AdminActions.loadTokensFailure({ error }));
+            })
+          );
       })
     )
   );
