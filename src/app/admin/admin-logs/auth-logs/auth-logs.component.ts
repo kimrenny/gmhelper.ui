@@ -1,12 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TokenService } from 'src/app/services/token.service';
 import { combineLatest, filter, Subscription } from 'rxjs';
-import { AdminService } from 'src/app/services/admin.service';
 import { ToastrService } from 'ngx-toastr';
 import { TranslateService } from '@ngx-translate/core';
 import { TranslateModule } from '@ngx-translate/core';
-import { AdminSettingsService } from 'src/app/services/admin-settings.service';
 import { TruncatePipe } from 'src/app/pipes/truncate.pipe';
 import { FormsModule } from '@angular/forms';
 import { TooltipDirective } from 'src/app/shared/directives/tooltip/tooltip.directive';
@@ -16,18 +13,10 @@ import * as AdminActions from 'src/app/store/admin/admin.actions';
 import {
   selectAdminSettings,
   selectAuthLogs,
+  selectAuthLogsCount,
   selectIsLoaded,
 } from 'src/app/store/admin/admin.selectors';
-
-interface AuthLog {
-  id: number;
-  timestamp: string;
-  userId: string;
-  ipAddress: string;
-  userAgent: string;
-  status: string;
-  message: string;
-}
+import { AuthLog } from 'src/app/models/admin.model';
 
 @Component({
   selector: 'app-admin-auth-logs',
@@ -43,7 +32,8 @@ interface AuthLog {
   styleUrls: ['./auth-logs.component.scss'],
 })
 export class AdminAuthLogsComponent implements OnInit, OnDestroy {
-  logs: AuthLog[] = [];
+  logs$ = this.store.pipe(select(selectAuthLogs));
+  totalLogsCount: number = 0;
 
   selectedLog: AuthLog | null = null;
   currentPage: number = 1;
@@ -55,8 +45,10 @@ export class AdminAuthLogsComponent implements OnInit, OnDestroy {
 
   isAccessDeniedModalOpen: boolean = false;
 
-  sortColumn: keyof AuthLog | null = null;
-  sortDirection: 'asc' | 'desc' = 'asc';
+  sortColumn: keyof AuthLog | null = 'id';
+  sortDirection: 'asc' | 'desc' = 'desc';
+
+  maxLogDate: string = new Date().toISOString();
 
   showTimestamp = true;
   showDuration = true;
@@ -79,11 +71,15 @@ export class AdminAuthLogsComponent implements OnInit, OnDestroy {
         this.store.pipe(select(selectIsLoaded)),
       ]).subscribe(([logs, isLoaded]) => {
         if ((!logs || logs.length === 0) && isLoaded) {
-          this.store.dispatch(AdminActions.loadAuthLogs());
-        } else if (logs) {
-          this.logs = logs;
+          this.loadLogsFromStore();
         }
       })
+    );
+
+    this.subscriptions.add(
+      this.store
+        .pipe(select(selectAuthLogsCount))
+        .subscribe((count: number | null) => (this.totalLogsCount = count ?? 0))
     );
 
     const settingsSub = this.store
@@ -107,20 +103,27 @@ export class AdminAuthLogsComponent implements OnInit, OnDestroy {
     this.subscriptions.unsubscribe();
   }
 
-  get totalPages(): number {
-    return Math.ceil(this.logs.length / this.logsPerPage);
+  private loadLogsFromStore() {
+    this.store.dispatch(
+      AdminActions.loadAuthLogs({
+        page: this.currentPage,
+        pageSize: this.logsPerPage,
+        sortColumn: this.sortColumn ?? 'id',
+        sortDirection: this.sortDirection,
+        maxLogDate: this.maxLogDate,
+      })
+    );
   }
 
-  get paginatedLogs() {
-    const start = (this.currentPage - 1) * this.logsPerPage;
-    const end = start + this.logsPerPage;
-    return this.logs.slice(start, end);
+  get totalPages(): number {
+    return Math.ceil(this.totalLogsCount / this.logsPerPage);
   }
 
   prevPage() {
     if (this.currentPage > 1) {
       this.currentPage--;
       this.pageInput = this.currentPage;
+      this.loadLogsFromStore();
     }
   }
 
@@ -128,6 +131,7 @@ export class AdminAuthLogsComponent implements OnInit, OnDestroy {
     if (this.currentPage < this.totalPages) {
       this.currentPage++;
       this.pageInput = this.currentPage;
+      this.loadLogsFromStore();
     }
   }
 
@@ -140,6 +144,7 @@ export class AdminAuthLogsComponent implements OnInit, OnDestroy {
       this.currentPage = page;
     }
     this.pageInput = this.currentPage;
+    this.loadLogsFromStore();
   }
 
   openLogDetails(log: AuthLog) {
@@ -165,19 +170,7 @@ export class AdminAuthLogsComponent implements OnInit, OnDestroy {
       this.sortDirection = 'asc';
     }
 
-    this.logs.sort((a, b) => {
-      let valueA = a[column];
-      let valueB = b[column];
-
-      if (typeof valueA === 'string' && typeof valueB === 'string') {
-        valueA = valueA.toLowerCase();
-        valueB = valueB.toLowerCase();
-      }
-
-      if (valueA < valueB) return this.sortDirection === 'asc' ? -1 : 1;
-      if (valueA > valueB) return this.sortDirection === 'asc' ? 1 : -1;
-      return 0;
-    });
+    this.loadLogsFromStore();
   }
 
   getFormattedPath(path?: string): string {

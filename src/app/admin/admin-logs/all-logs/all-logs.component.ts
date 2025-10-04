@@ -48,7 +48,7 @@ export class AdminAllLogsComponent implements OnInit, OnDestroy {
 
   isAccessDeniedModalOpen: boolean = false;
 
-  sortColumn: keyof RequestLog | null = null;
+  sortColumn: keyof RequestLog | null = 'id';
   sortDirection: 'asc' | 'desc' = 'desc';
 
   maxLogDate: string = new Date().toISOString();

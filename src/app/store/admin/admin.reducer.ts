@@ -134,9 +134,10 @@ export const adminReducer = createReducer(
     loadingRequestLogs: loading,
   })),
 
-  on(AdminActions.loadAuthLogsSuccess, (state, { stats }) => ({
+  on(AdminActions.loadAuthLogsSuccess, (state, { logs, totalCount }) => ({
     ...state,
-    authLogs: stats,
+    authLogs: logs,
+    totalAuthLogs: totalCount,
   })),
   on(AdminActions.loadAuthLogsFailure, (state, { error }) => ({
     ...state,

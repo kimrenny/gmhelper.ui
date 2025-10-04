@@ -181,10 +181,19 @@ export const setLoadingRequestLogs = createAction(
   props<{ loading: boolean }>()
 );
 
-export const loadAuthLogs = createAction('[Admin] Load Auth Logs');
+export const loadAuthLogs = createAction(
+  '[Admin] Load Auth Logs',
+  props<{
+    page?: number;
+    pageSize?: number;
+    sortColumn?: keyof AuthLog;
+    sortDirection?: 'asc' | 'desc';
+    maxLogDate?: string;
+  }>()
+);
 export const loadAuthLogsSuccess = createAction(
   '[Admin] Load Auth Logs Success',
-  props<{ stats: AuthLog[] }>()
+  props<{ logs: AuthLog[]; totalCount: number }>()
 );
 export const loadAuthLogsFailure = createAction(
   '[Admin] Load Auth Logs Failure',

@@ -50,7 +50,7 @@ export class AdminEffects {
           AdminActions.loadRoleStats(),
           AdminActions.loadBlockStats(),
           AdminActions.loadRequestLogs({}),
-          AdminActions.loadAuthLogs(),
+          AdminActions.loadAuthLogs({}),
           AdminActions.loadErrorLogs(),
           AdminActions.loadTokenStats();
 
@@ -378,22 +378,31 @@ export class AdminEffects {
         this.store.pipe(select((state: AdminState) => state.loadingAuthLogs))
       ),
       filter(([_, loading]) => !loading),
-      switchMap(() => {
+      switchMap(([action, _]) => {
         this.store.dispatch(AdminActions.setLoadingAuthLogs({ loading: true }));
-        return this.adminService.getAuthLogData().pipe(
-          map((stats: AuthLog[]) => {
-            this.store.dispatch(
-              AdminActions.setLoadingAuthLogs({ loading: false })
-            );
-            return AdminActions.loadAuthLogsSuccess({ stats });
-          }),
-          catchError((error) => {
-            this.store.dispatch(
-              AdminActions.setLoadingAuthLogs({ loading: false })
-            );
-            return of(AdminActions.loadAuthLogsFailure({ error }));
-          })
-        );
+
+        return this.adminService
+          .getAuthLogData(
+            action.page ?? 1,
+            action.pageSize ?? 10,
+            action.sortColumn ?? 'id',
+            action.sortDirection === 'desc',
+            action.maxLogDate
+          )
+          .pipe(
+            map(({ logs, totalCount }) => {
+              this.store.dispatch(
+                AdminActions.setLoadingAuthLogs({ loading: false })
+              );
+              return AdminActions.loadAuthLogsSuccess({ logs, totalCount });
+            }),
+            catchError((error) => {
+              this.store.dispatch(
+                AdminActions.setLoadingAuthLogs({ loading: false })
+              );
+              return of(AdminActions.loadAuthLogsFailure({ error }));
+            })
+          );
       })
     )
   );

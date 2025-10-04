@@ -28,6 +28,7 @@ export interface AdminState {
   requestLogs: RequestLog[] | null;
   totalRequestLogs: number | null;
   authLogs: AuthLog[] | null;
+  totalAuthLogs: number | null;
   errorLogs: ErrorLog[] | null;
   tokenStats: TokenStats;
   isLoaded: boolean;
@@ -61,6 +62,7 @@ export const initialAdminState: AdminState = {
   requestLogs: null,
   totalRequestLogs: null,
   authLogs: null,
+  totalAuthLogs: null,
   errorLogs: null,
   tokenStats: {
     activeTokens: null,

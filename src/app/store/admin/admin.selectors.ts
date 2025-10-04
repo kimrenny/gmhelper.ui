@@ -56,6 +56,10 @@ export const selectAuthLogs = createSelector(
   selectAdminState,
   (state) => state.authLogs
 );
+export const selectAuthLogsCount = createSelector(
+  selectAdminState,
+  (state) => state.totalAuthLogs
+);
 export const selectErrorLogs = createSelector(
   selectAdminState,
   (state) => state.errorLogs
