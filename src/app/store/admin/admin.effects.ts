@@ -49,7 +49,7 @@ export class AdminEffects {
           AdminActions.loadCountryStats(),
           AdminActions.loadRoleStats(),
           AdminActions.loadBlockStats(),
-          AdminActions.loadRequestLogs(),
+          AdminActions.loadRequestLogs({}),
           AdminActions.loadAuthLogs(),
           AdminActions.loadErrorLogs(),
           AdminActions.loadTokenStats();
@@ -340,24 +340,33 @@ export class AdminEffects {
         this.store.pipe(select((state: AdminState) => state.loadingRequestLogs))
       ),
       filter(([_, loading]) => !loading),
-      switchMap(() => {
+      switchMap(([action, _]) => {
         this.store.dispatch(
           AdminActions.setLoadingRequestLogs({ loading: true })
         );
-        return this.adminService.getRequestLogData().pipe(
-          map((stats: RequestLog[]) => {
-            this.store.dispatch(
-              AdminActions.setLoadingRequestLogs({ loading: false })
-            );
-            return AdminActions.loadRequestLogsSuccess({ stats });
-          }),
-          catchError((error) => {
-            this.store.dispatch(
-              AdminActions.setLoadingRequestLogs({ loading: false })
-            );
-            return of(AdminActions.loadRequestLogsFailure({ error }));
-          })
-        );
+
+        return this.adminService
+          .getRequestLogData(
+            action.page ?? 1,
+            action.pageSize ?? 10,
+            action.sortColumn ?? 'id',
+            action.sortDirection === 'desc',
+            action.maxLogDate
+          )
+          .pipe(
+            map(({ logs, totalCount }) => {
+              this.store.dispatch(
+                AdminActions.setLoadingRequestLogs({ loading: false })
+              );
+              return AdminActions.loadRequestLogsSuccess({ logs, totalCount });
+            }),
+            catchError((error) => {
+              this.store.dispatch(
+                AdminActions.setLoadingRequestLogs({ loading: false })
+              );
+              return of(AdminActions.loadRequestLogsFailure({ error }));
+            })
+          );
       })
     )
   );

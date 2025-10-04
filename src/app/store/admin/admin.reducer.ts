@@ -120,9 +120,10 @@ export const adminReducer = createReducer(
     loadingBlockStats: loading,
   })),
 
-  on(AdminActions.loadRequestLogsSuccess, (state, { stats }) => ({
+  on(AdminActions.loadRequestLogsSuccess, (state, { logs, totalCount }) => ({
     ...state,
-    requestLogs: stats,
+    requestLogs: logs,
+    totalRequestLogs: totalCount,
   })),
   on(AdminActions.loadRequestLogsFailure, (state, { error }) => ({
     ...state,

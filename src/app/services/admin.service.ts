@@ -216,18 +216,45 @@ export class AdminService {
     );
   }
 
-  getRequestLogData(): Observable<RequestLog[]> {
+  getRequestLogData(
+    page: number,
+    pageSize: number,
+    sortBy: keyof RequestLog = 'id',
+    descending: boolean = false,
+    maxLogDate?: string
+  ): Observable<{ logs: RequestLog[]; totalCount: number }> {
     return this.tokenService.getToken$().pipe(
       take(1),
       switchMap((token) => {
         if (!token || !this.checkAdminPermissions(token)) {
           return throwError(() => new Error('No permissions'));
         }
+
+        const params: any = {
+          page,
+          pageSize,
+          sortBy,
+          descending,
+        };
+
+        if (maxLogDate) {
+          params.maxLogDate = maxLogDate;
+        }
+
         return this.http
-          .get<ApiResponse<RequestLog[]>>(`${this.apiUrl}/logs`, {
-            headers: this.tokenService.createAuthHeaders(token),
-          })
-          .pipe(map((res) => res.data));
+          .get<ApiResponse<{ items: RequestLog[]; totalCount: number }>>(
+            `${this.apiUrl}/logs`,
+            {
+              headers: this.tokenService.createAuthHeaders(token),
+              params,
+            }
+          )
+          .pipe(
+            map((res) => ({
+              logs: res.data.items,
+              totalCount: res.data.totalCount,
+            }))
+          );
       })
     );
   }

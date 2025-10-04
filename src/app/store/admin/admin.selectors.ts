@@ -48,6 +48,10 @@ export const selectRequestLogs = createSelector(
   selectAdminState,
   (state) => state.requestLogs
 );
+export const selectRequestLogsCount = createSelector(
+  selectAdminState,
+  (state) => state.totalRequestLogs
+);
 export const selectAuthLogs = createSelector(
   selectAdminState,
   (state) => state.authLogs

@@ -26,6 +26,7 @@ export interface AdminState {
   roleStats: RoleStats[] | null;
   blockStats: BlockStats[] | null;
   requestLogs: RequestLog[] | null;
+  totalRequestLogs: number | null;
   authLogs: AuthLog[] | null;
   errorLogs: ErrorLog[] | null;
   tokenStats: TokenStats;
@@ -58,6 +59,7 @@ export const initialAdminState: AdminState = {
   roleStats: null,
   blockStats: null,
   requestLogs: null,
+  totalRequestLogs: null,
   authLogs: null,
   errorLogs: null,
   tokenStats: {

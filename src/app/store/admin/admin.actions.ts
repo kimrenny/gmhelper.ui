@@ -158,10 +158,19 @@ export const setLoadingBlockStats = createAction(
   props<{ loading: boolean }>()
 );
 
-export const loadRequestLogs = createAction('[Admin] Load Request Logs');
+export const loadRequestLogs = createAction(
+  '[Admin] Load Request Logs',
+  props<{
+    page?: number;
+    pageSize?: number;
+    sortColumn?: keyof RequestLog;
+    sortDirection?: 'asc' | 'desc';
+    maxLogDate?: string;
+  }>()
+);
 export const loadRequestLogsSuccess = createAction(
   '[Admin] Load Request Logs Success',
-  props<{ stats: RequestLog[] }>()
+  props<{ logs: RequestLog[]; totalCount: number }>()
 );
 export const loadRequestLogsFailure = createAction(
   '[Admin] Load Request Logs Failure',

@@ -152,7 +152,7 @@
       <div class="table-body">
         <div
           class="table-row"
-          *ngFor="let log of paginatedLogs"
+          *ngFor="let log of logs$ | async"
           (click)="openLogDetails(log)"
         >
           <div class="column">{{ log.id }}</div>
