@@ -15,18 +15,12 @@ import * as AdminState from 'src/app/store/admin/admin.state';
 import * as AdminActions from 'src/app/store/admin/admin.actions';
 import {
   selectAdminSettings,
+  selectAuthLogs,
   selectErrorLogs,
+  selectErrorLogsCount,
   selectIsLoaded,
 } from 'src/app/store/admin/admin.selectors';
-
-interface ErrorLog {
-  id: number;
-  timestamp: string;
-  message: string;
-  stackTrace: string;
-  endpoint: string;
-  exceptionDetails: string;
-}
+import { ErrorLog } from 'src/app/models/admin.model';
 
 @Component({
   selector: 'app-admin-error-logs',
@@ -42,7 +36,8 @@ interface ErrorLog {
   styleUrls: ['./error-logs.component.scss'],
 })
 export class AdminErrorLogsComponent implements OnInit, OnDestroy {
-  logs: ErrorLog[] = [];
+  logs$ = this.store.pipe(select(selectErrorLogs));
+  totalLogsCount: number = 0;
 
   selectedLog: ErrorLog | null = null;
   currentPage: number = 1;
@@ -52,8 +47,10 @@ export class AdminErrorLogsComponent implements OnInit, OnDestroy {
   isConfirmModalOpen: boolean = false;
   logToConfirm: ErrorLog | null = null;
 
-  sortColumn: keyof ErrorLog | null = null;
-  sortDirection: 'asc' | 'desc' = 'asc';
+  sortColumn: keyof ErrorLog | null = 'id';
+  sortDirection: 'asc' | 'desc' = 'desc';
+
+  maxLogDate: string = new Date().toISOString();
 
   showTimestamp = true;
   showDuration = true;
@@ -76,11 +73,15 @@ export class AdminErrorLogsComponent implements OnInit, OnDestroy {
         this.store.pipe(select(selectIsLoaded)),
       ]).subscribe(([logs, isLoaded]) => {
         if ((!logs || logs.length === 0) && isLoaded) {
-          this.store.dispatch(AdminActions.loadErrorLogs());
-        } else if (logs) {
-          this.logs = logs;
+          this.loadLogsFromStore();
         }
       })
+    );
+
+    this.subscriptions.add(
+      this.store
+        .pipe(select(selectErrorLogsCount))
+        .subscribe((count: number | null) => (this.totalLogsCount = count ?? 0))
     );
 
     const settingsSub = this.store
@@ -104,20 +105,27 @@ export class AdminErrorLogsComponent implements OnInit, OnDestroy {
     this.subscriptions.unsubscribe();
   }
 
-  get totalPages(): number {
-    return Math.ceil(this.logs.length / this.logsPerPage);
+  private loadLogsFromStore() {
+    this.store.dispatch(
+      AdminActions.loadErrorLogs({
+        page: this.currentPage,
+        pageSize: this.logsPerPage,
+        sortColumn: this.sortColumn ?? 'id',
+        sortDirection: this.sortDirection,
+        maxLogDate: this.maxLogDate,
+      })
+    );
   }
 
-  get paginatedLogs() {
-    const start = (this.currentPage - 1) * this.logsPerPage;
-    const end = start + this.logsPerPage;
-    return this.logs.slice(start, end);
+  get totalPages(): number {
+    return Math.ceil(this.totalLogsCount / this.logsPerPage);
   }
 
   prevPage() {
     if (this.currentPage > 1) {
       this.currentPage--;
       this.pageInput = this.currentPage;
+      this.loadLogsFromStore();
     }
   }
 
@@ -125,6 +133,7 @@ export class AdminErrorLogsComponent implements OnInit, OnDestroy {
     if (this.currentPage < this.totalPages) {
       this.currentPage++;
       this.pageInput = this.currentPage;
+      this.loadLogsFromStore();
     }
   }
 
@@ -137,6 +146,7 @@ export class AdminErrorLogsComponent implements OnInit, OnDestroy {
       this.currentPage = page;
     }
     this.pageInput = this.currentPage;
+    this.loadLogsFromStore();
   }
 
   openLogDetails(log: ErrorLog) {
@@ -162,18 +172,6 @@ export class AdminErrorLogsComponent implements OnInit, OnDestroy {
       this.sortDirection = 'asc';
     }
 
-    this.logs.sort((a, b) => {
-      let valueA = a[column];
-      let valueB = b[column];
-
-      if (typeof valueA === 'string' && typeof valueB === 'string') {
-        valueA = valueA.toLowerCase();
-        valueB = valueB.toLowerCase();
-      }
-
-      if (valueA < valueB) return this.sortDirection === 'asc' ? -1 : 1;
-      if (valueA > valueB) return this.sortDirection === 'asc' ? 1 : -1;
-      return 0;
-    });
+    this.loadLogsFromStore();
   }
 }

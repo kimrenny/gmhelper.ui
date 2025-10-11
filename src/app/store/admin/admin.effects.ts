@@ -51,7 +51,7 @@ export class AdminEffects {
           AdminActions.loadBlockStats(),
           AdminActions.loadRequestLogs({}),
           AdminActions.loadAuthLogs({}),
-          AdminActions.loadErrorLogs(),
+          AdminActions.loadErrorLogs({}),
           AdminActions.loadTokenStats();
 
         return of(AdminActions.setLoaded({ isLoaded: true }));
@@ -414,24 +414,33 @@ export class AdminEffects {
         this.store.pipe(select((state: AdminState) => state.loadingErrorLogs))
       ),
       filter(([_, loading]) => !loading),
-      switchMap(() => {
+      switchMap(([action, _]) => {
         this.store.dispatch(
           AdminActions.setLoadingErrorLogs({ loading: true })
         );
-        return this.adminService.getErrorLogData().pipe(
-          map((stats: ErrorLog[]) => {
-            this.store.dispatch(
-              AdminActions.setLoadingErrorLogs({ loading: false })
-            );
-            return AdminActions.loadErrorLogsSuccess({ stats });
-          }),
-          catchError((error) => {
-            this.store.dispatch(
-              AdminActions.setLoadingErrorLogs({ loading: false })
-            );
-            return of(AdminActions.loadErrorLogsFailure({ error }));
-          })
-        );
+
+        return this.adminService
+          .getErrorLogData(
+            action.page ?? 1,
+            action.pageSize ?? 10,
+            action.sortColumn ?? 'id',
+            action.sortDirection === 'desc',
+            action.maxLogDate
+          )
+          .pipe(
+            map(({ logs, totalCount }) => {
+              this.store.dispatch(
+                AdminActions.setLoadingErrorLogs({ loading: false })
+              );
+              return AdminActions.loadErrorLogsSuccess({ logs, totalCount });
+            }),
+            catchError((error) => {
+              this.store.dispatch(
+                AdminActions.setLoadingErrorLogs({ loading: false })
+              );
+              return of(AdminActions.loadErrorLogsFailure({ error }));
+            })
+          );
       })
     )
   );
