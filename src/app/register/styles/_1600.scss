@@ -1,2 +1,58 @@
 @media screen and (min-width: 1367px) and (max-width: 1600px) {
+  .register-container {
+    form {
+      padding: 18px;
+
+      .feedback {
+        margin-top: 4px;
+        margin-bottom: 12px;
+      }
+
+      .password-container {
+        .password-strength {
+          margin-top: 4px;
+          margin-bottom: 16px;
+        }
+      }
+
+      .terms-agreement {
+        margin: 12px 0;
+      }
+
+      .remember-me-container {
+        margin-bottom: 4px;
+      }
+
+      .submit-btn {
+        padding: 9px 18px;
+      }
+    }
+  }
+
+  .recaptcha-container {
+    margin-top: 7px;
+    margin-bottom: 15px;
+  }
+
+  .reg-modal {
+    .reg-modal-content {
+      padding: 25px;
+
+      input {
+        padding: 11px;
+      }
+
+      .submit-btn,
+      .close-btn {
+        padding: 11px 18px;
+        font-size: 0.975rem;
+      }
+    }
+  }
+
+  .code-input-overlay {
+    .code-input-window {
+      padding: 35px 45px;
+    }
+  }
 }

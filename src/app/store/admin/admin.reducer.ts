@@ -1,15 +1,70 @@
 import { createReducer, on } from '@ngrx/store';
 import * as AdminActions from './admin.actions';
 import { initialAdminState } from './admin.state';
-import {
-  getSectionIndexByTitle,
-  getSwitchIndexByLabel,
-} from 'src/app/admin/tools/settings.tool';
 
 export const adminReducer = createReducer(
   initialAdminState,
 
-  on(AdminActions.loadAdminData, (state) => ({ ...state, isLoading: true })),
+  on(AdminActions.loadAdminData, (state) => ({
+    ...state,
+    isLoading: true,
+    loadingUsers: true,
+    loadingTokens: true,
+    loadingRegistrations: true,
+    loadingCountryStats: true,
+    loadingRoleStats: true,
+    loadingBlockStats: true,
+    loadingRequestLogs: true,
+    loadingAuthLogs: true,
+    loadingErrorLogs: true,
+  })),
+  on(AdminActions.loadAdminDataSuccess, (state, { data }) => ({
+    ...state,
+    users: data.users.items,
+    totalUsersCount: data.users.totalCount,
+    tokens: data.tokens.items,
+    totalTokensCount: data.tokens.totalCount,
+    registrations: data.registrations,
+    tokenStats: data.dashboardTokens,
+    countryStats: data.countryStats,
+    roleStats: data.roleStats,
+    blockStats: data.blockStats,
+
+    requestsData: data.requestStats,
+    requestLogs: data.requestLogs.items,
+    totalRequestLogs: data.requestLogs.totalCount,
+    authLogs: data.authLogs.items,
+    totalAuthLogs: data.authLogs.totalCount,
+    errorLogs: data.errorLogs.items,
+    totalErrorLogs: data.errorLogs.totalCount,
+
+    isLoading: false,
+    loadingUsers: false,
+    loadingTokens: false,
+    loadingRegistrations: false,
+    loadingCountryStats: false,
+    loadingRoleStats: false,
+    loadingBlockStats: false,
+    loadingRequestLogs: false,
+    loadingAuthLogs: false,
+    loadingErrorLogs: false,
+    isLoaded: true,
+  })),
+  on(AdminActions.loadAdminDataFailure, (state, { error }) => ({
+    ...state,
+    isLoading: false,
+    loadingUsers: false,
+    loadingTokens: false,
+    loadingRegistrations: false,
+    loadingCountryStats: false,
+    loadingRoleStats: false,
+    loadingBlockStats: false,
+    loadingRequestLogs: false,
+    loadingAuthLogs: false,
+    loadingErrorLogs: false,
+    isLoaded: true,
+    error: error,
+  })),
 
   on(AdminActions.loadAdminSettingsSuccess, (state, { settings }) => ({
     ...state,

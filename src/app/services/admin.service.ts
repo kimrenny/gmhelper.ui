@@ -16,6 +16,7 @@ import {
   RoleStats,
   Token,
   User,
+  AdminData,
 } from '../models/admin.model';
 import { Store } from '@ngrx/store';
 import * as AdminState from '../store/admin/admin.state';
@@ -30,6 +31,23 @@ export class AdminService {
     private tokenService: TokenService,
     private store: Store<AdminState.AdminState>
   ) {}
+
+  getAdminData(): Observable<AdminData> {
+    return this.tokenService.getToken$().pipe(
+      take(1),
+      switchMap((token) => {
+        if (!token || !this.checkAdminPermissions(token)) {
+          return throwError(() => new Error('No permissions'));
+        }
+
+        return this.http
+          .get<ApiResponse<AdminData>>(`${this.apiUrl}`, {
+            headers: this.tokenService.createAuthHeaders(token),
+          })
+          .pipe(map((response) => response.data));
+      })
+    );
+  }
 
   getUsers(
     page: number,

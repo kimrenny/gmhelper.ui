@@ -122,3 +122,17 @@ export interface SwitchItem {
   value: boolean;
   apiKey: string;
 }
+
+export interface AdminData {
+  users: { items: User[]; totalCount: number };
+  tokens: { items: Token[]; totalCount: number };
+  registrations: RegistrationData[];
+  dashboardTokens: TokenStats;
+  countryStats: CountryStats[];
+  roleStats: RoleStats[];
+  blockStats: BlockStats[];
+  requestStats: CombinedRequestsData;
+  requestLogs: { items: RequestLog[]; totalCount: number };
+  authLogs: { items: AuthLog[]; totalCount: number };
+  errorLogs: { items: ErrorLog[]; totalCount: number };
+}

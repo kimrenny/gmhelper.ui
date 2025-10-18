@@ -1,5 +1,6 @@
 import { createAction, props } from '@ngrx/store';
 import {
+  AdminData,
   AdminSettings,
   AuthLog,
   BlockStats,
@@ -15,6 +16,15 @@ import {
 } from 'src/app/models/admin.model';
 
 export const loadAdminData = createAction('[Admin] Load Data');
+
+export const loadAdminDataSuccess = createAction(
+  '[Admin] Load Admin Data Success',
+  props<{ data: AdminData }>()
+);
+export const loadAdminDataFailure = createAction(
+  '[Admin] Load Admin Data Failure',
+  props<{ error: any }>()
+);
 
 export const loadAdminSettings = createAction('[Admin] Load Admin Settings');
 export const loadAdminSettingsSuccess = createAction(

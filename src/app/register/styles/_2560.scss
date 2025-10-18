@@ -1,2 +1,106 @@
 @media screen and (min-width: 1921px) {
+  .register-container {
+    form {
+      width: 450px;
+      padding: 30px;
+
+      input {
+        padding: 12px;
+        font-size: 1.1rem;
+      }
+
+      .feedback {
+        margin-top: 8px;
+        margin-bottom: 20px;
+        font-size: 1rem;
+      }
+
+      .password-container {
+        .password-strength {
+          margin-top: 8px;
+          margin-bottom: 25px;
+
+          .strength-bar {
+            height: 10px;
+          }
+        }
+
+        .password-hint {
+          min-width: 300px;
+          max-width: 500px;
+          font-size: 13px;
+          padding: 12px;
+
+          .arrow {
+            width: 12px;
+            height: 12px;
+          }
+        }
+      }
+
+      .terms-agreement {
+        margin: 20px 0;
+        font-size: 15px;
+      }
+
+      .remember-me-container {
+        margin-bottom: 8px;
+
+        label {
+          font-size: 13px;
+        }
+
+        .custom-checkbox {
+          width: 16px;
+          height: 16px;
+
+          .checkmark {
+            width: 14px;
+            height: 14px;
+          }
+        }
+      }
+
+      .submit-btn {
+        padding: 14px 24px;
+        font-size: 1.1rem;
+      }
+    }
+  }
+
+  .recaptcha-container {
+    width: 100%;
+    margin-top: 15px;
+    margin-bottom: 25px;
+  }
+
+  .reg-modal {
+    .reg-modal-content {
+      width: 650px;
+      padding: 40px;
+
+      input {
+        padding: 14px;
+        font-size: 1.1rem;
+      }
+
+      .submit-btn,
+      .close-btn {
+        padding: 14px 24px;
+        font-size: 1.1rem;
+      }
+    }
+  }
+
+  .code-input-overlay {
+    .code-input-window {
+      max-width: 600px;
+      padding: 50px 60px;
+
+      input {
+        padding: 14px;
+        font-size: 1.05rem;
+      }
+    }
+  }
 }

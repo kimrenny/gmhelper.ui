@@ -41,21 +41,14 @@ export class AdminEffects {
   loadAdminData$ = createEffect(() =>
     this.actions$.pipe(
       ofType(AdminActions.loadAdminData),
-      mergeMap(() => {
-        AdminActions.loadUsers({}),
-          AdminActions.loadTokens({}),
-          AdminActions.loadRegistrations(),
-          AdminActions.loadRequestsData(),
-          AdminActions.loadCountryStats(),
-          AdminActions.loadRoleStats(),
-          AdminActions.loadBlockStats(),
-          AdminActions.loadRequestLogs({}),
-          AdminActions.loadAuthLogs({}),
-          AdminActions.loadErrorLogs({}),
-          AdminActions.loadTokenStats();
-
-        return of(AdminActions.setLoaded({ isLoaded: true }));
-      })
+      switchMap(() =>
+        this.adminService.getAdminData().pipe(
+          map((data) => AdminActions.loadAdminDataSuccess({ data })),
+          catchError((error) =>
+            of(AdminActions.loadAdminDataFailure({ error }))
+          )
+        )
+      )
     )
   );
 
