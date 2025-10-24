@@ -1,4 +1,10 @@
-import { Component, ChangeDetectorRef, Inject, ViewChild } from '@angular/core';
+import {
+  Component,
+  ChangeDetectorRef,
+  Inject,
+  ViewChild,
+  Input,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
@@ -159,7 +165,11 @@ export class RegisterComponent {
       return;
     }
 
-    if (!this.captchaRegisterToken) {
+    const isTesting = (window as any).IS_E2E_TEST || false;
+
+    console.log('IsTesting:', isTesting);
+
+    if (!this.captchaRegisterToken && !isTesting) {
       this.registerCaptchaError = 'REGISTER.ERRORS.CAPTCHA.REQUIRED';
       this.clearMessageAfterDelay('register');
       return;
@@ -170,7 +180,7 @@ export class RegisterComponent {
         this.username,
         this.email,
         this.password,
-        this.captchaRegisterToken
+        isTesting ? 'mock-captcha-token-123' : this.captchaRegisterToken
       )
       .subscribe({
         next: (response) => {

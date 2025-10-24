@@ -1,7 +1,7 @@
 <div class="register-container">
   <h1 *ngIf="isRegisterMode">{{ "REGISTER.REGISTER.TITLE" | translate }}</h1>
   <h1 *ngIf="!isRegisterMode">{{ "REGISTER.LOGIN.TITLE" | translate }}</h1>
-  <form *ngIf="isRegisterMode" (ngSubmit)="register()">
+  <form *ngIf="isRegisterMode" (ngSubmit)="register()" data-cy="register-form">
     <label for="username">Username:</label>
     <input
       type="text"
@@ -12,8 +12,13 @@
       [ngClass]="{ 'error-input': usernameError }"
       name="username"
       autocomplete="username"
+      data-cy="register-username-input"
     />
-    <div *ngIf="usernameError" class="error-text">
+    <div
+      *ngIf="usernameError"
+      class="error-text"
+      data-cy="register-username-error"
+    >
       {{ usernameError | translate }}
     </div>
 
@@ -27,8 +32,9 @@
       [ngClass]="{ 'error-input': emailError }"
       name="email"
       autocomplete="email"
+      data-cy="register-email-input"
     />
-    <div *ngIf="emailError" class="error-text">
+    <div *ngIf="emailError" class="error-text" data-cy="register-email-error">
       {{ emailError | translate }}
     </div>
 
@@ -45,8 +51,13 @@
         [ngClass]="{ 'error-input': passwordError }"
         name="password"
         autocomplete="new-password"
+        data-cy="register-password-input"
       />
-      <div *ngIf="passwordError" class="error-text">
+      <div
+        *ngIf="passwordError"
+        class="error-text"
+        data-cy="register-password-error"
+      >
         {{ passwordError | translate }}
       </div>
 
@@ -100,6 +111,7 @@
           [(ngModel)]="agreeTerms"
           name="agreeTerms"
           required
+          data-cy="register-agree-terms-checkbox"
         />
         <span>
           {{ "REGISTER.AGREE_TERMS.PREFIX" | translate }}
@@ -113,7 +125,11 @@
           >.
         </span>
       </label>
-      <div *ngIf="agreeTermsError" class="error-text">
+      <div
+        *ngIf="agreeTermsError"
+        class="error-text"
+        data-cy="register-agree-terms-error"
+      >
         {{ "REGISTER.ERRORS.AGREE_TERMS" | translate }}
       </div>
     </div>
@@ -126,15 +142,23 @@
         [size]="'normal'"
       ></ngx-recaptcha2>
     </div>
-    <div *ngIf="registerCaptchaError" class="error-text">
+    <div
+      *ngIf="registerCaptchaError"
+      class="error-text"
+      data-cy="register-captcha-error"
+    >
       {{ registerCaptchaError | translate }}
     </div>
 
-    <div *ngIf="registerFeedbackMessage" class="feedback">
+    <div
+      *ngIf="registerFeedbackMessage"
+      class="feedback"
+      data-cy="register-feedback-message"
+    >
       {{ registerFeedbackMessage | translate }}
     </div>
 
-    <button type="submit" class="submit-btn">
+    <button type="submit" class="submit-btn" data-cy="register-submit-button">
       {{ "REGISTER.BUTTON.REGISTER" | translate }}
     </button>
   </form>
@@ -204,7 +228,11 @@
   </form>
 
   <div class="extra-options">
-    <button (click)="toggleFormMode()" class="login-btn">
+    <button
+      (click)="toggleFormMode()"
+      class="login-btn"
+      data-cy="toggle-form-mode-button"
+    >
       {{
         isRegisterMode
           ? ("REGISTER.BUTTON.LOGIN" | translate)

@@ -42,3 +42,7 @@ testem.log
 Thumbs.db
 
 .codegpt
+
+# Cypress
+/cypress/videos
+/cypress/screenshots
