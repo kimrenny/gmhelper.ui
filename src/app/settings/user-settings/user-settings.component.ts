@@ -53,7 +53,7 @@ export class UserSettingsComponent implements OnInit {
     this.settingsForm = this.fb.group({
       nickname: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      currentPassword: [''],
+      currentPassword: ['', [Validators.required, Validators.minLength(6)]],
       newPassword: [''],
       confirmNewPassword: [''],
       avatar: [null],
