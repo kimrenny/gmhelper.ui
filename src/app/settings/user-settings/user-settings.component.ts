@@ -59,6 +59,21 @@ export class UserSettingsComponent implements OnInit {
       avatar: [null],
     });
 
+    this.settingsForm.get('newPassword')!.valueChanges.subscribe(password => {
+      const email = this.settingsForm.get('email')?.value ?? '';
+      const nickname = this.settingsForm.get('nickname')?.value ?? '';
+
+      const isValid = this.validatePassword(password, email, nickname);
+
+      const control = this.settingsForm.get('newPassword');
+
+      if(!isValid){
+        control?.setErrors({ weakPassword: true});
+      } else{
+        control?.setErrors(null);
+      }
+    })
+
     this.store.select(UserSelectors.selectUser).subscribe((userDetails) => {
       if (!userDetails) return;
       this.userNickname = userDetails.nickname;
@@ -110,13 +125,11 @@ export class UserSettingsComponent implements OnInit {
           return;
         }
 
-        if (newPassword !== confirmNewPassword) {
+        if (newPassword && newPassword !== confirmNewPassword) {
           alert("New password and confirm doesn't match");
           return;
         }
       }
-
-      if (!this.validatePassword(newPassword, email, nickname)) return;
 
       const formData = new FormData();
       if (nickname) formData.append('nickname', nickname);

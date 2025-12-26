@@ -83,7 +83,7 @@
       />
     </div>
 
-    <div class="form-group">
+    <div class="form-group password-container">
       <label for="newPassword">{{
         "SETTINGS.FORM.NEWPASSWORD" | translate
       }}</label>
@@ -93,7 +93,51 @@
         type="password"
         class="form-control"
         autocomplete="new-password"
+        (focus)="showPassword = true"
+        (blur) = "showPassword = false"
       />
+
+      <div *ngIf="changePasswordError" class="error-text">
+        {{ changePasswordError | translate }}
+      </div>
+
+      <div *ngIf="showPassword" class="password-hint">
+        <ul>
+          <li [ngClass]="{ valid: passwordValidations.hasMinLength }">
+            {{ "REGISTER.INPUT.PASSWORD.HINT.MINLENGTH" | translate }}
+          </li>
+          <li [ngClass]="{ valid: passwordValidations.hasUpperCase }">
+            {{ "REGISTER.INPUT.PASSWORD.HINT.UPPERCASE" | translate }}
+          </li>
+          <li [ngClass]="{ valid: passwordValidations.hasLowerCase }">
+            {{ "REGISTER.INPUT.PASSWORD.HINT.LOWERCASE" | translate }}
+          </li>
+          <li [ngClass]="{ valid: passwordValidations.hasDigit }">
+            {{ "REGISTER.INPUT.PASSWORD.HINT.DIGIT" | translate }}
+          </li>
+          <li [ngClass]="{ valid: passwordValidations.hasSpecialChar }">
+            {{ "REGISTER.INPUT.PASSWORD.HINT.SPECCHAR" | translate }}
+          </li>
+          <li
+            [ngClass]="{
+              valid: passwordValidations.notContainsEmail,
+              unvalid: !passwordValidations.notContainsEmail
+            }"
+          >
+            {{ "REGISTER.INPUT.PASSWORD.HINT.NOTCONTAINSEMAIL" | translate }}
+          </li>
+        </ul>
+        <div class="arrow"></div>
+      </div>
+
+      <div class="password-strength">
+        <div *ngFor="let i of [0,1,2]" [ngClass]="{
+          'strength-bar': true,
+          'red-bar': passwordStrength === 1 && i === 0,
+          'orange-bar': passwordStrength > 1 && passwordStrength < 5 && i <= 1,
+          'green-bar': passwordStrength === 5 && i <= 2
+        }"></div>
+      </div>
     </div>
 
     <div class="form-group">

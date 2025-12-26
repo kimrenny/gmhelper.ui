@@ -64,6 +64,90 @@
         }
       }
 
+      .error-text {
+        font-size: 14px;
+        margin-top: 5px;
+        margin-bottom: 8px;
+      }
+
+      .error-input {
+        border: 1px solid #ff4c4c !important;
+      }
+
+      .password-container {
+        position: relative;
+        width: 100%;
+
+        .password-hint {
+          position: absolute;
+          top: 0;
+          left: calc(100% + 14px);
+          background: #1e1e2f;
+          color: #ffffff;
+          padding: 14px;
+          border-radius: 10px;
+          box-shadow: 0 6px 12px rgba(0, 0, 0, 0.6);
+          min-width: 300px;
+          font-size: 14px;
+          z-index: 20;
+          transform: translateY(-5%);
+
+          ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+
+            li {
+              margin-bottom: 7px;
+              color: #cccccc;
+
+              &.valid {
+                color: #00c853;
+              }
+
+              &.unvalid {
+                color: #c80000;
+              }
+            }
+          }
+
+          .arrow {
+            position: absolute;
+            top: 20%;
+            left: -7px;
+            width: 14px;
+            height: 14px;
+            background: #1e1e2f;
+            transform: rotate(45deg);
+          }
+        }
+
+        .password-strength {
+          display: flex;
+          gap: 6px;
+          margin-top: 8px;
+
+          .strength-bar {
+            flex: 1;
+            height: 8px;
+            background-color: #999;
+            border-radius: 4px;
+
+            &.red-bar {
+              background-color: #e53935;
+            }
+
+            &.orange-bar {
+              background-color: #fb8c00;
+            }
+
+            &.green-bar {
+              background-color: #43a047;
+            }
+          }
+        }
+      }
+
       button {
         max-width: 700px;
         padding: 12px;

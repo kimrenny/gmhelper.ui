@@ -85,6 +85,90 @@
         }
       }
 
+      .error-text {
+        font-size: 12px;
+        margin-top: 4px;
+        margin-bottom: 6px;
+      }
+
+      .error-input {
+        border: 1px solid #ff4c4c !important;
+      }
+
+      .password-container {
+        position: relative;
+        width: 100%;
+
+        .password-hint {
+          position: absolute;
+          top: 0;
+          left: calc(100% + 10px);
+          background: #1e1e2f;
+          color: #ffffff;
+          padding: 9px;
+          border-radius: 7px;
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+          min-width: 240px;
+          font-size: 12px;
+          z-index: 20;
+          transform: translateY(-5%);
+
+          ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+
+            li {
+              margin-bottom: 5px;
+              color: #cccccc;
+
+              &.valid {
+                color: #00c853;
+              }
+
+              &.unvalid {
+                color: #c80000;
+              }
+            }
+          }
+
+          .arrow {
+            position: absolute;
+            top: 18%;
+            left: -5px;
+            width: 9px;
+            height: 9px;
+            background: #1e1e2f;
+            transform: rotate(45deg);
+          }
+        }
+
+        .password-strength {
+          display: flex;
+          gap: 4px;
+          margin-top: 6px;
+
+          .strength-bar {
+            flex: 1;
+            height: 6px;
+            background-color: #999;
+            border-radius: 3px;
+
+            &.red-bar {
+              background-color: #e53935;
+            }
+
+            &.orange-bar {
+              background-color: #fb8c00;
+            }
+
+            &.green-bar {
+              background-color: #43a047;
+            }
+          }
+        }
+      }
+
       button {
         font-size: 15px;
         padding: 9px;
