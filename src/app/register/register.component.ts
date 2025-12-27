@@ -443,13 +443,14 @@ export class RegisterComponent {
   }
 
   validatePassword() {
-    const { error, strength } = this.registerService.validatePassword(
+    const { error, strength, passwordValidations } = this.registerService.validatePassword(
       this.password,
       this.username,
       this.email
     );
     this.passwordError = error;
     this.passwordStrength = strength;
+    this.passwordValidations = passwordValidations;
   }
 
   validateLoginEmail() {

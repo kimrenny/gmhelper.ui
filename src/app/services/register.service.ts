@@ -100,7 +100,7 @@ export class RegisterService {
     password: string,
     username: string,
     email: string
-  ): { error: string; strength: number } {
+  ) {
     let strength = 0;
     const passwordValidations = {
       hasMinLength: password.length >= 8,
@@ -127,7 +127,7 @@ export class RegisterService {
     } else if (strength < 5) {
       error = 'REGISTER.ERRORS.PASSWORD.WEAK';
     }
-    return { error, strength };
+    return { error, strength: Math.min(strength, 5), passwordValidations };
   }
 
   registerUser(
