@@ -342,7 +342,8 @@
           "BANNED": "Ce compte a été bloqué.",
           "UNKNOWN": "Une erreur inconnue s'est produite. Réessayez plus tard.",
           "USERNOTFOUND": "Utilisateur non trouvé. Vérifiez les informations et réessayez.",
-          "NOTACTIVE": "Veuillez activer votre compte en suivant le lien envoyé à votre e-mail."
+          "NOTACTIVE": "Veuillez activer votre compte en suivant le lien envoyé à votre e-mail.",
+          "TEMPBAN": "Trop de tentatives échouées. Accès bloqué pendant 1 heure."
         }
       },
       "RECOVER": {

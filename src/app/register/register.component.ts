@@ -320,6 +320,9 @@ export class RegisterComponent {
       case 'Suspicious activity detected. Accounts blocked.':
         this.loginFeedbackMessage = 'REGISTER.ERRORS.LOGIN.FAIL.BANNED';
         break;
+      case 'IP temporarily blocked due to multiple failed login attempts.':
+        this.loginFeedbackMessage = 'REGISTER.ERRORS.LOGIN.FAIL.TEMPBAN';
+        break;
       case 'User not found.':
         this.loginFeedbackMessage = 'REGISTER.ERRORS.LOGIN.FAIL.USERNOTFOUND';
         break;
