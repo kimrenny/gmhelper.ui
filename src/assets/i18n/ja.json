@@ -100,6 +100,7 @@
     "LIST": {
       "SETTINGS": "設定",
       "ADMIN": "管理",
+      "OWNER": "オーナー",
       "LOGOUT": "ログアウト"
     }
   },

@@ -100,6 +100,7 @@
     "LIST": {
       "SETTINGS": "Einstellungen",
       "ADMIN": "Admin",
+      "OWNER": "Eigentümer",
       "LOGOUT": "Abmelden"
     }
   },

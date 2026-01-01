@@ -20,14 +20,16 @@ import { UserEffects } from './store/user/user.effects';
 import { AuthEffects } from './store/auth/auth.effects';
 import { authReducer } from './store/auth/auth.reducer';
 import { adminReducer } from './store/admin/admin.reducer';
+import { ownerReducer } from './store/owner/owner.reducer';
 import { AdminEffects } from './store/admin/admin.effects';
+import { OwnerEffects } from './store/owner/owner.effects';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
     provideHttpClient(),
-    provideStore({ user: userReducer, auth: authReducer, admin: adminReducer }),
-    provideEffects([UserEffects, AuthEffects, AdminEffects]),
+    provideStore({ user: userReducer, auth: authReducer, admin: adminReducer, owner: ownerReducer }),
+    provideEffects([UserEffects, AuthEffects, AdminEffects, OwnerEffects]),
     importProvidersFrom(
       TranslateModule.forRoot({
         loader: {

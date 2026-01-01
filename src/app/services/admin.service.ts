@@ -17,6 +17,7 @@ import {
   Token,
   User,
   AdminData,
+  OwnerData,
 } from '../models/admin.model';
 import { Store } from '@ngrx/store';
 import * as AdminState from '../store/admin/admin.state';
@@ -25,6 +26,7 @@ import * as AdminActions from '../store/admin/admin.actions';
 @Injectable({ providedIn: 'root' })
 export class AdminService {
   private readonly apiUrl = `${environment.apiUrl}/admin`;
+  private readonly apiOwnerUrl = `${environment.apiUrl}/owner`;
 
   constructor(
     private http: HttpClient,
@@ -42,6 +44,23 @@ export class AdminService {
 
         return this.http
           .get<ApiResponse<AdminData>>(`${this.apiUrl}`, {
+            headers: this.tokenService.createAuthHeaders(token),
+          })
+          .pipe(map((response) => response.data));
+      })
+    );
+  }
+
+  getOwnerData(): Observable<OwnerData> {
+    return this.tokenService.getToken$().pipe(
+      take(1),
+      switchMap((token) => {
+        if (!token || !this.checkOwnerPermissions(token)) {
+          return throwError(() => new Error('No permissions'));
+        }
+
+        return this.http
+          .get<ApiResponse<AdminData>>(`${this.apiOwnerUrl}`, {
             headers: this.tokenService.createAuthHeaders(token),
           })
           .pipe(map((response) => response.data));
@@ -402,5 +421,11 @@ export class AdminService {
     if (!token) return false;
     const role = this.tokenService.extractUserRole(token);
     return role == 'Admin' || role == 'Owner';
+  }
+
+  checkOwnerPermissions(token: string | null): boolean {
+    if (!token) return false;
+    const role = this.tokenService.extractUserRole(token);
+    return role == 'Owner';
   }
 }

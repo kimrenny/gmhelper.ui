@@ -136,3 +136,7 @@ export interface AdminData {
   authLogs: { items: AuthLog[]; totalCount: number };
   errorLogs: { items: ErrorLog[]; totalCount: number };
 }
+
+export interface OwnerData{
+  users: { items: User[]; totalCount: number};
+}

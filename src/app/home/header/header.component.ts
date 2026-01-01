@@ -174,9 +174,20 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.router.navigate(['/admin']);
   }
 
+  openOwnerPanel(){
+    if(!this.checkOwnerAccess()) return;
+
+    this.showUserMenu = false;
+    this.router.navigate(['/owner']);
+  }
+
   checkAdminAccess() {
     return this.userRole === 'Admin' || this.userRole === 'Owner'
       ? true
       : false;
+  }
+
+  checkOwnerAccess(){
+    return this.userRole === 'Owner' ? true : false;
   }
 }

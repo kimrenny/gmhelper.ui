@@ -6,7 +6,7 @@ import * as AuthSelectors from '../store/auth/auth.selectors';
 import * as AuthState from '../store/auth/auth.state';
 
 @Injectable({ providedIn: 'root' })
-export class AdminGuard implements CanActivate {
+export class OwnerGuard implements CanActivate {
   constructor(
     private store: Store<AuthState.AuthState>,
     private router: Router
@@ -42,7 +42,7 @@ export class AdminGuard implements CanActivate {
         return this.store.select(AuthSelectors.selectUserRole).pipe(
           take(1),
           map((role) => {
-            if (role === 'Admin' || role === 'Owner') return true;
+            if (role === 'Owner') return true;
 
             this.router.navigate(['/'], {
               queryParams: { section: 'welcome' },

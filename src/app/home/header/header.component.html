@@ -40,6 +40,9 @@
             <li *ngIf="checkAdminAccess()" (click)="openAdminPanel()">
               {{ "HEADER.LIST.ADMIN" | translate }}
             </li>
+            <li *ngIf="checkOwnerAccess()" (click)="openOwnerPanel()">
+              {{ "HEADER.LIST.OWNER" | translate }}
+            </li>
             <li (click)="logout()">{{ "HEADER.LIST.LOGOUT" | translate }}</li>
           </ul>
         </div>

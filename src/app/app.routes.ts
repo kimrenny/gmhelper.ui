@@ -9,6 +9,8 @@ import { emailTokenGuard } from './guards/email-token.guard';
 import { PasswordRecoveryComponent } from './password-recovery/password-recovery.component';
 import { PrivacyComponent } from './legal/privacy/privacy.component';
 import { TermsComponent } from './legal/terms/terms.component';
+import { OwnerComponent } from './owner/owner.component';
+import { OwnerGuard } from './guards/owner.guard';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -18,6 +20,11 @@ export const routes: Routes = [
     path: 'admin',
     component: AdminComponent,
     canActivate: [AdminGuard],
+  },
+  {
+    path: 'owner',
+    component: OwnerComponent,
+    canActivate: [OwnerGuard],
   },
   {
     path: 'confirm',
