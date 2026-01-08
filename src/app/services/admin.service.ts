@@ -398,6 +398,22 @@ export class AdminService {
     );
   }
 
+  changeUserRole(userId: string, role: "User" | "Admin"): Observable<any> {
+    return this.tokenService.getToken$().pipe(
+      take(1),
+      switchMap((token) => {
+        if (!token) return throwError(() => new Error('Token does not exist'));
+        return this.http.put(
+          `${this.apiOwnerUrl}/users/${userId}/role`,
+          { role },
+          {
+            headers: this.tokenService.createAuthHeaders(token),
+          }
+        );
+      })
+    );
+  }
+
   actionToken(
     tokenStr: string,
     action: 'activate' | 'disable'

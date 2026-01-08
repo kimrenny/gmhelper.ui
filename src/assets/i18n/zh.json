@@ -463,6 +463,14 @@
       },
       "BAN": {
         "CONFIRM": "您确定要封锁用户吗？"
+      },
+      "ROLE_ACTION": "更改权限",
+      "ROLE_CHANGE": {
+        "BTN": "更改角色",
+        "TITLE": "更改角色",
+        "CONFIRM": "您确定要更改该用户的权限吗",
+        "CANCEL": "取消",
+        "OK": "确认"
       }
     },
     "SUCCESS": {
@@ -474,7 +482,8 @@
       "SELFBAN": "您无法封锁自己",
       "ERROR": "错误",
       "DISABLED": "该功能已被用户设置禁用",
-      "SETTINGS": "更新设置失败。请重试。"
+      "SETTINGS": "更新设置失败。请重试。",
+      "SELFCHANGE": "您无法更改自己的权限"
     },
     "TOKENS": {
       "ID": "ID",
@@ -644,7 +653,8 @@
         "ROLE": "用户角色",
         "REGISTRATION_DATE": "注册日期",
         "STATUS": "用户状态",
-        "ACTION": "封禁操作"
+        "ACTION": "封禁操作",
+        "ROLE_ACTION": "用户角色操作"
       },
       "TOKENS": {
         "ID": "令牌ID",

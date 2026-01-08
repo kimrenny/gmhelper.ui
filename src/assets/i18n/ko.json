@@ -463,6 +463,14 @@
       },
       "BAN": {
         "CONFIRM": "사용자를 차단하시겠습니까?"
+      },
+      "ROLE_ACTION": "권한 변경",
+      "ROLE_CHANGE": {
+        "BTN": "역할 변경",
+        "TITLE": "역할 변경",
+        "CONFIRM": "사용자의 권한을 변경하시겠습니까?",
+        "CANCEL": "취소",
+        "OK": "확인"
       }
     },
     "SUCCESS": {
@@ -474,7 +482,8 @@
       "SELFBAN": "자신을 차단할 수 없습니다",
       "ERROR": "오류",
       "DISABLED": "이 기능은 사용자 설정에 의해 비활성화되었습니다",
-      "SETTINGS": "설정 업데이트에 실패했습니다. 다시 시도해 주세요."
+      "SETTINGS": "설정 업데이트에 실패했습니다. 다시 시도해 주세요.",
+      "SELFCHANGE": "자신의 권한은 변경할 수 없습니다"
     },
     "TOKENS": {
       "ID": "ID",
@@ -644,7 +653,8 @@
         "ROLE": "사용자 역할",
         "REGISTRATION_DATE": "가입일",
         "STATUS": "사용자 상태",
-        "ACTION": "차단 작업"
+        "ACTION": "차단 작업",
+        "ROLE_ACTION": "사용자 역할 작업"
       },
       "TOKENS": {
         "ID": "토큰 ID",

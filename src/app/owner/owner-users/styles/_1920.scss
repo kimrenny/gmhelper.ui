@@ -141,6 +141,126 @@
   }
 }
 
+.role-modal {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.role-select-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: left;
+
+  label {
+    font-size: 14px;
+    opacity: 0.8;
+  }
+}
+
+.role-select-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 20px;
+
+  label {
+    font-size: 14px;
+    opacity: 0.85;
+  }
+}
+
+.custom-select {
+  position: relative;
+  width: 90%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(20, 0, 30, 0.75);
+  border: 1.5px solid rgba(189, 0, 214, 0.8);
+  border-radius: 10px;
+  padding: 12px 14px;
+  cursor: pointer;
+  user-select: none;
+  transition: 0.25s ease;
+  backdrop-filter: blur(6px);
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  &:hover {
+    border-color: #e040ff;
+    box-shadow: 0 0 12px rgba(189, 0, 214, 0.4);
+  }
+
+  &.open {
+    border-color: #ff4dff;
+    box-shadow: 0 0 0 2px rgba(189, 0, 214, 0.45);
+  }
+}
+
+.selected-value {
+  font-size: 16px;
+  color: #ffffff;
+}
+
+.arrow {
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid #bd00d6;
+  border-bottom: 2px solid #bd00d6;
+  transform: rotate(45deg);
+  transition: 0.25s ease;
+}
+
+.custom-select.open .arrow {
+  transform: rotate(-135deg);
+}
+
+.options {
+  position: absolute;
+  width: 100%;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: rgba(10, 0, 20, 0.95);
+  border: 1.5px solid rgba(189, 0, 214, 0.8);
+  border-radius: 10px;
+  overflow: hidden;
+  z-index: 1000;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+
+  display: flex;
+  flex-direction: column;
+}
+
+.option {
+  padding: 12px;
+  font-size: 15px;
+  color: #ffffff;
+  transition: 0.2s ease;
+  text-align: left;
+
+  &:hover {
+    background: rgba(189, 0, 214, 0.2);
+  }
+
+  &.active {
+    background: rgba(189, 0, 214, 0.35);
+    font-weight: 600;
+  }
+}
+
+
+.modal-actions {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 10px;
+}
+
+
 .modal-overlay {
   position: fixed;
   top: 0;

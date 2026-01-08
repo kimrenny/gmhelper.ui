@@ -463,6 +463,14 @@
       },
       "BAN": {
         "CONFIRM": "Are you sure you want to block the user"
+      },
+      "ROLE_ACTION": "Change Permissions",
+      "ROLE_CHANGE": {
+        "BTN": "Change Role",
+        "TITLE": "Change Role",
+        "CONFIRM": "Are you sure you want to change permissions the user",
+        "CANCEL": "Cancel",
+        "OK": "Confirm"
       }
     },
     "SUCCESS": {
@@ -474,7 +482,8 @@
       "SELFBAN": "You cannot block yourself",
       "ERROR": "Error",
       "DISABLED": "The function is disabled by user settings",
-      "SETTINGS": "Failed to update settings. Please try again."
+      "SETTINGS": "Failed to update settings. Please try again.",
+      "SELFCHANGE": "You cannot change your permissions"
     },
     "TOKENS": {
       "ID": "ID",
@@ -644,7 +653,8 @@
         "ROLE": "User role",
         "REGISTRATION_DATE": "User registration date",
         "STATUS": "User status",
-        "ACTION": "Block actions"
+        "ACTION": "Block actions",
+        "ROLE_ACTION": "User role actions"
       },
       "TOKENS": {
         "ID": "Token ID",

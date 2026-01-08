@@ -63,7 +63,12 @@ export class OwnerUsersComponent implements OnInit, OnDestroy {
   usersPerPage: number = 10;
 
   isConfirmModalOpen: boolean = false;
+  isRoleModalOpen: boolean = false;
   userToConfirm: User | null = null;
+  selectedRoleUser: User | null = null;
+  selectedRole: "User" | "Admin" = "User";
+
+  isRoleSelectOpen: boolean = false;
 
   isAccessDeniedModalOpen: boolean = false;
 
@@ -189,15 +194,59 @@ export class OwnerUsersComponent implements OnInit, OnDestroy {
     this.isConfirmModalOpen = true;
   }
 
+  openRoleModal(user: User){
+    if(user.username === this.currentUsername){
+      this.toastr.error(this.translate.instant('ADMIN.ERRORS.SELFCHANGE'), this.translate.instant('ADMIN.ERRORS.ERROR'));
+      return;
+    }
+
+    if (
+      user.role === 'Owner' && this.userRole === 'Owner'
+    ) {
+      this.toastr.error(
+        this.translate.instant('ADMIN.ERRORS.NOPERMISSION'),
+        this.translate.instant('ADMIN.ERRORS.ERROR')
+      );
+      return;
+    }
+
+    this.selectedRoleUser = user;
+    this.selectedRole = user.role === 'User' || user.role === 'Admin' ? user.role : 'User';
+    this.isRoleModalOpen = true;
+  }
+
   closeConfirmModal() {
     this.isConfirmModalOpen = false;
     this.userToConfirm = null;
+  }
+
+  toggleRoleSelect(): void{
+    this.isRoleSelectOpen = !this.isRoleSelectOpen;
+  }
+
+  selectRole(role: 'User' | 'Admin', event: MouseEvent): void{
+    event.stopPropagation();
+    this.selectedRole = role;
+    this.isRoleSelectOpen = false;
+  }
+
+  closeRoleModal(){
+    this.isRoleModalOpen = false;
+    this.selectedRoleUser = null;
+    this.selectedRole = "User";
   }
 
   confirmAction() {
     if (this.userToConfirm) {
       this.toggleUserStatus(this.userToConfirm);
       this.closeConfirmModal();
+    }
+  }
+
+  confirmRoleChange(){
+    if(this.selectedRoleUser){
+      this.changeUserRole(this.selectedRoleUser, this.selectedRole);
+      this.closeRoleModal();
     }
   }
 
@@ -214,6 +263,26 @@ export class OwnerUsersComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           console.error(error);
+        },
+      });
+  }
+
+  changeUserRole(user: User, role: "User" | "Admin") {
+    this.adminService
+      .changeUserRole(user.id, role)
+      .subscribe({
+        next: () => {
+          this.loadUsersFromStore();
+          this.toastr.success(
+            this.translate.instant('ADMIN.SUCCESS.MESSAGE'),
+            this.translate.instant('ADMIN.SUCCESS.TITLE')
+          );
+        },
+        error: (error) => {
+          this.toastr.error(
+            this.translate.instant('ADMIN.ERRORS.SERVER_ERR'),
+            this.translate.instant('ADMIN.ERRORS.ERROR')
+          )
         },
       });
   }

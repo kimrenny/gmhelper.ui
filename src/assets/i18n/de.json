@@ -463,6 +463,14 @@
       },
       "BAN": {
         "CONFIRM": "Sind Sie sicher, dass Sie den Benutzer blockieren möchten?"
+      },
+      "ROLE_ACTION": "Berechtigungen ändern",
+      "ROLE_CHANGE": {
+        "BTN": "Rolle ändern",
+        "TITLE": "Rolle ändern",
+        "CONFIRM": "Sind Sie sicher, dass Sie die Berechtigungen des Benutzers ändern möchten",
+        "CANCEL": "Abbrechen",
+        "OK": "Bestätigen"
       }
     },
     "SUCCESS": {
@@ -474,7 +482,8 @@
       "SELFBAN": "Sie können sich nicht selbst blockieren",
       "ERROR": "Fehler",
       "DISABLED": "Die Funktion ist durch Benutzereinstellungen deaktiviert",
-      "SETTINGS": "Fehler beim Aktualisieren der Einstellungen. Bitte versuchen Sie es erneut."
+      "SETTINGS": "Fehler beim Aktualisieren der Einstellungen. Bitte versuchen Sie es erneut.",
+      "SELFCHANGE": "Sie können Ihre eigenen Berechtigungen nicht ändern"
     },
     "TOKENS": {
       "ID": "ID",
@@ -644,7 +653,8 @@
         "ROLE": "Benutzerrolle",
         "REGISTRATION_DATE": "Registrierungsdatum",
         "STATUS": "Benutzerstatus",
-        "ACTION": "Sperraktionen"
+        "ACTION": "Sperraktionen",
+        "ROLE_ACTION": "Benutzerrollen-Aktionen"
       },
       "TOKENS": {
         "ID": "Token-ID",

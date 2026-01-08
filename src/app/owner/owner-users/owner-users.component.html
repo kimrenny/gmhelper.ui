@@ -52,6 +52,9 @@
       <div class="column" [appTooltip]="'DESCRIPTION.ADMIN.USERS.ACTION'">
         {{ "ADMIN.USERS.ACTION" | translate }}
       </div>
+      <div class="column" [appTooltip]="'DESCRIPTION.ADMIN.USERS.ROLE_ACTION'">
+        {{ "ADMIN.USERS.ROLE_ACTION" | translate }}
+      </div>
     </div>
     <div class="table-body">
       <div
@@ -88,6 +91,12 @@
                 ? ("ADMIN.USERS.BLOCK" | translate)
                 : ("ADMIN.USERS.UNBLOCK" | translate)
             }}
+          </button>
+        </div>
+
+        <div class="column">
+          <button class="role-btn" (click)="openRoleModal(user); $event.stopPropagation()">
+            {{ "ADMIN.USERS.ROLE_CHANGE.BTN" | translate }}
           </button>
         </div>
       </div>
@@ -136,6 +145,57 @@
       <button (click)="closeConfirmModal()">
         {{ "ADMIN.USERS.CONFIRM_ACTION.NO" | translate }}
       </button>
+    </div>
+  </div>
+
+  <div *ngIf="isRoleModalOpen" class="modal-overlay" @fadeInOut>
+    <div class="modal-content role-modal">
+      <h3>{{ "ADMIN.USERS.ROLE_CHANGE.TITLE" | translate }}</h3>
+
+      <p *ngIf="selectedRoleUser">
+        {{ "ADMIN.USERS.ROLE_CHANGE.CONFIRM" | translate }}
+        <strong>{{ selectedRoleUser.username }}</strong
+        >?
+      </p>
+
+      <div
+        class="custom-select"
+        [class.open]="isRoleSelectOpen"
+        (click)="toggleRoleSelect()"
+      >
+        <span class="selected-value">
+          {{ selectedRole }}
+        </span>
+
+        <span class="arrow"></span>
+
+        <div class="options" *ngIf="isRoleSelectOpen">
+          <div
+            class="option"
+            [class.active]="selectedRole === 'User'"
+            (click)="selectRole('User', $event)"
+          >
+            User
+          </div>
+
+          <div
+            class="option"
+            [class.active]="selectedRole === 'Admin'"
+            (click)="selectRole('Admin', $event)"
+          >
+            Admin
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button (click)="confirmRoleChange()">
+        {{ "ADMIN.USERS.ROLE_CHANGE.OK" | translate }}
+      </button>
+      <button (click)="closeRoleModal()">
+        {{ "ADMIN.USERS.ROLE_CHANGE.CANCEL" | translate }}
+      </button>
+      </div>
     </div>
   </div>
 
