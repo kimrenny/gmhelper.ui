@@ -483,7 +483,9 @@
       "ERROR": "Erreur",
       "DISABLED": "La fonction est désactivée dans les paramètres de l'utilisateur",
       "SETTINGS": "Échec de la mise à jour des paramètres. Veuillez réessayer.",
-      "SELFCHANGE": "Vous ne pouvez pas modifier vos propres permissions"
+      "SELFCHANGE": "Vous ne pouvez pas modifier vos propres permissions",
+      "TWOFA_REQUIRED": "Authentification à deux facteurs requise.",
+      "SERVER_ERR": "Erreur du serveur. Veuillez réessayer."
     },
     "TOKENS": {
       "ID": "ID",

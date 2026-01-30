@@ -483,7 +483,9 @@
       "ERROR": "错误",
       "DISABLED": "该功能已被用户设置禁用",
       "SETTINGS": "更新设置失败。请重试。",
-      "SELFCHANGE": "您无法更改自己的权限"
+      "SELFCHANGE": "您无法更改自己的权限",
+      "TWOFA_REQUIRED": "需要双重身份验证。",
+      "SERVER_ERR": "服务器错误。请稍后再试。"
     },
     "TOKENS": {
       "ID": "ID",

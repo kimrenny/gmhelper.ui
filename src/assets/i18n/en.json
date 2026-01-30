@@ -483,7 +483,9 @@
       "ERROR": "Error",
       "DISABLED": "The function is disabled by user settings",
       "SETTINGS": "Failed to update settings. Please try again.",
-      "SELFCHANGE": "You cannot change your permissions"
+      "SELFCHANGE": "You cannot change your permissions",
+      "TWOFA_REQUIRED": "Two-factor authentication required.",
+      "SERVER_ERR": "Server error. Please try again."
     },
     "TOKENS": {
       "ID": "ID",

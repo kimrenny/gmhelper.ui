@@ -483,7 +483,9 @@
       "ERROR": "Fehler",
       "DISABLED": "Die Funktion ist durch Benutzereinstellungen deaktiviert",
       "SETTINGS": "Fehler beim Aktualisieren der Einstellungen. Bitte versuchen Sie es erneut.",
-      "SELFCHANGE": "Sie können Ihre eigenen Berechtigungen nicht ändern"
+      "SELFCHANGE": "Sie können Ihre eigenen Berechtigungen nicht ändern",
+      "TWOFA_REQUIRED": "Zwei-Faktor-Authentifizierung erforderlich.",
+      "SERVER_ERR": "Serverfehler. Bitte erneut versuchen."
     },
     "TOKENS": {
       "ID": "ID",

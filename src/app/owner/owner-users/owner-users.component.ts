@@ -25,7 +25,7 @@ import {
   selectUsers,
   selectUsersCount,
 } from 'src/app/store/owner/owner.selectors';
-import { LoginToken } from 'src/app/models/admin.model';
+import { Router } from '@angular/router';
 
 interface User {
   id: string;
@@ -34,7 +34,6 @@ interface User {
   role: string;
   registrationDate: string;
   isBlocked: boolean;
-  loginTokens: LoginToken[];
 }
 
 @Component({
@@ -81,6 +80,7 @@ export class OwnerUsersComponent implements OnInit, OnDestroy {
 
   constructor(
     private adminService: AdminService,
+    private router: Router,
     private toastr: ToastrService,
     private translate: TranslateService,
     private store: Store<UserState.UserState>,
@@ -279,6 +279,18 @@ export class OwnerUsersComponent implements OnInit, OnDestroy {
           );
         },
         error: (error) => {
+          console.error(error);
+          const serverMessage = error?.error?.message;
+
+          if(typeof serverMessage === 'string' &&
+      serverMessage.startsWith('Two-factor authentication')){
+            this.toastr.error(this.translate.instant('ADMIN.ERRORS.TWOFA_REQUIRED'),
+            this.translate.instant('ADMIN.ERRORS.ERROR'));
+            this.router.navigate(['/settings'], {
+            replaceUrl: true,
+          });
+            return;
+          }
           this.toastr.error(
             this.translate.instant('ADMIN.ERRORS.SERVER_ERR'),
             this.translate.instant('ADMIN.ERRORS.ERROR')
