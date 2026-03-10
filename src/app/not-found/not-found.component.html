@@ -1,0 +1,50 @@
+<div class="notfound-section select-none">
+  <canvas #notFoundCanvas></canvas>
+
+  <div class="octagon" #octagon>
+    <div class="question3d" #question>
+      <span>?</span>
+      <span>?</span>
+      <span>?</span>
+      <span>?</span>
+      <span>?</span>
+    </div>
+
+    <svg viewBox="0 0 100 100">
+    <polygon id="small" points="35,15 65,15 85,35 85,65 65,85 35,85 15,65 15,35"/>
+    
+    <polygon id="big" points="20,0 80,0 100,20 100,80 80,100 20,100 0,80 0,20"/>
+
+    <line class="connector" x1="35" y1="15" x2="20" y2="0"/>
+    <line class="connector" x1="65" y1="15" x2="80" y2="0"/>
+    <line class="connector" x1="85" y1="35" x2="100" y2="20"/>
+    <line class="connector" x1="85" y1="65" x2="100" y2="80"/>
+    <line class="connector" x1="65" y1="85" x2="80" y2="100"/>
+    <line class="connector" x1="35" y1="85" x2="20" y2="100"/>
+    <line class="connector" x1="15" y1="65" x2="0" y2="80"/>
+    <line class="connector" x1="15" y1="35" x2="0" y2="20"/>
+    </svg>
+  </div>
+
+  <div class="title">
+    {{ "NOTFOUND.TITLE" | translate }}
+  </div>
+
+  <div class="description">
+    {{ "NOTFOUND.DESCRIPTION" | translate }}
+  </div>
+
+  <div class="description">
+    {{ "NOTFOUND.DESCRIPTION_2" | translate }}
+  </div>
+
+  <div class="buttons">
+    <button routerLink="/">
+      {{ "NOTFOUND.GO_HOME" | translate }}
+    </button>
+
+    <button>
+      {{ "NOTFOUND.REPORT_ERROR" | translate }}
+    </button>
+  </div>
+</div>

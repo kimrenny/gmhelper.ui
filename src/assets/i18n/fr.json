@@ -797,5 +797,12 @@
 
     "CONTACT": "Nous contacter",
     "CONTACT_TEXT": "Pour toute question, veuillez contacter le support GMHelper à kimrenny.tech@gmail.com."
+  },
+  "NOTFOUND": {
+    "TITLE": "Page introuvable",
+    "DESCRIPTION": "La page que vous recherchez n'existe pas ou a été déplacée.",
+    "DESCRIPTION_2": "Si vous pensez qu'il s'agit d'une erreur, signalez-la ou retournez à la page d'accueil.",
+    "GO_HOME": "Aller à l'accueil",
+    "REPORT_ERROR": "Signaler une erreur"
   }
 }

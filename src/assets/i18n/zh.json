@@ -796,5 +796,12 @@
 
     "CONTACT": "联系我们",
     "CONTACT_TEXT": "如有任何问题，请联系 GMHelper 支持：kimrenny.tech@gmail.com。"
+  },
+  "NOTFOUND": {
+    "TITLE": "未找到页面",
+    "DESCRIPTION": "您要查找的页面不存在或已被移动。",
+    "DESCRIPTION_2": "如果您认为这是一个错误，可以报告它或返回首页。",
+    "GO_HOME": "返回首页",
+    "REPORT_ERROR": "报告错误"
   }
 }

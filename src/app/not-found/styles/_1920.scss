@@ -1,0 +1,148 @@
+.notfound-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: #000000;
+  animation: gradientAnimationFeatures 12s ease infinite;
+  height: 100vh;
+  text-align: center;
+  color: #ffffff;
+  overflow: hidden;
+  transition: background-color 1s ease;
+  gap: 2rem;
+
+  .octagon {
+  position: relative;
+  width: 320px;
+  height: 320px;
+  perspective: 900px;
+  z-index: 1;
+
+    .question3d {
+      position: absolute;
+      inset: 0;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      transform-style: preserve-3d;
+      pointer-events: none;
+      z-index: 0;
+
+      font-family: "Courier New", monospace;
+      font-weight: bold;
+      font-size: 6rem;
+
+      span {
+        position: absolute;
+        color: #c444ff;
+        text-shadow: 0 0 10px #c444ff, 0 0 30px #c444ff66;
+
+        &:nth-child(1) {
+          transform: translateZ(0);
+        }
+
+        &:nth-child(2) {
+          transform: translateZ(-3px);
+          opacity: 0.9;
+        }
+
+        &:nth-child(3) {
+          transform: translateZ(-6px);
+          opacity: 0.8;
+        }
+
+        &:nth-child(4) {
+            transform: translateZ(-9px);
+            opacity: 0.7;
+        }
+
+        &:nth-child(5) {
+            transform: translateZ(-12px);
+            opacity: 0.6;
+        }
+      }
+    }
+
+    svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+      position: relative;
+      z-index: 1;
+    }
+
+    polygon,
+    .connector {
+      fill: none;
+      stroke: #c444ff;
+      stroke-width: 3px;
+      stroke-linejoin: round;
+      stroke-linecap: round;
+      vector-effect: non-scaling-stroke;
+    }
+  }
+
+  canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .title {
+    font-family: "Courier New", Courier, monospace;
+    font-size: 2rem;
+    animation: colorAnimationFeatures 12s ease infinite;
+    z-index: 2;
+    margin-bottom: 1rem;
+  }
+
+  .description {
+    font-family: "Courier New", Courier, monospace;
+    font-size: 1rem;
+    opacity: 0.8;
+    z-index: 2;
+  }
+
+  .buttons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+    z-index: 2;
+
+    button {
+      padding: 10px 20px;
+      font-family: "Courier New", Courier, monospace;
+      border: 2px solid #c444ff;
+      background: transparent;
+      color: #c444ff;
+      cursor: pointer;
+      border-radius: 6px;
+      transition: all 0.2s ease;
+
+      &:hover {
+        background: #c444ff;
+        color: #000;
+      }
+    }
+  }
+}
+
+@keyframes gradientAnimationFeatures {
+  0% { background-color: #000000; }
+  50% { background-color: #222222; }
+  100% { background-color: #000000; }
+}
+
+@keyframes colorAnimationFeatures {
+  0% { color: #ffffff; }
+  50% { color: #b9b9b9; }
+  100% { color: #ffffff; }
+}

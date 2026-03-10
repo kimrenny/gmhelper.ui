@@ -1,0 +1,27 @@
+@media (max-width: 1366px) {
+  .notfound-section {
+    gap: 1.5rem;
+
+    .octagon {
+      width: 220px;
+      height: 220px;
+
+      .question3d {
+        font-size: 4rem;
+      }
+    }
+
+    .title {
+      font-size: 1.6rem;
+    }
+
+    .description {
+      font-size: 0.9rem;
+    }
+
+    .buttons button {
+      padding: 8px 16px;
+      font-size: 0.9rem;
+    }
+  }
+}

@@ -797,5 +797,12 @@
 
     "CONTACT": "お問い合わせ",
     "CONTACT_TEXT": "ご質問がある場合は、GMHelperサポート（kimrenny.tech@gmail.com）までご連絡ください。"
+  },
+  "NOTFOUND": {
+    "TITLE": "ページが見つかりません",
+    "DESCRIPTION": "お探しのページは存在しないか、移動された可能性があります。",
+    "DESCRIPTION_2": "これがエラーだと思われる場合は、報告するかホームページに戻ってください。",
+    "GO_HOME": "ホームページへ",
+    "REPORT_ERROR": "エラーを報告"
   }
 }

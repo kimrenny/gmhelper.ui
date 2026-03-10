@@ -11,6 +11,7 @@ import { PrivacyComponent } from './legal/privacy/privacy.component';
 import { TermsComponent } from './legal/terms/terms.component';
 import { OwnerComponent } from './owner/owner.component';
 import { OwnerGuard } from './guards/owner.guard';
+import { NotFoundComponent } from './not-found/not-found.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -44,5 +45,5 @@ export const routes: Routes = [
     path: 'terms',
     component: TermsComponent,
   },
-  { path: '**', redirectTo: '' },
+  { path: '**', component: NotFoundComponent },
 ];

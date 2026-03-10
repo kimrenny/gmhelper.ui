@@ -797,5 +797,12 @@
 
     "CONTACT": "Contact Us",
     "CONTACT_TEXT": "For any questions, please contact GMHelper support at kimrenny.tech@gmail.com."
+  },
+  "NOTFOUND": {
+    "TITLE": "Page Not Found",
+    "DESCRIPTION": "The page you are looking for doesn't exist or has been moved.",
+    "DESCRIPTION_2": "If you believe this is a mistake, report it or return to the homepage.",
+    "GO_HOME": "Go to Homepage",
+    "REPORT_ERROR": "Report an Error"
   }
 }

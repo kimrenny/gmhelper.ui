@@ -797,5 +797,12 @@
 
     "CONTACT": "Kontakt",
     "CONTACT_TEXT": "Bei Fragen wenden Sie sich bitte an den GMHelper-Support unter kimrenny.tech@gmail.com."
+  },
+  "NOTFOUND": {
+    "TITLE": "Seite nicht gefunden",
+    "DESCRIPTION": "Die gesuchte Seite existiert nicht oder wurde verschoben.",
+    "DESCRIPTION_2": "Wenn Sie glauben, dass dies ein Fehler ist, melden Sie ihn oder kehren Sie zur Startseite zurück.",
+    "GO_HOME": "Zur Startseite",
+    "REPORT_ERROR": "Fehler melden"
   }
 }
