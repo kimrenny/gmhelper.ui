@@ -1,5 +1,10 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
+import { ReportService } from '../services/report.service';
+import { ToastrService } from 'ngx-toastr';
+import { CommonModule } from '@angular/common';
 
 interface Particle {
   x: number;
@@ -18,9 +23,16 @@ interface Particle {
   standalone: true,
   templateUrl: './not-found.component.html',
   styleUrls: ['./not-found.component.scss'],
-  imports: [TranslateModule],
+  imports: [CommonModule, TranslateModule, RouterModule, FormsModule],
 })
 export class NotFoundComponent implements AfterViewInit {
+  private reportOpen = false;
+  public reportText = '';
+  public consentGiven = false;
+
+  constructor(private reportService: ReportService, private toastr: ToastrService) {
+  }
+
   private spawnPerSec = 100;
 
   @ViewChild('notFoundCanvas', { static: true }) canvasRef!: ElementRef<HTMLCanvasElement>;
@@ -190,5 +202,54 @@ export class NotFoundComponent implements AfterViewInit {
 
     question.style.transform =
       `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+  }
+
+  private collectClientInfo(){
+    return {
+      url: window.location.href,
+      userAgent: navigator.userAgent,
+      referrer: document.referrer || null,
+      language: navigator.language,
+      screen: {
+        width: window.screen.width,
+        height: window.screen.height
+      },
+      viewport: {
+        width: window.innerWidth,
+        height: window.innerHeight
+      },
+      timestamp: new Date().toISOString()
+    };
+  }
+
+  openReport(){
+    this.reportOpen = true;
+  }
+
+  closeReport(){
+    this.reportOpen = false;
+    this.reportText = '';
+  }
+
+  submitReport(){
+    if(!this.reportText.trim()){
+      this.toastr.error('Report text cannot be empty!');
+      return;
+    }
+
+    const clientInfo = this.consentGiven ? this.collectClientInfo() : { "url": window.location.href };
+
+    this.reportService
+      .submitReport(this.reportText, clientInfo)
+      .subscribe({
+        next: () => {
+          this.toastr.success('Report submitted successfully!');
+          this.closeReport();
+        }
+      });
+  }
+
+  get isReportModalOpen(){
+    return this.reportOpen;
   }
 }

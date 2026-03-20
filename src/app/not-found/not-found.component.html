@@ -43,8 +43,47 @@
       {{ "NOTFOUND.GO_HOME" | translate }}
     </button>
 
-    <button>
+    <button (click)="openReport()">
       {{ "NOTFOUND.REPORT_ERROR" | translate }}
     </button>
+  </div>
+
+  <div class="report-modal" *ngIf="isReportModalOpen">
+    <div class="report-box">
+
+      <div class="report-title">
+        {{ "NOTFOUND.REPORT_ERROR" | translate }}
+      </div>
+
+      <textarea
+        [(ngModel)]="reportText"
+        placeholder="{{ 'NOTFOUND.REPORT_PLACEHOLDER' | translate }}"
+      ></textarea>
+
+      <div class="report-consent">
+        <label>
+          <input
+            type="checkbox"
+            [(ngModel)]="consentGiven"
+          />
+          <span>
+            {{ "NOTFOUND.REPORT_CONSENT" | translate }}
+          </span>
+        </label>
+      </div>
+
+      <div class="report-buttons">
+
+        <button (click)="submitReport()">
+          {{ "NOTFOUND.SEND" | translate }}
+        </button>
+
+        <button (click)="closeReport()">
+          {{ "NOTFOUND.CANCEL" | translate }}
+        </button>
+
+      </div>
+
+    </div>
   </div>
 </div>
