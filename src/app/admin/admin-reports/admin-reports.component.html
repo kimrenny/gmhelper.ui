@@ -1,0 +1,206 @@
+<div class="admin-users-container">
+  <div class="users-table">
+    <div class="table-header">
+      <div
+        class="column"
+        *ngIf="showData"
+        (click)="sortByColumn('id')"
+        [appTooltip]="'DESCRIPTION.ADMIN.REPORTS.ID'"
+      >
+        {{ "ADMIN.REPORTS.ID" | translate }}
+        <span *ngIf="sortColumn === 'id'" class="sort-arrow">
+          {{ sortDirection === "asc" ? "▼" : "▲" }}
+        </span>
+      </div>
+      <div
+        class="column"
+        *ngIf="showData"
+        (click)="sortByColumn('url')"
+        [appTooltip]="'DESCRIPTION.ADMIN.REPORTS.URL'"
+      >
+        {{ "ADMIN.REPORTS.URL" | translate }}
+        <span *ngIf="sortColumn === 'url'" class="sort-arrow">
+          {{ sortDirection === "asc" ? "▼" : "▲" }}
+        </span>
+      </div>
+      <div
+        class="column"
+        (click)="sortByColumn('language')"
+        [appTooltip]="'DESCRIPTION.ADMIN.REPORTS.LANGUAGE'"
+      >
+        {{ "ADMIN.REPORTS.LANGUAGE" | translate }}
+        <span *ngIf="sortColumn === 'language'" class="sort-arrow">
+          {{ sortDirection === "asc" ? "▼" : "▲" }}
+        </span>
+      </div>
+      <div
+        class="column"
+        *ngIf="showData"
+        (click)="sortByColumn('clientTimestamp')"
+        [appTooltip]="'DESCRIPTION.ADMIN.REPORTS.CLIENT_TIMESTAMP'"
+      >
+        {{ "ADMIN.REPORTS.CLIENT_TIMESTAMP" | translate }}
+        <span *ngIf="sortColumn === 'clientTimestamp'" class="sort-arrow">
+          {{ sortDirection === "asc" ? "▼" : "▲" }}
+        </span>
+      </div>
+      <div
+        class="column"
+        (click)="sortByColumn('isResolved')"
+        [appTooltip]="'DESCRIPTION.ADMIN.REPORTS.STATUS'"
+      >
+        {{ "ADMIN.REPORTS.STATUS" | translate }}
+        <span *ngIf="sortColumn === 'isResolved'" class="sort-arrow">
+          {{ sortDirection === "asc" ? "▼" : "▲" }}
+        </span>
+      </div>
+      <div class="column" [appTooltip]="'DESCRIPTION.ADMIN.REPORTS.ACTION'">
+        {{ "ADMIN.REPORTS.ACTION" | translate }}
+      </div>
+    </div>
+    <div class="table-body">
+      <div
+        class="table-row"
+        *ngFor="let report of reports$ | async"
+        (click)="openReportDetails(report)"
+        [ngClass]="{ 'current-report': report.id === selectedReport?.id }"
+      >
+        <div class="column" *ngIf="showData">{{ report.id }}</div>
+        <div class="column" *ngIf="showData">{{ report.url }}</div>
+        <div class="column">{{ report.language }}</div>
+        <div class="column" *ngIf="showData">
+          {{ report.clientTimestamp | date : "short" }} UTC
+        </div>
+        <div class="column">
+          <span
+            class="status"
+            [ngClass]="{ active: !report.isResolved, inactive: report.isResolved }"
+          >
+            {{
+              !report.isResolved
+                ? ("ADMIN.REPORTS.OPEN" | translate)
+                : ("ADMIN.REPORTS.RESOLVED" | translate)
+            }}
+          </span>
+        </div>
+        <div class="column">
+          <button
+            class="toggle-btn"
+            (click)="openConfirmModal(report); $event.stopPropagation()"
+          >
+            {{
+              !report.isResolved
+                ? ("ADMIN.REPORTS.RESOLVE" | translate)
+                : ("ADMIN.REPORTS.UNRESOLVE" | translate)
+            }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pagination">
+    <button *ngIf="currentPage !== 1" (click)="goToPage(1)">««</button>
+    <button (click)="prevPage()" [disabled]="currentPage === 1">«</button>
+
+    <input
+      type="number"
+      class="page-input"
+      [(ngModel)]="pageInput"
+      (change)="goToPage(pageInput)"
+      [min]="1"
+      [max]="totalPages"
+    />
+    <span class="slash">/</span>
+    <span class="total-pages">{{ totalPages }}</span>
+
+    <button (click)="nextPage()" [disabled]="currentPage === totalPages">
+      »
+    </button>
+    <button *ngIf="currentPage !== totalPages" (click)="goToPage(totalPages)">
+      »»
+    </button>
+  </div>
+
+  <div *ngIf="isConfirmModalOpen" class="modal-overlay" @fadeInOut>
+    <div class="modal-content">
+      <h3>{{ "ADMIN.REPORTS.CONFIRM_ACTION.TITLE" | translate }}</h3>
+      <p *ngIf="selectedReport?.isResolved">
+        {{ "ADMIN.REPORTS.UNRESOLVE.CONFIRM" | translate }}
+        <strong>{{ selectedReport?.id }}</strong
+        >?
+      </p>
+      <p *ngIf="!selectedReport?.isResolved">
+        {{ "ADMIN.REPORTS.RESOLVE.CONFIRM" | translate }}
+        <strong>{{ selectedReport?.id }}</strong
+        >?
+      </p>
+      <button (click)="confirmAction()">
+        {{ "ADMIN.REPORTS.CONFIRM_ACTION.YES" | translate }}
+      </button>
+      <button (click)="closeConfirmModal()">
+        {{ "ADMIN.REPORTS.CONFIRM_ACTION.NO" | translate }}
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="selectedReport" class="user-modal" @fadeInOut>
+    <div class="modal-content">
+      <h3>{{ "ADMIN.REPORTS.DETAILS.TITLE" | translate }}</h3>
+      <p>
+        <strong>{{ "ADMIN.REPORTS.ID" | translate }}:</strong>
+        {{ selectedReport.id}}
+      </p>
+      <p>
+        <strong>{{ "ADMIN.REPORTS.MESSAGE" | translate }}:</strong>
+        {{ selectedReport.report | slice : 0 : 50 }} {{ selectedReport.report.length > 50 ? "..." : "" }}
+      </p>
+      <p>
+        <strong>{{ "ADMIN.REPORTS.URL" | translate }}:</strong>
+        {{ selectedReport.url }}
+      </p>
+
+      <p>
+        <strong>{{ "ADMIN.REPORTS.USERAGENT" | translate }}:</strong>
+        {{ selectedReport.userAgent || ("ADMIN.REPORTS.UNKNOWN" | translate) }}
+      </p>
+
+      <p>
+        <strong>{{ "ADMIN.REPORTS.REFERRER" | translate }}:</strong>
+        {{ selectedReport.referrer || ("ADMIN.REPORTS.UNKNOWN" | translate) }}
+      </p>
+
+      <p>
+        <strong>{{ "ADMIN.REPORTS.LANGUAGE" | translate }}:</strong>
+        {{ selectedReport.language || ("ADMIN.REPORTS.UNKNOWN" | translate) }}
+      </p>
+
+      <p>
+        <strong>{{ "ADMIN.REPORTS.SCREEN_SIZE" | translate }}:</strong>
+        {{ selectedReport.screenWidth || "0" }} x {{ selectedReport.screenHeight || "0" }}
+      </p>
+
+      <p>
+        <strong>{{ "ADMIN.REPORTS.VIEWPORT_SIZE" | translate }}:</strong>
+        {{ selectedReport.viewportWidth || "0" }} x {{ selectedReport.viewportHeight || "0" }}
+      </p>
+      
+      <p>
+        <strong>{{ "ADMIN.REPORTS.CLIENT_TIMESTAMP" | translate }}:</strong>
+        {{ selectedReport.clientTimestamp | date : "medium" }} UTC
+      </p>
+      <p>
+        <strong>{{ "ADMIN.REPORTS.STATUS" | translate }}:</strong>
+        {{
+          !selectedReport.isResolved
+            ? ("ADMIN.REPORTS.OPEN" | translate)
+            : ("ADMIN.REPORTS.RESOLVED" | translate)
+        }}
+      </p>
+
+      <button class="close-btn" (click)="closeReportDetails()">
+        {{ "ADMIN.REPORTS.DETAILS.CLOSE" | translate }}
+      </button>
+    </div>
+  </div>
+</div>

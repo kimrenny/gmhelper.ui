@@ -12,6 +12,7 @@ import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import * as AdminState from '../store/admin/admin.state';
 import * as AdminActions from '../store/admin/admin.actions';
+import { AdminReportsComponent } from './admin-reports/admin-reports.component';
 
 @Component({
   selector: 'app-admin',
@@ -23,6 +24,7 @@ import * as AdminActions from '../store/admin/admin.actions';
     AdminUsersComponent,
     AdminTokensComponent,
     AdminLogsComponent,
+    AdminReportsComponent,
     AdminSettingsComponent,
     TranslateModule,
   ],

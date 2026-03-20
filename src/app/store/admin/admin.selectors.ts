@@ -24,6 +24,14 @@ export const selectTokensCount = createSelector(
   selectAdminState,
   (state) => state.totalTokensCount
 );
+export const selectNotFoundReports = createSelector(
+  selectAdminState,
+  (state) => state.notFoundReports
+);
+export const selectNotFoundReportsCount = createSelector(
+  selectAdminState,
+  (state) => state.totalNotFoundReportsCount
+);
 export const selectRegistrations = createSelector(
   selectAdminState,
   (state) => state.registrations

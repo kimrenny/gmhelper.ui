@@ -54,6 +54,17 @@
     </li>
     <li>
       <a
+        (click)="scrollToSection('reports')"
+        [class.active]="activeSection === 'reports'"
+      >
+        <img src="../../../assets/icons/reports.png" alt="Reports" class="reports" />
+        <span class="admin-nav-text">{{
+          "ADMIN.NAVBAR.REPORTS" | translate
+        }}</span>
+      </a>
+    </li>
+    <li>
+      <a
         (click)="scrollToSection('settings')"
         [class.active]="activeSection === 'settings'"
       >

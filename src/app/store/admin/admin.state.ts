@@ -6,6 +6,7 @@ import {
   CountryStats,
   ErrorLog,
   initialAdminSettings,
+  NotFoundReport,
   RegistrationData,
   RequestLog,
   RoleStats,
@@ -20,6 +21,8 @@ export interface AdminState {
   totalUsersCount: number | null;
   tokens: Token[] | null;
   totalTokensCount: number | null;
+  notFoundReports: NotFoundReport[] | null;
+  totalNotFoundReportsCount: number | null;
   registrations: RegistrationData[] | null;
   requestsData: CombinedRequestsData | null;
   countryStats: CountryStats[] | null;
@@ -38,6 +41,7 @@ export interface AdminState {
   loadingSettings: boolean;
   loadingUsers: boolean;
   loadingTokens: boolean;
+  loadingNotFoundReports: boolean;
   loadingRegistrations: boolean;
   loadingRequestsData: boolean;
   loadingCountryStats: boolean;
@@ -55,6 +59,8 @@ export const initialAdminState: AdminState = {
   totalUsersCount: null,
   tokens: null,
   totalTokensCount: null,
+  notFoundReports: null,
+  totalNotFoundReportsCount: null,
   registrations: null,
   requestsData: null,
   countryStats: null,
@@ -78,6 +84,7 @@ export const initialAdminState: AdminState = {
   loadingSettings: false,
   loadingUsers: false,
   loadingTokens: false,
+  loadingNotFoundReports: false,
   loadingRegistrations: false,
   loadingRequestsData: false,
   loadingCountryStats: false,

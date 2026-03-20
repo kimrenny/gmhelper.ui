@@ -7,6 +7,7 @@ import {
   CombinedRequestsData,
   CountryStats,
   ErrorLog,
+  NotFoundReport,
   RegistrationData,
   RequestLog,
   RoleStats,
@@ -95,6 +96,28 @@ export const loadTokensFailure = createAction(
 );
 export const setLoadingTokens = createAction(
   '[Admin] Set Loading Tokens',
+  props<{ loading: boolean }>()
+);
+
+export const loadNotFoundReports = createAction(
+  '[Admin] Load Not Found Reports',
+  props<{
+    page?: number;
+    pageSize?: number;
+    sortColumn?: keyof NotFoundReport;
+    sortDirection?: 'asc' | 'desc';
+  }>()
+);
+export const loadNotFoundReportsSuccess = createAction(
+  '[Admin] Load Not Found Reports Success',
+  props<{ notFoundReports: NotFoundReport[]; totalCount: number }>()
+);
+export const loadNotFoundReportsFailure = createAction(
+  '[Admin] Load Not Found Reports Failure',
+  props<{ error: any }>()
+);
+export const setLoadingNotFoundReports = createAction(
+  '[Admin] Set Loading Not Found Reports',
   props<{ loading: boolean }>()
 );
 

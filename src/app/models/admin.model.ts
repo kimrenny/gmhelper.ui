@@ -31,6 +31,22 @@ export interface Token {
   isActive: boolean;
 }
 
+export interface NotFoundReport {
+  id: string;
+  report: string;
+  url: string;
+  userAgent: string | null;
+  referrer: string | null;
+  language: string | null;
+  screenWidth: number | null;
+  screenHeight: number | null;
+  viewportWidth: number | null;
+  viewportHeight: number | null;
+  clientTimestamp: string | null;
+  createdAt: string;
+  isResolved: boolean;
+}
+
 export interface RequestsData {
   date: string;
   count: number;
@@ -126,6 +142,7 @@ export interface SwitchItem {
 export interface AdminData {
   users: { items: User[]; totalCount: number };
   tokens: { items: Token[]; totalCount: number };
+  notFoundReports: { items: NotFoundReport[]; totalCount: number };
   registrations: RegistrationData[];
   dashboardTokens: TokenStats;
   countryStats: CountryStats[];

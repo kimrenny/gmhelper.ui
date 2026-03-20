@@ -10,6 +10,7 @@ export const adminReducer = createReducer(
     isLoading: true,
     loadingUsers: true,
     loadingTokens: true,
+    loadingNotFoundReports: true,
     loadingRegistrations: true,
     loadingCountryStats: true,
     loadingRoleStats: true,
@@ -24,6 +25,8 @@ export const adminReducer = createReducer(
     totalUsersCount: data.users.totalCount,
     tokens: data.tokens.items,
     totalTokensCount: data.tokens.totalCount,
+    notFoundReports: data.notFoundReports.items,
+    totalNotFoundReportsCount: data.notFoundReports.totalCount,
     registrations: data.registrations,
     tokenStats: data.dashboardTokens,
     countryStats: data.countryStats,
@@ -41,6 +44,7 @@ export const adminReducer = createReducer(
     isLoading: false,
     loadingUsers: false,
     loadingTokens: false,
+    loadingNotFoundReports: false,
     loadingRegistrations: false,
     loadingCountryStats: false,
     loadingRoleStats: false,
@@ -55,6 +59,7 @@ export const adminReducer = createReducer(
     isLoading: false,
     loadingUsers: false,
     loadingTokens: false,
+    loadingNotFoundReports: false,
     loadingRegistrations: false,
     loadingCountryStats: false,
     loadingRoleStats: false,
@@ -108,6 +113,19 @@ export const adminReducer = createReducer(
   on(AdminActions.setLoadingTokens, (state, { loading }) => ({
     ...state,
     loadingTokens: loading,
+  })),
+  on(AdminActions.loadNotFoundReportsSuccess, (state, { notFoundReports, totalCount }) => ({
+    ...state,
+    notFoundReports: notFoundReports,
+    totalNotFoundReportsCount: totalCount,
+  })),
+  on(AdminActions.loadNotFoundReportsFailure, (state, { error }) => ({
+    ...state,
+    error,
+  })),
+  on(AdminActions.setLoadingNotFoundReports, (state, { loading }) => ({
+    ...state,
+    loadingNotFoundReports: loading,
   })),
 
   on(AdminActions.loadRegistrationsSuccess, (state, { registrations }) => ({

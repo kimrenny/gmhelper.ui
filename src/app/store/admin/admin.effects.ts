@@ -175,6 +175,41 @@ export class AdminEffects {
     )
   );
 
+  loadNotFoundReports$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AdminActions.loadNotFoundReports),
+      withLatestFrom(
+        this.store.pipe(select((state: AdminState) => state.loadingNotFoundReports))
+      ),
+      filter(([_, loading]) => !loading),
+      switchMap(([action, _]) => {
+        this.store.dispatch(AdminActions.setLoadingNotFoundReports({ loading: true }));
+
+        return this.adminService
+          .getNotFoundReports(
+            action.page ?? 1,
+            action.pageSize ?? 10,
+            action.sortColumn ?? 'clientTimestamp',
+            action.sortDirection === 'desc'
+          )
+          .pipe(
+            map(({ notFoundReports, totalCount }) => {
+              this.store.dispatch(
+                AdminActions.setLoadingNotFoundReports({ loading: false })
+              );
+              return AdminActions.loadNotFoundReportsSuccess({ notFoundReports, totalCount });
+            }),
+            catchError((error) => {
+              this.store.dispatch(
+                AdminActions.setLoadingNotFoundReports({ loading: false })
+              );
+              return of(AdminActions.loadNotFoundReportsFailure({ error }));
+            })
+          );
+      })
+    )
+  );
+
   loadRegistrations$ = createEffect(() =>
     this.actions$.pipe(
       ofType(AdminActions.loadRegistrations),

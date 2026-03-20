@@ -17,7 +17,7 @@ import { filter } from 'rxjs';
   imports: [TranslateModule, RouterModule],
 })
 export class AdminNavComponent implements AfterViewInit, OnDestroy {
-  sections: string[] = ['dashboard', 'users', 'tokens', 'logs', 'settings'];
+  sections: string[] = ['dashboard', 'users', 'tokens', 'logs', 'reports', 'settings'];
   activeSection: string = 'dashboard';
   userClicked: boolean = false;
   scrolling: boolean = false;

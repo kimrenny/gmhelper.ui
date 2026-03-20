@@ -18,6 +18,7 @@ import {
   User,
   AdminData,
   OwnerData,
+  NotFoundReport,
 } from '../models/admin.model';
 import { Store } from '@ngrx/store';
 import * as AdminState from '../store/admin/admin.state';
@@ -147,6 +148,44 @@ export class AdminService {
           .pipe(
             map((res) => ({
               tokens: res.data.items,
+              totalCount: res.data.totalCount,
+            }))
+          );
+      })
+    );
+  }
+
+  getNotFoundReports(
+    page: number,
+    pageSize: number,
+    sortBy: keyof NotFoundReport = 'clientTimestamp',
+    descending: boolean = false,
+  ): Observable<{ notFoundReports: NotFoundReport[]; totalCount: number }> {
+    return this.tokenService.getToken$().pipe(
+      take(1),
+      switchMap((token) => {
+        if (!token || !this.checkAdminPermissions(token)) {
+          return throwError(() => new Error('No permissions'));
+        }
+
+        const params: any = {
+          page,
+          pageSize,
+          sortBy,
+          descending,
+        };
+
+        return this.http
+          .get<ApiResponse<{ items: NotFoundReport[]; totalCount: number }>>(
+            `${this.apiUrl}/reports/notfound`,
+            {
+              headers: this.tokenService.createAuthHeaders(token),
+              params,
+            }
+          )
+          .pipe(
+            map((res) => ({
+              notFoundReports: res.data.items,
               totalCount: res.data.totalCount,
             }))
           );
@@ -424,6 +463,22 @@ export class AdminService {
         if (!token) return throwError(() => new Error('Token does not exist'));
         return this.http.put(
           `${this.apiUrl}/tokens/${tokenStr}/action`,
+          { action },
+          {
+            headers: this.tokenService.createAuthHeaders(token),
+          }
+        );
+      })
+    );
+  }
+
+  actionReport(reportId: string, action: 'resolved' | 'unresolved'): Observable<any> {
+    return this.tokenService.getToken$().pipe(
+      take(1),
+      switchMap((token) => {
+        if (!token) return throwError(() => new Error('Token does not exist'));
+        return this.http.put(
+          `${this.apiUrl}/reports/${reportId}/action`,
           { action },
           {
             headers: this.tokenService.createAuthHeaders(token),
