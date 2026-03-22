@@ -432,6 +432,7 @@
       "USERS": "用户",
       "TOKENS": "令牌",
       "LOGS": "日志",
+      "REPORTS": "报告",
       "SETTINGS": "设置"
     },
     "USERS": {
@@ -641,6 +642,39 @@
         "USER_ID": "用户ID",
         "MODAL": "模态"
       }
+    },
+    "REPORTS": {
+      "ACTION": "操作",
+      "ID": "ID",
+      "MESSAGE": "消息",
+      "URL": "URL",
+      "USERAGENT": "用户代理",
+      "REFERRER": "来源",
+      "LANGUAGE": "语言",
+      "SCREEN_SIZE": "屏幕",
+      "VIEWPORT_SIZE": "视口",
+      "CLIENT_TIMESTAMP": "时间戳",
+      "STATUS": "状态",
+      "DETAILS": {
+        "TITLE": "报告详情",
+        "CLOSE": "关闭"
+      },
+      "UNKNOWN": "未知",
+      "CONFIRM_ACTION": {
+        "TITLE": "确认操作",
+        "YES": "是",
+        "NO": "否"
+      },
+      "UNRESOLVE": {
+        "CONFIRM": "确定要将此报告标记为未解决吗？",
+        "ACTION": "打开报告"
+      },
+      "RESOLVE": {
+        "CONFIRM": "确定要将此报告标记为已解决吗？",
+        "ACTION": "关闭报告"
+      },
+      "OPEN": "未解决",
+      "RESOLVED": "已解决"
     }
   },
   "LANGUAGE": {
@@ -687,6 +721,14 @@
         "STACKTRACE": "错误堆栈",
         "ENDPOINT": "API端点",
         "EXDETAILS": "错误详情"
+      },
+      "REPORTS": {
+        "ID": "报告ID",
+        "URL": "页面URL",
+        "LANGUAGE": "用户语言",
+        "CLIENT_TIMESTAMP": "客户端时间",
+        "STATUS": "报告状态",
+        "ACTION": "对报告的操作"
       }
     }
   },
@@ -802,6 +844,15 @@
     "DESCRIPTION": "您要查找的页面不存在或已被移动。",
     "DESCRIPTION_2": "如果您认为这是一个错误，可以报告它或返回首页。",
     "GO_HOME": "返回首页",
-    "REPORT_ERROR": "报告错误"
+    "REPORT_ERROR": "报告错误",
+    "REPORT_PLACEHOLDER": "请描述您遇到的问题...",
+    "REPORT_CONSENT": "我同意为此报告收集我的数据。（可选）",
+    "REPORT": {
+      "SUBMITTED": "报告提交成功。",
+      "FAILED": "报告提交失败。",
+      "EMPTY": "报告不能为空。"
+    },
+    "SEND": "发送",
+    "CANCEL": "取消"
   }
 }

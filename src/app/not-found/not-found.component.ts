@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ReportService } from '../services/report.service';
 import { ToastrService } from 'ngx-toastr';
 import { CommonModule } from '@angular/common';
@@ -30,7 +30,7 @@ export class NotFoundComponent implements AfterViewInit {
   public reportText = '';
   public consentGiven = false;
 
-  constructor(private reportService: ReportService, private toastr: ToastrService) {
+  constructor(private reportService: ReportService, private toastr: ToastrService, private translate: TranslateService) {
   }
 
   private spawnPerSec = 100;
@@ -233,7 +233,7 @@ export class NotFoundComponent implements AfterViewInit {
 
   submitReport(){
     if(!this.reportText.trim()){
-      this.toastr.error('Report text cannot be empty!');
+      this.toastr.error(this.translate.instant('NOTFOUND.REPORT.EMPTY'));
       return;
     }
 
@@ -243,7 +243,7 @@ export class NotFoundComponent implements AfterViewInit {
       .submitReport(this.reportText, clientInfo)
       .subscribe({
         next: () => {
-          this.toastr.success('Report submitted successfully!');
+          this.toastr.success(this.translate.instant('NOTFOUND.REPORT.SUBMITTED'));
           this.closeReport();
         }
       });

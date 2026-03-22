@@ -67,9 +67,9 @@
       >
         <div class="column" *ngIf="showData">{{ report.id }}</div>
         <div class="column" *ngIf="showData">{{ report.url }}</div>
-        <div class="column">{{ report.language }}</div>
+        <div class="column">{{ report.language ? report.language : ("ADMIN.REPORTS.UNKNOWN" | translate) }}</div>
         <div class="column" *ngIf="showData">
-          {{ report.clientTimestamp | date : "short" }} UTC
+          {{ report.clientTimestamp ? (report.clientTimestamp | date : "short" : "UTC") : ("ADMIN.REPORTS.UNKNOWN" | translate) }}
         </div>
         <div class="column">
           <span
@@ -90,8 +90,8 @@
           >
             {{
               !report.isResolved
-                ? ("ADMIN.REPORTS.RESOLVE" | translate)
-                : ("ADMIN.REPORTS.UNRESOLVE" | translate)
+                ? ("ADMIN.REPORTS.RESOLVE.ACTION" | translate)
+                : ("ADMIN.REPORTS.UNRESOLVE.ACTION" | translate)
             }}
           </button>
         </div>
@@ -125,15 +125,11 @@
   <div *ngIf="isConfirmModalOpen" class="modal-overlay" @fadeInOut>
     <div class="modal-content">
       <h3>{{ "ADMIN.REPORTS.CONFIRM_ACTION.TITLE" | translate }}</h3>
-      <p *ngIf="selectedReport?.isResolved">
+      <p *ngIf="reportToConfirm?.isResolved">
         {{ "ADMIN.REPORTS.UNRESOLVE.CONFIRM" | translate }}
-        <strong>{{ selectedReport?.id }}</strong
-        >?
       </p>
-      <p *ngIf="!selectedReport?.isResolved">
+      <p *ngIf="!reportToConfirm?.isResolved">
         {{ "ADMIN.REPORTS.RESOLVE.CONFIRM" | translate }}
-        <strong>{{ selectedReport?.id }}</strong
-        >?
       </p>
       <button (click)="confirmAction()">
         {{ "ADMIN.REPORTS.CONFIRM_ACTION.YES" | translate }}

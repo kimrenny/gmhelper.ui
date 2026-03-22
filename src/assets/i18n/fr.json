@@ -432,6 +432,7 @@
       "USERS": "Utilisateurs",
       "TOKENS": "Jetons",
       "LOGS": "Journaux",
+      "REPORTS": "Rapports",
       "SETTINGS": "Paramètres"
     },
     "USERS": {
@@ -641,6 +642,39 @@
         "USER_ID": "ID de l'utilisateur",
         "MODAL": "Modal"
       }
+    },
+    "REPORTS": {
+      "ACTION": "Action",
+      "ID": "ID",
+      "MESSAGE": "Message",
+      "URL": "URL",
+      "USERAGENT": "User-Agent",
+      "REFERRER": "Référent",
+      "LANGUAGE": "Langue",
+      "SCREEN_SIZE": "Écran",
+      "VIEWPORT_SIZE": "Viewport",
+      "CLIENT_TIMESTAMP": "Horodatage",
+      "STATUS": "Statut",
+      "DETAILS": {
+        "TITLE": "Détails du rapport",
+        "CLOSE": "Fermer"
+      },
+      "UNKNOWN": "Inconnu",
+      "CONFIRM_ACTION": {
+        "TITLE": "Confirmer l'action",
+        "YES": "Oui",
+        "NO": "Non"
+      },
+      "UNRESOLVE": {
+        "CONFIRM": "Êtes-vous sûr de vouloir marquer ce rapport comme non résolu ?",
+        "ACTION": "Ouvrir le rapport"
+      },
+      "RESOLVE": {
+        "CONFIRM": "Êtes-vous sûr de vouloir marquer ce rapport comme résolu ?",
+        "ACTION": "Fermer le rapport"
+      },
+      "OPEN": "Ouvert",
+      "RESOLVED": "Résolu"
     }
   },
   "LANGUAGE": {
@@ -687,6 +721,14 @@
         "STACKTRACE": "Trace erreur",
         "ENDPOINT": "Point API",
         "EXDETAILS": "Détails erreur"
+      },
+      "REPORTS": {
+        "ID": "ID du rapport",
+        "URL": "URL de la page",
+        "LANGUAGE": "Langue de l'utilisateur",
+        "CLIENT_TIMESTAMP": "Heure du client",
+        "STATUS": "Statut du rapport",
+        "ACTION": "Action sur le rapport"
       }
     }
   },
@@ -803,6 +845,15 @@
     "DESCRIPTION": "La page que vous recherchez n'existe pas ou a été déplacée.",
     "DESCRIPTION_2": "Si vous pensez qu'il s'agit d'une erreur, signalez-la ou retournez à la page d'accueil.",
     "GO_HOME": "Aller à l'accueil",
-    "REPORT_ERROR": "Signaler une erreur"
+    "REPORT_ERROR": "Signaler une erreur",
+    "REPORT_PLACEHOLDER": "Décrivez le problème rencontré...",
+    "REPORT_CONSENT": "J'accepte la collecte de mes données pour ce rapport. (optionnel)",
+    "REPORT": {
+      "SUBMITTED": "Rapport envoyé avec succès.",
+      "FAILED": "Échec de l'envoi du rapport.",
+      "EMPTY": "Le rapport ne peut pas être vide."
+    },
+    "SEND": "Envoyer le rapport",
+    "CANCEL": "Annuler"
   }
 }

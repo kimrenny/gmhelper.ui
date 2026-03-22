@@ -432,6 +432,7 @@
       "USERS": "ユーザー",
       "TOKENS": "トークン",
       "LOGS": "ログ",
+      "REPORTS": "レポート",
       "SETTINGS": "設定"
     },
     "USERS": {
@@ -641,6 +642,39 @@
         "USER_ID": "ユーザーID",
         "MODAL": "モーダル"
       }
+    },
+    "REPORTS": {
+      "ACTION": "操作",
+      "ID": "ID",
+      "MESSAGE": "メッセージ",
+      "URL": "URL",
+      "USERAGENT": "ユーザーエージェント",
+      "REFERRER": "リファラー",
+      "LANGUAGE": "言語",
+      "SCREEN_SIZE": "画面",
+      "VIEWPORT_SIZE": "ビューポート",
+      "CLIENT_TIMESTAMP": "タイムスタンプ",
+      "STATUS": "状態",
+      "DETAILS": {
+        "TITLE": "レポート詳細",
+        "CLOSE": "閉じる"
+      },
+      "UNKNOWN": "不明",
+      "CONFIRM_ACTION": {
+        "TITLE": "操作の確認",
+        "YES": "はい",
+        "NO": "いいえ"
+      },
+      "UNRESOLVE": {
+        "CONFIRM": "このレポートを未解決としてマークしますか？",
+        "ACTION": "レポートを開く"
+      },
+      "RESOLVE": {
+        "CONFIRM": "このレポートを解決済みとしてマークしますか？",
+        "ACTION": "レポートを閉じる"
+      },
+      "OPEN": "未解決",
+      "RESOLVED": "解決済み"
     }
   },
   "LANGUAGE": {
@@ -687,6 +721,14 @@
         "STACKTRACE": "スタックトレース",
         "ENDPOINT": "APIエンドポイント",
         "EXDETAILS": "エラー詳細"
+      },
+      "REPORTS": {
+        "ID": "レポートID",
+        "URL": "ページURL",
+        "LANGUAGE": "ユーザーの言語",
+        "CLIENT_TIMESTAMP": "クライアント時間",
+        "STATUS": "レポートの状態",
+        "ACTION": "レポートへの操作"
       }
     }
   },
@@ -803,6 +845,15 @@
     "DESCRIPTION": "お探しのページは存在しないか、移動された可能性があります。",
     "DESCRIPTION_2": "これがエラーだと思われる場合は、報告するかホームページに戻ってください。",
     "GO_HOME": "ホームページへ",
-    "REPORT_ERROR": "エラーを報告"
+    "REPORT_ERROR": "エラーを報告",
+    "REPORT_PLACEHOLDER": "発生した問題を説明してください...",
+    "REPORT_CONSENT": "このレポートのためにデータが収集されることに同意します。（任意）",
+    "REPORT": {
+      "SUBMITTED": "レポートが正常に送信されました。",
+      "FAILED": "レポートの送信に失敗しました。",
+      "EMPTY": "レポートは空にできません。"
+    },
+    "SEND": "送信",
+    "CANCEL": "キャンセル"
   }
 }

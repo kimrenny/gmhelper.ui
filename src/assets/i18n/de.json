@@ -432,6 +432,7 @@
       "USERS": "Benutzer",
       "TOKENS": "Token",
       "LOGS": "Protokolle",
+      "REPORTS": "Berichte",
       "SETTINGS": "Einstellungen"
     },
     "USERS": {
@@ -641,6 +642,39 @@
         "USER_ID": "Benutzer-ID",
         "MODAL": "Modal"
       }
+    },
+    "REPORTS": {
+      "ACTION": "Aktion",
+      "ID": "ID",
+      "MESSAGE": "Nachricht",
+      "URL": "URL",
+      "USERAGENT": "User-Agent",
+      "REFERRER": "Referrer",
+      "LANGUAGE": "Sprache",
+      "SCREEN_SIZE": "Bildschirm",
+      "VIEWPORT_SIZE": "Viewport",
+      "CLIENT_TIMESTAMP": "Zeitstempel",
+      "STATUS": "Status",
+      "DETAILS": {
+        "TITLE": "Berichtdetails",
+        "CLOSE": "Schließen"
+      },
+      "UNKNOWN": "Unbekannt",
+      "CONFIRM_ACTION": {
+        "TITLE": "Aktion bestätigen",
+        "YES": "Ja",
+        "NO": "Nein"
+      },
+      "UNRESOLVE": {
+        "CONFIRM": "Möchten Sie diesen Bericht wirklich als ungelöst markieren?",
+        "ACTION": "Bericht öffnen"
+      },
+      "RESOLVE": {
+        "CONFIRM": "Möchten Sie diesen Bericht wirklich als gelöst markieren?",
+        "ACTION": "Bericht schließen"
+      },
+      "OPEN": "Offen",
+      "RESOLVED": "Gelöst"
     }
   },
   "LANGUAGE": {
@@ -687,6 +721,14 @@
         "STACKTRACE": "Fehler-Stack",
         "ENDPOINT": "API-Endpunkt",
         "EXDETAILS": "Fehlerdetails"
+      },
+      "REPORTS": {
+        "ID": "Bericht-ID",
+        "URL": "Seiten-URL",
+        "LANGUAGE": "Benutzersprache",
+        "CLIENT_TIMESTAMP": "Client-Zeit",
+        "STATUS": "Berichtsstatus",
+        "ACTION": "Aktion mit dem Bericht"
       }
     }
   },
@@ -803,6 +845,15 @@
     "DESCRIPTION": "Die gesuchte Seite existiert nicht oder wurde verschoben.",
     "DESCRIPTION_2": "Wenn Sie glauben, dass dies ein Fehler ist, melden Sie ihn oder kehren Sie zur Startseite zurück.",
     "GO_HOME": "Zur Startseite",
-    "REPORT_ERROR": "Fehler melden"
+    "REPORT_ERROR": "Fehler melden",
+    "REPORT_PLACEHOLDER": "Beschreiben Sie das aufgetretene Problem...",
+    "REPORT_CONSENT": "Ich stimme der Erfassung meiner Daten für diesen Bericht zu. (optional)",
+    "REPORT": {
+      "SUBMITTED": "Bericht erfolgreich gesendet.",
+      "FAILED": "Senden des Berichts fehlgeschlagen.",
+      "EMPTY": "Bericht darf nicht leer sein."
+    },
+    "SEND": "Bericht senden",
+    "CANCEL": "Abbrechen"
   }
 }

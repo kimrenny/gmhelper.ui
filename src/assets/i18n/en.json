@@ -432,6 +432,7 @@
       "USERS": "Users",
       "TOKENS": "Tokens",
       "LOGS": "Logs",
+      "REPORTS": "Reports",
       "SETTINGS": "Settings"
     },
     "USERS": {
@@ -641,6 +642,39 @@
         "USER_ID": "User ID",
         "MODAL": "Modal"
       }
+    },
+    "REPORTS": {
+      "ACTION": "Action",
+      "ID": "ID",
+      "MESSAGE": "Message",
+      "URL": "URL",
+      "USERAGENT": "Useragent",
+      "REFERRER": "Referrer",
+      "LANGUAGE": "Language",
+      "SCREEN_SIZE": "Screen",
+      "VIEWPORT_SIZE": "Viewport",
+      "CLIENT_TIMESTAMP": "Timestamp",
+      "STATUS": "Status",
+      "DETAILS": {
+        "TITLE": "Report Details",
+        "CLOSE": "Close"
+      },
+      "UNKNOWN": "Unknown",
+      "CONFIRM_ACTION": {
+        "TITLE": "Confirm action",
+        "YES": "Yes",
+        "NO": "No"
+      },
+      "UNRESOLVE": {
+        "CONFIRM": "Are you sure you want to mark this report as unresolved?",
+        "ACTION": "Open report"
+      },
+      "RESOLVE": {
+        "CONFIRM": "Are you sure you want to mark this report as resolved?",
+        "ACTION": "Close report"
+      },
+      "OPEN": "Open",
+      "RESOLVED": "Resolved"
     }
   },
   "LANGUAGE": {
@@ -687,6 +721,14 @@
         "STACKTRACE": "Error trace",
         "ENDPOINT": "API endpoint",
         "EXDETAILS": "Error details"
+      },
+      "REPORTS": {
+        "ID": "Report ID",
+        "URL": "Page URL",
+        "LANGUAGE": "User language",
+        "CLIENT_TIMESTAMP": "Client time",
+        "STATUS": "Report status",
+        "ACTION": "Action on report"
       }
     }
   },
@@ -803,6 +845,15 @@
     "DESCRIPTION": "The page you are looking for doesn't exist or has been moved.",
     "DESCRIPTION_2": "If you believe this is a mistake, report it or return to the homepage.",
     "GO_HOME": "Go to Homepage",
-    "REPORT_ERROR": "Report an Error"
+    "REPORT_ERROR": "Report an Error",
+    "REPORT_PLACEHOLDER": "Describe the issue you encountered...",
+    "REPORT_CONSENT": "I consent to the collection of my data for this report. (optional)",
+    "REPORT": {
+      "SUBMITTED": "Report submitted successfully.",
+      "FAILED": "Failed to submit the report.",
+      "EMPTY": "Report cannot be empty."
+    },
+    "SEND": "Send Report",
+    "CANCEL": "Cancel"
   }
 }
