@@ -18,6 +18,7 @@ import {
   selectNotFoundReportsCount,
 } from 'src/app/store/admin/admin.selectors';
 import { NotFoundReport } from 'src/app/models/admin.model';
+import { animate, state, style, transition, trigger } from '@angular/animations';
 
 @Component({
   selector: 'app-admin-reports',
@@ -25,6 +26,12 @@ import { NotFoundReport } from 'src/app/models/admin.model';
   imports: [CommonModule, FormsModule, TranslateModule, TooltipDirective],
   templateUrl: './admin-reports.component.html',
   styleUrls: ['./admin-reports.component.scss'],
+  animations: [
+    trigger('fadeInOut', [
+      state('void', style({ opacity: 0 })),
+      transition(':enter, :leave', [animate('300ms ease-in-out')]),
+    ]),
+  ],
 })
 export class AdminReportsComponent implements OnInit, OnDestroy {
   userRole: string | null = null;
@@ -42,7 +49,7 @@ export class AdminReportsComponent implements OnInit, OnDestroy {
 
   isAccessDeniedModalOpen: boolean = false;
 
-  sortColumn: keyof NotFoundReport | null = null;
+  sortColumn: keyof NotFoundReport | null = "isResolved";
   sortDirection: 'asc' | 'desc' = 'asc';
 
   showData: boolean = true;
