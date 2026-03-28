@@ -41,26 +41,26 @@
         text-shadow: 0 0 10px #c444ff, 0 0 30px #c444ff66;
 
         &:nth-child(1) {
-          transform: translateZ(0);
+          transform: translateZ(-25px);
         }
 
         &:nth-child(2) {
-          transform: translateZ(-3px);
+          transform: translateZ(-28px);
           opacity: 0.9;
         }
 
         &:nth-child(3) {
-          transform: translateZ(-6px);
+          transform: translateZ(-32px);
           opacity: 0.8;
         }
 
         &:nth-child(4) {
-            transform: translateZ(-9px);
+            transform: translateZ(-35px);
             opacity: 0.7;
         }
 
         &:nth-child(5) {
-            transform: translateZ(-12px);
+            transform: translateZ(-38px);
             opacity: 0.6;
         }
       }
@@ -71,14 +71,25 @@
       height: 100%;
       display: block;
       position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.05s linear;
       z-index: 1;
+
+      polygon {
+        stroke-width: 5px;
+        opacity: 0.9;
+      }
+
+      line.connector {
+        stroke-width: 5px;
+        opacity: 0.9;
+      }
     }
 
     polygon,
     .connector {
       fill: none;
       stroke: #c444ff;
-      stroke-width: 3px;
       stroke-linejoin: round;
       stroke-linecap: round;
       vector-effect: non-scaling-stroke;

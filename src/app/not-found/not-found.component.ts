@@ -182,7 +182,6 @@ export class NotFoundComponent implements AfterViewInit {
   }
 
   private onMouseMove(event: MouseEvent) {
-
     const oct = this.octagonRef.nativeElement;
     const question = this.questionRef.nativeElement;
 
@@ -197,11 +196,29 @@ export class NotFoundComponent implements AfterViewInit {
     const clampX = Math.max(-1, Math.min(1, dx));
     const clampY = Math.max(-1, Math.min(1, dy));
 
-    const rotateY = clampX * 45;
-    const rotateX = -clampY * 45;
+    const rotateY = clampX * 30;
+    const rotateX = -clampY * 30;
+
+    const translateX = clampX * 10;
+    const translateY = clampY * 10;
+    const depthOffset = -40;
 
     question.style.transform =
-      `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+      `translate3d(${translateX}px, ${translateY}px, ${depthOffset}px)
+      rotateX(${rotateX}deg)
+      rotateY(${rotateY}deg)`;
+
+    const svg = oct.querySelector('svg') as SVGElement;
+
+    if (svg) {
+      const svgTranslateX = clampX * 6;
+      const svgTranslateY = clampY * 6;
+
+      svg.style.transform =
+        `translate3d(${svgTranslateX}px, ${svgTranslateY}px, 0px)
+        rotateX(${rotateX * 0.3}deg)
+        rotateY(${rotateY * 0.3}deg)`;
+    }
   }
 
   private collectClientInfo(){
