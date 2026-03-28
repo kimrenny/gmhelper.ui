@@ -13,6 +13,7 @@ import { NavigationService } from 'src/app/services/navigation.service';
 })
 export class FooterComponent {
   collapsed: boolean = false;
+  currentYear: number = new Date().getFullYear();
 
   constructor(private navigationService: NavigationService) {}
 
