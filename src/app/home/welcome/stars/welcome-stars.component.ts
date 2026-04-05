@@ -20,8 +20,30 @@ export class WelcomeStarsComponent implements AfterViewInit {
   constructor(private renderer: Renderer2, private el: ElementRef) {}
 
   ngAfterViewInit() {
+    this.starCount = this.calculateStarCount();
+
     this.createStars();
     this.setupCursorConnection();
+
+    setTimeout(() => {
+      this.updateCanvasSize();
+      this.recalculateStarPositions();
+    })
+  }
+
+  private calculateStarCount(): number {
+    const starsContainer = this.el.nativeElement.querySelector('#stars');
+
+    if (!starsContainer) return 300;
+
+    const width = starsContainer.offsetWidth;
+    const height = starsContainer.offsetHeight;
+
+    const area = width * height;
+
+    const density = 6900;
+
+    return Math.floor(area / density);
   }
 
   private createStars() {
@@ -29,6 +51,10 @@ export class WelcomeStarsComponent implements AfterViewInit {
     if (!starsContainer) {
       console.error('Stars container not found!');
       return;
+    }
+
+    if(this.canvas){
+      this.renderer.removeChild(starsContainer, this.canvas);
     }
 
     for (let i = 0; i < this.starCount; i++) {
@@ -77,6 +103,11 @@ export class WelcomeStarsComponent implements AfterViewInit {
     this.renderer.listen('document', 'mouseleave', () => {
       this.clearConstellations();
     });
+
+    this.renderer.listen('window', 'resize', () => {
+      this.updateCanvasSize();
+      this.regenerateStars();
+    });
   }
 
   private updateCanvasSize() {
@@ -89,6 +120,8 @@ export class WelcomeStarsComponent implements AfterViewInit {
 
   private drawConstellations(mouseX: number, mouseY: number) {
     if (!this.context) return;
+
+    this.recalculateStarPositions();
 
     this.context.clearRect(0, 0, this.canvas!.width, this.canvas!.height);
 
@@ -123,5 +156,31 @@ export class WelcomeStarsComponent implements AfterViewInit {
     if (this.context) {
       this.context.clearRect(0, 0, this.canvas!.width, this.canvas!.height);
     }
+  }
+
+  private recalculateStarPositions() {
+    this.starPositions = [];
+
+    this.stars.forEach((star) => {
+      const rect = star.getBoundingClientRect();
+      this.starPositions.push({
+        x: rect.left + rect.width / 2,
+        y: rect.top + rect.height / 2,
+      });
+    });
+  }
+
+  private regenerateStars() {
+    const starsContainer = this.el.nativeElement.querySelector('#stars');
+
+    this.stars.forEach(star => {
+      this.renderer.removeChild(starsContainer, star);
+    });
+
+    this.stars = [];
+    this.starPositions = [];
+
+    this.starCount = this.calculateStarCount();
+    this.createStars();
   }
 }
