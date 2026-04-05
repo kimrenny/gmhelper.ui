@@ -224,7 +224,7 @@ export class RegisterService {
       captchaToken: captchaToken,
     };
 
-    return this.http.post(`${this.api}/mail/password/recover`, body, {
+    return this.http.post(`${this.api}/auth/password/recover/request`, body, {
       headers,
     });
   }
