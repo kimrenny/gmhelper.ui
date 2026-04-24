@@ -360,6 +360,9 @@
         "USER_NOT_FOUND": "未找到用户。",
         "USER_BANNED": "账户已被封禁。",
         "UNKNOWN": "发生未知错误，请稍后重试。"
+      },
+      "CAPTCHA": {
+        "REQUIRED": "请完成验证码以继续。"
       }
     },
     "REMEMBER_ME": "保持登录状态",

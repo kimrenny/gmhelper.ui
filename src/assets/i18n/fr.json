@@ -360,6 +360,9 @@
         "USER_NOT_FOUND": "Utilisateur non trouvé.",
         "USER_BANNED": "Compte banni.",
         "UNKNOWN": "Une erreur inconnue est survenue. Veuillez réessayer plus tard."
+      },
+      "CAPTCHA": {
+        "REQUIRED": "Veuillez compléter le CAPTCHA pour continuer."
       }
     },
     "REMEMBER_ME": "Rester connecté",

@@ -360,6 +360,9 @@
         "USER_NOT_FOUND": "Benutzer nicht gefunden.",
         "USER_BANNED": "Konto gesperrt.",
         "UNKNOWN": "Ein unbekannter Fehler ist aufgetreten. Bitte später erneut versuchen."
+      },
+      "CAPTCHA": {
+        "REQUIRED": "Bitte lösen Sie das CAPTCHA, um fortzufahren."
       }
     },
     "REMEMBER_ME": "Angemeldet bleiben",
