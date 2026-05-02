@@ -351,7 +351,7 @@
         "EMAIL": {
           "REQUIRED": "Veuillez entrer votre adresse e-mail."
         },
-        "SUCCESS": "E-mail de récupération du mot de passe envoyé.",
+        "SUCCESS": "Si un compte avec cette adresse e-mail existe, un e-mail de récupération a été envoyé.",
         "FAIL": "Erreur d'envoi de l'e-mail de récupération. Veuillez réessayer."
       },
       "CODE": {
