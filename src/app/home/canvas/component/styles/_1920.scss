@@ -8,7 +8,7 @@
   .blurred-placeholder {
     position: relative;
     width: 50vw;
-    height: 50vh;
+    height: calc(50vh + 20px);
 
     &::before,
     &::after {
@@ -16,7 +16,9 @@
       position: absolute;
       pointer-events: none;
       background: white;
-      box-shadow: 0 0 10px 2px white, 0 0 20px 4px rgba(255, 255, 255, 0.8);
+      box-shadow:
+        0 0 10px 2px white,
+        0 0 20px 4px rgba(255, 255, 255, 0.8);
       z-index: 40;
       transform: translateY(7.5px);
     }
@@ -34,7 +36,8 @@
       height: 50vh;
       margin-top: 20px;
       background-color: #f0f0f0;
-      background-image: linear-gradient(to right, #c0c0c0 1px, transparent 1px),
+      background-image:
+        linear-gradient(to right, #c0c0c0 1px, transparent 1px),
         linear-gradient(to bottom, #c0c0c0 1px, transparent 1px);
       background-size: 20px 20px;
       filter: blur(5px);
@@ -84,15 +87,6 @@
   border-top: 8px solid #c444ff;
   border-radius: 50%;
   animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
 }
 
 .loading-message {

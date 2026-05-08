@@ -9,7 +9,7 @@
     .tool-buttons {
       width: 30px;
       left: 10px;
-      top: 33%;
+      top: 40%;
       gap: 5px;
 
       button {
@@ -71,6 +71,9 @@
     .submit-task-btn {
       bottom: 10px;
       left: 10px;
+      width: 100px;
+      height: 30px;
+      font-size: 14px;
     }
   }
 }

@@ -11,7 +11,9 @@
     position: absolute;
     pointer-events: none;
     background: white;
-    box-shadow: 0 0 10px 2px white, 0 0 20px 4px rgba(255, 255, 255, 0.8);
+    box-shadow:
+      0 0 10px 2px white,
+      0 0 20px 4px rgba(255, 255, 255, 0.8);
     z-index: 40;
     transform: translateY(7.5px);
   }
@@ -30,7 +32,8 @@
     border: 2px solid transparent;
     margin-top: 20px;
     background-color: #f0f0f0;
-    background-image: linear-gradient(to right, #c0c0c0 1px, transparent 1px),
+    background-image:
+      linear-gradient(to right, #c0c0c0 1px, transparent 1px),
       linear-gradient(to bottom, #c0c0c0 1px, transparent 1px);
     background-size: 20px 20px;
     z-index: 30;
@@ -192,7 +195,10 @@
       color: white;
       border: none;
       border-radius: 8px;
-      transition: background-color 0.3s, transform 0.2s, box-shadow 0.2s;
+      transition:
+        background-color 0.3s,
+        transform 0.2s,
+        box-shadow 0.2s;
       background-position: center;
       background-repeat: no-repeat;
       background-size: 70% 70%;

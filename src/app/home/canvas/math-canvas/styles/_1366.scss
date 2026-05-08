@@ -12,7 +12,7 @@
   }
 
   .button-window {
-    padding: 8px;
+    padding: 6px;
     box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
     gap: 8px;
 
@@ -24,8 +24,8 @@
     }
 
     .dynamic-button {
-      width: 15px !important;
-      height: 15px !important;
+      width: 14px !important;
+      height: 14px !important;
       font-size: 12px !important;
     }
   }
@@ -45,5 +45,8 @@
   .submit-task-btn {
     bottom: 10px;
     left: 10px;
+    width: 100px;
+    height: 30px;
+    font-size: 14px;
   }
 }
