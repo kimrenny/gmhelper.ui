@@ -28,7 +28,13 @@ describe('Register Page E2E Test', () => {
     const username = `testuser${uniqueSuffix}`;
     const email = `test${uniqueSuffix}@gmail.com`;
 
-    cy.intercept('POST', '**/api/v1/auth/register').as('registerRequest');
+    cy.intercept('POST', '**/api/v1/auth/register', {
+      statusCode: 201,
+      body: {
+        id: 1,
+        email: 'test@gmail.com',
+      },
+    }).as('registerRequest');
 
     cy.get('form[data-cy="register-form"]').should('be.visible');
 
@@ -39,8 +45,6 @@ describe('Register Page E2E Test', () => {
 
     cy.get('[data-cy="register-submit-button"]').click();
 
-    cy.wait('@registerRequest', { timeout: 10000 }).then((interception) => {
-      expect(interception).to.have.property('response');
-    });
+    cy.wait('@registerRequest').its('response.statusCode').should('eq', 201);
   });
 });
