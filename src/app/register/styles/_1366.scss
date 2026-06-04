@@ -1,7 +1,25 @@
 @media screen and (max-width: 1366px) {
   .register-container {
+    h1 {
+      font-size: 1rem;
+      margin-bottom: 10px;
+    }
+
     form {
       padding: 15px;
+
+      label{
+        font-size: 0.8rem;
+      }
+
+      input {
+        padding: 3px;
+        border: 1px solid #444;
+        border-radius: 3px;
+        margin-bottom: 5px;
+        background-color: #222;
+        color: white;
+      }
 
       .feedback {
         margin-top: 3px;
@@ -16,7 +34,12 @@
       }
 
       .terms-agreement {
-        margin: 10px 0;
+        margin: 5px 0;
+
+        span{
+          line-height: 1.1;
+          font-size: 12px;
+        }
       }
 
       .remember-me-container {
