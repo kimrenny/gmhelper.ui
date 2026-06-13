@@ -40,8 +40,10 @@ export class CodeInputComponent implements OnInit, OnDestroy {
         source === 'email'
           ? 'REGISTER.CODE_INPUT.EMAIL'
           : source === 'gauth'
-          ? 'REGISTER.CODE_INPUT.GAUTH'
-          : '';
+            ? 'REGISTER.CODE_INPUT.GAUTH'
+            : source === 'register'
+              ? 'REGISTER.CODE_INPUT.REGISTER'
+              : '';
     });
   }
 

@@ -4,7 +4,7 @@ import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { ApiResponse } from '../models/api-response.model';
 import { environment } from 'src/environments/environment';
 
-export type CodeSource = 'email' | 'gauth' | null;
+export type CodeSource = 'email' | 'gauth' | 'register' | null;
 
 @Injectable({
   providedIn: 'root',
@@ -96,11 +96,7 @@ export class RegisterService {
     return '';
   }
 
-  validatePassword(
-    password: string,
-    username: string,
-    email: string
-  ) {
+  validatePassword(password: string, username: string, email: string) {
     let strength = 0;
     const passwordValidations = {
       hasMinLength: password.length >= 8,
@@ -130,18 +126,30 @@ export class RegisterService {
     return { error, strength: Math.min(strength, 5), passwordValidations };
   }
 
+  initRegister(username: string, email: string, captchaToken: string) {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    const body = {
+      username,
+      email,
+      captchaToken,
+    };
+    return this.http.post(`${this.api}/auth/register/code`, body, {
+      headers,
+    });
+  }
+
   registerUser(
     username: string,
     email: string,
     password: string,
-    captchaToken: string
+    token: string,
   ) {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     const body = {
       username,
       email,
       password,
-      captchaToken,
+      token,
     };
 
     return this.http.post<ApiResponse<any>>(`${this.api}/auth/register`, body, {
@@ -163,7 +171,7 @@ export class RegisterService {
     email: string,
     password: string,
     captchaToken: string,
-    rememberMe: boolean
+    rememberMe: boolean,
   ) {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     const body = {
@@ -188,7 +196,7 @@ export class RegisterService {
     return this.http.post<ApiResponse<any>>(
       `${this.api}/auth/email/confirm/code`,
       body,
-      { headers }
+      { headers },
     );
   }
 
@@ -213,7 +221,7 @@ export class RegisterService {
     return this.http.post<ApiResponse<any>>(
       `${this.api}/auth/2fa/confirm`,
       body,
-      { headers }
+      { headers },
     );
   }
 

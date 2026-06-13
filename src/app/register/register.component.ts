@@ -23,6 +23,7 @@ import * as UserActions from '../store/user/user.actions';
 import * as AuthState from '../store/auth/auth.state';
 import * as AuthActions from '../store/auth/auth.actions';
 import { TokenService } from '../services/token.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-register',
@@ -94,7 +95,8 @@ export class RegisterComponent {
     private router: Router,
     private authStore: Store<AuthState.AuthState>,
     private store: Store<UserState.UserState>,
-    private tokenService: TokenService
+    private tokenService: TokenService,
+    private toastr: ToastrService,
   ) {
     this.isAuthorized = this.store.select(UserSelectors.selectIsAuthorized);
   }
@@ -148,7 +150,7 @@ export class RegisterComponent {
     });
   }
 
-  register(): void {
+  initRegister(): void {
     this.agreeTermsError = false;
 
     if (!this.agreeTerms) {
@@ -159,33 +161,19 @@ export class RegisterComponent {
     this.validateUsername();
     this.validateEmail();
     this.validatePassword();
+
     if (this.usernameError || this.emailError || this.passwordError) {
-      this.registerFeedbackMessage = 'REGISTER.ERRORS.INCORRECT_DATA';
-      this.clearMessageAfterDelay('register');
-      return;
-    }
-
-    const isTesting = (window as any).IS_E2E_TEST || false;
-
-    console.log('IsTesting:', isTesting);
-
-    if (!this.captchaRegisterToken && !isTesting) {
-      this.registerCaptchaError = 'REGISTER.ERRORS.CAPTCHA.REQUIRED';
+      this.toastr.error('REGISTER.ERRORS.INCORRECT_DATA');
       this.clearMessageAfterDelay('register');
       return;
     }
 
     this.registerService
-      .registerUser(
-        this.username,
-        this.email,
-        this.password,
-        isTesting ? 'mock-captcha-token-123' : this.captchaRegisterToken
-      )
+      .initRegister(this.username, this.email, this.captchaRegisterToken)
       .subscribe({
-        next: (response) => {
-          this.registerFeedbackMessage = 'REGISTER.ERRORS.REGISTRATION.SUCCESS';
-          this.clearMessageAfterDelay('register');
+        next: () => {
+          this.showCodeInput = true;
+          this.registerService.setCodeSource('register');
         },
         error: (error) => {
           console.error('Registration error:', error);
@@ -249,7 +237,7 @@ export class RegisterComponent {
         this.email,
         this.password,
         this.captchaLoginToken,
-        this.rememberMe
+        this.rememberMe,
       )
       .subscribe({
         next: (response: ApiResponse<LoginResponse>) => {
@@ -276,13 +264,13 @@ export class RegisterComponent {
             }
             if (response.data.accessToken && response.data.refreshToken) {
               const role = this.tokenService.extractUserRole(
-                response.data.accessToken
+                response.data.accessToken,
               );
               this.authStore.dispatch(
                 AuthActions.loginSuccess({
                   accessToken: response.data.accessToken,
                   role: role,
-                })
+                }),
               );
               this.loginFeedbackMessage = 'REGISTER.ERRORS.LOGIN.SUCCESS';
               this.clearMessageAfterDelay('login');
@@ -338,23 +326,23 @@ export class RegisterComponent {
 
   onCodeComplete(code: string) {
     const sessionKey = this.registerService.getSessionKey();
-
-    if (!sessionKey) return;
-
     const codeSource = this.registerService.getCodeSource();
+
     if (codeSource === 'gauth') {
+      if (!sessionKey) return;
+
       this.registerService.confirmTwoFACode(code, sessionKey).subscribe({
         next: (response: ApiResponse<LoginResponse>) => {
           if (response.success && response.data) {
             if (response.data.accessToken && response.data.refreshToken) {
               const role = this.tokenService.extractUserRole(
-                response.data.accessToken
+                response.data.accessToken,
               );
               this.authStore.dispatch(
                 AuthActions.loginSuccess({
                   accessToken: response.data.accessToken,
                   role: role,
-                })
+                }),
               );
               this.showCodeInput = false;
               this.loginFeedbackMessage = 'REGISTER.ERRORS.LOGIN.SUCCESS';
@@ -379,18 +367,20 @@ export class RegisterComponent {
     }
 
     if (codeSource === 'email') {
+      if (!sessionKey) return;
+
       this.registerService.confirmEmailCode(code, sessionKey).subscribe({
         next: (response: ApiResponse<LoginResponse>) => {
           if (response.success && response.data) {
             if (response.data.accessToken && response.data.refreshToken) {
               const role = this.tokenService.extractUserRole(
-                response.data.accessToken
+                response.data.accessToken,
               );
               this.authStore.dispatch(
                 AuthActions.loginSuccess({
                   accessToken: response.data.accessToken,
                   role: role,
-                })
+                }),
               );
               this.showCodeInput = false;
               this.loginFeedbackMessage = 'REGISTER.ERRORS.LOGIN.SUCCESS';
@@ -412,6 +402,44 @@ export class RegisterComponent {
           }
         },
       });
+    }
+
+    if (codeSource == 'register') {
+      this.validateUsername();
+      this.validateEmail();
+      this.validatePassword();
+      if (this.usernameError || this.emailError || this.passwordError) {
+        this.closeCodeInput();
+        this.registerFeedbackMessage = 'REGISTER.ERRORS.INCORRECT_DATA';
+        this.clearMessageAfterDelay('register');
+        return;
+      }
+
+      const isTesting = (window as any).IS_E2E_TEST || false;
+
+      if (!this.captchaRegisterToken && !isTesting) {
+        this.closeCodeInput();
+        this.registerCaptchaError = 'REGISTER.ERRORS.CAPTCHA.REQUIRED';
+        this.clearMessageAfterDelay('register');
+        return;
+      }
+
+      this.registerService
+        .registerUser(this.username, this.email, this.password, code)
+        .subscribe({
+          next: (response) => {
+            this.closeCodeInput();
+            this.registerFeedbackMessage =
+              'REGISTER.ERRORS.REGISTRATION.SUCCESS';
+            this.clearMessageAfterDelay('register');
+          },
+          error: (error) => {
+            console.error('Registration error:', error);
+            if (error.error && error.error.message) {
+              this.handleRegisterError(error.error.message);
+            }
+          },
+        });
     }
   }
 
@@ -446,11 +474,12 @@ export class RegisterComponent {
   }
 
   validatePassword() {
-    const { error, strength, passwordValidations } = this.registerService.validatePassword(
-      this.password,
-      this.username,
-      this.email
-    );
+    const { error, strength, passwordValidations } =
+      this.registerService.validatePassword(
+        this.password,
+        this.username,
+        this.email,
+      );
     this.passwordError = error;
     this.passwordStrength = strength;
     this.passwordValidations = passwordValidations;
@@ -462,19 +491,19 @@ export class RegisterComponent {
 
   validateRecoveryEmail() {
     this.recoveryEmailError = this.registerService.validateEmail(
-      this.recoveryEmail
+      this.recoveryEmail,
     );
   }
 
   validateLoginPassword() {
     this.loginPasswordError = this.registerService.validateLoginPassword(
-      this.password
+      this.password,
     );
   }
 
   clearMessageAfterDelay(
     messageType: 'register' | 'login' | 'recovery' | 'codeInput',
-    delay = 3000
+    delay = 3000,
   ) {
     setTimeout(() => {
       if (messageType === 'register') this.registerFeedbackMessage = '';
