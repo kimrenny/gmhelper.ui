@@ -1,7 +1,11 @@
 <div class="register-container">
   <h1 *ngIf="isRegisterMode">{{ "REGISTER.REGISTER.TITLE" | translate }}</h1>
   <h1 *ngIf="!isRegisterMode">{{ "REGISTER.LOGIN.TITLE" | translate }}</h1>
-  <form *ngIf="isRegisterMode" (ngSubmit)="register()" data-cy="register-form">
+  <form
+    *ngIf="isRegisterMode"
+    (ngSubmit)="initRegister()"
+    data-cy="register-form"
+  >
     <label for="username">Username:</label>
     <input
       type="text"
@@ -81,7 +85,7 @@
           <li
             [ngClass]="{
               valid: passwordValidations.notContainsEmail,
-              unvalid: !passwordValidations.notContainsEmail
+              unvalid: !passwordValidations.notContainsEmail,
             }"
           >
             {{ "REGISTER.INPUT.PASSWORD.HINT.NOTCONTAINSEMAIL" | translate }}
@@ -98,7 +102,7 @@
             'red-bar': passwordStrength === 1 && i === 0,
             'orange-bar':
               passwordStrength > 1 && passwordStrength < 5 && i <= 1,
-            'green-bar': passwordStrength === 5 && i <= 2
+            'green-bar': passwordStrength === 5 && i <= 2,
           }"
         ></div>
       </div>

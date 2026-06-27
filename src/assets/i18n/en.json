@@ -254,6 +254,12 @@
         }
       }
     },
+    "CODE": {
+      "ERRORS": {
+        "INVALID": "Invalid code. Please try again.",
+        "TOO_MANY_ATTEMPTS": "Too many invalid confirmation code attempts. Try again in 1 hour."
+      }
+    },
     "INPUT": {
       "PLACEHOLDER": {
         "USERNAME": "Enter your username",

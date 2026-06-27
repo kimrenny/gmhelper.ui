@@ -254,6 +254,12 @@
         }
       }
     },
+    "CODE": {
+      "ERRORS": {
+        "INVALID": "Ungültiger Code. Bitte versuchen Sie es erneut.",
+        "TOO_MANY_ATTEMPTS": "Zu viele ungültige Bestätigungscode-Versuche. Bitte versuchen Sie es in 1 Stunde erneut."
+      }
+    },
     "INPUT": {
       "PLACEHOLDER": {
         "USERNAME": "Geben Sie Ihren Benutzernamen ein",

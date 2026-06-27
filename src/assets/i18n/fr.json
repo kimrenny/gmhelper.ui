@@ -254,6 +254,12 @@
         }
       }
     },
+    "CODE": {
+      "ERRORS": {
+        "INVALID": "Code invalide. Veuillez réessayer.",
+        "TOO_MANY_ATTEMPTS": "Trop de tentatives avec un code de confirmation invalide. Veuillez réessayer dans 1 heure."
+      }
+    },
     "INPUT": {
       "PLACEHOLDER": {
         "USERNAME": "Entrez votre nom d'utilisateur",

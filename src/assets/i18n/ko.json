@@ -254,6 +254,12 @@
         }
       }
     },
+    "CODE": {
+      "ERRORS": {
+        "INVALID": "잘못된 코드입니다. 다시 시도해 주세요.",
+        "TOO_MANY_ATTEMPTS": "잘못된 확인 코드 입력 횟수가 너무 많습니다. 1시간 후 다시 시도해 주세요."
+      }
+    },
     "INPUT": {
       "PLACEHOLDER": {
         "USERNAME": "사용자 이름을 입력하세요",
