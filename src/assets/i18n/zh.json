@@ -254,6 +254,12 @@
         }
       }
     },
+    "CODE": {
+      "ERRORS": {
+        "INVALID": "验证码无效。请重试。",
+        "TOO_MANY_ATTEMPTS": "输入错误验证码的次数过多。请在 1 小时后重试。"
+      }
+    },
     "INPUT": {
       "PLACEHOLDER": {
         "USERNAME": "输入您的用户名",

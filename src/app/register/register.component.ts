@@ -186,6 +186,9 @@ export class RegisterComponent {
 
   handleRegisterError(message: string | any) {
     switch (message) {
+      case 'Too many invalid confirmation code attempts. Try again in 1 hour.':
+        this.registerFeedbackMessage = 'REGISTER.CODE.ERRORS.TOO_MANY_ATTEMPTS';
+        break;
       case 'Email is already used by another user.':
         this.registerFeedbackMessage =
           'REGISTER.ERRORS.REGISTRATION.FAIL.EMAIL_EXISTS';
@@ -436,11 +439,34 @@ export class RegisterComponent {
           error: (error) => {
             console.error('Registration error:', error);
             if (error.error && error.error.message) {
-              this.handleRegisterError(error.error.message);
+              this.handleRegisterCodeError(error.error.message);
+            } else {
+              this.codeInputFeedbackMessage =
+                'REGISTER.ERRORS.LOGIN.FAIL.UNKNOWN';
             }
           },
         });
     }
+  }
+
+  handleRegisterCodeError(message: string): void {
+    switch (message) {
+      case 'Invalid code. Please try again.':
+        this.codeInputFeedbackMessage = 'REGISTER.CODE.ERRORS.INVALID';
+        break;
+
+      case 'Too many invalid confirmation code attempts. Try again in 1 hour.':
+        this.codeInputFeedbackMessage =
+          'REGISTER.CODE.ERRORS.TOO_MANY_ATTEMPTS';
+        this.closeCodeInput(1500);
+        break;
+
+      default:
+        this.codeInputFeedbackMessage = 'REGISTER.ERRORS.LOGIN.FAIL.UNKNOWN';
+        break;
+    }
+
+    this.clearMessageAfterDelay('codeInput');
   }
 
   handleConfirmCodeError(message: string | null) {
@@ -523,9 +549,11 @@ export class RegisterComponent {
     this.recoveryEmail = '';
   }
 
-  closeCodeInput() {
-    this.showCodeInput = false;
-    this.codeInputComponent.clearCode();
+  closeCodeInput(delay: number = 0) {
+    setTimeout(() => {
+      this.showCodeInput = false;
+      this.codeInputComponent.clearCode();
+    }, delay);
   }
 
   submitPasswordRecovery() {
