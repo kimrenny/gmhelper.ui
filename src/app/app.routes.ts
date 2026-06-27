@@ -4,7 +4,6 @@ import { RegisterComponent } from './register/register.component';
 import { SettingsComponent } from './settings/settings.component';
 import { AdminComponent } from './admin/admin.component';
 import { AdminGuard } from './guards/admin.guard';
-import { ConfirmEmailComponent } from './confirm-email/confirm-email.component';
 import { emailTokenGuard } from './guards/email-token.guard';
 import { PasswordRecoveryComponent } from './password-recovery/password-recovery.component';
 import { PrivacyComponent } from './legal/privacy/privacy.component';
@@ -26,11 +25,6 @@ export const routes: Routes = [
     path: 'owner',
     component: OwnerComponent,
     canActivate: [OwnerGuard],
-  },
-  {
-    path: 'confirm',
-    component: ConfirmEmailComponent,
-    canActivate: [emailTokenGuard],
   },
   {
     path: 'recover',
