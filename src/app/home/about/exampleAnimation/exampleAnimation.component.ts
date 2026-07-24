@@ -36,7 +36,7 @@ export class ExampleAnimationComponent implements OnInit, OnDestroy {
     private aboutService: AboutService,
     private renderer: Renderer2,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
   ) {}
 
   ngOnInit() {
@@ -59,7 +59,7 @@ export class ExampleAnimationComponent implements OnInit, OnDestroy {
           this.setFirstVisibility();
         }
       },
-      { threshold: 0.1 }
+      { threshold: 0.1 },
     );
 
     if (this.elementRef.nativeElement) {
@@ -98,26 +98,26 @@ export class ExampleAnimationComponent implements OnInit, OnDestroy {
     this.timeouts.push(
       setTimeout(() => {
         this.startAnimationExampleCanvas();
-      }, delay)
+      }, delay),
     );
 
     this.timeouts.push(
       setTimeout(() => {
         this.startAnimationBinary();
-      }, firstAnimationDelay)
+      }, firstAnimationDelay),
     );
 
     this.timeouts.push(
       setTimeout(() => {
         this.startAnimationResponseCanvas();
-      }, secondAnimationDelay)
+      }, secondAnimationDelay),
     );
 
-    const totalDuration = secondAnimationDelay + 7500 + 40000;
+    const totalDuration = secondAnimationDelay + 7500 + delay;
     this.timeouts.push(
       setTimeout(() => {
         this.restartAnimation();
-      }, totalDuration)
+      }, totalDuration),
     );
   }
 
@@ -141,7 +141,7 @@ export class ExampleAnimationComponent implements OnInit, OnDestroy {
 
   private resetAnimations() {
     const elements = this.elementRef.nativeElement.querySelectorAll(
-      '.example-canvas-animation, .binary-animation, .example-response, .neon-canvas, .neon-response'
+      '.example-canvas-animation, .binary-animation, .example-response, .neon-canvas, .neon-response',
     );
 
     elements.forEach((element: HTMLElement) => {
@@ -155,7 +155,7 @@ export class ExampleAnimationComponent implements OnInit, OnDestroy {
 
   private startAnimationExampleCanvas() {
     const canvasElement = this.elementRef.nativeElement.querySelector(
-      '.example-canvas-animation'
+      '.example-canvas-animation',
     );
     const neonElement =
       this.elementRef.nativeElement.querySelector('.neon-canvas');
@@ -208,9 +208,7 @@ export class ExampleAnimationComponent implements OnInit, OnDestroy {
       this.renderer.addClass(canvasElement, 'animate');
     }
 
-    setTimeout(() => {
-      this.aboutService.setDrawingResponseAllowed(true);
-    }, 8500);
+    this.aboutService.setDrawingResponseAllowed(true);
   }
 
   private createSquares(neonElement: HTMLElement) {
@@ -263,7 +261,7 @@ export class ExampleAnimationComponent implements OnInit, OnDestroy {
         this.renderer.setStyle(
           square,
           'transform',
-          `translate(-${randomX}px, ${randomY}px)`
+          `translate(-${randomX}px, ${randomY}px)`,
         );
       }, 0);
 
@@ -281,7 +279,7 @@ export class ExampleAnimationComponent implements OnInit, OnDestroy {
 
     const createSquareInterval = setInterval(
       createSquaresBatch,
-      createSquareDelay
+      createSquareDelay,
     );
 
     setTimeout(() => {
@@ -297,7 +295,7 @@ export class ExampleAnimationComponent implements OnInit, OnDestroy {
 
     document.removeEventListener(
       'visibilitychange',
-      this.handleVisibilityChange
+      this.handleVisibilityChange,
     );
   }
 }
