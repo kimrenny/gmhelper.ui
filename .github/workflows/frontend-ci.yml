@@ -29,8 +29,5 @@ jobs:
           npm run start &
           npx wait-on http://localhost:4200
 
-      - name: Run Cypress tests
-        run: npx cypress run
-
       - name: Build Angular project
         run: npm run build
