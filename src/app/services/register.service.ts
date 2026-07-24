@@ -48,7 +48,7 @@ export class RegisterService {
   }
 
   validateEmail(email: string): string {
-    const emailPattern = /^[a-zA-z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+    const emailPattern = /^[a-zA-Z0-9._+-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+$/;
     const allowedDomains = [
       'gmail.com',
       'yahoo.com',
