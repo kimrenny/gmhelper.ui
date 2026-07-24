@@ -25,7 +25,10 @@ export class ExampleResponseComponent {
   private dimensionsPx: number[] = [];
   private drawingAllowedSubscription: Subscription;
 
-  constructor(private renderer: Renderer2, private aboutService: AboutService) {
+  constructor(
+    private renderer: Renderer2,
+    private aboutService: AboutService,
+  ) {
     this.drawingAllowedSubscription =
       this.aboutService.drawingResponseAllowed$.subscribe((isAllowed) => {
         if (isAllowed) {
@@ -81,7 +84,7 @@ export class ExampleResponseComponent {
 
     const leftSide = height;
     const rightSide = Math.sqrt(
-      Math.pow(topX - rightX, 2) + Math.pow(topY - rightY, 2)
+      Math.pow(topX - rightX, 2) + Math.pow(topY - rightY, 2),
     );
     const bottomSide = base;
 
@@ -93,14 +96,12 @@ export class ExampleResponseComponent {
       fill: 'transparent',
       'stroke-width': '3',
       'stroke-dasharray': perimeter.toString(),
-      'stroke-dashoffset': perimeter.toString(),
+      'stroke-dashoffset': '0',
     });
 
     this.appendShape(svg, container);
 
-    setTimeout(() => {
-      this.addDimensions(container, leftSide, rightSide, bottomSide);
-    }, 2500);
+    this.addDimensions(container, leftSide, rightSide, bottomSide);
   }
 
   private async drawRectangle(container: HTMLElement) {
@@ -121,19 +122,17 @@ export class ExampleResponseComponent {
       fill: 'transparent',
       'stroke-width': '3',
       'stroke-dasharray': perimeter.toString(),
-      'stroke-dashoffset': perimeter.toString(),
+      'stroke-dashoffset': '0',
     });
 
     this.appendShape(svg, container);
 
-    setTimeout(() => {
-      this.addDimensions(container, width, height, width, height);
-    }, 2500);
+    this.addDimensions(container, width, height, width, height);
   }
 
   private createSVGElement(
     tag: string,
-    attributes: Record<string, string>
+    attributes: Record<string, string>,
   ): SVGElement {
     const el = this.renderer.createElement(tag, 'svg');
     for (const [key, value] of Object.entries(attributes)) {
@@ -157,7 +156,7 @@ export class ExampleResponseComponent {
     side1: number,
     side2: number,
     side3: number,
-    side4?: number
+    side4?: number,
   ) {
     const scaleFactor = 1 / 16;
     this.dimensions = [side1, side2, side3, side4]
@@ -172,145 +171,48 @@ export class ExampleResponseComponent {
     const [dim1, dim2, dim3, dim4] = this.dimensions;
 
     if (container) {
-      let delay = 0;
+      let delay = 8000;
       const padding = 10;
 
       if (dim4 == undefined || dim4 == 0) {
-        setTimeout(
-          () => this.addVertexLabel(container, -padding, side1 + padding, 'A'),
-          delay
-        );
-        delay += 500;
-        setTimeout(
-          () => this.addVertexLabel(container, -padding, -padding, 'B'),
-          delay
-        );
-        delay += 500;
-        setTimeout(
-          () =>
-            this.addVertexLabel(
-              container,
-              side3 + padding,
-              side1 + padding,
-              'C'
-            ),
-          delay
-        );
-        delay += 1000;
+        this.addVertexLabel(container, -padding, side1 + padding, 'A');
+        this.addVertexLabel(container, -padding, -padding, 'B');
+        this.addVertexLabel(container, side3 + padding, side1 + padding, 'C');
 
-        setTimeout(
-          () => this.addSideLengthLabel(container, -padding, side1 / 2, dim1),
-          delay
+        this.addSideLengthLabel(container, -padding, side1 / 2, dim1);
+        this.addSideLengthLabel(container, side3 / 2, side1 + padding, dim3);
+        this.addSideLengthLabel(
+          container,
+          side3 / 2 + padding,
+          side1 / 2 - padding,
+          dim2,
         );
-        delay += 500;
-        setTimeout(
-          () =>
-            this.addSideLengthLabel(
-              container,
-              side3 / 2,
-              side1 + padding,
-              dim3
-            ),
-          delay
-        );
-        delay += 500;
-        setTimeout(
-          () =>
-            this.addSideLengthLabel(
-              container,
-              side3 / 2 + padding,
-              side1 / 2 - padding,
-              dim2
-            ),
-          delay
-        );
-        delay += 500;
 
-        setTimeout(() => {
-          this.addGivenText(
-            container,
-            `AB = ${Math.round(dim1)}, AC = ${Math.round(
-              dim3
-            )}, BC = ${Math.round(dim2)}, ${this.task}`
-          );
-        }, delay);
-        delay += 10000;
+        this.addGivenText(
+          container,
+          `AB = ${Math.round(dim1)}, AC = ${Math.round(dim3)}, BC = ${Math.round(dim2)}, ${this.task}`,
+        );
 
         setTimeout(() => {
           this.addSolution(container);
         }, delay);
       } else {
-        setTimeout(
-          () => this.addVertexLabel(container, -padding, -padding, 'A'),
-          delay
-        );
-        delay += 500;
-        setTimeout(
-          () => this.addVertexLabel(container, side1 + padding, -padding, 'B'),
-          delay
-        );
-        delay += 500;
-        setTimeout(
-          () =>
-            this.addVertexLabel(
-              container,
-              side1 + padding,
-              side2 + padding,
-              'C'
-            ),
+        this.addVertexLabel(container, -padding, -padding, 'A');
+        this.addVertexLabel(container, side1 + padding, -padding, 'B');
+        this.addVertexLabel(container, side1 + padding, side2 + padding, 'C');
+        this.addVertexLabel(container, -padding, side2 + padding, 'D');
 
-          delay
-        );
-        delay += 500;
-        setTimeout(
-          () => this.addVertexLabel(container, -padding, side2 + padding, 'D'),
-          delay
-        );
-        delay += 500;
+        this.addSideLengthLabel(container, side1 / 2, -padding, dim1);
+        this.addSideLengthLabel(container, side1 + padding, side2 / 2, dim2);
+        this.addSideLengthLabel(container, side3 / 2, side2 + padding, dim3);
+        this.addSideLengthLabel(container, -padding, side2 / 2, dim4 || 0);
 
-        setTimeout(
-          () => this.addSideLengthLabel(container, side1 / 2, -padding, dim1),
-          delay
+        this.addGivenText(
+          container,
+          `AB = CD = ${Math.round(dim1)}, BC = AD = ${Math.round(dim2)}, ${
+            this.task
+          }`,
         );
-        delay += 500;
-        setTimeout(
-          () =>
-            this.addSideLengthLabel(
-              container,
-              side1 + padding,
-              side2 / 2,
-              dim2
-            ),
-          delay
-        );
-        delay += 500;
-        setTimeout(
-          () =>
-            this.addSideLengthLabel(
-              container,
-              side3 / 2,
-              side2 + padding,
-              dim3
-            ),
-          delay
-        );
-        delay += 500;
-        setTimeout(
-          () =>
-            this.addSideLengthLabel(container, -padding, side2 / 2, dim4 || 0),
-          delay
-        );
-        delay += 500;
-
-        setTimeout(() => {
-          this.addGivenText(
-            container,
-            `AB = CD = ${Math.round(dim1)}, BC = AD = ${Math.round(dim2)}, ${
-              this.task
-            }`
-          );
-        }, delay);
-        delay += 10000;
 
         setTimeout(() => {
           this.addSolution(container);
@@ -323,7 +225,7 @@ export class ExampleResponseComponent {
     container: HTMLElement,
     x: number,
     y: number,
-    label: string
+    label: string,
   ) {
     const svgContainer = container.querySelector('svg');
     if (svgContainer) {
@@ -337,7 +239,7 @@ export class ExampleResponseComponent {
       this.renderer.setAttribute(
         labelElement,
         'font-size',
-        isLargeScreen ? '16' : '12'
+        isLargeScreen ? '16' : '12',
       );
       this.renderer.setAttribute(labelElement, 'text-anchor', 'middle');
       this.renderer.setAttribute(labelElement, 'dominant-baseline', 'central');
@@ -351,7 +253,7 @@ export class ExampleResponseComponent {
     container: HTMLElement,
     x: number,
     y: number,
-    dimension: number
+    dimension: number,
   ) {
     const svgContainer = container.querySelector('svg');
     if (svgContainer) {
@@ -364,25 +266,12 @@ export class ExampleResponseComponent {
       this.renderer.setAttribute(
         labelElement,
         'font-size',
-        isLargeScreen ? '16' : '12'
+        isLargeScreen ? '16' : '12',
       );
       this.renderer.setAttribute(labelElement, 'text-anchor', 'middle');
       this.renderer.setAttribute(labelElement, 'dominant-baseline', 'central');
       this.renderer.setStyle(labelElement, 'position', 'absolute');
 
-      let currentText = '';
-      const textToAnimate = `${dimension}`;
-      let index = 0;
-
-      const intervalId = setInterval(() => {
-        if (index < textToAnimate.length) {
-          currentText += textToAnimate[index];
-          labelElement.textContent = currentText;
-          index++;
-        } else {
-          clearInterval(intervalId);
-        }
-      }, 100);
       this.renderer.appendChild(svgContainer, labelElement);
     }
   }
@@ -399,26 +288,26 @@ export class ExampleResponseComponent {
     let paddingY = 0;
     const lineWidth = lines.length === 4 ? 65 : 100;
 
-    let delay = 1200;
-
     for (let index = 0; index < lines.length; index++) {
       const line = lines[index];
 
       if (index === lines.length - 1) {
-        await this.delay(delay);
         this.addHorizontalLine(
           container,
           startX,
           startY + (index - 1) * lineHeight + 10,
-          lineWidth
+          lineWidth,
         );
         paddingY += 20;
 
-        await this.delay(delay);
-        this.addText(svg, line, startX, startY + index * lineHeight + paddingY);
+        this.addTextStatic(
+          svg,
+          line,
+          startX,
+          startY + index * lineHeight + paddingY,
+        );
       } else {
-        await this.delay(delay);
-        this.addText(svg, line, startX, startY + index * lineHeight);
+        this.addTextStatic(svg, line, startX, startY + index * lineHeight);
       }
     }
   }
@@ -449,11 +338,26 @@ export class ExampleResponseComponent {
     }, 100);
   }
 
+  private addTextStatic(svg: SVGElement, line: string, x: number, y: number) {
+    const isLargeScreen = window.innerWidth >= 1921;
+
+    const textElement = this.createSVGElement('text', {
+      x: x.toString(),
+      y: y.toString(),
+      fill: 'black',
+      'font-size': isLargeScreen ? '24' : '16',
+      'text-anchor': 'start',
+    });
+
+    textElement.textContent = line;
+    svg.appendChild(textElement);
+  }
+
   private addHorizontalLine(
     container: HTMLElement,
     x1: number,
     y1: number,
-    lineWidth: number
+    lineWidth: number,
   ) {
     const svg = container.querySelector('svg');
     if (svg) {
@@ -463,12 +367,11 @@ export class ExampleResponseComponent {
       this.renderer.setAttribute(
         lineElement,
         'x2',
-        (x1 + lineWidth).toString()
+        (x1 + lineWidth).toString(),
       );
       this.renderer.setAttribute(lineElement, 'y2', y1.toString());
       this.renderer.setAttribute(lineElement, 'stroke', 'black');
       this.renderer.setAttribute(lineElement, 'stroke-width', '3');
-      this.renderer.setAttribute(lineElement, 'class', 'draw-line');
       this.renderer.appendChild(svg, lineElement);
     }
   }
@@ -525,21 +428,17 @@ export class ExampleResponseComponent {
 
     setTimeout(
       () => this.addText(svg, formula, formulaCoords.x, formulaCoords.y),
-      delay
+      delay,
     );
     delay += 2500;
     setTimeout(
       () => this.addText(svg, solution, solutionCoords.x, solutionCoords.y),
-      delay
+      delay,
     );
     delay += 4000;
     setTimeout(
       () => this.addText(svg, answer, answerCoords.x, answerCoords.y),
-      delay
+      delay,
     );
-  }
-
-  private delay(ms: number) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 }
